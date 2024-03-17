@@ -1,26 +1,34 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const templates = {
 	index: {
-		js: "./src/templates/index/index.js",
-		css: "./src/templates/index/index.css",
-		html: "./src/templates/index/index.html",
+		js: "./src/pages/index/index.js",
+		css: "./src/pages/index/index.css",
+		html: "./src/pages/index/index.html",
 	},
 	page1: {
-		js: "./src/templates/page1/index.js",
-		css: "./src/templates/page1/index.css",
-		html: "./src/templates/page1/index.html",
+		js: "./src/pages/page1/index.js",
+		css: "./src/pages/page1/index.css",
+		html: "./src/pages/page1/index.html",
 	},
-};
-
-const getTemplateFile = (nameTemplate, extensionFile) => {
-	return templates[nameTemplate][extensionFile];
+	header: {
+		js: "./src/components/header/index.js",
+		css: "./src/components/header/index.css",
+		html: "./src/components/header/index.html",
+	},
+	footer: {
+		js: "./src/components/footer/index.js",
+		css: "./src/components/footer/index.css",
+		html: "./src/components/footer/index.html",
+	}
 };
 
 const createEntriesObj = (templatesObj) => {
-	return Object.entries(originalObject).reduce((acc, [key, value]) => {
+	return Object.entries(templatesObj).reduce((acc, [key, value]) => {
 		acc[key] = value.js; // Сохраняем только JS файлы
 		return acc;
 	}, {});
@@ -47,6 +55,12 @@ const createConfig = (configDefault) => {
 			filename: "[name].css",
 		}),
 		...createHtmlPluginsObj(templates),
+		new CleanWebpackPlugin({
+			cleanOnceBeforeBuildPatterns: ["**/*", "!assets/**"],
+		}),
+		new CopyWebpackPlugin({
+			patterns: [{ from: "src/assets", to: "assets" }],
+		}),
 	];
 
 	const resultConfig = {
@@ -74,47 +88,6 @@ const configDefault = {
 	mode: "development",
 };
 
-const config = {
-	entry: {
-		index: getTemplateFile("index", "js"),
-		page1: getTemplateFile("page1", "js"),
-		// Добавьте сюда другие страницы, если они есть
-	},
-	output: {
-		filename: "[name].[contenthash].js",
-		path: path.resolve(__dirname, "dist"),
-	},
-	mode: "development",
-	module: {
-		rules: [
-			{
-				test: /\.css$/,
-				use: [MiniCssExtractPlugin.loader, "css-loader"],
-			},
-		],
-	},
-	plugins: [
-		new MiniCssExtractPlugin({
-			filename: "[name].css",
-		}),
-		new HtmlWebpackPlugin({
-			filename: "page1.html",
-			template: getTemplateFile("index", "html"),
-			chunks: ["page1"],
-			templateParameters: {
-				css: '<link rel="stylesheet" href="page2.css">',
-			},
-		}),
-		new HtmlWebpackPlugin({
-			filename: "page2.html",
-			template: getTemplateFile("page1", "html"),
-			chunks: ["page2"],
-			templateParameters: {
-				css: '<link rel="stylesheet" href="page2.css">',
-			},
-		}),
-		// Добавьте сюда другие страницы, если они есть
-	],
-};
+const config = createConfig(configDefault);
 
 module.exports = config;
