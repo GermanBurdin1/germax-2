@@ -81,43 +81,68 @@
         </div>
     </div>
 
-	<div class="container py-5">
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-			<div class="col">
-				<div class="card h-100">
-					<div class="card-body text-center">
-						<img src="path-to-your-image.jpg" class="card-img-top rounded-circle mb-3" alt="Subscriber 1" style="width: 100px;">
-						<h5 class="card-title">Jean Paul</h5>
-						<p class="card-text">Working on the latest API integration.</p>
-						<div class="mb-3">
-							<span class="badge bg-danger">UX Team</span>
-							<span class="badge bg-danger">Team AGS</span>
-						</div>
-						<a href="#" class="btn btn-primary">Voir l'info</a>
-					</div>
-				</div>
-			</div>
+	<div class="card-body">
+		<div class="table-responsive">
+		  <table class="table align-middle">
+			<thead>
+			  <tr>
+				<th>Client</th>
+				<th>Dernière visite</th>
+				<th>Email</th>
+				<th>Téléphone</th>
+				<th>Date de location</th>
+				<th>Date de retour</th>
+				<th>Statut</th>
+				<th>Action</th>
+			  </tr>
+			</thead>
+			<tbody>
+			  <!-- Далее следуют строки с данными арендаторов. Пример одной строки: -->
+			  <tr>
+				<td>
+				  <div class="d-flex align-items-center">
+					<img src="img/user7.png" class="img-4x rounded-5 me-3" alt="Avatar">
+					<p class="m-0">Felicia Quinn</p>
+				  </div>
+				</td>
+				<td>Il y a 2 heures</td>
+				<td>info@example.com</td>
+				<td>(128) 898-0326</td>
+				<td>01/09/2022</td>
+				<td>10/09/2022</td>
+				<td>
+				  <span class="badge shade-light-green">Payé</span>
+				</td>
+				<td>
+				  <button class="btn btn-primary">Gérer</button>
+				</td>
+			  </tr>
+			  <tr>
+				<td>
+				  <div class="d-flex align-items-center">
+					<img src="img/user7.png" class="img-4x rounded-5 me-3" alt="Avatar">
+					<p class="m-0">Felicia Quinn</p>
+				  </div>
+				</td>
+				<td>Il y a 2 heures</td>
+				<td>info@example.com</td>
+				<td>(128) 898-0326</td>
+				<td>01/09/2022</td>
+				<td>10/09/2022</td>
+				<td>
+				  <span class="badge shade-light-green">Payé</span>
+				</td>
+				<td>
+				  <button class="btn btn-primary">Gérer</button>
+				</td>
+			  </tr>
+			  <!-- Добавьте дополнительные строки согласно вашим данным -->
+			</tbody>
+		  </table>
+		  <!-- Пагинация (если нужна) -->
 		</div>
-	</div>
+	  </div>
 
-	<div class="container py-5">
-		<div class="row row-cols-1 row-cols-md-3 g-4">
-			<div class="col">
-				<div class="card h-100">
-					<div class="card-body text-center">
-						<img src="path-to-your-image.jpg" class="card-img-top rounded-circle mb-3" alt="Subscriber 1" style="width: 100px;">
-						<h5 class="card-title">Jean Paul</h5>
-						<p class="card-text">Working on the latest API integration.</p>
-						<div class="mb-3">
-							<span class="badge bg-danger">UX Team</span>
-							<span class="badge bg-danger">Team AGS</span>
-						</div>
-						<a href="#" class="btn btn-primary">Voir l'info</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>

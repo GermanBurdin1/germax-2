@@ -1,0 +1,107 @@
+.background-image {
+	background-size: cover;
+	background-position: center;
+	position: relative; /* Добавляем, чтобы псевдоэлементы позиционировались относительно этих секций */
+  }
+
+  .unique-background-1 {
+	background-image: url("../../../public/images/accueil.jpg");
+	background-attachment: fixed;
+  }
+
+  .unique-background-1::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 109, 0, 0.7);
+	filter: brightness(30%);
+	pointer-events: none;
+  }
+
+  .unique-background-2 {
+	background-image: url("../../../public/images/laptopbackground.jpg");
+  }
+
+  .unique-background-2::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(2, 1, 0, 0.7);
+	filter: brightness(30%);
+	pointer-events: none;
+  }
+
+  /* Основные стили кнопок */
+  .btn-primary {
+	background-color: #007bff;
+	border-color: #007bff;
+  }
+
+  /* Стиль для оранжевой кнопки "Emprunter le matériel" */
+  .btn-orange {
+	background-color: #ff6d00; /* Оранжевый цвет фона */
+	border-color: #ff6d00; /* Оранжевый цвет границы */
+	color: #fff; /* Белый цвет текста */
+  }
+
+  .btn-orange:hover {
+	background-color: #e65a00; /* Темно-оранжевый цвет фона при наведении */
+	border-color: #cc4e00; /* Темно-оранжевый цвет границы при наведении */
+  }
+
+  .section_loc {
+	padding-top: 64px;
+	padding-bottom: 60px;
+	background-image: url("//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/fadb47fdf5b9d5fd5a932a7e9bd1f3ee.jpg");
+	background-attachment: fixed;
+	background-position: center center;
+	background-size: cover;
+	background-repeat: no-repeat;
+  }
+
+  .section_loc .overlay {
+	  background-color: rgba(0, 0, 0, 0.76);
+
+	.section_loc h1 {
+	  color: #fff;
+	}
+
+
+	.btn-light {
+	  background-color: #f8f9fa;
+	  color: #343a40;
+	  border: 1px solid #ced4da;
+	}
+
+	.btn-light:hover {
+	  background-color: #e2e6ea;
+	  color: #343a40;
+	}
+
+
+	.btn-orange {
+	  background-color: #FF6D00;
+	  border-color: #FF6D00;
+	  color: #fff;
+	}
+
+	.btn-orange:hover {
+	  background-color: #e65a00;
+	  border-color: #cc4e00;
+	}
+
+	.spacer {
+	  height: 80px;
+	}
+
+
+	.spacer-small {
+	  height: 40px;
+	}
+  }

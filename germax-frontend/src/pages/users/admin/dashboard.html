@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+	<link href="./style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<title>Dashboard</title>
+	<style>
+        /* Добавляем стили для отображения выпадающего списка при наведении */
+        .navbar .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<!-- ... your existing navbar ... -->
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="/school/">
+			  <img src="../../assets/GERMAX.jpg" alt="logo" style="height: 50px;">
+			</a>
+
+			<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
+				<ul class="navbar-nav align-items-center">
+					<li class="nav-item">
+						<a class="nav-link" href="link_to_other_page.html">
+							<i class="fa fa-question-circle" aria-hidden="true"></i> Foire Aux Questions
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#" data-toggle="modal" data-target="#notificationsModal">
+							<i class="fa fa-bell"></i>
+							<span class="badge badge-danger">3</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="account-settings.html">
+							<i class="fa fa-cog" aria-hidden="true"></i>
+						</a>
+					</li>
+					<!-- Добавляем выпадающий список, который отображается при наведении -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fa fa-user"></i>
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" href="profile.html">Profil</a>
+							<a class="dropdown-item" href="account-settings.html">Paramètres</a>
+							<a class="dropdown-item" href="login.html">Déconnexion</a>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="row mt-3">
+			<div class="col-md-3">
+				<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+					<a class="nav-link active" id="locationsLink" href="#">Locations</a>
+					<a class="nav-link" id="emprunteursLink" href="#">Locataires</a>
+					<a class="nav-link" id="indicateursLink" href="#">Indicateurs clés</a>
+				</div>
+			</div>
+
+	<!-- Optional JavaScript; choose one of the two! -->
+
+	<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
