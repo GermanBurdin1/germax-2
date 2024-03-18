@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface utilisateur</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container pt-3 pb-1">
+        <!-- Main Header -->
+        <div class="row pb-2">
+            <div class="col">
+                <h1 style="font-weight: bold;">Utilisateurs</h1>
+            </div>
+        </div>
+
+        <!-- Primary Tabs -->
+        <div class="row">
+            <div class="col">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="students-tab" data-toggle="tab" href="#students" role="tab" aria-controls="students" aria-selected="true">Élèves</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="teachers-tab" data-toggle="tab" href="#teachers" role="tab" aria-controls="teachers" aria-selected="false">Enseignants</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3 mt-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"><img src="search-icon.svg" alt=""></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Recherche de clients..." aria-label="Поиск" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" id="myTabContent">
+            <!-- Students Tab Pane -->
+            <div class="tab-pane fade show active" id="students" role="tabpanel" aria-labelledby="students-tab">
+                <!-- Secondary Students Tabs -->
+                <ul class="nav nav-tabs mt-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="devInfo-tab" data-toggle="tab" href="#devInfo" role="tab" aria-controls="devInfo" aria-selected="true">Étudiants Développement informatique</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="sysReseau-tab" data-toggle="tab" href="#sysReseau" role="tab" aria-controls="sysReseau" aria-selected="false">Étudiants Systèmes, réseaux et cybersécurité</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="comMarketing-tab" data-toggle="tab" href="#comMarketing" role="tab" aria-controls="comMarketing" aria-selected="false">Étudiants Commerce et Marketing digital</a>
+                    </li>
+                </ul>
+
+                <!-- Secondary Tab Content -->
+                <div class="tab-content">
+                    <!-- Content for "Étudiants Développement informatique" -->
+                    <div class="tab-pane fade show active" id="devInfo" role="tabpanel" aria-labelledby="devInfo-tab">
+                        <!-- Cards or any other content -->
+                    </div>
+                    <div class="tab-pane fade" id="sysReseau" role="tabpanel" aria-labelledby="sysReseau-tab">
+                        <!-- Content for "Étudiants Systèmes, réseaux et cybersécurité" -->
+                    </div>
+                    <div class="tab-pane fade" id="comMarketing" role="tabpanel" aria-labelledby="comMarketing-tab">
+                        <!-- Content for "Étudiants Commerce et Marketing digital" -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teachers Tab Pane -->
+            <div class="tab-pane fade" id="teachers" role="tabpanel" aria-labelledby="teachers-tab">
+                <!-- Content for Teachers -->
+                <p>Contenu pour les enseignants ici.</p>
+            </div>
+        </div>
+    </div>
+
+	<div class="container py-5">
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+			<div class="col">
+				<div class="card h-100">
+					<div class="card-body text-center">
+						<img src="path-to-your-image.jpg" class="card-img-top rounded-circle mb-3" alt="Subscriber 1" style="width: 100px;">
+						<h5 class="card-title">Jean Paul</h5>
+						<p class="card-text">Working on the latest API integration.</p>
+						<div class="mb-3">
+							<span class="badge bg-danger">UX Team</span>
+							<span class="badge bg-danger">Team AGS</span>
+						</div>
+						<a href="#" class="btn btn-primary">Voir l'info</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container py-5">
+		<div class="row row-cols-1 row-cols-md-3 g-4">
+			<div class="col">
+				<div class="card h-100">
+					<div class="card-body text-center">
+						<img src="path-to-your-image.jpg" class="card-img-top rounded-circle mb-3" alt="Subscriber 1" style="width: 100px;">
+						<h5 class="card-title">Jean Paul</h5>
+						<p class="card-text">Working on the latest API integration.</p>
+						<div class="mb-3">
+							<span class="badge bg-danger">UX Team</span>
+							<span class="badge bg-danger">Team AGS</span>
+						</div>
+						<a href="#" class="btn btn-primary">Voir l'info</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
