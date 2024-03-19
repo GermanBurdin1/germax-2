@@ -1,17 +1,63 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
+/* Стили для бокового меню */
+.sidebar {
+	width: auto; /* Ширина будет подстраиваться под содержимое */
+	min-width: 150px; /* Минимальная ширина, чтобы содержимое не сжималось слишком сильно */
+	max-width: 250px; /* Максимальная ширина, чтобы меню не было слишком широким */
+	padding: 10px; /* Внутренние отступы для визуального комфорта */
+	overflow-y: auto; /* Позволяет прокрутку, если содержимое длинное */
+	height: 100%; /* Высота подстраивается под контейнер */
+	background-color: #f7f7f7; /* Цвет фона */
+	box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); /* Тень для выделения меню */
 }
 
-#calendar {
-  max-width: 600px;
-  margin: 40px auto;
-  min-height: 600px;
+/* Стили для основного контента */
+.content {
+	flex-grow: 1; /* Контент занимает все доступное пространство */
+	padding: 20px; /* Добавляем внутренние отступы */
+	background-color: #fff; /* Цвет фона для основного контента */
 }
 
-.fc .fc-button-primary {
-  background: red;
+/* Дополнительные стили */
+.nav-pills {
+	margin-bottom: 20px; /* Добавляем отступ между меню и контентом */
+	background-color: #f8f9fa; /* Цвет фона для меню */
+	border-radius: 0.25rem; /* Скругление углов */
+}
+
+.nav-item.dropdown {
+	position: relative; /* Сброс позиционирования */
+}
+
+.navbar .dropdown-menu {
+	position: absolute;
+	right: 0;
+	left: auto; /* Убираем влияние свойства left */
+	width: auto; /* Ширина по содержимому */
+	min-width: 150px; /* Минимальная ширина */
+	max-height: calc(100vh - 100px); /* Максимальная высота с прокруткой */
+	overflow-y: auto; /* Включаем прокрутку */
+}
+
+.dropdown-menu a.dropdown-item {
+	text-align: right;
+}
+
+.section {
+	margin-bottom: 20px; /* Отступы между секциями */
+}
+
+.container-fluid {
+	padding-right: 0;
+	padding-left: 0;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.main-content {
+	display: flex; /* Используем flexbox для упорядочивания бокового меню и контента */
+}
+
+.navbar {
+	width: 100%; /* Полная ширина */
+	margin-bottom: 20px; /* Отступ снизу для разделения от остального контента */
 }
