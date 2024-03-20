@@ -7,7 +7,7 @@
 	overflow-y: auto; /* Позволяет прокрутку, если содержимое длинное */
 	height: 100%; /* Высота подстраивается под контейнер */
 	background-color: #f7f7f7; /* Цвет фона */
-	box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); /* Тень для выделения меню */
+	box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Тень для выделения меню */
 }
 
 /* Стили для основного контента */
@@ -61,3 +61,50 @@
 	width: 100%; /* Полная ширина */
 	margin-bottom: 20px; /* Отступ снизу для разделения от остального контента */
 }
+
+.profile-img {
+	position: relative;
+	text-align: center;
+}
+
+.profile-img img {
+	border-radius: 50%;
+	width: 150px; /* Или ваш нужный размер */
+	height: 150px; /* Или ваш нужный размер */
+}
+
+.custom-file-upload {
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/* Другие стили, такие как цвет фона, иконка загрузки и т.д. */
+	cursor: pointer;
+}
+
+.custom-file-upload input[type="file"] {
+	width: 150px; /* Такой же, как и у img */
+	height: 150px; /* Такой же, как и у img */
+	opacity: 0; /* Скрываем поле */
+}
+
+/* Стили для фона */
+.background-image-upload {
+	/* Ваши стили */
+	position: absolute; /* или fixed, если нужно фиксированное положение */
+	width: 100%;
+	height: 100%;
+	z-index: -1; /* убедитесь, что фон находится под другими элементами */
+	top: 0;
+	right: 0;
+  }
+
+  /* Обновленные стили для .background-image-upload */
+  .background-image-upload .custom-background-upload {
+	/* Ваши стили */
+	position: absolute;
+	bottom: 10px; /* Расположение относительно нижнего края */
+	right: 10px; /* Расположение относительно правого края */
+	z-index: 10; /* убедитесь, что кнопка загрузки видна */
+  }
