@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Настройки</h2>
+    <form>
+        <h4>Параметры безопасности</h4>
+        <div class="form-group">
+            <label for="passwordPolicy">Политика паролей</label>
+            <select class="form-control" id="passwordPolicy">
+                <option>Стандартная</option>
+                <option>Усиленная</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="autoLogout">Автоматический выход</label>
+            <select class="form-control" id="autoLogout">
+                <option>5 минут</option>
+                <option>15 минут</option>
+                <option>30 минут</option>
+                <option>Никогда</option>
+            </select>
+        </div>
+        <h4>Конфигурация интерфейса</h4>
+        <div class="form-group">
+            <label for="themeSelect">Тема оформления</label>
+            <select class="form-control" id="themeSelect">
+                <option>Светлая</option>
+                <option>Темная</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+</body>
+</html>
