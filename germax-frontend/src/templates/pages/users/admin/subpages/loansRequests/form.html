@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запрос на аренду оборудования</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container" id="requestForm">
+    <h2>Форма запроса на аренду</h2>
+    <form>
+        <div class="form-group">
+            <label for="managerName">Ваше имя</label>
+            <input type="text" class="form-control" id="managerName" placeholder="Иван Иванов">
+        </div>
+        <div class="form-group">
+            <label for="managerContact">Контактная информация</label>
+            <input type="email" class="form-control" id="managerContact" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+            <label for="equipmentCategory">Категория оборудования</label>
+            <select class="form-control" id="equipmentCategory">
+                <option>Ноутбуки</option>
+                <option>Мониторы</option>
+                <option>Смартфоны</option>
+                <option>Аксессуары</option>
+                <option>Планшеты</option>
+                <option>VR-гарнитуры</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="modelInput">Начните вводить название модели</label>
+            <input type="text" class="form-control" id="modelInput" placeholder="Введите название модели">
+        </div>
+        <div class="form-group">
+            <label for="quantity">Количество</label>
+            <input type="number" class="form-control" id="quantity" placeholder="1">
+        </div>
+        <div class="form-group">
+            <label for="rentalDates">Даты аренды</label>
+            <input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
+        </div>
+        <div class="form-group">
+            <label for="comments">Комментарии</label>
+            <textarea class="form-control" id="comments" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить запрос</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

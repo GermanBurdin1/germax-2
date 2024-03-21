@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Location d'équipement</title>
+	<link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+	<div class="sectionholder_1">
+		<div class="section_loc">
+			<div class="overlay">
+				<div class="container text-center">
+					<h1 class="text-white">Location du Matériel informatique</h1>
+					<div class="spacer-small"></div>
+					<div class="row">
+						<div class="col-md-4">
+							<button class="btn btn-light text-dark">Matériel disponible</button>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-light text-dark">Comment ça marche?</button>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-light text-dark" id="scrollToFaq">Foire aux questions</button>
+						</div>
+					</div>
+					<div class="spacer"></div>
+					<button class="btn btn-orange text-white">Emprunter le matériel</button>
+					<div class="spacer"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="container my-5">
+		<div class="text-center mb-5">
+			<h1 class="mb-3">Contacter nos gérants du matériel</h1>
+			<div style="margin: auto; width: 20%; height: 3px; background-color: #FF6D00;"></div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-4 d-flex flex-column align-items-center">
+				<img src="//f2.lpcdn.site/b6dfe1a37656fa9af054ab14ce6c8542/76f15d6d2d8a51bfae93cb98a7f8b028.png" alt="" style="height: 320px;">
+				<h4 class="mt-4">Vincent</h4>
+				<p>Gérant du matériel</p>
+				<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contacter</button>
+				<em class="mt-2">s'adresser pour l'emprunt et le retour du matériel</em>
+			</div>
+
+			<div class="col-md-4 d-flex flex-column align-items-center">
+				<img src="//f2.lpcdn.site/b6dfe1a37656fa9af054ab14ce6c8542/2fa9f4d2a5d9c23715467b84ff5781d2.png" alt="" style="height: 320px;">
+				<h4 class="mt-4">Marine</h4>
+				<p>Responsable de la maintenance</p>
+				<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contacter</button>
+				<em class="mt-2">s'adresser en cas de défaillance du matériel</em>
+			</div>
+
+			<div class="col-md-4 d-flex flex-column align-items-center">
+				<img src="//f2.lpcdn.site/b6dfe1a37656fa9af054ab14ce6c8542/f3e364fcc31afc132c02f5e8780e05d0.png" alt="" style="height: 320px;">
+				<h4 class="mt-4">Tristan</h4>
+				<p>Consultant</p>
+				<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contacter</button>
+				<em class="mt-2">pour toute autre question ou proposition</em>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="contactModalLabel">Contact</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					Formulaire de contact ici.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" class="btn btn-primary">Envoyer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="text-white text-center py-5" style="background: url('//s.lpcdn.site/img/bg-tech/45.jpg') center center / cover no-repeat, rgba(153, 65, 0, 0.7);">
+		<div class="container">
+			<h1 class="display-3 mb-2">Notre matériel informatique à louer</h1>
+			<p class="lead mb-4">Un large choix pour la réussite de vos études</p>
+			<div class="row g-4">
+
+				<!-- Item 1 -->
+				<div class="col-md-4">
+					<div class="card h-100">
+						<img src="//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/89df4e93ad4605b4486b7c737a95ec2e.jpg" class="card-img-top" alt="Ordinateurs portables">
+						<div class="card-body">
+							<h5 class="card-title">Ordinateurs portables</h5>
+						</div>
+					</div>
+				</div>
+
+				<!-- Item 2 -->
+				<div class="col-md-4">
+					<div class="card h-100">
+						<img src="//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/dba168f40b3b994543bebc3ad14eae15.jpg" class="card-img-top" alt="Matériel audiovisuel">
+						<div class="card-body">
+							<h5 class="card-title">Matériel audiovisuel</h5>
+						</div>
+					</div>
+				</div>
+
+				<!-- Item 3 -->
+				<div class="col-md-4">
+					<div class="card h-100">
+						<img src="//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/34da6d2b11704967b395242853f8821e.jpg" class="card-img-top" alt="Smartphones">
+						<div class="card-body">
+							<h5 class="card-title">Smartphones</h5>
+						</div>
+					</div>
+				</div>
+
+				<!-- Item 4 -->
+				<div class="col-md-4">
+					<div class="card h-100">
+						<img src="//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/e0fd68980ca25684d13eccb16611601e.jpg" class="card-img-top" alt="Bornes multimédia">
+						<div class="card-body">
+							<h5 class="card-title">Bornes multimédia</h5>
+						</div>
+					</div>
+				</div>
+
+				<!-- Item 5 -->
+				<div class="col-md-4">
+					<div class="card h-100">
+						<img src="//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/2e73a13c383a0a75ed4fe90e06b257dc.jpg" class="card-img-top" alt="Matériel VR & AR">
+						<div class="card-body">
+							<h5 class="card-title">Matériel VR & AR</h5>
+						</div>
+					</div>
+				</div>
+
+				<!-- Item 6 -->
+				<div class="col-md-4">
+					<div class="card h-100">
+						<img src="//f2.lpcdn.site/40b6d8e43698c90162344cb160dd8985/6613e11f87724443cc22013424a4874d.jpg" class="card-img-top" alt="Matériel bureautique">
+						<div class="card-body">
+							<h5 class="card-title">Matériel bureautique</h5>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</section>
+
+	<div class="sectionholder">
+		<section class="container-fluid py-5" id="faq-section">
+			<div class="text-center">
+				<a href="#faq-section" class="text-decoration-none" style="color: inherit;">
+					<h2 class="mb-3">Foire aux questions</h2>
+					<p class="mb-5">Et nos réponses</p>
+				</a>
+			</div>
+
+			<!-- Spoiler/Toggle sections start here -->
+			<div class="accordion" id="faqAccordion">
+
+				<!-- FAQ Item 1 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingOne">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							COMMENT PUIS-JE VÉRIFIER LA DISPONIBILITÉ D'UN ÉQUIPEMENT?
+						</button>
+					</h2>
+					<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Vous pouvez vérifier la disponibilité de l'équipement en temps réel sur notre plateforme en ligne. Connectez-vous simplement et accédez à la section 'Matériel disponible' pour voir les articles qui peuvent être empruntés immédiatement.
+						</div>
+					</div>
+				</div>
+
+				<!-- FAQ Item 2 - Notice the change of IDs -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingTwo">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+							QUE FAIRE SI JE RENCONTRE UN PROBLÈME AVEC L'ÉQUIPEMENT EMPRUNTÉ?
+						</button>
+					</h2>
+					<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Si vous rencontrez un problème avec l'équipement, veuillez le signaler immédiatement via notre système de ticket en ligne ou contactez le gestionnaire de parc pour assistance. Nous nous efforcerons de résoudre le problème ou de remplacer l'article le plus rapidement possible.
+						</div>
+					</div>
+				</div>
+
+				<!-- FAQ Item 3 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingThree">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+							EXISTE-T-IL UNE LIMITE DE TEMPS POUR L'EMPRUNT DU MATÉRIEL?
+						</button>
+					</h2>
+					<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Oui, chaque catégorie d'équipement a une durée d'emprunt maximale spécifiée pour s'assurer que tous les étudiants ont la chance d'utiliser les ressources. Vous pouvez trouver les détails des durées d'emprunt dans les conditions d'utilisation.
+						</div>
+					</div>
+				</div>
+
+				<!-- FAQ Item 4 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingFour">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+							COMMENT LE DÉPÔT DE GARANTIE EST-IL GÉRÉ?
+						</button>
+					</h2>
+					<div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Le dépôt de garantie est géré par le service comptable de l'établissement. Il doit être payé au moment de l'emprunt et sera entièrement remboursé lors du retour de l'équipement en bon état.
+						</div>
+					</div>
+				</div>
+
+				<!-- FAQ Item 5 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingFive">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+							PUIS-JE RENOUVELER MON EMPRUNT ET COMMENT?
+						</button>
+					</h2>
+					<div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Selon la disponibilité de l'équipement, vous pourrez peut-être renouveler votre emprunt. Pour cela, connectez-vous à votre compte et faites une demande de renouvellement avant la fin de la période d'emprunt initiale.
+						</div>
+					</div>
+				</div>
+
+				<!-- FAQ Item 6 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingSix">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix">
+							COMMENT SIGNALER UN ÉQUIPEMENT ENDOMMAGÉ OU EN ÉTAT D'USURE?
+						</button>
+					</h2>
+					<div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Selon la disponibilité de l'équipement, vous pourrez peut-être renouveler votre emprunt. Pour cela, connectez-vous à votre compte et faites une demande de renouvellement avant la fin de la période d'emprunt initiale.
+						</div>
+					</div>
+				</div>
+
+				<!-- FAQ Item 7 -->
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="headingSeven">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="true" aria-controls="collapseSeven">
+							QUE SE PASSE-T-IL SI JE NE RETOURNE PAS L'ÉQUIPEMENT À TEMPS?
+						</button>
+					</h2>
+					<div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+						<div class="accordion-body">
+							Le retard dans la restitution du matériel peut entraîner des sanctions selon les termes des conditions d'utilisation, y compris l'impossibilité d'emprunter de nouveau. Nous vous encourageons à communiquer avec nous en cas de retard pour éviter ces désagréments.
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- Spoiler/Toggle sections end here -->
+		</section>
+	</div>
+
+	<script>
+		document.getElementById('scrollToFaq').addEventListener('click', function() {
+			document.getElementById('faq-section').scrollIntoView({
+				behavior: 'smooth'
+			});
+		});
+	</script>
+</body>
+
+</html>

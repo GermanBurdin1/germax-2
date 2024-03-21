@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+
+<body>
+	<div class="tab-pane fade show active" id="communication-manager" role="tabpanel" aria-labelledby="communication-manager-link">
+		<h2>Communication avec les gestionnaires de location</h2>
+		<div class="communication-form">
+			<form>
+				<div class="form-group">
+					<label for="managerSelect">Sélectionner le gestionnaire</label>
+					<select class="form-control" id="managerSelect">
+						<!-- Options des gestionnaires chargées dynamiquement -->
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="topicSelect">Sujet de la communication</label>
+					<select class="form-control" id="topicSelect">
+						<option value="maintenance">Maintenance de matériel</option>
+						<option value="reservation">Réservation d'équipement</option>
+						<option value="return">Retour d'équipement</option>
+						<option value="report">Signalement de problème</option>
+						<option value="other">Autre</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="messageText">Message</label>
+					<textarea class="form-control" id="messageText" rows="3"></textarea>
+				</div>
+				<button type="submit" class="btn btn-primary">Envoyer</button>
+			</form>
+		</div>
+		<div class="previous-communications">
+			<h3>Communications précédentes</h3>
+			<ul class="list-group">
+				<!-- La liste des messages précédents sera générée dynamiquement ici -->
+			</ul>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
