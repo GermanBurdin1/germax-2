@@ -3,29 +3,59 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const fs = require("fs");
 
-const templates = {
-	index: {
-		js: "./src/pages/index/index.js",
-		css: "./src/pages/index/index.css",
-		html: "./src/pages/index/index.html",
-	},
-	page1: {
-		js: "./src/pages/page1/index.js",
-		css: "./src/pages/page1/index.css",
-		html: "./src/pages/page1/index.html",
-	},
-	header: {
-		js: "./src/components/header/index.js",
-		css: "./src/components/header/index.css",
-		html: "./src/components/header/index.html",
-	},
-	footer: {
-		js: "./src/components/footer/index.js",
-		css: "./src/components/footer/index.css",
-		html: "./src/components/footer/index.html",
-	}
-};
+function generateTemplateObject(folderPath) {
+    const templates = {};
+
+    const folders = fs.readdirSync(folderPath, { withFileTypes: true });
+
+    folders.forEach(folder => {
+        if (folder.isDirectory()) {
+            const folderName = folder.name;
+            const subFolderPath = path.join(folderPath, folderName);
+            const files = fs.readdirSync(subFolderPath);
+
+            const indexHtml = files.includes('index.html');
+            const indexCss = files.includes('index.css');
+            const indexJs = files.includes('index.js');
+
+            if (indexHtml && indexCss && indexJs) {
+                templates[folderName] = {
+                    js: path.join(subFolderPath, 'index.js'),
+                    css: path.join(subFolderPath, 'index.css'),
+                    html: path.join(subFolderPath, 'index.html')
+                };
+            }
+        }
+    });
+
+    return templates;
+}
+
+function generateTemplates(templatesDir) {
+    const pagesDir = path.join(__dirname, templatesDir, 'pages');
+    const componentsDir = path.join(__dirname, templatesDir, 'components');
+
+    if (!fs.existsSync(pagesDir)) {
+        console.error('Directory "pages" not found in templates folder.');
+        return;
+    }
+
+    if (!fs.existsSync(componentsDir)) {
+        console.error('Directory "components" not found in templates folder.');
+        return;
+    }
+
+    const templates = {
+		...generateTemplateObject(pagesDir),
+		...generateTemplateObject(componentsDir)
+	};
+
+    return templates;
+}
+
+const templates = generateTemplates('src/templates');
 
 const createEntriesObj = (templatesObj) => {
 	return Object.entries(templatesObj).reduce((acc, [key, value]) => {
@@ -40,21 +70,20 @@ const createHtmlPluginsObj = (templatesObj) => {
 			filename: `${key}.html`,
 			template: html,
 			chunks: [key],
-			templateParameters: {
-				css: `<link rel="stylesheet" href="${css.split("/").pop()}">`,
-			},
+			inject: 'body',
 		});
 	});
 };
 
 const createConfig = (configDefault) => {
 	const entryObj = createEntriesObj(templates);
+	const htmlPlugins = createHtmlPluginsObj(templates);
 
 	const plugins = [
 		new MiniCssExtractPlugin({
-			filename: "[name].css",
+			filename: "[name].[contenthash].css",
 		}),
-		...createHtmlPluginsObj(templates),
+		...htmlPlugins,
 		new CleanWebpackPlugin({
 			cleanOnceBeforeBuildPatterns: ["**/*", "!assets/**"],
 		}),
@@ -70,22 +99,37 @@ const createConfig = (configDefault) => {
 			rules: [
 				{
 					test: /\.css$/,
-					use: [MiniCssExtractPlugin.loader, "css-loader"],
-				},
+					use: [
+					  MiniCssExtractPlugin.loader,
+					  {
+						loader: "css-loader",
+						options: {
+						  modules: true, // Включаем поддержку CSS модулей
+						},
+					  },
+					],
+				  },
 			],
 		},
 		plugins: plugins,
+		output: {
+			filename: "[name].[contenthash].js",
+			path: path.resolve(__dirname, "dist"),
+		},
 	};
 
 	return resultConfig;
 };
 
 const configDefault = {
-	output: {
-		filename: "[name].[contenthash].js",
-		path: path.resolve(__dirname, "dist"),
-	},
 	mode: "development",
+	devServer: {
+		port: 3000,
+		compress: true,
+		historyApiFallback: true,
+		hot: true,
+		static: true
+	},
 };
 
 const config = createConfig(configDefault);

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Запрос на аренду оборудования</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="#">Логотип Компании</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="../../dashboard.html">Retour à la page principale <span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#requestForm">Запрос на аренду</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="jumbotron">
+		<h1 class="display-4">Vérifier la disponibilité</h1>
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
+			<div class="input-group-append">
+				<button class="btn btn-outline-secondary" type="button" id="search-button">Rechercher</button>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div id="type-filter" class="col-md-3">
+					<div class="container-fluid">
+						<div class="row">
+							<div id="type-filter" class="col-md-3">
+								<div class="list-group">
+									<a href="#" class="list-group-item list-group-item-action"
+										data-type="laptop">Ordinateurs portables</a>
+									<a href="#" class="list-group-item list-group-item-action"
+										data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+									<a href="#" class="list-group-item list-group-item-action"
+										data-type="smartphone">Smartphones</a>
+									<a href="#" class="list-group-item list-group-item-action"
+										data-type="accessory">Accessoires</a>
+									<a href="#" class="list-group-item list-group-item-action"
+										data-type="tablet">Tablettes</a>
+									<a href="#" class="list-group-item list-group-item-action"
+										data-type="VR_headset">Casque VR</a>
+								</div>
+							</div>
+							<div id="equipment-list" class="col-md-9">
+								<!-- Les unités du matériel apparaîtront ici -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="equipment-list" class="col-md-9">
+					<!-- Сюда будут загружаться результаты -->
+				</div>
+			</div>
+			<div class="col-md-12 text-center">
+				<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let offset = 0;
+		const limit = 10;
+
+		function loadModel(type = '') {
+			fetch(`../../controllers/load-equipment.php?type=${type}&offset=${offset}&limit=${limit}`)
+				.then(response => response.json())
+				.then(data => {
+					const container = document.getElementById('equipment-list');
+					container.innerHTML = '';
+					data.forEach(item => {
+						const modelItem = `<div class="card mb-3 equipment-item" data-id="${item.id_model}">
+			<div class="row no-gutters">
+			  <div class="col-md-4">
+				<img src="${item.photo}" class="card-img" alt="${item.name}">
+			  </div>
+			  <div class="col-md-8">
+				<div class="card-body">
+				  <h5 class="card-title">${item.name}</h5>
+				</div>
+			  </div>
+			</div>
+		  </div>`;
+						container.insertAdjacentHTML('beforeend', modelItem);
+					});
+
+					document.querySelectorAll('.equipment-item').forEach(card => {
+						card.addEventListener('click', function () {
+							const id = this.getAttribute('data-id');
+							redirectToDetails(id);
+						});
+					});
+				})
+				.catch(error => {
+					console.error('Erreur lors du chargement de l\'équipement:', error);
+				});
+		}
+
+
+		document.querySelectorAll('#type-filter .list-group-item').forEach(item => {
+			item.addEventListener('click', function (event) {
+				event.preventDefault();
+				const type = this.getAttribute('data-type');
+				loadModel(type);
+
+				document.querySelectorAll('#type-filter .list-group-item').forEach(i => i.classList.remove('active'));
+				this.classList.add('active');
+				offset = 0;
+			});
+		});
+
+		loadModel();
+
+		document.getElementById('load-more').addEventListener('click', function () {
+			const activeType = document.querySelector('#type-filter .list-group-item.active').getAttribute('data-type');
+			offset += limit;
+			loadModel(activeType);
+		});
+
+		function redirectToDetails(id) {
+			window.location.href = `./item.html.php?id=${id}`;
+		}
+	</script>
+	</div>
+
+
+	<div class="jumbotron">
+		<h1 class="display-4" id="requestForm">Запрос на аренду оборудования</h1>
+		<p class="lead">Здесь вы можете быстро и удобно отправить запрос на аренду нужного оборудования у менеджера
+			склада.</p>
+		<hr class="my-4">
+		<p>Просто заполните форму ниже, и мы с вами свяжемся.</p>
+		<a class="btn btn-primary btn-lg" href="./form.html" role="button">Перейти к форме</a>
+	</div>
+
+	<footer class="footer mt-auto py-3 bg-light">
+		<div class="container">
+			<span class="text-muted">© Ваша Компания, 2024.</span>
+		</div>
+	</footer>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
