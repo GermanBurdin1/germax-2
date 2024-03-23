@@ -68,7 +68,7 @@ const createHtmlPluginsArr = (templates) => {
 };
 
 const createConfig = (configDefault) => {
-	const components = generateTemplates('src/components');
+	const components = generateTemplates('src/templates/components');
 	const entryObj = createEntriesObj(components);
 	const htmlPlugins = createHtmlPluginsArr(components);
 
