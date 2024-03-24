@@ -16,3 +16,7 @@ RewriteRule ^(.*)$ /php-pages/$1 [L]
 RewriteCond %{REQUEST_URI} !^/php-pages/
 RewriteCond %{REQUEST_URI} !^/assets/
 RewriteRule .* - [R=403,L]
+
+# Запретить прямой доступ к папке api-functions и всем её подпапкам
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /api-functions/ [NC]
+RewriteRule ^api-functions/ - [F,L]
