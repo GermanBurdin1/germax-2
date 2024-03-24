@@ -34,9 +34,5 @@ $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 
 $model = $stmt->fetchAll();
-
-header('Content-Type: application/json');
 echo json_encode($model);
-exit();
-
 ?>
