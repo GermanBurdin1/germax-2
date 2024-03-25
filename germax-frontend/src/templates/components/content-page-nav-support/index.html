@@ -1,1 +1,43 @@
-asd
+<div class="container mt-5">
+	<h2>Форма обращения в службу поддержки</h2>
+	<form>
+		<div class="form-group">
+			<label for="topicSelect">Тема обращения</label>
+			<select class="form-control" id="topicSelect">
+				<option>Технические проблемы с оборудованием</option>
+				<option>Ошибки на платформе бронирования</option>
+				<option>Повреждение оборудования</option>
+				<!-- Добавьте дополнительные темы здесь -->
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="descriptionTextarea">Описание проблемы</label>
+			<textarea class="form-control" id="descriptionTextarea" rows="3"></textarea>
+		</div>
+		<div class="form-group">
+			<label for="prioritySelect">Приоритет</label>
+			<select class="form-control" id="prioritySelect">
+				<option>Низкий</option>
+				<option>Средний</option>
+				<option>Высокий</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="fileUpload">Прикрепить файлы</label>
+			<input type="file" class="form-control-file" id="fileUpload" multiple>
+		</div>
+		<div class="form-group">
+			<label for="userName">Ваше имя</label>
+			<input type="text" class="form-control" id="userName" required>
+		</div>
+		<div class="form-group">
+			<label for="userEmail">Ваш email</label>
+			<input type="email" class="form-control" id="userEmail" required>
+		</div>
+		<div class="form-group">
+			<label for="userPhone">Ваш телефон</label>
+			<input type="tel" class="form-control" id="userPhone">
+		</div>
+		<button type="submit" class="btn btn-primary">Отправить</button>
+	</form>
+</div>

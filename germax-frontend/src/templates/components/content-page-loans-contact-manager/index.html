@@ -1,1 +1,36 @@
-asd
+<div class="tab-pane fade show active" id="communication-manager-reverse" role="tabpanel">
+	<h2>Communication avec le gestionnaire d'inventaire</h2>
+	<div class="communication-form">
+		<form>
+			<div class="form-group">
+				<label for="inventoryManagerSelect">Sélectionner le gestionnaire d'inventaire</label>
+				<select class="form-control" id="inventoryManagerSelect">
+					<!-- Dynamiquement chargé avec les gestionnaires d'inventaire -->
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="communicationTopicSelect">Sujet de la communication</label>
+				<select class="form-control" id="communicationTopicSelect">
+					<option value="equipment-request">Demande d'équipement</option>
+					<option value="maintenance-status">Statut de maintenance</option>
+					<option value="equipment-return">Retour d'équipement</option>
+					<option value="general-query">Question générale</option>
+					<option value="reservation-cancellation">Annulation de réservation</option>
+					<option value="reservation-extension">Extension de réservation</option>
+					<option value="future-availability">Disponibilité future</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="communicationMessageText">Message</label>
+				<textarea class="form-control" id="communicationMessageText" rows="3"></textarea>
+			</div>
+			<button type="submit" class="btn btn-primary">Envoyer</button>
+		</form>
+	</div>
+	<div class="previous-communications">
+		<h3>Communications précédentes</h3>
+		<ul class="list-group">
+			<!-- Dynamiquement généré avec les messages précédents -->
+		</ul>
+	</div>
+</div>

@@ -1,1 +1,121 @@
-asd
+<div class="container mt-4">
+	<h2>Gestion de l'Équipement</h2>
+	<div class="mb-4">
+		<button class="btn btn-primary" data-toggle="modal" data-target="#addEquipmentModal">Ajouter un
+			équipement</button>
+		<button class="btn btn-secondary" data-toggle="modal" data-target="#addCategoryModal">Ajouter une
+			catégorie</button>
+	</div>
+	<div class="row">
+		<div class="col-12">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nom de l'équipement</th>
+						<th>Catégorie</th>
+						<th>Description</th>
+						<th>Disponibilité</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Dynamically populated equipment list -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- Modal for Adding Equipment -->
+<div class="modal fade show active" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addEquipmentModalLabel">Ajouter un nouvel équipement</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="equipmentName">Nom</label>
+						<input type="text" class="form-control" id="equipmentName">
+					</div>
+					<div class="form-group">
+						<label for="equipmentCategory">Catégorie</label>
+						<select class="form-control" id="equipmentCategory">
+							<!-- Dynamically populated categories -->
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="equipmentDescription">Description</label>
+						<textarea class="form-control" id="equipmentDescription" rows="3"></textarea>
+					</div>
+					<div class="form-group">
+						<label for="equipmentAvailability">Disponibilité</label>
+						<select class="form-control" id="equipmentAvailability">
+							<option value="available">Disponible</option>
+							<option value="unavailable">Non disponible</option>
+						</select>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary">Sauvegarder</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal for Adding Category -->
+<div class="modal fade show active" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addCategoryModalLabel">Ajouter une nouvelle catégorie</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="categoryName">Nom de la catégorie</label>
+						<input type="text" class="form-control" id="categoryName">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary
+	" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary">Sauvegarder la catégorie</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<!-- Журнал действий пользователя -->
+<!-- Раздел для отображения журнала действий, связанных с каждым оборудованием. Это позволит администратору просматривать историю бронирований и других операций с оборудованием. -->
+
+<div class="equipment-actions-log mt-4">
+	<h3>Журнал действий</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Время</th>
+				<th>Пользователь</th>
+				<th>Действие</th>
+				<th>Оборудование</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- Здесь будет динамически загружаться журнал действий -->
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,16 @@
+body,
+html {
+	height: 100%;
+	/* Задает высоту страницы */
+}
+
+.align-items-center {
+	height: 100%;
+	/* Задает высоту контейнера */
+	justify-content: center;
+	/* Выравнивание по горизонтали */
+	display: flex;
+	/* Использует flexbox для выравнивания */
+	flex-direction: column;
+	/* Ориентация элементов в колонку */
+}

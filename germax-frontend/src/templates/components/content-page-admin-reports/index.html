@@ -1,1 +1,44 @@
-asd
+<div class="container mt-4">
+    <h2>Rapports d'Utilisation</h2>
+    <div class="mb-3">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#generateReportModal">Générer un Rapport</button>
+    </div>
+    <div id="reportsSection">
+        <!-- Reports generated will be displayed here -->
+    </div>
+</div>
+
+<!-- Modal for Generating Report -->
+<div class="modal fade show active" id="generateReportModal" tabindex="-1" aria-labelledby="generateReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="generateReportModalLabel">Générer un Rapport</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="reportType">Type de Rapport</label>
+            <select class="form-control" id="reportType">
+              <option>Utilisation d'Équipement</option>
+              <option>Activité des Utilisateurs</option>
+              <option>Performance du Service</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reportPeriod">Période</label>
+            <input type="date" class="form-control" id="startDate">
+            <input type="date" class="form-control" id="endDate">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary">Générer</button>
+      </div>
+    </div>
+  </div>
+</div>

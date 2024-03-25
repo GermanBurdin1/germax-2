@@ -1,1 +1,76 @@
-asd
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<a class="navbar-brand" href="#">Логотип Компании</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+		aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarNav">
+		<ul class="navbar-nav">
+			<li class="nav-item active">
+				<a class="nav-link" href="../../dashboard.html">Retour à la page principale <span class="sr-only">(current)</span></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#requestForm">Запрос на аренду</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+<div class="jumbotron">
+	<h1 class="display-4">Vérifier la disponibilité</h1>
+	<div class="input-group mb-3">
+		<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
+		<div class="input-group-append">
+			<button class="btn btn-outline-secondary" type="button" id="search-button">Rechercher</button>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row">
+			<div id="type-filter" class="col-md-3">
+				<div class="container-fluid">
+					<div class="row">
+						<div id="type-filter" class="col-md-3">
+							<div class="list-group">
+								<a href="#" class="list-group-item list-group-item-action"
+									data-type="laptop">Ordinateurs portables</a>
+								<a href="#" class="list-group-item list-group-item-action"
+									data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+								<a href="#" class="list-group-item list-group-item-action"
+									data-type="smartphone">Smartphones</a>
+								<a href="#" class="list-group-item list-group-item-action"
+									data-type="accessory">Accessoires</a>
+								<a href="#" class="list-group-item list-group-item-action"
+									data-type="tablet">Tablettes</a>
+								<a href="#" class="list-group-item list-group-item-action"
+									data-type="VR_headset">Casque VR</a>
+							</div>
+						</div>
+						<div id="equipment-list" class="col-md-9">
+							<!-- Les unités du matériel apparaîtront ici -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="equipment-list" class="col-md-9">
+				<!-- Сюда будут загружаться результаты -->
+			</div>
+		</div>
+		<div class="col-md-12 text-center">
+			<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
+		</div>
+	</div>
+</div>
+<div class="jumbotron">
+	<h1 class="display-4" id="requestForm">Запрос на аренду оборудования</h1>
+	<p class="lead">Здесь вы можете быстро и удобно отправить запрос на аренду нужного оборудования у менеджера
+		склада.</p>
+	<hr class="my-4">
+	<p>Просто заполните форму ниже, и мы с вами свяжемся.</p>
+	<a class="btn btn-primary btn-lg" href="./form.html" role="button">Перейти к форме</a>
+</div>
+
+<footer class="footer mt-auto py-3 bg-light">
+	<div class="container">
+		<span class="text-muted">© Ваша Компания, 2024.</span>
+	</div>
+</footer>

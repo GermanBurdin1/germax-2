@@ -1,1 +1,49 @@
-asd
+<div class="container mt-4">
+	<h2>Gestion des Réservations</h2>
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>ID Réservation</th>
+					<th>Utilisateur</th>
+					<th>Équipement</th>
+					<th>Date Début</th>
+					<th>Date Fin</th>
+					<th>Statut</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Dynamically populated reservation list -->
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal fade" id="conflictResolutionModal" tabindex="-1" aria-labelledby="conflictResolutionModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="conflictResolutionModalLabel">Разрешение конфликта бронирования</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Здесь администратор может просмотреть детали конфликта и принять решение по разрешению ситуации.
+				</p>
+				<!-- Детали конфликта -->
+				<form>
+					<div class="form-group">
+						<label for="resolution">Решение</label>
+						<textarea class="form-control" id="resolution" rows="3"></textarea>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+				<button type="button" class="btn btn-primary">Применить решение</button>
+			</div>
+		</div>
+	</div>
+</div>
