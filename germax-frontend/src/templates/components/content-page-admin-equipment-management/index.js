@@ -24,4 +24,27 @@ document.addEventListener('DOMContentLoaded', function() {
             addCategoryModal.hide();
         });
     }
+
+	document.getElementById('saveCategoryBtn').addEventListener('click', function() {
+        const name = document.getElementById('categoryName').value;
+
+        fetch('http://germax-api/src/controllers/add-category.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `name=${encodeURIComponent(name)}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                addCategoryModal.hide();
+                document.getElementById('categoryName').value = '';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+    });
 });

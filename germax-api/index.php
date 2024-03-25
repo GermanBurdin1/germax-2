@@ -1,6 +1,6 @@
 <?php
-require_once './utils/database.php';
-require_once './controllers/auth-controller.php';
+require_once './src/utils/database.php';
+require_once './src/controllers/auth-controllers.php';
 
 session_start();
 

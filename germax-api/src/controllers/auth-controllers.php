@@ -1,6 +1,6 @@
 <?php
 // AuthController.php
-require_once './utils/database.php';
+require_once './src/utils/database.php';
 
 class AuthController {
     private $pdo;

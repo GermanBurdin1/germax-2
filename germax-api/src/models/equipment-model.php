@@ -1,6 +1,5 @@
 <?php
-// src/models/EquipmentModel.php
-require_once '../utils/database.php';
+require_once './utils/database.php';
 
 class EquipmentModel {
     private $pdo;
