@@ -15,7 +15,7 @@ serveHtmlFile('dist/index.html');
 </head>
 <body>
     <?php serveHtmlFile('dist/header.html'); ?>
-    <?php serveHtmlFile('dist/content-page-shop.html'); ?>
+    <?php serveHtmlFile('dist/content-page-admin-reservation-management.html'); ?>
     <?php serveHtmlFile('dist/footer.html'); ?>
 </body>
 </html>

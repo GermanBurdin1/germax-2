@@ -3,7 +3,6 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\get-absolute-path.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
-serveHtmlFile('dist/index.html');
 
 ?>
 
@@ -16,7 +15,7 @@ serveHtmlFile('dist/index.html');
 </head>
 <body>
 	<?php serveHtmlFile('dist/header.html'); ?>
-	<?php serveHtmlFile('dist/content-page-shop.html'); ?>
+	<?php serveHtmlFile('dist/content-page-teacher-feedback-system.html'); ?>
 	<?php serveHtmlFile('dist/footer.html'); ?>
 </body>
 </html>
