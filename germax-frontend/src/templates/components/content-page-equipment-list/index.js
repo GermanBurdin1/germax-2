@@ -1,3 +1,5 @@
+import './index.css';
+
 let offset = 0;
 const limit = 10;
 

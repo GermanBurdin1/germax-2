@@ -1,3 +1,5 @@
+import './index.css';
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('/api/getMenu')
         .then(response => response.json())

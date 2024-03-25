@@ -1,3 +1,5 @@
+import './index.css';
+
 var ctx = document.getElementById('clientsChart').getContext('2d');
 		var clientsChart = new Chart(ctx, {
 			type: 'line',
