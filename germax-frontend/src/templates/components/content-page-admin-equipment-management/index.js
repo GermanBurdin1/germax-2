@@ -355,4 +355,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		});
 	});
+
+	document.addEventListener('click', function (event) {
+		if (event.target.classList.contains('delete-action')) {
+			event.preventDefault();
+
+			const row = event.target.closest('tr');
+			const equipmentId = row.dataset.equipmentId;
+
+			localStorage.removeItem(`equipment_${equipmentId}`);
+
+			row.remove();
+		}
+	});
 });
