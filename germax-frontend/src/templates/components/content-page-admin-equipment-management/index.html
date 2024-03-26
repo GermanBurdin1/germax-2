@@ -234,52 +234,38 @@
 
 <!-- Modal for reserveModal -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="container-fluid">
-					<div class="row">
-						<div id="type-filter" class="col-md-3">
-							<div class="container-fluid">
-								<div class="row">
-									<div id="type-filter" class="col-md-3">
-										<div class="list-group">
-											<a href="#" class="list-group-item list-group-item-action"
-												data-type="laptop">Ordinateurs portables</a>
-											<a href="#" class="list-group-item list-group-item-action"
-												data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
-											<a href="#" class="list-group-item list-group-item-action"
-												data-type="smartphone">Smartphones</a>
-											<a href="#" class="list-group-item list-group-item-action"
-												data-type="accessory">Accessoires</a>
-											<a href="#" class="list-group-item list-group-item-action"
-												data-type="tablet">Tablettes</a>
-											<a href="#" class="list-group-item list-group-item-action"
-												data-type="VR_headset">Casque VR</a>
-										</div>
-									</div>
-									<div id="equipment-list" class="col-md-9">
-										<!-- Les unités du matériel apparaîtront ici -->
-									</div>
-								</div>
-							</div>
-						</div>
-						<div id="equipment-list" class="col-md-9">
-							<!-- Сюда будут загружаться результаты -->
-						</div>
-					</div>
-					<div class="col-md-12 text-center">
-						<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action py-2" data-type="laptop">Ordinateurs portables</a>
+                                <a href="#" class="list-group-item list-group-item-action py-2" data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+                                <a href="#" class="list-group-item list-group-item-action py-2" data-type="smartphone">Smartphones</a>
+                                <a href="#" class="list-group-item list-group-item-action py-2" data-type="accessory">Accessoires</a>
+                                <a href="#" class="list-group-item list-group-item-action py-2" data-type="tablet">Tablettes</a>
+                                <a href="#" class="list-group-item list-group-item-action py-2" data-type="VR_headset">Casque VR</a>
+                            </div>
+                        </div>
+                        <div id="equipment-list" class="col-md-9">
+                            <!-- Les unités du matériel apparaîtront ici -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
 </div>
+
