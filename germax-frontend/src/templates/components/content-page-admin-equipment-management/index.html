@@ -1,30 +1,115 @@
 <div class="container mt-4">
-	<h2>Gestion de l'Équipement</h2>
 	<div class="mb-4">
+		<h2>Gestion de l'Équipement</h2>
 		<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Ajouter un
 			équipement</button>
 		<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Ajouter une
 			catégorie</button>
 	</div>
-	<div class="row">
-		<div class="col-12">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Nom de l'équipement</th>
-						<th>Catégorie</th>
-						<th>Description</th>
-						<th>Disponibilité</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- Dynamically populated equipment list -->
-				</tbody>
-			</table>
+	<div class="container mt-4">
+		<div class="mb-4">
+			<!-- Search bar for quick search -->
+			<input type="text" class="form-control mb-2" id="quick-search" placeholder="Recherche rapide...">
+
+			<!-- Filters -->
+			<select class="form-control mb-2" id="category-filter">
+				<option value="laptop">Laptop</option>
+				<option value="computer_monitor">Computer Monitor</option>
+				<option value="smartphone">Smartphone</option>
+				<option value="accessory">Accessory</option>
+				<option value="tablet">Tablet</option>
+				<option value="VR_headset">VR Headset</option>
+				<!-- нужно добавить чтобы категории динамически обновлялись -->
+			</select>
+			<select class="form-control mb-2" id="availability-filter">
+				<!-- Availability options -->
+				<option value="">Tous les statuts</option>
+				<option value="available">Disponible</option>
+				<option value="unavailable">Non disponible</option>
+				<!-- Add other status options here -->
+			</select>
+			<button class="btn btn-primary" id="apply-filters">Appliquer les filtres</button>
 		</div>
+
+		<!-- Equipment table -->
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-hover" id="equipment-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nom de l'équipement</th>
+							<th>Catégorie</th>
+							<th>Description</th>
+							<th>Disponibilité</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Предположим, что это оборудование с ID 1 -->
+						<tr data-equipment-id="1">
+							<td>1</td>
+							<td>Ordinateur portable</td>
+							<td>Informatique</td>
+							<td>Haute performance pour le gaming</td>
+							<td>Disponible</td>
+							<td>
+								<!-- Вместо одиночной кнопки "Journal des actions" здесь будет выпадающее меню с действиями -->
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li><a class="dropdown-item" href="#">Éditer</a></li>
+										<li><a class="dropdown-item" href="#">Supprimer</a></li>
+										<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+										<li><a class="dropdown-item" href="#">Réserver</a></li>
+										<li><a class="dropdown-item toggle-log-button" href="#"
+												data-log-id="actionLog-1">Journal des actions</a></li>
+										<!-- <li><a class="dropdown-item" href="#">Assigner</a></li> -->
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<!-- Скрытая строка для журнала действий -->
+						<div class="modal fade" id="actionLogModal" tabindex="-1" aria-labelledby="actionLogModalLabel"
+							aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="actionLogModalLabel">Журнал действий</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Закрыть"></button>
+									</div>
+									<div class="modal-body">
+										<div>14/04/2021 - Utilisateur A - Prêté</div>
+										<div>07/06/2021 - Utilisateur B - Retourné et vérifié</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-bs-dismiss="modal">Закрыть</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Повторите структуру выше для каждой единицы оборудования -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+		<!-- Pagination controls -->
+		<nav>
+			<ul class="pagination">
+				<li class="page-item"><a class="page-link" href="#" id="previous-page">Précédent</a></li>
+				<!-- Page numbers will be dynamically populated -->
+				<li class="page-item"><a class="page-link" href="#" id="next-page">Suivant</a></li>
+			</ul>
+		</nav>
 	</div>
+
 </div>
 
 <!-- Modal for Adding Equipment -->
@@ -46,26 +131,25 @@
 					</div>
 					<div class="form-group">
 						<label for="equipmentCategory">Catégorie</label>
-						<select class="form-control" id="equipmentCategory">
-							<!-- Dynamically populated categories -->
+						<select class="form-control" id="categoryName">
+							<option value="laptop">Laptop</option>
+							<option value="computer_monitor">Computer Monitor</option>
+							<option value="smartphone">Smartphone</option>
+							<option value="accessory">Accessory</option>
+							<option value="tablet">Tablet</option>
+							<option value="VR_headset">VR Headset</option>
+							<!-- нужно добавить чтобы категории динамически обновлялись -->
 						</select>
 					</div>
 					<div class="form-group">
 						<label for="equipmentDescription">Description</label>
 						<textarea class="form-control" id="equipmentDescription" rows="3"></textarea>
 					</div>
-					<div class="form-group">
-						<label for="equipmentAvailability">Disponibilité</label>
-						<select class="form-control" id="equipmentAvailability">
-							<option value="available">Disponible</option>
-							<option value="unavailable">Non disponible</option>
-						</select>
-					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-				<button type="button" class="btn btn-primary">Sauvegarder</button>
+				<button type="button" id="saveEquipmentBtn" class="btn btn-primary">Sauvegarder</button>
 			</div>
 		</div>
 	</div>
@@ -101,22 +185,81 @@
 	</div>
 </div>
 
-<!-- Журнал действий пользователя -->
-<!-- Раздел для отображения журнала действий, связанных с каждым оборудованием. Это позволит администратору просматривать историю бронирований и других операций с оборудованием. -->
+<!-- Modal for Voir les détails -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detailsModalLabel">Détails</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h4>Nom de l'équipement:</h4>
+                <h4>Description:</h4>
+                <p>Integer non purus ac purus vestibulum sodales. Sed sit amet erat nec magna scelerisque mollis.</p>
+                <h4>Détails:</h4>
+                <ul>
+                    <li>Nombre d'unités disponibles: Valeur 1</li>
+                    <li>Nombre d'unités en maintenance: Valeur 2</li>
+                </ul>
+                <h4>Documentation:</h4>
+                <p>Vous pouvez télécharger la documentation de la modèle <a href="/path/to/documentation.pdf" download>ici</a>.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-<div class="equipment-actions-log mt-4">
-	<h3>Journal des actions</h3>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Temps</th>
-				<th>Utilisateur</th>
-				<th>Action</th>
-				<th>Équipement</th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- Здесь будет динамически загружаться журнал действий -->
-		</tbody>
-	</table>
+<!-- Modal for reserveModal -->
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div id="type-filter" class="col-md-3">
+							<div class="container-fluid">
+								<div class="row">
+									<div id="type-filter" class="col-md-3">
+										<div class="list-group">
+											<a href="#" class="list-group-item list-group-item-action"
+												data-type="laptop">Ordinateurs portables</a>
+											<a href="#" class="list-group-item list-group-item-action"
+												data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+											<a href="#" class="list-group-item list-group-item-action"
+												data-type="smartphone">Smartphones</a>
+											<a href="#" class="list-group-item list-group-item-action"
+												data-type="accessory">Accessoires</a>
+											<a href="#" class="list-group-item list-group-item-action"
+												data-type="tablet">Tablettes</a>
+											<a href="#" class="list-group-item list-group-item-action"
+												data-type="VR_headset">Casque VR</a>
+										</div>
+									</div>
+									<div id="equipment-list" class="col-md-9">
+										<!-- Les unités du matériel apparaîtront ici -->
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="equipment-list" class="col-md-9">
+							<!-- Сюда будут загружаться результаты -->
+						</div>
+					</div>
+					<div class="col-md-12 text-center">
+						<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
 </div>
