@@ -115,9 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				const equipmentId = this.closest("tr").dataset.equipmentId;
 
 				switch (action) {
-					case "Éditer":
-						alert(`Éditer: ${equipmentId}`);
-						break;
 					case "Supprimer":
 						if (
 							confirm(
@@ -181,20 +178,33 @@ document.addEventListener("DOMContentLoaded", function () {
 			row.querySelectorAll("td span").forEach((element) => {
 				element.classList.add("d-none");
 			});
-			row.querySelectorAll("td input, td textarea, td select").forEach((element) => {
-				element.classList.remove("d-none");
-				if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
-					// Присваиваем input и textarea значение предыдущего span
-					element.value = element.previousElementSibling ? element.previousElementSibling.textContent.trim() : "";
+			row.querySelectorAll("td input, td textarea, td select").forEach(
+				(element) => {
+					element.classList.remove("d-none");
+					if (
+						element.tagName === "INPUT" ||
+						element.tagName === "TEXTAREA"
+					) {
+						// Присваиваем input и textarea значение предыдущего span
+						element.value = element.previousElementSibling
+							? element.previousElementSibling.textContent.trim()
+							: "";
+					}
 				}
-			});
+			);
 
 			// Для select элементов, загружаем и устанавливаем текущее значение из данных оборудования
 			const equipmentId = row.dataset.equipmentId;
-			const data = JSON.parse(localStorage.getItem(`equipment_${equipmentId}`) || "{}");
+			const data = JSON.parse(
+				localStorage.getItem(`equipment_${equipmentId}`) || "{}"
+			);
 
-			const categorySelect = row.querySelector("select[name='equipment-category']");
-			const availabilitySelect = row.querySelector("select[name='equipment-availability']");
+			const categorySelect = row.querySelector(
+				"select[name='equipment-category']"
+			);
+			const availabilitySelect = row.querySelector(
+				"select[name='equipment-availability']"
+			);
 			if (categorySelect) {
 				categorySelect.value = data.category || ""; // Устанавливаем значение или пустую строку, если данных нет
 			}
@@ -212,12 +222,15 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (!row.querySelector(".cancel-changes")) {
 				const cancelButton = document.createElement("button");
 				cancelButton.textContent = "Annuler les changements";
-				cancelButton.classList.add("btn", "btn-secondary", "cancel-changes");
+				cancelButton.classList.add(
+					"btn",
+					"btn-secondary",
+					"cancel-changes"
+				);
 				row.querySelector("td:last-child").appendChild(cancelButton);
 			}
 		});
 	});
-
 
 	document.addEventListener("click", function (event) {
 		const target = event.target;
@@ -326,23 +339,20 @@ document.addEventListener("DOMContentLoaded", function () {
 			);
 			console.log(data);
 			if (data) {
-				if (row.querySelector(".equipment-name span")) {
-					row.querySelector(".equipment-name span").textContent = data.name;
+				if (row.querySelector(".equipment-name")) {
+					row.querySelector(".equipment-name").textContent = data.name;
 				}
-				if (row.querySelector(".equipment-category span")) {
-					row.querySelector(".equipment-category span").textContent = data.category;
+				if (row.querySelector(".equipment-category")) {
+					row.querySelector(".equipment-category").textContent = data.category;
 				}
-				if (row.querySelector(".equipment-description span")) {
-					row.querySelector(".equipment-description span").textContent = data.description;
+				if (row.querySelector(".equipment-description")) {
+					row.querySelector(".equipment-description").textContent = data.description;
 				}
-				if (row.querySelector(".equipment-availability span")) {
-					row.querySelector(".equipment-availability span").textContent = data.availability;
+				if (row.querySelector(".equipment-availability")) {
+					row.querySelector(".equipment-availability").textContent = data.availability;
 				}
 				console.log('After updating DOM for equipment', equipmentId);
 			}
 		});
 	});
-
-	// установка значений в поля ввода при открытии модального окна добавления оборудования (предполагается, что у вас уже есть ключи в localStorage, под которыми сохраняются нужные данные):
-
 });
