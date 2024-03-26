@@ -176,34 +176,48 @@ document.addEventListener("DOMContentLoaded", function () {
 			event.preventDefault();
 			const row = this.closest("tr");
 			row.classList.add("editing");
-			row.querySelectorAll("td span, td select").forEach((element) => {
+
+			// Скрываем span и делаем видимыми поля ввода и select
+			row.querySelectorAll("td span").forEach((element) => {
 				element.classList.add("d-none");
 			});
-			row.querySelectorAll("td input, td textarea").forEach((element) => {
+			row.querySelectorAll("td input, td textarea, td select").forEach((element) => {
 				element.classList.remove("d-none");
-				element.value =
-					element.previousElementSibling.textContent.trim();
+				if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+					// Присваиваем input и textarea значение предыдущего span
+					element.value = element.previousElementSibling ? element.previousElementSibling.textContent.trim() : "";
+				}
 			});
+
+			// Для select элементов, загружаем и устанавливаем текущее значение из данных оборудования
+			const equipmentId = row.dataset.equipmentId;
+			const data = JSON.parse(localStorage.getItem(`equipment_${equipmentId}`) || "{}");
+
+			const categorySelect = row.querySelector("select[name='equipment-category']");
+			const availabilitySelect = row.querySelector("select[name='equipment-availability']");
+			if (categorySelect) {
+				categorySelect.value = data.category || ""; // Устанавливаем значение или пустую строку, если данных нет
+			}
+			if (availabilitySelect) {
+				availabilitySelect.value = data.availability || ""; // То же самое для доступности
+			}
+
+			// Добавляем или обновляем кнопки "Сохранить изменения" и "Отменить изменения", если они не были добавлены
 			if (!row.querySelector(".save-changes")) {
-				// Проверяем, не добавлена ли уже кнопка
 				const saveButton = document.createElement("button");
 				saveButton.textContent = "Sauvegarder les changements";
 				saveButton.classList.add("btn", "btn-primary", "save-changes");
 				row.querySelector("td:last-child").appendChild(saveButton);
 			}
 			if (!row.querySelector(".cancel-changes")) {
-				// Проверяем, не добавлена ли уже кнопка
 				const cancelButton = document.createElement("button");
 				cancelButton.textContent = "Annuler les changements";
-				cancelButton.classList.add(
-					"btn",
-					"btn-secondary",
-					"cancel-changes"
-				);
+				cancelButton.classList.add("btn", "btn-secondary", "cancel-changes");
 				row.querySelector("td:last-child").appendChild(cancelButton);
 			}
 		});
 	});
+
 
 	document.addEventListener("click", function (event) {
 		const target = event.target;
