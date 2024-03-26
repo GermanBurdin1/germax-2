@@ -49,29 +49,44 @@
 						<!-- Предположим, что это оборудование с ID 1 -->
 						<tr data-equipment-id="1">
 							<td>1</td>
-							<td>Ordinateur portable</td>
-							<td>Informatique</td>
-							<td>Haute performance pour le gaming</td>
-							<td>Disponible</td>
+							<td><span class="equipment-name">Ordinateur portable</span><input type="text"
+									class="form-control d-none" name="equipment-name"></td>
 							<td>
-								<!-- Вместо одиночной кнопки "Journal des actions" здесь будет выпадающее меню с действиями -->
+								<span class="equipment-category">Informatique</span>
+								<select class="form-select d-none" name="equipment-category">
+									<option value="Informatique">Informatique</option>
+									<option value="Autre catégorie">Autre catégorie</option>
+								</select>
+							</td>
+							<td>
+								<span class="equipment-description">Haute performance pour le gaming</span>
+								<textarea class="form-control d-none" name="equipment-description"></textarea>
+							</td>
+							<td>
+								<span class="equipment-availability">Disponible</span>
+								<select class="form-select d-none" name="equipment-availability">
+									<option value="Disponible">Disponible</option>
+									<option value="Non disponible">Non disponible</option>
+								</select>
+							</td>
+							<td>
 								<div class="dropdown">
 									<button class="btn btn-secondary dropdown-toggle" type="button"
 										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
 										Choisir une action
 									</button>
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-										<li><a class="dropdown-item" href="#">Éditer</a></li>
+										<li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
 										<li><a class="dropdown-item" href="#">Supprimer</a></li>
 										<li><a class="dropdown-item" href="#">Voir les détails</a></li>
 										<li><a class="dropdown-item" href="#">Réserver</a></li>
 										<li><a class="dropdown-item toggle-log-button" href="#"
 												data-log-id="actionLog-1">Journal des actions</a></li>
-										<!-- <li><a class="dropdown-item" href="#">Assigner</a></li> -->
 									</ul>
 								</div>
 							</td>
 						</tr>
+
 						<!-- Скрытая строка для журнала действий -->
 						<div class="modal fade" id="actionLogModal" tabindex="-1" aria-labelledby="actionLogModalLabel"
 							aria-hidden="true">
@@ -195,15 +210,16 @@
 			</div>
 			<div class="modal-body">
 				<h4>Nom de l'équipement:</h4>
-                <h4>Description:</h4>
-                <p>Integer non purus ac purus vestibulum sodales. Sed sit amet erat nec magna scelerisque mollis.</p>
-                <h4>Détails:</h4>
-                <ul>
-                    <li>Nombre d'unités disponibles: Valeur 1</li>
-                    <li>Nombre d'unités en maintenance: Valeur 2</li>
-                </ul>
-                <h4>Documentation:</h4>
-                <p>Vous pouvez télécharger la documentation de la modèle <a href="/path/to/documentation.pdf" download>ici</a>.</p>
+				<h4>Description:</h4>
+				<p>Integer non purus ac purus vestibulum sodales. Sed sit amet erat nec magna scelerisque mollis.</p>
+				<h4>Détails:</h4>
+				<ul>
+					<li>Nombre d'unités disponibles: Valeur 1</li>
+					<li>Nombre d'unités en maintenance: Valeur 2</li>
+				</ul>
+				<h4>Documentation:</h4>
+				<p>Vous pouvez télécharger la documentation de la modèle <a href="/path/to/documentation.pdf"
+						download>ici</a>.</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
