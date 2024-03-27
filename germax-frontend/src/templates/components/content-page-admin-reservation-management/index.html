@@ -1,24 +1,191 @@
 <div class="container mt-4">
 	<h2>Gestion des Réservations</h2>
+	<div class="mb-3">
+		<!-- Фильтры -->
+		<div class="row g-3">
+			<div class="col-md-4">
+				<select multiple class="form-select" id="filterUser">
+					<option selected>Tous les utilisateurs</option>
+					<option value="teachers">Enseignants</option>
+					<option value="students">Etudiants</option>
+					<option value="stockmen">Magasiniers</option>
+					<option value="managers">Managers</option>
+					<!-- Добавьте другие опции динамически -->
+				</select>
+			</div>
+			<div class="col-md-4">
+				<select multiple class="form-select" id="filterEquipment">
+					<option selected>Tous les équipements</option>
+					<option value="laptop">Laptop</option>
+					<option value="computer_monitor">Computer Monitor</option>
+					<option value="smartphone">Smartphone</option>
+					<option value="accessory">Accessory</option>
+					<option value="tablet">Tablet</option>
+					<option value="VR_headset">VR Headset</option>
+					<!-- Добавьте другие опции динамически -->
+				</select>
+			</div>
+			<div class="col-md-4">
+				<select multiple class="form-select" id="filterStatus">
+					<option selected>Tous les statuts</option>
+					<option>Actif</option>
+					<option>En attente</option>
+					<option>Annulé</option>
+					<!-- Добавьте другие опции динамически -->
+				</select>
+			</div>
+		</div>
+	</div>
+
 	<div class="table-responsive">
-		<table class="table">
+		<table class="table" id="reservationsTable">
 			<thead>
 				<tr>
-					<th>ID Réservation</th>
-					<th>Utilisateur</th>
-					<th>Équipement</th>
-					<th>Date Début</th>
-					<th>Date Fin</th>
-					<th>Statut</th>
+					<th>ID Réservation <button class="btn btn-link p-0 border-0" id="sortById"><i
+								class="fas fa-sort"></i></button></th>
+					<th>Utilisateur <button class="btn btn-link p-0 border-0" id="sortByUser"><i
+								class="fas fa-sort"></i></button></th>
+					<th>Équipement <button class="btn btn-link p-0 border-0" id="sortByEquipment"><i
+								class="fas fa-sort"></i></button></th>
+					<th>Date Début <button class="btn btn-link p-0 border-0" id="sortByStartDate"><i
+								class="fas fa-sort"></i></button></th>
+					<th>Date Fin <button class="btn btn-link p-0 border-0" id="sortByEndDate"><i
+								class="fas fa-sort"></i></button></th>
+					<th>Statut <button class="btn btn-link p-0 border-0" id="sortByStatus"><i
+								class="fas fa-sort"></i></button></th>
 					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
-				<!-- Dynamically populated reservation list -->
+				<!-- Преподаватели -->
+				<tr data-id="1" data-user="Enseignant A" data-equipment="Laptop" data-startdate="2023-04-01"
+					data-enddate="2023-04-03" data-status="Actif">
+					<td>1</td>
+					<td>Enseignant A</td>
+					<td>Laptop</td>
+					<td>2023-04-01</td>
+					<td>2023-04-03</td>
+					<td>Actif</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="2" data-user="Enseignant B" data-equipment="Tablet" data-startdate="2023-04-04"
+					data-enddate="2023-04-05" data-status="En attente">
+					<td>2</td>
+					<td>Enseignant B</td>
+					<td>Tablet</td>
+					<td>2023-04-04</td>
+					<td>2023-04-05</td>
+					<td>En attente</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="3" data-user="Enseignant C" data-equipment="Smartphone" data-startdate="2023-04-06"
+					data-enddate="2023-04-07" data-status="Annulé">
+					<td>3</td>
+					<td>Enseignant C</td>
+					<td>Smartphone</td>
+					<td>2023-04-06</td>
+					<td>2023-04-07</td>
+					<td>Annulé</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<!-- Менеджеры -->
+				<tr data-id="4" data-user="Manager A" data-equipment="Computer Monitor" data-startdate="2023-04-08"
+					data-enddate="2023-04-09" data-status="Actif">
+					<td>4</td>
+					<td>Manager A</td>
+					<td>Computer Monitor</td>
+					<td>2023-04-08</td>
+					<td>2023-04-09</td>
+					<td>Actif</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="5" data-user="Manager B" data-equipment="VR Headset" data-startdate="2023-04-10"
+					data-enddate="2023-04-11" data-status="En attente">
+					<td>5</td>
+					<td>Manager B</td>
+					<td>VR Headset</td>
+					<td>2023-04-10</td>
+					<td>2023-04-11</td>
+					<td>En attente</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="6" data-user="Manager C" data-equipment="Accessory" data-startdate="2023-04-12"
+					data-enddate="2023-04-13" data-status="Annulé">
+					<td>6</td>
+					<td>Manager C</td>
+					<td>Accessory</td>
+					<td>2023-04-12</td>
+					<td>2023-04-13</td>
+					<td>Annulé</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<!-- Студенты -->
+				<tr data-id="7" data-user="Etudiant A" data-equipment="Laptop" data-startdate="2023-04-14"
+					data-enddate="2023-04-15" data-status="Actif">
+					<td>7</td>
+					<td>Etudiant A</td>
+					<td>Laptop</td>
+					<td>2023-04-14</td>
+					<td>2023-04-15</td>
+					<td>Actif</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="8" data-user="Etudiant B" data-equipment="Tablet" data-startdate="2023-04-16"
+					data-enddate="2023-04-17" data-status="En attente">
+					<td>8</td>
+					<td>Etudiant B</td>
+					<td>Tablet</td>
+					<td>2023-04-16</td>
+					<td>2023-04-17</td>
+					<td>En attente</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="9" data-user="Etudiant C" data-equipment="Smartphone" data-startdate="2023-04-18"
+					data-enddate="2023-04-19" data-status="Annulé">
+					<td>9</td>
+					<td>Etudiant C</td>
+					<td>Smartphone</td>
+					<td>2023-04-18</td>
+					<td>2023-04-19</td>
+					<td>Annulé</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<!-- Кладовщики -->
+				<tr data-id="10" data-user="Magasinier A" data-equipment="VR Headset" data-startdate="2023-04-20"
+					data-enddate="2023-04-21" data-status="Actif">
+					<td>10</td>
+					<td>Magasinier A</td>
+					<td>VR Headset</td>
+					<td>2023-04-20</td>
+					<td>2023-04-21</td>
+					<td>Actif</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="11" data-user="Magasinier B" data-equipment="Computer Monitor" data-startdate="2023-04-22"
+					data-enddate="2023-04-23" data-status="En attente">
+					<td>11</td>
+					<td>Magasinier B</td>
+					<td>Computer Monitor</td>
+					<td>2023-04-22</td>
+					<td>2023-04-23</td>
+					<td>En attente</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
+				<tr data-id="12" data-user="Magasinier C" data-equipment="Accessory" data-startdate="2023-04-24"
+					data-enddate="2023-04-25" data-status="Annulé">
+					<td>12</td>
+					<td>Magasinier C</td>
+					<td>Accessory</td>
+					<td>2023-04-24</td>
+					<td>2023-04-25</td>
+					<td>Annulé</td>
+					<td><button class="btn btn-primary">Détails</button></td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
+
 
 <!-- Recherche de Conflits секция теперь collapsible -->
 <div class="container mt-4">
@@ -121,91 +288,94 @@
 </div>
 
 <!-- Действия для решения 2 сценария -->
-<div class="modal fade" id="resolveConflictModal-2" tabindex="-1" aria-labelledby="resolveConflictModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="resolveConflictModalLabel">Résolution du Conflit</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="conflictResolutionAction" class="form-label">Action de résolution</label>
-                        <select class="form-select" id="conflictResolutionAction">
-                            <!-- Действия для решения 2 сценария -->
-                            <option value="notify_user">Notifier l'utilisateur du dépassement</option>
-                            <option value="limit_booking">Limiter les réservations futures</option>
-                        </select>
-                    </div>
-                    <!-- Additional fields for action details can be added here -->
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-primary">Appliquer</button>
-            </div>
-        </div>
-    </div>
+<div class="modal fade" id="resolveConflictModal-2" tabindex="-1" aria-labelledby="resolveConflictModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="resolveConflictModalLabel">Résolution du Conflit</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="mb-3">
+						<label for="conflictResolutionAction" class="form-label">Action de résolution</label>
+						<select class="form-select" id="conflictResolutionAction">
+							<!-- Действия для решения 2 сценария -->
+							<option value="notify_user">Notifier l'utilisateur du dépassement</option>
+							<option value="limit_booking">Limiter les réservations futures</option>
+						</select>
+					</div>
+					<!-- Additional fields for action details can be added here -->
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary">Appliquer</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Действия для решения 3 сценария -->
-<div class="modal fade" id="resolveConflictModal-3" tabindex="-1" aria-labelledby="resolveConflictModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="resolveConflictModalLabel">Résolution du Conflit</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="conflictResolutionAction" class="form-label">Action de résolution</label>
-                        <select class="form-select" id="conflictResolutionAction">
-                            <!-- Действия для решения 3 сценария -->
-                            <option value="cancel_booking">Annuler la réservation</option>
-                            <option value="discuss_alternatives">Discuter des alternatives</option>
-                        </select>
-                    </div>
-                    <!-- Additional fields for action details can be added here -->
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-primary">Appliquer</button>
-            </div>
-        </div>
-    </div>
+<div class="modal fade" id="resolveConflictModal-3" tabindex="-1" aria-labelledby="resolveConflictModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="resolveConflictModalLabel">Résolution du Conflit</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="mb-3">
+						<label for="conflictResolutionAction" class="form-label">Action de résolution</label>
+						<select class="form-select" id="conflictResolutionAction">
+							<!-- Действия для решения 3 сценария -->
+							<option value="cancel_booking">Annuler la réservation</option>
+							<option value="discuss_alternatives">Discuter des alternatives</option>
+						</select>
+					</div>
+					<!-- Additional fields for action details can be added here -->
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary">Appliquer</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Действия для решения 4 сценария -->
-<div class="modal fade" id="resolveConflictModal-4" tabindex="-1" aria-labelledby="resolveConflictModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="resolveConflictModalLabel">Résolution du Conflit</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="conflictResolutionAction" class="form-label">Action de résolution</label>
-                        <select class="form-select" id="conflictResolutionAction">
-                            <!-- Действия для решения 4 сценария -->
-                            <option value="send_reminder">Envoyer un rappel de retour</option>
-                            <option value="apply_penalties">Appliquer des sanctions</option>
-                            <option value="offer_alternative">Proposer un équipement alternatif</option>
-                        </select>
-                    </div>
-                    <!-- Additional fields for action details can be added here -->
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-primary">Appliquer</button>
-            </div>
-        </div>
-    </div>
+<div class="modal fade" id="resolveConflictModal-4" tabindex="-1" aria-labelledby="resolveConflictModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="resolveConflictModalLabel">Résolution du Conflit</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="mb-3">
+						<label for="conflictResolutionAction" class="form-label">Action de résolution</label>
+						<select class="form-select" id="conflictResolutionAction">
+							<!-- Действия для решения 4 сценария -->
+							<option value="send_reminder">Envoyer un rappel de retour</option>
+							<option value="apply_penalties">Appliquer des sanctions</option>
+							<option value="offer_alternative">Proposer un équipement alternatif</option>
+						</select>
+					</div>
+					<!-- Additional fields for action details can be added here -->
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary">Appliquer</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 
