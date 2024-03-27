@@ -1,6 +1,7 @@
 import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
+import { Tab } from 'bootstrap';
 
 document.addEventListener("DOMContentLoaded", function () {
 	const addEquipmentButton = document.querySelector(
@@ -368,4 +369,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			row.remove();
 		}
 	});
+
+	document.addEventListener('DOMContentLoaded', function () {
+		const triggerTabList = [].slice.call(document.querySelectorAll('#reserveModal .nav-link'));
+		triggerTabList.forEach(function (triggerEl) {
+			var tabTrigger = new Tab(triggerEl);
+
+			triggerEl.addEventListener('click', function (e) {
+				e.preventDefault();
+				tabTrigger.show();
+			});
+		});
+	});
+
 });
