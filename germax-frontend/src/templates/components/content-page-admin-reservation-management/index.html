@@ -63,10 +63,38 @@
 					<td>1</td>
 					<td>Enseignant A</td>
 					<td>Laptop</td>
-					<td>2023-04-01</td>
-					<td>2023-04-03</td>
-					<td>Actif</td>
-					<td><button class="btn btn-primary">Détails</button></td>
+					<td>
+						<span class="view-mode">2023-04-01</span>
+						<input type="date" class="edit-mode d-none" value="2023-04-01">
+					</td>
+					<td>
+						<span class="view-mode">2023-04-03</span>
+						<input type="date" class="edit-mode d-none" value="2023-04-03">
+					</td>
+					<td>
+						<span class="view-mode">Actif</span>
+						<select class="edit-mode d-none">
+							<option value="Actif">Actif</option>
+							<option value="Waiting">En attente</option>
+							<option value="Cancelled">Annulé</option>
+						</select>
+					</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item edit-reservation" href="#">Éditer</a></li>
+								<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
+								<li>
+									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal">Voir les détails</a>
+								</li>
+
+							</ul>
+						</div>
+					</td>
 				</tr>
 				<tr data-id="2" data-user="Enseignant B" data-equipment="Tablet" data-startdate="2023-04-04"
 					data-enddate="2023-04-05" data-status="En attente">
@@ -183,6 +211,42 @@
 				</tr>
 			</tbody>
 		</table>
+	</div>
+</div>
+
+<!-- Détails de la réservation -->
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detailsModalLabel">Détails de la réservation</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h6>Informations sur la réservation :</h6>
+				<p>ID : 1, Utilisateur : Enseignant A, Équipement : Laptop, Dates : du 2023-04-01 au 2023-04-03, Statut
+					: Actif</p>
+				<h6>Historique des actions :</h6>
+				<ol>
+					<li>Date et heure des modifications : 2023-04-02 14:00 - Changement de statut à "Annulé" en raison
+						d'une panne de l'équipement.</li>
+					<li>Description de l'action : Un commentaire sur la maintenance de l'équipement a été ajouté.</li>
+					<li>Utilisateur ayant effectué l'action : Admin1</li>
+					<li>Commentaires ou Remarques : "L'équipement a été envoyé en réparation."</li>
+					<li>Réponses aux Remarques des Utilisateurs : "Une alternative d'équipement a été proposée."</li>
+					<li>Modifications dans les Détails de la Réservation : "La réservation a été reportée à la semaine
+						suivante."</li>
+					<li>États de Résolution des Conflits : "Le conflit a été résolu, un projecteur de remplacement a été
+						fourni."</li>
+					<li>Actions de Maintenance de l'Équipement : "L'équipement a été retourné après réparation, vérifié
+						et prêt à être utilisé."</li>
+				</ol>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
 	</div>
 </div>
 
