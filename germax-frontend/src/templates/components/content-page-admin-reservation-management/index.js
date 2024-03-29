@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// edit-reservation
 
 	document.querySelectorAll(".edit-reservation").forEach((item) => {
-		item.addEventListener("click", function(event) {
+		item.addEventListener("click", function (event) {
 			event.preventDefault();
 			const row = this.closest("tr");
 			row.classList.add("editing");
@@ -197,9 +197,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	function toggleElements(row, isEditing) {
-		row.querySelectorAll("span.view-mode, .edit-mode").forEach((element) => {
-			element.classList.toggle("d-none");
-		});
+		row.querySelectorAll("span.view-mode, .edit-mode").forEach(
+			(element) => {
+				element.classList.toggle("d-none");
+			}
+		);
 	}
 
 	function initializeRowForEditing(row) {
@@ -210,21 +212,77 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
+	function setMinMaxDates() {
+		const today = new Date();
+		const maxDate = new Date(
+			today.getFullYear() + 3,
+			today.getMonth(),
+			today.getDate()
+		);
+
+		// Преобразование в формат YYYY-MM-DD
+		const formatDate = (date) => date.toISOString().split("T")[0];
+
+		// Установка атрибутов min и max для полей ввода даты
+		document
+			.querySelectorAll('.edit-mode[type="date"]')
+			.forEach((input) => {
+				input.setAttribute("min", formatDate(today));
+				input.setAttribute("max", formatDate(maxDate));
+			});
+	}
+
 	function saveChanges(row) {
-		// Обновляем данные в DOM и dataset
 		const inputs = row.querySelectorAll(".edit-mode");
-		inputs.forEach(input => {
+		let isValidDate = true; // Флаг валидности дат
+
+		inputs.forEach((input) => {
 			if (input.type === "date") {
-				const dateSpan = row.querySelector(`span[data-name="${input.name}"]`);
-				dateSpan.textContent = input.value; // Обновляем отображаемую дату
-				row.dataset[input.name] = input.value; // Обновляем dataset
+				const errorMessageSpan = input.nextElementSibling; // Это должен быть <span class="error-message">
+
+				// Проверяем, существует ли errorMessageSpan, перед обновлением его состояния
+				if (errorMessageSpan) {
+					errorMessageSpan.classList.add("d-none");
+					errorMessageSpan.textContent = ""; // Очищаем предыдущие сообщения об ошибке
+
+					const dateValue = input.value
+						? new Date(input.value)
+						: null;
+					const minDate = new Date(input.getAttribute("min"));
+					const maxDate = new Date(input.getAttribute("max"));
+
+					if (
+						dateValue &&
+						(dateValue < minDate || dateValue > maxDate)
+					) {
+						isValidDate = false;
+						errorMessageSpan.classList.remove("d-none");
+						errorMessageSpan.textContent =
+							"La date sélectionnée dépasse les limites autorisées. Veuillez choisir une date à partir d'aujourd'hui et dans les 3 prochaines années.";
+					} else if (!dateValue) {
+						isValidDate = false;
+						errorMessageSpan.classList.remove("d-none");
+						errorMessageSpan.textContent =
+							"La date entrée est invalide.";
+					} else {
+						// Обновляем DOM и dataset только если дата корректна
+						const dateSpan = row.querySelector(
+							`span[data-name="${input.name}"]`
+						);
+						dateSpan.textContent = input.value;
+						row.dataset[input.name] = input.value;
+					}
+				}
 			}
 		});
+
+		if (!isValidDate) return; // Прекращаем выполнение функции, если дата невалидна
 
 		const statusSelect = row.querySelector("select.edit-mode");
 		if (statusSelect) {
 			const statusSpan = row.querySelector("td:nth-child(6) span");
-			statusSpan.textContent = statusSelect.options[statusSelect.selectedIndex].text;
+			statusSpan.textContent =
+				statusSelect.options[statusSelect.selectedIndex].text;
 			row.dataset.status = statusSelect.value; // Обновляем dataset
 		}
 
@@ -235,11 +293,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			equipment: row.dataset.equipment,
 			startDate: row.dataset.startdate,
 			endDate: row.dataset.enddate,
-			status: row.dataset.status
+			status: row.dataset.status,
 		};
 
 		// Сохранение в LocalStorage
-		localStorage.setItem(`reservation_${reservationData.id}`, JSON.stringify(reservationData));
+		localStorage.setItem(
+			`reservation_${reservationData.id}`,
+			JSON.stringify(reservationData)
+		);
 
 		// Очистка редактора и возвращение в исходное состояние
 		toggleElements(row, false);
@@ -247,13 +308,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		removeSaveCancelButtons(row);
 	}
 
-
 	function addSaveCancelButtons(row) {
 		if (!row.querySelector(".save-changes")) {
 			const saveBtn = document.createElement("button");
 			saveBtn.textContent = "Сохранить изменения";
 			saveBtn.classList.add("btn", "btn-success", "save-changes");
-			saveBtn.addEventListener("click", function() {
+			saveBtn.addEventListener("click", function () {
 				saveChanges(row);
 			});
 			row.querySelector("td:last-child").appendChild(saveBtn);
@@ -263,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			const cancelBtn = document.createElement("button");
 			cancelBtn.textContent = "Отменить изменения";
 			cancelBtn.classList.add("btn", "btn-danger", "cancel-changes");
-			cancelBtn.addEventListener("click", function() {
+			cancelBtn.addEventListener("click", function () {
 				toggleElements(row, false);
 				row.classList.remove("editing");
 				// Удаляем кнопки
@@ -274,15 +334,21 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	function removeSaveCancelButtons(row) {
-		row.querySelectorAll(".save-changes, .cancel-changes").forEach(button => button.remove());
+		row.querySelectorAll(".save-changes, .cancel-changes").forEach(
+			(button) => button.remove()
+		);
 	}
 
 	window.addEventListener("load", () => {
-		document.querySelectorAll("tr[data-id]").forEach(row => {
+		setMinMaxDates();
+		document.querySelectorAll("tr[data-id]").forEach((row) => {
 			const reservationId = row.dataset.id;
-			const savedData = localStorage.getItem(`reservation_${reservationId}`);
+			const savedData = localStorage.getItem(
+				`reservation_${reservationId}`
+			);
 			if (savedData) {
-				const {user, equipment, startDate, endDate, status} = JSON.parse(savedData);
+				const { user, equipment, startDate, endDate, status } =
+					JSON.parse(savedData);
 				row.dataset.user = user;
 				row.dataset.equipment = equipment;
 				row.dataset.startdate = startDate;
@@ -291,8 +357,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				row.querySelector("td:nth-child(2)").textContent = user;
 				row.querySelector("td:nth-child(3)").textContent = equipment;
-				row.querySelector(`span[data-name="startdate"]`).textContent = startDate;
-				row.querySelector(`span[data-name="enddate"]`).textContent = endDate;
+				row.querySelector(`span[data-name="startdate"]`).textContent =
+					startDate;
+				row.querySelector(`span[data-name="enddate"]`).textContent =
+					endDate;
 				row.querySelector("td:nth-child(6) span").textContent = status;
 			}
 		});
@@ -331,5 +399,4 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		}
 	});
-	console.log("Конец выполнения кода внутри DOMContentLoaded");
 });

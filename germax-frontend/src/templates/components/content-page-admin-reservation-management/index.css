@@ -26,3 +26,7 @@
 .toggle-btn:focus {
     box-shadow: none; /* Убрать тень при фокусе */
 }
+
+.d-none {
+	display: none;
+  }
