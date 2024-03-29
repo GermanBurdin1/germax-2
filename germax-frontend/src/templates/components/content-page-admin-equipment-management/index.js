@@ -1,7 +1,7 @@
 import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
-import { Tab } from 'bootstrap';
+import { Tab } from "bootstrap";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const addEquipmentButton = document.querySelector(
@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Загрузка данных из localStorage при загрузке страницы
 	window.addEventListener("load", () => {
-		console.log('Before updating DOM for equipment');
+		console.log("Before updating DOM for equipment");
 		document.querySelectorAll("[data-equipment-id]").forEach((row) => {
 			const equipmentId = row.dataset.equipmentId;
 			const data = JSON.parse(
@@ -341,27 +341,31 @@ document.addEventListener("DOMContentLoaded", function () {
 			console.log(data);
 			if (data) {
 				if (row.querySelector(".equipment-name")) {
-					row.querySelector(".equipment-name").textContent = data.name;
+					row.querySelector(".equipment-name").textContent =
+						data.name;
 				}
 				if (row.querySelector(".equipment-category")) {
-					row.querySelector(".equipment-category").textContent = data.category;
+					row.querySelector(".equipment-category").textContent =
+						data.category;
 				}
 				if (row.querySelector(".equipment-description")) {
-					row.querySelector(".equipment-description").textContent = data.description;
+					row.querySelector(".equipment-description").textContent =
+						data.description;
 				}
 				if (row.querySelector(".equipment-availability")) {
-					row.querySelector(".equipment-availability").textContent = data.availability;
+					row.querySelector(".equipment-availability").textContent =
+						data.availability;
 				}
-				console.log('After updating DOM for equipment', equipmentId);
+				console.log("After updating DOM for equipment", equipmentId);
 			}
 		});
 	});
 
-	document.addEventListener('click', function (event) {
-		if (event.target.classList.contains('delete-action')) {
+	document.addEventListener("click", function (event) {
+		if (event.target.classList.contains("delete-action")) {
 			event.preventDefault();
 
-			const row = event.target.closest('tr');
+			const row = event.target.closest("tr");
 			const equipmentId = row.dataset.equipmentId;
 
 			localStorage.removeItem(`equipment_${equipmentId}`);
@@ -370,79 +374,99 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	document.addEventListener('DOMContentLoaded', function () {
-		const triggerTabList = [].slice.call(document.querySelectorAll('#reserveModal .nav-link'));
+	document.addEventListener("DOMContentLoaded", function () {
+		const triggerTabList = [].slice.call(
+			document.querySelectorAll("#reserveModal .nav-link")
+		);
 		triggerTabList.forEach(function (triggerEl) {
 			var tabTrigger = new Tab(triggerEl);
 
-			triggerEl.addEventListener('click', function (e) {
+			triggerEl.addEventListener("click", function (e) {
 				e.preventDefault();
 				tabTrigger.show();
 			});
 		});
 	});
 
-
 	//Journal des actions
 
 	const actionLog = [
-        { date: "14/04/2021", user: "Utilisateur A", action: "Prêté" },
-        { date: "07/06/2021", user: "Utilisateur B", action: "Retourné et vérifié" },
-        // Добавьте дополнительные записи здесь
-    ];
+		{ date: "14/04/2021", user: "Utilisateur A", action: "Prêté" },
+		{
+			date: "07/06/2021",
+			user: "Utilisateur B",
+			action: "Retourné et vérifié",
+		},
+		// Добавьте дополнительные записи здесь
+	];
 
-    let currentPage = 1;
-    const entriesPerPage = 10; // Количество записей на страницу
+	let currentPage = 1;
+	const entriesPerPage = 10; // Количество записей на страницу
 
-    function renderLog(entries) {
-        const logContainer = document.getElementById("actionLogEntries");
-        logContainer.innerHTML = ""; // Очистить текущие записи
-        entries.forEach(entry => {
-            const div = document.createElement("div");
-            div.textContent = `${entry.date} - ${entry.user} - ${entry.action}`;
-            logContainer.appendChild(div);
-        });
-    }
+	function renderLog(entries) {
+		const logContainer = document.getElementById("actionLogEntries");
+		logContainer.innerHTML = ""; // Очистить текущие записи
+		entries.forEach((entry) => {
+			const div = document.createElement("div");
+			div.textContent = `${entry.date} - ${entry.user} - ${entry.action}`;
+			logContainer.appendChild(div);
+		});
+	}
 
-    function updatePagination() {
-        // Обновление видимости кнопок пагинации и номера текущей страницы
-        document.getElementById("currentPage").textContent = currentPage.toString();
-    }
+	function updatePagination() {
+		// Обновление видимости кнопок пагинации и номера текущей страницы
+		document.getElementById("currentPage").textContent =
+			currentPage.toString();
+	}
 
-    function filterAndRender() {
-        let filteredEntries = actionLog
-            .filter(entry => entry.user.toLowerCase().includes(document.getElementById("searchByName").value.toLowerCase()))
-            .sort((a, b) => new Date(b.date.split("/").reverse().join("-")) - new Date(a.date.split("/").reverse().join("-"))); // Сортировка по дате
+	function filterAndRender() {
+		let filteredEntries = actionLog
+			.filter((entry) =>
+				entry.user
+					.toLowerCase()
+					.includes(
+						document
+							.getElementById("searchByName")
+							.value.toLowerCase()
+					)
+			)
+			.sort(
+				(a, b) =>
+					new Date(b.date.split("/").reverse().join("-")) -
+					new Date(a.date.split("/").reverse().join("-"))
+			); // Сортировка по дате
 
-        const start = (currentPage - 1) * entriesPerPage;
-        const paginatedEntries = filteredEntries.slice(start, start + entriesPerPage);
-        renderLog(paginatedEntries);
-    }
+		const start = (currentPage - 1) * entriesPerPage;
+		const paginatedEntries = filteredEntries.slice(
+			start,
+			start + entriesPerPage
+		);
+		renderLog(paginatedEntries);
+	}
 
-    document.getElementById("searchByName").addEventListener("input", () => {
-        currentPage = 1;
-        filterAndRender();
-    });
+	document.getElementById("searchByName").addEventListener("input", () => {
+		currentPage = 1;
+		filterAndRender();
+	});
 
-    document.getElementById("sortByDate").addEventListener("click", () => {
-        filterAndRender(); // Сортировка уже встроена в filterAndRender
-    });
+	document.getElementById("sortByDate").addEventListener("click", () => {
+		filterAndRender(); // Сортировка уже встроена в filterAndRender
+	});
 
-    document.getElementById("prevPage").addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            filterAndRender();
-        }
-    });
+	document.getElementById("prevPage").addEventListener("click", () => {
+		if (currentPage > 1) {
+			currentPage--;
+			filterAndRender();
+		}
+	});
 
-    document.getElementById("nextPage").addEventListener("click", () => {
-        // Предполагаем, что всегда есть следующая страница
-        currentPage++;
-        filterAndRender();
-    });
+	document.getElementById("nextPage").addEventListener("click", () => {
+		// Предполагаем, что всегда есть следующая страница
+		currentPage++;
+		filterAndRender();
+	});
 
-    filterAndRender(); // Инициализация первой страницы журнала
-
+	filterAndRender(); // Инициализация первой страницы журнала
 
 	// экспорт в csv
 	/////////////////////////////////////////////////////////////////////////
@@ -451,24 +475,25 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Создание заголовков CSV файла
 		const csvHeaders = "Date,User,Action\n";
 		// Преобразование данных журнала в строку CSV
-		const csvRows = actionLog.map(entry =>
-			`"${entry.date}","${entry.user}","${entry.action}"`
-		).join("\n");
+		const csvRows = actionLog
+			.map((entry) => `"${entry.date}","${entry.user}","${entry.action}"`)
+			.join("\n");
 
 		// Создание строки CSV с BOM для UTF-8
 		const BOM = "\uFEFF";
 		const csvString = BOM + csvHeaders + csvRows;
 
 		// Создание Blob объекта с типом MIME для CSV и указанием кодировки UTF-8
-		const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+		const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
 
 		// Создание временной ссылки для скачивания и её нажатие
 		const link = document.createElement("a");
-		if (link.download !== undefined) { // Проверка поддержки атрибута download
+		if (link.download !== undefined) {
+			// Проверка поддержки атрибута download
 			const url = URL.createObjectURL(blob);
 			link.setAttribute("href", url);
 			link.setAttribute("download", "actionLog.csv");
-			link.style.visibility = 'hidden';
+			link.style.visibility = "hidden";
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
@@ -476,8 +501,150 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	// Добавляем слушатель события на кнопку экспорта
-	document.getElementById("exportLog").addEventListener("click", function() {
+	document.getElementById("exportLog").addEventListener("click", function () {
 		exportToCSV(actionLog); // Предполагается, что actionLog - это ваш массив данных журнала
 	});
 
-});
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////// логика reserveModal
+
+		let currentPageReserveModal = 1;
+		const entriesPerPageReserveModal = 20; // Показывать по 20 записей на страницу
+		let currentEntriesReserveModal = []; // Текущие отфильтрованные записи для отображения
+		let currentCategoryReserveModal = "enseignants"; // По умолчанию показываем 'enseignants'
+
+		// Предполагаемые начальные данные для enseignants и etudiants
+		const enseignants = [
+			{
+				nom: "Dupont",
+				prenom: "Jean",
+				telephone: "0123456789",
+				email: "jean.dupont@example.com",
+				photoUrl: "path_to_photo_jean.jpg",
+			},
+			// Добавьте больше данных сюда
+		];
+
+		const etudiants = [
+			{
+				nom: "Doe",
+				prenom: "Jane",
+				telephone: "0987654321",
+				email: "jane.doe@example.com",
+				photoUrl: "path_to_photo_jane.jpg",
+			},
+			// Добавьте больше данных сюда
+		];
+
+		// Определите контейнеры для пагинации и пользователей
+		const paginationContainer = document.querySelector(
+			".pagination-reserve-modal"
+		);
+		const userContainerEnseignants = document.getElementById(
+			"v-pills-enseignants"
+		);
+		const userContainerEtudiants =
+			document.getElementById("v-pills-etudiants");
+
+		// Функция для рендеринга списка пользователей
+		function renderUsers() {
+			// Определяем текущий контейнер на основе выбранной категории
+			const container =
+				currentCategoryReserveModal === "enseignants"
+					? userContainerEnseignants
+					: userContainerEtudiants;
+			container.innerHTML = ""; // Очистка контейнера перед добавлением новых данных
+
+			const usersToRender = currentEntriesReserveModal.slice(
+				(currentPageReserveModal - 1) * entriesPerPageReserveModal,
+				currentPageReserveModal * entriesPerPageReserveModal
+			);
+
+			usersToRender.forEach((user) => {
+				const userElement = document.createElement("div");
+				userElement.className = "user-card mb-3";
+				userElement.innerHTML = `
+                <div class="card">
+                    <img src="${user.photoUrl}" class="card-img-top" alt="Photo de ${user.prenom}">
+                    <div class="card-body">
+                        <h5 class="card-title">${user.prenom} ${user.nom}</h5>
+                        <p class="card-text">${user.telephone}</p>
+                        <p class="card-text">${user.email}</p>
+                        <button class="btn btn-primary">Attribuer l'équipement</button>
+                    </div>
+                </div>
+            `;
+				container.appendChild(userElement);
+			});
+		}
+
+		// Функция для обновления элементов пагинации
+		function updatePaginationReserveModal() {
+			paginationContainer.innerHTML = ""; // Очистить существующую пагинацию
+			const totalPages = Math.ceil(
+				currentEntriesReserveModal.length / entriesPerPageReserveModal
+			);
+
+			// Создаем и добавляем элементы пагинации
+			for (let i = 1; i <= totalPages; i++) {
+				const pageItem = document.createElement("li");
+				pageItem.className = `page-item ${
+					i === currentPageReserveModal ? "active" : ""
+				}`;
+				pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+				pageItem.addEventListener("click", function (e) {
+					e.preventDefault();
+					currentPageReserveModal = parseInt(e.target.dataset.page);
+					renderUsers();
+					updatePaginationReserveModal();
+				});
+				paginationContainer.appendChild(pageItem);
+			}
+		}
+
+		// Функция для фильтрации пользователей по запросу из поля ввода
+		function filterUsersReserveModal(query) {
+			currentEntriesReserveModal = (
+				currentCategoryReserveModal === "enseignants"
+					? enseignants
+					: etudiants
+			).filter(
+				(user) =>
+					user.nom.toLowerCase().includes(query.toLowerCase()) ||
+					user.prenom.toLowerCase().includes(query.toLowerCase())
+			);
+			currentPageReserveModal = 1;
+			renderUsers();
+			updatePaginationReserveModal();
+		}
+
+		// Обработка ввода в поле поиска
+		document
+			.getElementById("searchUser")
+			.addEventListener("input", function (e) {
+				filterUsersReserveModal(e.target.value);
+			});
+
+		// Обработчики для переключения категорий
+		document
+			.getElementById("v-pills-enseignants-tab")
+			.addEventListener("click", function () {
+				currentCategoryReserveModal = "enseignants";
+				filterUsersReserveModal(
+					document.getElementById("searchUser").value
+				);
+			});
+
+		document
+			.getElementById("v-pills-etudiants-tab")
+			.addEventListener("click", function () {
+				currentCategoryReserveModal = "etudiants";
+				filterUsersReserveModal(
+					document.getElementById("searchUser").value
+				);
+			});
+
+		// Инициализация списка преподавателей по умолчанию
+		filterUsersReserveModal("");
+	});
+

@@ -255,40 +255,41 @@
 			</div>
 			<div class="modal-body">
 				<div class="container-fluid">
+                    <input type="text" id="searchUser" class="form-control mb-3" placeholder="Rechercher par nom ou prénom...">
 					<div class="row">
 						<div class="col-md-3">
-							<!-- Навигация вкладок -->
-							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
-								aria-orientation="vertical">
-								<a class="nav-link active" id="v-pills-laptop-tab" data-bs-toggle="pill"
-									href="#v-pills-laptop" role="tab" aria-controls="v-pills-laptop"
-									aria-selected="true">Ordinateurs portables</a>
-								<a class="nav-link" id="v-pills-computer-monitor-tab" data-bs-toggle="pill"
-									href="#v-pills-computer-monitor" role="tab" aria-controls="v-pills-computer-monitor"
-									aria-selected="false">Ecrans d'ordinateurs</a>
-								<a class="nav-link" id="v-pills-smartphone-tab" data-bs-toggle="pill"
-									href="#v-pills-smartphone" role="tab" aria-controls="v-pills-smartphone"
-									aria-selected="false">Smartphones</a>
-								<!-- Добавьте дополнительные вкладки здесь -->
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+								<a class="nav-link active" id="v-pills-enseignants-tab" data-bs-toggle="pill"
+									href="#v-pills-enseignants" role="tab" aria-controls="v-pills-enseignants"
+									aria-selected="true">Enseignants</a>
+								<a class="nav-link" id="v-pills-etudiants-tab" data-bs-toggle="pill"
+									href="#v-pills-etudiants" role="tab" aria-controls="v-pills-etudiants"
+									aria-selected="false">Étudiants</a>
 							</div>
 						</div>
 						<div class="col-md-9">
-							<!-- Контент вкладок -->
 							<div class="tab-content" id="v-pills-tabContent">
-								<div class="tab-pane fade show active" id="v-pills-laptop" role="tabpanel"
-									aria-labelledby="v-pills-laptop-tab">Контент для ноутбуков</div>
-								<div class="tab-pane fade" id="v-pills-computer-monitor" role="tabpanel"
-									aria-labelledby="v-pills-computer-monitor-tab">Контент для мониторов</div>
-								<div class="tab-pane fade" id="v-pills-smartphone" role="tabpanel"
-									aria-labelledby="v-pills-smartphone-tab">Контент для смартфонов</div>
-								<!-- Добавьте контент для дополнительных вкладок здесь -->
+								<div class="tab-pane fade show active" id="v-pills-enseignants" role="tabpanel"
+									aria-labelledby="v-pills-enseignants-tab">
+									<!-- Контент для Enseignants будет сгенерирован здесь -->
+								</div>
+								<div class="tab-pane fade" id="v-pills-etudiants" role="tabpanel"
+									aria-labelledby="v-pills-etudiants-tab">
+									<!-- Контент для Étudiants будет сгенерирован здесь -->
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-12 text-center">
-					<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
-				</div>
+                <div class="pagination-controls text-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Précédent</a></li>
+                            <!-- Нумерация страниц будет сгенерирована здесь -->
+                            <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+                        </ul>
+                    </nav>
+                </div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -296,3 +297,4 @@
 		</div>
 	</div>
 </div>
+
