@@ -182,99 +182,128 @@ document.addEventListener("DOMContentLoaded", () => {
 	// edit-reservation
 
 	document.querySelectorAll(".edit-reservation").forEach((item) => {
-        item.addEventListener("click", function(event) {
-            event.preventDefault();
-            const row = this.closest("tr");
-            row.classList.add("editing");
+		item.addEventListener("click", function(event) {
+			event.preventDefault();
+			const row = this.closest("tr");
+			row.classList.add("editing");
 
-            // Переключение видимости элементов и установка текущего значения для select
-            toggleElements(row, true);
-            const statusSelect = row.querySelector("select.edit-mode");
-            if (statusSelect) {
-                const currentStatus = row.querySelector("td:nth-child(6) span").textContent.trim();
-                statusSelect.value = currentStatus;
-            }
+			// Переключение видимости элементов и установка текущего значения для select
+			toggleElements(row, true);
+			initializeRowForEditing(row);
 
-            // Добавляем кнопки сохранения и отмены, если они еще не добавлены
-            addSaveCancelButtons(row);
-        });
-    });
+			// Добавляем кнопки сохранения и отмены, если они еще не добавлены
+			addSaveCancelButtons(row);
+		});
+	});
 
-    // Обработчик для кнопок сохранения и отмены
-    document.addEventListener("click", function(event) {
-        if (event.target.classList.contains("save-changes")) {
-            const row = event.target.closest("tr");
-            saveChanges(row);
-        } else if (event.target.classList.contains("cancel-changes")) {
-            const row = event.target.closest("tr");
-            toggleElements(row, false);
-            row.classList.remove("editing");
-            // Удаляем кнопки
-            row.querySelector(".save-changes").remove();
-            row.querySelector(".cancel-changes").remove();
-        }
-    });
+	function toggleElements(row, isEditing) {
+		row.querySelectorAll("span.view-mode, .edit-mode").forEach((element) => {
+			element.classList.toggle("d-none");
+		});
+	}
 
-    function toggleElements(row, isEditing) {
-        row.querySelectorAll("span.view-mode, .edit-mode").forEach((element) => {
-            element.classList.toggle("d-none");
-        });
-    }
+	function initializeRowForEditing(row) {
+		const statusSelect = row.querySelector("select.edit-mode");
+		if (statusSelect) {
+			const currentStatus = row.querySelector("td:nth-child(6) span").textContent.trim();
+			statusSelect.value = currentStatus;
+		}
+	}
 
-    function saveChanges(row) {
-        row.querySelectorAll(".edit-mode").forEach((input) => {
-            const span = input.closest("td").querySelector("span.view-mode");
-            if (input.tagName.toLowerCase() === "select") {
-                span.textContent = input.options[input.selectedIndex].text;
-            } else {
-                span.textContent = input.value;
-            }
-        });
+	function saveChanges(row) {
+		// Обновляем данные в DOM и dataset
+		const inputs = row.querySelectorAll(".edit-mode");
+		inputs.forEach(input => {
+			if (input.type === "date") {
+				const dateSpan = row.querySelector(`span[data-name="${input.name}"]`);
+				dateSpan.textContent = input.value; // Обновляем отображаемую дату
+				row.dataset[input.name] = input.value; // Обновляем dataset
+			}
+		});
 
-        const reservationId = row.dataset.id;
-        const reservationData = {
-            id: reservationId,
-            user: row.dataset.user,
-            equipment: row.dataset.equipment,
-            startDate: row.dataset.startdate,
-            endDate: row.dataset.enddate,
-            status: row.querySelector("select.edit-mode").value
-        };
+		const statusSelect = row.querySelector("select.edit-mode");
+		if (statusSelect) {
+			const statusSpan = row.querySelector("td:nth-child(6) span");
+			statusSpan.textContent = statusSelect.options[statusSelect.selectedIndex].text;
+			row.dataset.status = statusSelect.value; // Обновляем dataset
+		}
 
-        localStorage.setItem(`reservation_${reservationId}`, JSON.stringify(reservationData));
+		// Формирование объекта данных для сохранения
+		const reservationData = {
+			id: row.dataset.id,
+			user: row.dataset.user,
+			equipment: row.dataset.equipment,
+			startDate: row.dataset.startdate,
+			endDate: row.dataset.enddate,
+			status: row.dataset.status
+		};
 
-        toggleElements(row, false);
-        row.classList.remove("editing");
-        // Удаляем кнопки
-        row.querySelector(".save-changes").remove();
-        row.querySelector(".cancel-changes").remove();
-    }
+		// Сохранение в LocalStorage
+		localStorage.setItem(`reservation_${reservationData.id}`, JSON.stringify(reservationData));
 
-    function addSaveCancelButtons(row) {
-        if (!row.querySelector(".save-changes")) {
-            const saveBtn = document.createElement("button");
-            saveBtn.textContent = "Сохранить изменения";
-            saveBtn.classList.add("btn", "btn-success", "save-changes");
-            saveBtn.addEventListener("click", function() {
-                saveChanges(row);
-            });
-            row.querySelector("td:last-child").appendChild(saveBtn);
-        }
+		// Очистка редактора и возвращение в исходное состояние
+		toggleElements(row, false);
+		row.classList.remove("editing");
+		removeSaveCancelButtons(row);
+	}
 
-        if (!row.querySelector(".cancel-changes")) {
-            const cancelBtn = document.createElement("button");
-            cancelBtn.textContent = "Отменить изменения";
-            cancelBtn.classList.add("btn", "btn-danger", "cancel-changes");
-            cancelBtn.addEventListener("click", function() {
-                toggleElements(row, false);
-                row.classList.remove("editing");
-                // Удаляем кнопки
-                row.querySelector(".save-changes").remove();
-                row.querySelector(".cancel-changes").remove();
-            });
-            row.querySelector("td:last-child").appendChild(cancelBtn);
-        }
-    }
+
+	function addSaveCancelButtons(row) {
+		if (!row.querySelector(".save-changes")) {
+			const saveBtn = document.createElement("button");
+			saveBtn.textContent = "Сохранить изменения";
+			saveBtn.classList.add("btn", "btn-success", "save-changes");
+			saveBtn.addEventListener("click", function() {
+				saveChanges(row);
+			});
+			row.querySelector("td:last-child").appendChild(saveBtn);
+		}
+
+		if (!row.querySelector(".cancel-changes")) {
+			const cancelBtn = document.createElement("button");
+			cancelBtn.textContent = "Отменить изменения";
+			cancelBtn.classList.add("btn", "btn-danger", "cancel-changes");
+			cancelBtn.addEventListener("click", function() {
+				toggleElements(row, false);
+				row.classList.remove("editing");
+				// Удаляем кнопки
+				removeSaveCancelButtons(row);
+			});
+			row.querySelector("td:last-child").appendChild(cancelBtn);
+		}
+	}
+
+	function removeSaveCancelButtons(row) {
+		row.querySelectorAll(".save-changes, .cancel-changes").forEach(button => button.remove());
+	}
+
+	function updateTableFromLocalStorage() {
+		document.querySelectorAll("tr[data-id]").forEach(row => {
+			const reservationId = row.dataset.id;
+			const savedData = localStorage.getItem(`reservation_${reservationId}`);
+			if (savedData) {
+				const {user, equipment, startDate, endDate, status} = JSON.parse(savedData);
+				row.dataset.user = user;
+				row.dataset.equipment = equipment;
+				row.dataset.startdate = startDate;
+				row.dataset.enddate = endDate;
+				row.dataset.status = status;
+
+				row.querySelector("td:nth-child(2)").textContent = user;
+				row.querySelector("td:nth-child(3)").textContent = equipment;
+				row.querySelector(`span[data-name="startdate"]`).textContent = startDate;
+				row.querySelector(`span[data-name="enddate"]`).textContent = endDate;
+				row.querySelector("td:nth-child(6) span").textContent = status;
+			}
+		});
+	}
+	document.addEventListener("DOMContentLoaded", updateTableFromLocalStorage);
+
+
+	// Вызываем функцию после загрузки DOM
+	document.addEventListener("DOMContentLoaded", updateTableFromLocalStorage);
+
+
 
 	const dropdownElementList = [].slice.call(
 		document.querySelectorAll(".dropdown-toggle")
