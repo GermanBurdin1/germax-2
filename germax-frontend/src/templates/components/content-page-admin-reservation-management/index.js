@@ -206,9 +206,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	function initializeRowForEditing(row) {
 		const statusSelect = row.querySelector("select.edit-mode");
+		const startDateInput = row.querySelector('input[name="startdate"]');
+		const endDateInput = row.querySelector('input[name="enddate"]');
+
+		// Устанавливаем текущее значение статуса из dataset
 		if (statusSelect) {
-			const currentStatus = row.dataset.status; // Используем dataset для получения текущего статуса
+			const currentStatus = row.dataset.status;
 			statusSelect.value = currentStatus;
+		}
+
+		// Устанавливаем текущие значения дат из dataset
+		if (startDateInput && endDateInput) {
+			startDateInput.value = row.dataset.startdate;
+			endDateInput.value = row.dataset.enddate;
 		}
 	}
 
@@ -233,14 +243,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	function saveChanges(row) {
+		// ...
 		const inputs = row.querySelectorAll(".edit-mode");
 		let isValidDate = true; // Флаг валидности дат
 
 		inputs.forEach((input) => {
 			if (input.type === "date") {
-				const errorMessageSpan = input.nextElementSibling; // Это должен быть <span class="error-message">
+				// Проверка, что следующий элемент - это span с классом error-message
+				const errorMessageSpan =
+					input.nextElementSibling &&
+					input.nextElementSibling.classList.contains("error-message")
+						? input.nextElementSibling
+						: null;
 
-				// Проверяем, существует ли errorMessageSpan, перед обновлением его состояния
 				if (errorMessageSpan) {
 					errorMessageSpan.classList.add("d-none");
 					errorMessageSpan.textContent = ""; // Очищаем предыдущие сообщения об ошибке
@@ -253,13 +268,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 					if (
 						dateValue &&
-						(dateValue < minDate || dateValue > maxDate)
+						(isNaN(dateValue.getTime()) ||
+							dateValue < minDate ||
+							dateValue > maxDate)
 					) {
 						isValidDate = false;
 						errorMessageSpan.classList.remove("d-none");
 						errorMessageSpan.textContent =
 							"La date sélectionnée dépasse les limites autorisées. Veuillez choisir une date à partir d'aujourd'hui et dans les 3 prochaines années.";
-					} else if (!dateValue) {
+					} else if (!dateValue || isNaN(dateValue.getTime())) {
 						isValidDate = false;
 						errorMessageSpan.classList.remove("d-none");
 						errorMessageSpan.textContent =
@@ -270,6 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
 							`span[data-name="${input.name}"]`
 						);
 						dateSpan.textContent = input.value;
+						// Обновляем dataset только если дата корректна
 						row.dataset[input.name] = input.value;
 					}
 				}
@@ -283,7 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			const statusSpan = row.querySelector("td:nth-child(6) span");
 			statusSpan.textContent =
 				statusSelect.options[statusSelect.selectedIndex].text;
-			row.dataset.status = statusSelect.value; // Обновляем dataset
+			// Обновляем dataset статуса
+			row.dataset.status = statusSelect.value;
 		}
 
 		// Формирование объекта данных для сохранения
