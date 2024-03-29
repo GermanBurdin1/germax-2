@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	function initializeRowForEditing(row) {
 		const statusSelect = row.querySelector("select.edit-mode");
 		if (statusSelect) {
-			const currentStatus = row.querySelector("td:nth-child(6) span").textContent.trim();
+			const currentStatus = row.dataset.status; // Используем dataset для получения текущего статуса
 			statusSelect.value = currentStatus;
 		}
 	}
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		row.querySelectorAll(".save-changes, .cancel-changes").forEach(button => button.remove());
 	}
 
-	function updateTableFromLocalStorage() {
+	window.addEventListener("load", () => {
 		document.querySelectorAll("tr[data-id]").forEach(row => {
 			const reservationId = row.dataset.id;
 			const savedData = localStorage.getItem(`reservation_${reservationId}`);
@@ -296,14 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				row.querySelector("td:nth-child(6) span").textContent = status;
 			}
 		});
-	}
-	document.addEventListener("DOMContentLoaded", updateTableFromLocalStorage);
-
-
-	// Вызываем функцию после загрузки DOM
-	document.addEventListener("DOMContentLoaded", updateTableFromLocalStorage);
-
-
+	});
 
 	const dropdownElementList = [].slice.call(
 		document.querySelectorAll(".dropdown-toggle")
