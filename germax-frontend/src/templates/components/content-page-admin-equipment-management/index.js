@@ -382,4 +382,102 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	});
 
+
+	//Journal des actions
+
+	const actionLog = [
+        { date: "14/04/2021", user: "Utilisateur A", action: "Prêté" },
+        { date: "07/06/2021", user: "Utilisateur B", action: "Retourné et vérifié" },
+        // Добавьте дополнительные записи здесь
+    ];
+
+    let currentPage = 1;
+    const entriesPerPage = 10; // Количество записей на страницу
+
+    function renderLog(entries) {
+        const logContainer = document.getElementById("actionLogEntries");
+        logContainer.innerHTML = ""; // Очистить текущие записи
+        entries.forEach(entry => {
+            const div = document.createElement("div");
+            div.textContent = `${entry.date} - ${entry.user} - ${entry.action}`;
+            logContainer.appendChild(div);
+        });
+    }
+
+    function updatePagination() {
+        // Обновление видимости кнопок пагинации и номера текущей страницы
+        document.getElementById("currentPage").textContent = currentPage.toString();
+    }
+
+    function filterAndRender() {
+        let filteredEntries = actionLog
+            .filter(entry => entry.user.toLowerCase().includes(document.getElementById("searchByName").value.toLowerCase()))
+            .sort((a, b) => new Date(b.date.split("/").reverse().join("-")) - new Date(a.date.split("/").reverse().join("-"))); // Сортировка по дате
+
+        const start = (currentPage - 1) * entriesPerPage;
+        const paginatedEntries = filteredEntries.slice(start, start + entriesPerPage);
+        renderLog(paginatedEntries);
+    }
+
+    document.getElementById("searchByName").addEventListener("input", () => {
+        currentPage = 1;
+        filterAndRender();
+    });
+
+    document.getElementById("sortByDate").addEventListener("click", () => {
+        filterAndRender(); // Сортировка уже встроена в filterAndRender
+    });
+
+    document.getElementById("prevPage").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            filterAndRender();
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", () => {
+        // Предполагаем, что всегда есть следующая страница
+        currentPage++;
+        filterAndRender();
+    });
+
+    filterAndRender(); // Инициализация первой страницы журнала
+
+
+	// экспорт в csv
+	/////////////////////////////////////////////////////////////////////////
+
+	function exportToCSV(actionLog) {
+		// Создание заголовков CSV файла
+		const csvHeaders = "Date,User,Action\n";
+		// Преобразование данных журнала в строку CSV
+		const csvRows = actionLog.map(entry =>
+			`"${entry.date}","${entry.user}","${entry.action}"`
+		).join("\n");
+
+		// Создание строки CSV с BOM для UTF-8
+		const BOM = "\uFEFF";
+		const csvString = BOM + csvHeaders + csvRows;
+
+		// Создание Blob объекта с типом MIME для CSV и указанием кодировки UTF-8
+		const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+		// Создание временной ссылки для скачивания и её нажатие
+		const link = document.createElement("a");
+		if (link.download !== undefined) { // Проверка поддержки атрибута download
+			const url = URL.createObjectURL(blob);
+			link.setAttribute("href", url);
+			link.setAttribute("download", "actionLog.csv");
+			link.style.visibility = 'hidden';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	}
+
+	// Добавляем слушатель события на кнопку экспорта
+	document.getElementById("exportLog").addEventListener("click", function() {
+		exportToCSV(actionLog); // Предполагается, что actionLog - это ваш массив данных журнала
+	});
+
 });

@@ -97,17 +97,30 @@
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h5 class="modal-title" id="actionLogModalLabel">Журнал действий</h5>
+										<h5 class="modal-title" id="actionLogModalLabel">Journal des actions</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"
 											aria-label="Закрыть"></button>
 									</div>
 									<div class="modal-body">
-										<div>14/04/2021 - Utilisateur A - Prêté</div>
-										<div>07/06/2021 - Utilisateur B - Retourné et vérifié</div>
+										<!-- Элементы управления -->
+										<div class="filters">
+											<input type="text" id="searchByName" placeholder="Recherche par nom...">
+											<button id="sortByDate">Trier par date</button>
+										</div>
+										<div id="actionLogEntries">
+											<!-- Здесь будут выводиться записи журнала -->
+										</div>
+										<!-- Пагинация -->
+										<div class="pagination">
+											<button id="prevPage">Précédent</button>
+											<span id="currentPage">1</span>
+											<button id="nextPage">Suivant</button>
+										</div>
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary"
 											data-bs-dismiss="modal">Закрыть</button>
+										<button type="button" id="exportLog">Exporter le journal</button>
 									</div>
 								</div>
 							</div>
@@ -234,43 +247,52 @@
 
 <!-- Modal for reserveModal -->
 <div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <!-- Навигация вкладок -->
-                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                <a class="nav-link active" id="v-pills-laptop-tab" data-bs-toggle="pill" href="#v-pills-laptop" role="tab" aria-controls="v-pills-laptop" aria-selected="true">Ordinateurs portables</a>
-                                <a class="nav-link" id="v-pills-computer-monitor-tab" data-bs-toggle="pill" href="#v-pills-computer-monitor" role="tab" aria-controls="v-pills-computer-monitor" aria-selected="false">Ecrans d'ordinateurs</a>
-                                <a class="nav-link" id="v-pills-smartphone-tab" data-bs-toggle="pill" href="#v-pills-smartphone" role="tab" aria-controls="v-pills-smartphone" aria-selected="false">Smartphones</a>
-                                <!-- Добавьте дополнительные вкладки здесь -->
-                            </div>
-                        </div>
-                        <div class="col-md-9">
-                            <!-- Контент вкладок -->
-                            <div class="tab-content" id="v-pills-tabContent">
-                                <div class="tab-pane fade show active" id="v-pills-laptop" role="tabpanel" aria-labelledby="v-pills-laptop-tab">Контент для ноутбуков</div>
-                                <div class="tab-pane fade" id="v-pills-computer-monitor" role="tabpanel" aria-labelledby="v-pills-computer-monitor-tab">Контент для мониторов</div>
-                                <div class="tab-pane fade" id="v-pills-smartphone" role="tabpanel" aria-labelledby="v-pills-smartphone-tab">Контент для смартфонов</div>
-                                <!-- Добавьте контент для дополнительных вкладок здесь -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 text-center">
-                    <button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-3">
+							<!-- Навигация вкладок -->
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+								aria-orientation="vertical">
+								<a class="nav-link active" id="v-pills-laptop-tab" data-bs-toggle="pill"
+									href="#v-pills-laptop" role="tab" aria-controls="v-pills-laptop"
+									aria-selected="true">Ordinateurs portables</a>
+								<a class="nav-link" id="v-pills-computer-monitor-tab" data-bs-toggle="pill"
+									href="#v-pills-computer-monitor" role="tab" aria-controls="v-pills-computer-monitor"
+									aria-selected="false">Ecrans d'ordinateurs</a>
+								<a class="nav-link" id="v-pills-smartphone-tab" data-bs-toggle="pill"
+									href="#v-pills-smartphone" role="tab" aria-controls="v-pills-smartphone"
+									aria-selected="false">Smartphones</a>
+								<!-- Добавьте дополнительные вкладки здесь -->
+							</div>
+						</div>
+						<div class="col-md-9">
+							<!-- Контент вкладок -->
+							<div class="tab-content" id="v-pills-tabContent">
+								<div class="tab-pane fade show active" id="v-pills-laptop" role="tabpanel"
+									aria-labelledby="v-pills-laptop-tab">Контент для ноутбуков</div>
+								<div class="tab-pane fade" id="v-pills-computer-monitor" role="tabpanel"
+									aria-labelledby="v-pills-computer-monitor-tab">Контент для мониторов</div>
+								<div class="tab-pane fade" id="v-pills-smartphone" role="tabpanel"
+									aria-labelledby="v-pills-smartphone-tab">Контент для смартфонов</div>
+								<!-- Добавьте контент для дополнительных вкладок здесь -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12 text-center">
+					<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
 </div>
-
