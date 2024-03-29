@@ -243,56 +243,77 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	function saveChanges(row) {
-		// ...
 		const inputs = row.querySelectorAll(".edit-mode");
 		let isValidDate = true; // Флаг валидности дат
+		let startDate = null;
+		let endDate = null;
 
 		inputs.forEach((input) => {
-			if (input.type === "date") {
-				// Проверка, что следующий элемент - это span с классом error-message
-				const errorMessageSpan =
-					input.nextElementSibling &&
-					input.nextElementSibling.classList.contains("error-message")
-						? input.nextElementSibling
-						: null;
+			const errorMessageSpan =
+				input.nextElementSibling &&
+				input.nextElementSibling.classList.contains("error-message")
+					? input.nextElementSibling
+					: null;
 
+			if (input.type === "date") {
 				if (errorMessageSpan) {
 					errorMessageSpan.classList.add("d-none");
 					errorMessageSpan.textContent = ""; // Очищаем предыдущие сообщения об ошибке
+				}
 
-					const dateValue = input.value
-						? new Date(input.value)
-						: null;
-					const minDate = new Date(input.getAttribute("min"));
-					const maxDate = new Date(input.getAttribute("max"));
+				const dateValue = input.value ? new Date(input.value) : null;
+				const minDate = new Date(input.getAttribute("min"));
+				const maxDate = new Date(input.getAttribute("max"));
 
-					if (
-						dateValue &&
-						(isNaN(dateValue.getTime()) ||
-							dateValue < minDate ||
-							dateValue > maxDate)
-					) {
-						isValidDate = false;
+				if (
+					dateValue &&
+					(isNaN(dateValue.getTime()) ||
+						dateValue < minDate ||
+						dateValue > maxDate)
+				) {
+					isValidDate = false;
+					if (errorMessageSpan) {
 						errorMessageSpan.classList.remove("d-none");
 						errorMessageSpan.textContent =
 							"La date sélectionnée dépasse les limites autorisées. Veuillez choisir une date à partir d'aujourd'hui et dans les 3 prochaines années.";
-					} else if (!dateValue || isNaN(dateValue.getTime())) {
-						isValidDate = false;
+					}
+				} else if (!dateValue || isNaN(dateValue.getTime())) {
+					isValidDate = false;
+					if (errorMessageSpan) {
 						errorMessageSpan.classList.remove("d-none");
 						errorMessageSpan.textContent =
 							"La date entrée est invalide.";
-					} else {
-						// Обновляем DOM и dataset только если дата корректна
-						const dateSpan = row.querySelector(
-							`span[data-name="${input.name}"]`
-						);
-						dateSpan.textContent = input.value;
-						// Обновляем dataset только если дата корректна
-						row.dataset[input.name] = input.value;
+					}
+				} else {
+					// Запоминаем значения даты начала и окончания
+					if (input.name === "startdate") {
+						startDate = dateValue;
+					} else if (input.name === "enddate") {
+						endDate = dateValue;
 					}
 				}
 			}
 		});
+
+		// Проверка, что дата начала не больше даты окончания
+		if (startDate && endDate && startDate > endDate) {
+			isValidDate = false;
+			// Находим элементы для сообщения об ошибке у конкретных полей даты начала и окончания
+			const startErrorMessageSpan = row.querySelector(
+				'input[name="startdate"]'
+			).nextElementSibling;
+			const endErrorMessageSpan = row.querySelector(
+				'input[name="enddate"]'
+			).nextElementSibling;
+
+			if (startErrorMessageSpan && endErrorMessageSpan) {
+				startErrorMessageSpan.classList.remove("d-none");
+				startErrorMessageSpan.textContent =
+					"La date de début doit être antérieure à la date de fin.";
+				endErrorMessageSpan.classList.remove("d-none");
+				endErrorMessageSpan.textContent = "";
+			}
+		}
 
 		if (!isValidDate) return; // Прекращаем выполнение функции, если дата невалидна
 
