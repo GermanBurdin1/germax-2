@@ -37,11 +37,18 @@
 				<table class="table table-hover" id="equipment-table">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Nom de l'équipement</th>
-							<th>Catégorie</th>
+							<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i
+										class="fas fa-sort"></i></button></th>
+							<th><button class="btn btn-link p-0 border-0" id="sortByName"
+									style="text-decoration: none; color: black;">Nom de l'équipement <i
+										class="fas fa-sort"></i></button></th>
+							<th><button class="btn btn-link p-0 border-0" id="sortByCategory"
+									style="text-decoration: none; color: black;">Catégorie <i
+										class="fas fa-sort"></i></button></th>
 							<th>Description</th>
-							<th>Disponibilité</th>
+							<th><button class="btn btn-link p-0 border-0" id="sortByStatus"
+									style="text-decoration: none; color: black;">Catégorie <i
+										class="fas fa-sort"></i></button></th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -255,10 +262,12 @@
 			</div>
 			<div class="modal-body">
 				<div class="container-fluid">
-                    <input type="text" id="searchUser" class="form-control mb-3" placeholder="Rechercher par nom ou prénom...">
+					<input type="text" id="searchUser" class="form-control mb-3"
+						placeholder="Rechercher par nom ou prénom...">
 					<div class="row">
 						<div class="col-md-3">
-							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+								aria-orientation="vertical">
 								<a class="nav-link active" id="v-pills-enseignants-tab" data-bs-toggle="pill"
 									href="#v-pills-enseignants" role="tab" aria-controls="v-pills-enseignants"
 									aria-selected="true">Enseignants</a>
@@ -281,15 +290,16 @@
 						</div>
 					</div>
 				</div>
-                <div class="pagination-controls text-center">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Précédent</a></li>
-                            <!-- Нумерация страниц будет сгенерирована здесь -->
-                            <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
-                        </ul>
-                    </nav>
-                </div>
+				<div class="pagination-controls text-center">
+					<nav aria-label="Page navigation example">
+						<ul class="pagination justify-content-center">
+							<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"
+									aria-disabled="true">Précédent</a></li>
+							<!-- Нумерация страниц будет сгенерирована здесь -->
+							<li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+						</ul>
+					</nav>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -297,4 +307,3 @@
 		</div>
 	</div>
 </div>
-
