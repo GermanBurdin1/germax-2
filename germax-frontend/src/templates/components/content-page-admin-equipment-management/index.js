@@ -167,6 +167,137 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	});
 
+	// archive
+	// document.querySelectorAll(".archive-action").forEach((button) => {
+	// 	button.addEventListener("click", function (event) {
+	// 	  event.preventDefault();
+	// 	  const row = button.closest("tr");
+	// 	  const equipmentId = row.dataset.equipmentId;
+
+	// 	  fetch("/archive-equipment", {
+	// 		method: "POST",
+	// 		headers: {
+	// 		  "Content-Type": "application/json",
+	// 		},
+	// 		body: JSON.stringify({ id: equipmentId }),
+	// 	  })
+	// 	  .then((response) => response.json())
+	// 	  .then((data) => {
+	// 		if (data.success) {
+	// 		  alert("Данные были успешно перемещены в архив.");
+
+	// 		  // Находим таблицу архивного оборудования
+	// 		  const archiveTableBody = document.querySelector("#archiveEquipment tbody");
+
+	// 		  // Убираем кнопку "Архивировать" и добавляем кнопку "Восстановить"
+	// 		  const actionCell = row.querySelector('td:last-child');
+	// 		  actionCell.innerHTML = `
+	// 			<button class="btn btn-primary restore-action" data-equipment-id="${equipmentId}">Восстановить</button>
+	// 		  `;
+
+	// 		  // Добавляем строку в таблицу архива
+	// 		  archiveTableBody.appendChild(row);
+
+	// 		  // Переключаемся на вкладку 'Архив'
+	// 		  const archiveTab = new bootstrap.Tab(document.querySelector('#archive-equipment-tab'));
+	// 		  archiveTab.show();
+
+	// 		  // Вам нужно будет добавить сюда обработчик для кнопки "Восстановить", если он у вас ещё не реализован
+
+	// 		} else {
+	// 		  alert("Произошла ошибка при архивации данных.");
+	// 		}
+	// 	  })
+	// 	  .catch((error) => {
+	// 		console.error("Error:", error);
+	// 		alert("Произошла ошибка при архивации данных.");
+	// 	  });
+	// 	});
+	//   });
+
+	// Обработчик клика для архивации
+	document.querySelectorAll(".archive-action").forEach((button) => {
+		attachArchiveHandler(button);
+	});
+
+	// Функция для добавления обработчика событий кнопке "Восстановить"
+	function attachRestoreHandler(restoreButton) {
+		restoreButton.addEventListener("click", function () {
+			const row = restoreButton.closest("tr");
+
+			// Получаем tbody активного оборудования
+			const activeEquipmentBody = document.querySelector(
+				"#activeEquipment tbody"
+			);
+			// Перемещаем строку обратно в активное оборудование
+			activeEquipmentBody.appendChild(row);
+
+			// Возвращаем кнопки к исходному состоянию
+			const actionCell = row.querySelector("td:last-child");
+			actionCell.innerHTML = `
+
+			<button class="btn btn-secondary dropdown-toggle" type="button"
+				id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+				Choisir une action
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			  <li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
+			  <li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
+			  <li><a class="dropdown-item" href="#">Voir les détails</a></li>
+			  <li><a class="dropdown-item" href="#">Réserver</a></li>
+			  <li><a class="dropdown-item toggle-log-button" href="#"
+					  data-log-id="actionLog-1">Journal des actions</a></li>
+			  <li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+			</ul>
+
+	  `;
+
+			// Переключаемся на вкладку 'Активное оборудование'
+			const activeTab = new bootstrap.Tab(
+				document.querySelector("#active-equipment-tab")
+			);
+			activeTab.show();
+
+			// Повторно привязываем обработчик для кнопки "Архивировать"
+			const newArchiveButton =
+				actionCell.querySelector(".archive-action");
+			if (newArchiveButton) {
+				attachArchiveHandler(newArchiveButton);
+			}
+		});
+	}
+
+	// Функция для добавления обработчика событий кнопке "Архивировать"
+	function attachArchiveHandler(archiveButton) {
+		archiveButton.addEventListener("click", function () {
+			const row = archiveButton.closest("tr");
+
+			// Находим таблицу архивного оборудования
+			const archiveTableBody = document.querySelector(
+				"#archiveEquipment tbody"
+			);
+
+			// Добавляем строку в таблицу архива
+			archiveTableBody.appendChild(row);
+
+			// Изменяем действия для архивной строки
+			const actionCell = row.querySelector("td:last-child");
+			actionCell.innerHTML = `
+		<button class="btn btn-primary restore-action" data-equipment-id="${row.dataset.equipmentId}">Восстановить</button>
+	  `;
+
+			// Добавляем обработчик для кнопки "Восстановить" для только что перемещенной строки
+			const restoreButton = actionCell.querySelector(".restore-action");
+			attachRestoreHandler(restoreButton);
+
+			// Переключаемся на вкладку 'Архив'
+			const archiveTab = new bootstrap.Tab(
+				document.querySelector("#archive-equipment-tab")
+			);
+			archiveTab.show();
+		});
+	}
+
 	// edit-action
 
 	document.querySelectorAll(".edit-action").forEach((item) => {
@@ -375,11 +506,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	document.addEventListener("DOMContentLoaded", function () {
+		// Ищем все элементы, которые должны вести себя как вкладки
 		const triggerTabList = [].slice.call(
-			document.querySelectorAll("#reserveModal .nav-link")
+			document.querySelectorAll('.nav-link[data-bs-toggle="tab"]')
 		);
+
 		triggerTabList.forEach(function (triggerEl) {
-			var tabTrigger = new Tab(triggerEl);
+			const tabTrigger = new Tab(triggerEl);
 
 			triggerEl.addEventListener("click", function (e) {
 				e.preventDefault();
