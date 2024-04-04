@@ -37,186 +37,213 @@
 		</div>
 	</div>
 
-	<div class="table-responsive">
-		<table class="table" id="reservationsTable">
-			<thead>
-				<tr>
-					<th>ID Réservation <button class="btn btn-link p-0 border-0" id="sortById"><i
-								class="fas fa-sort"></i></button></th>
-					<th>Utilisateur <button class="btn btn-link p-0 border-0" id="sortByUser"><i
-								class="fas fa-sort"></i></button></th>
-					<th>Équipement <button class="btn btn-link p-0 border-0" id="sortByEquipment"><i
-								class="fas fa-sort"></i></button></th>
-					<th>Date Début <button class="btn btn-link p-0 border-0" id="sortByStartDate"><i
-								class="fas fa-sort"></i></button></th>
-					<th>Date Fin <button class="btn btn-link p-0 border-0" id="sortByEndDate"><i
-								class="fas fa-sort"></i></button></th>
-					<th>Statut <button class="btn btn-link p-0 border-0" id="sortByStatus"><i
-								class="fas fa-sort"></i></button></th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- Преподаватели -->
-				<tr data-id="1" data-user="Enseignant A" data-equipment="Laptop" data-startdate="2023-04-01"
-					data-enddate="2023-04-03" data-status="Actif">
-					<td>1</td>
-					<td>Enseignant A</td>
-					<td>Laptop</td>
-					<td>
-						<span class="view-mode" data-name="startdate">2023-04-01</span>
-						<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
-						<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
-					</td>
-					<td>
-						<span class="view-mode" data-name="enddate">2023-04-03</span>
-						<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
-						<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
-					</td>
 
-					<td>
-						<span class="view-mode">Actif</span>
-						<select class="edit-mode d-none">
-							<option value="Actif">Actif</option>
-							<option value="Waiting">En attente</option>
-							<option value="Cancelled">Annulé</option>
-						</select>
-					</td>
-					<td>
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-								data-bs-toggle="dropdown" aria-expanded="false">
-								Choisir une action
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item edit-reservation" href="#">Éditer</a></li>
-								<li>
-									<a class="dropdown-item delete-action" href="#">Supprimer</a>
-								</li>
-								<li>
-									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-										data-bs-target="#detailsModal">Voir les détails</a>
-								</li>
+	<!-- Вкладки для переключения между активными и завершенными резервациями -->
+	<div class="nav nav-tabs" id="reservationTabs" role="tablist">
+		<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
+			role="tab" aria-controls="activeReservations" aria-selected="true">Réservations actives</a>
+		<a class="nav-link" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
+			role="tab" aria-controls="completedReservations" aria-selected="false">Réservations archivées</a>
+	</div>
 
-							</ul>
-						</div>
-					</td>
-				</tr>
-				<tr data-id="2" data-user="Enseignant B" data-equipment="Tablet" data-startdate="2023-04-04"
-					data-enddate="2023-04-05" data-status="En attente">
-					<td>2</td>
-					<td>Enseignant B</td>
-					<td>Tablet</td>
-					<td>2023-04-04</td>
-					<td>2023-04-05</td>
-					<td>En attente</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="3" data-user="Enseignant C" data-equipment="Smartphone" data-startdate="2023-04-06"
-					data-enddate="2023-04-07" data-status="Annulé">
-					<td>3</td>
-					<td>Enseignant C</td>
-					<td>Smartphone</td>
-					<td>2023-04-06</td>
-					<td>2023-04-07</td>
-					<td>Annulé</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<!-- Менеджеры -->
-				<tr data-id="4" data-user="Manager A" data-equipment="Computer Monitor" data-startdate="2023-04-08"
-					data-enddate="2023-04-09" data-status="Actif">
-					<td>4</td>
-					<td>Manager A</td>
-					<td>Computer Monitor</td>
-					<td>2023-04-08</td>
-					<td>2023-04-09</td>
-					<td>Actif</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="5" data-user="Manager B" data-equipment="VR Headset" data-startdate="2023-04-10"
-					data-enddate="2023-04-11" data-status="En attente">
-					<td>5</td>
-					<td>Manager B</td>
-					<td>VR Headset</td>
-					<td>2023-04-10</td>
-					<td>2023-04-11</td>
-					<td>En attente</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="6" data-user="Manager C" data-equipment="Accessory" data-startdate="2023-04-12"
-					data-enddate="2023-04-13" data-status="Annulé">
-					<td>6</td>
-					<td>Manager C</td>
-					<td>Accessory</td>
-					<td>2023-04-12</td>
-					<td>2023-04-13</td>
-					<td>Annulé</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<!-- Студенты -->
-				<tr data-id="7" data-user="Etudiant A" data-equipment="Laptop" data-startdate="2023-04-14"
-					data-enddate="2023-04-15" data-status="Actif">
-					<td>7</td>
-					<td>Etudiant A</td>
-					<td>Laptop</td>
-					<td>2023-04-14</td>
-					<td>2023-04-15</td>
-					<td>Actif</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="8" data-user="Etudiant B" data-equipment="Tablet" data-startdate="2023-04-16"
-					data-enddate="2023-04-17" data-status="En attente">
-					<td>8</td>
-					<td>Etudiant B</td>
-					<td>Tablet</td>
-					<td>2023-04-16</td>
-					<td>2023-04-17</td>
-					<td>En attente</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="9" data-user="Etudiant C" data-equipment="Smartphone" data-startdate="2023-04-18"
-					data-enddate="2023-04-19" data-status="Annulé">
-					<td>9</td>
-					<td>Etudiant C</td>
-					<td>Smartphone</td>
-					<td>2023-04-18</td>
-					<td>2023-04-19</td>
-					<td>Annulé</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<!-- Кладовщики -->
-				<tr data-id="10" data-user="Magasinier A" data-equipment="VR Headset" data-startdate="2023-04-20"
-					data-enddate="2023-04-21" data-status="Actif">
-					<td>10</td>
-					<td>Magasinier A</td>
-					<td>VR Headset</td>
-					<td>2023-04-20</td>
-					<td>2023-04-21</td>
-					<td>Actif</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="11" data-user="Magasinier B" data-equipment="Computer Monitor" data-startdate="2023-04-22"
-					data-enddate="2023-04-23" data-status="En attente">
-					<td>11</td>
-					<td>Magasinier B</td>
-					<td>Computer Monitor</td>
-					<td>2023-04-22</td>
-					<td>2023-04-23</td>
-					<td>En attente</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-				<tr data-id="12" data-user="Magasinier C" data-equipment="Accessory" data-startdate="2023-04-24"
-					data-enddate="2023-04-25" data-status="Annulé">
-					<td>12</td>
-					<td>Magasinier C</td>
-					<td>Accessory</td>
-					<td>2023-04-24</td>
-					<td>2023-04-25</td>
-					<td>Annulé</td>
-					<td><button class="btn btn-primary">Détails</button></td>
-				</tr>
-			</tbody>
-		</table>
+	<!-- Содержимое вкладок -->
+	<div class="tab-content" id="reservationTabsContent">
+		<!-- Вкладка Активные резервации -->
+		<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
+			aria-labelledby="active-reservations-tab">
+			<div class="table-responsive">
+				<table class="table" id="reservationsTable">
+					<thead>
+						<tr>
+							<th>ID Réservation <button class="btn btn-link p-0 border-0" id="sortById"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Utilisateur <button class="btn btn-link p-0 border-0" id="sortByUser"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Équipement <button class="btn btn-link p-0 border-0" id="sortByEquipment"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Date Début <button class="btn btn-link p-0 border-0" id="sortByStartDate"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Date Fin <button class="btn btn-link p-0 border-0" id="sortByEndDate"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Statut <button class="btn btn-link p-0 border-0" id="sortByStatus"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Преподаватели -->
+						<tr data-id="1" data-user="Enseignant A" data-equipment="Laptop" data-startdate="2023-04-01"
+							data-enddate="2023-04-03" data-status="Actif">
+							<td>1</td>
+							<td>Enseignant A</td>
+							<td>Laptop</td>
+							<td>
+								<span class="view-mode" data-name="startdate">2023-04-01</span>
+								<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode" data-name="enddate">2023-04-03</span>
+								<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode">Actif</span>
+								<select class="edit-mode d-none">
+									<option value="Actif">Actif</option>
+									<option value="Waiting">En attente</option>
+									<option value="Cancelled">Annulé</option>
+								</select>
+							</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li><a class="dropdown-item edit-reservation" href="#">Éditer</a></li>
+										<li>
+											<a class="dropdown-item delete-action" href="#">Supprimer</a>
+										</li>
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+												<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+														href="#">Восстановить</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="2" data-user="Enseignant B" data-equipment="Tablet" data-startdate="2023-04-04"
+							data-enddate="2023-04-05" data-status="En attente">
+							<td>2</td>
+							<td>Enseignant B</td>
+							<td>Tablet</td>
+							<td>2023-04-04</td>
+							<td>2023-04-05</td>
+							<td>En attente</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="3" data-user="Enseignant C" data-equipment="Smartphone" data-startdate="2023-04-06"
+							data-enddate="2023-04-07" data-status="Annulé">
+							<td>3</td>
+							<td>Enseignant C</td>
+							<td>Smartphone</td>
+							<td>2023-04-06</td>
+							<td>2023-04-07</td>
+							<td>Annulé</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<!-- Менеджеры -->
+						<tr data-id="4" data-user="Manager A" data-equipment="Computer Monitor"
+							data-startdate="2023-04-08" data-enddate="2023-04-09" data-status="Actif">
+							<td>4</td>
+							<td>Manager A</td>
+							<td>Computer Monitor</td>
+							<td>2023-04-08</td>
+							<td>2023-04-09</td>
+							<td>Actif</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="5" data-user="Manager B" data-equipment="VR Headset" data-startdate="2023-04-10"
+							data-enddate="2023-04-11" data-status="En attente">
+							<td>5</td>
+							<td>Manager B</td>
+							<td>VR Headset</td>
+							<td>2023-04-10</td>
+							<td>2023-04-11</td>
+							<td>En attente</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="6" data-user="Manager C" data-equipment="Accessory" data-startdate="2023-04-12"
+							data-enddate="2023-04-13" data-status="Annulé">
+							<td>6</td>
+							<td>Manager C</td>
+							<td>Accessory</td>
+							<td>2023-04-12</td>
+							<td>2023-04-13</td>
+							<td>Annulé</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<!-- Студенты -->
+						<tr data-id="7" data-user="Etudiant A" data-equipment="Laptop" data-startdate="2023-04-14"
+							data-enddate="2023-04-15" data-status="Actif">
+							<td>7</td>
+							<td>Etudiant A</td>
+							<td>Laptop</td>
+							<td>2023-04-14</td>
+							<td>2023-04-15</td>
+							<td>Actif</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="8" data-user="Etudiant B" data-equipment="Tablet" data-startdate="2023-04-16"
+							data-enddate="2023-04-17" data-status="En attente">
+							<td>8</td>
+							<td>Etudiant B</td>
+							<td>Tablet</td>
+							<td>2023-04-16</td>
+							<td>2023-04-17</td>
+							<td>En attente</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="9" data-user="Etudiant C" data-equipment="Smartphone" data-startdate="2023-04-18"
+							data-enddate="2023-04-19" data-status="Annulé">
+							<td>9</td>
+							<td>Etudiant C</td>
+							<td>Smartphone</td>
+							<td>2023-04-18</td>
+							<td>2023-04-19</td>
+							<td>Annulé</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<!-- Кладовщики -->
+						<tr data-id="10" data-user="Magasinier A" data-equipment="VR Headset"
+							data-startdate="2023-04-20" data-enddate="2023-04-21" data-status="Actif">
+							<td>10</td>
+							<td>Magasinier A</td>
+							<td>VR Headset</td>
+							<td>2023-04-20</td>
+							<td>2023-04-21</td>
+							<td>Actif</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="11" data-user="Magasinier B" data-equipment="Computer Monitor"
+							data-startdate="2023-04-22" data-enddate="2023-04-23" data-status="En attente">
+							<td>11</td>
+							<td>Magasinier B</td>
+							<td>Computer Monitor</td>
+							<td>2023-04-22</td>
+							<td>2023-04-23</td>
+							<td>En attente</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+						<tr data-id="12" data-user="Magasinier C" data-equipment="Accessory" data-startdate="2023-04-24"
+							data-enddate="2023-04-25" data-status="Annulé">
+							<td>12</td>
+							<td>Magasinier C</td>
+							<td>Accessory</td>
+							<td>2023-04-24</td>
+							<td>2023-04-25</td>
+							<td>Annulé</td>
+							<td><button class="btn btn-primary">Détails</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Вкладка Завершенные резервации -->
+		<div class="tab-pane fade" id="completedReservations" role="tabpanel"
+			aria-labelledby="completed-reservations-tab">
+			<div class="table-responsive">
+				<table class="table" id="completedReservationsTable">
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 
