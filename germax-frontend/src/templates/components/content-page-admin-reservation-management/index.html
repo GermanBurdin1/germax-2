@@ -464,7 +464,6 @@
 					<div class="mb-3">
 						<label for="conflictResolutionAction" class="form-label">Action de résolution</label>
 						<select class="form-select" id="conflictResolutionAction">
-							<!-- Действия для решения 4 сценария -->
 							<option value="send_reminder">Envoyer un rappel de retour</option>
 							<option value="apply_penalties">Appliquer des sanctions</option>
 							<option value="offer_alternative">Proposer un équipement alternatif</option>
@@ -484,87 +483,76 @@
 
 <!-- list of conflicts -->
 <div class="container mt-4">
-	<h2>Derniers Conflits Détectés</h2>
-	<div class="table-responsive">
-		<table class="table">
-			<thead>
-				<tr>
-					<th>ID Rapport</th>
-					<th>Type de Rapport</th>
-					<th>Status</th>
-					<th>Date de Déclaration</th>
-					<th>Date de Ramassage</th>
-					<th>Description</th>
-					<th>ID Utilisateur</th>
-					<th>ID Prêt</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- Dynamically populated list of conflicts -->
-				<!-- Пример строки таблицы -->
-				<tr>
-					<td>1</td>
-					<td>Utilisation d'Équipement</td>
-					<td>Actif</td>
-					<td>2023-04-12</td>
-					<td>2023-04-15</td>
-					<td>Chevauchement des Réservations</td>
-					<td>2</td>
-					<td>5</td>
-					<td>
-						<button class="btn btn-primary" data-bs-toggle="modal"
-							data-bs-target="#resolveConflictModal">Résoudre</button>
-					</td>
-				</tr>
-				<!-- Добавьте дополнительные строки для каждого конфликта -->
-				<!-- Сценарий 2: Превышение лимита использования -->
-				<tr>
-					<td>2</td>
-					<td>Utilisation d'Équipement</td>
-					<td>Actif</td>
-					<td>2023-04-12</td>
-					<td>2023-04-15</td>
-					<td>Dépassement de la limite d'utilisation</td>
-					<td>3</td>
-					<td>6</td>
-					<td>
-						<button class="btn btn-primary" data-bs-toggle="modal"
-							data-bs-target="#resolveConflictModal-2">Résoudre</button>
-					</td>
-				</tr>
-				<!-- Сценарий 3: Несоответствие требованиям использования -->
-				<tr>
-					<td>3</td>
-					<td>Utilisation d'Équipement</td>
-					<td>Inactif</td>
-					<td>2023-05-20</td>
-					<td>2023-05-22</td>
-					<td>Non-respect des exigences d'utilisation</td>
-					<td>4</td>
-					<td>7</td>
-					<td>
-						<button class="btn btn-primary" data-bs-toggle="modal"
-							data-bs-target="#resolveConflictModal-3">Résoudre</button>
-					</td>
-				</tr>
-				<!-- Сценарий 4: Задержка возвращения оборудования -->
-				<tr>
-					<td>4</td>
-					<td>Utilisation d'Équipement</td>
-					<td>En attente</td>
-					<td>2023-06-01</td>
-					<td>2023-06-03</td>
-					<td>Retard dans le retour du matériel</td>
-					<td>5</td>
-					<td>8</td>
-					<td>
-						<button class="btn btn-primary" data-bs-toggle="modal"
-							data-bs-target="#resolveConflictModal-4">Résoudre</button>
-					</td>
-				</tr>
-
-			</tbody>
-		</table>
-	</div>
+    <h2>Derniers Conflits Détectés</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th data-column="idRapport" data-type="number">ID Rapport<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th data-column="typeDeRapport" data-type="text">Type de Rapport<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th data-column="status" data-type="text">Status<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th data-column="dateDeclaration" data-type="date">Date de Déclaration<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th data-column="dateRamassage" data-type="date">Date de Ramassage<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th>Description</th>
+                    <th data-column="idUtilisateur" data-type="number">ID Utilisateur<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th data-column="idPret" data-type="number">ID Prêt<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-id-rapport="1" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif" data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="2" data-id-pret="5">
+                    <td>1</td>
+                    <td>Utilisation d'Équipement</td>
+                    <td>Actif</td>
+                    <td>2023-04-12</td>
+                    <td>2023-04-15</td>
+                    <td>Chevauchement des Réservations</td>
+                    <td>2</td>
+                    <td>5</td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal">Résoudre</button>
+                    </td>
+                </tr>
+                <tr data-id-rapport="2" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif" data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="3" data-id-pret="6">
+                    <td>2</td>
+                    <td>Utilisation d'Équipement</td>
+                    <td>Actif</td>
+                    <td>2023-04-12</td>
+                    <td>2023-04-15</td>
+                    <td>Дépassement de la limite d'utilisation</td>
+                    <td>3</td>
+                    <td>6</td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal-2">Résoudre</button>
+                    </td>
+                </tr>
+                <tr data-id-rapport="3" data-type-de-rapport="Utilisation d'Équipement" data-status="Inactif" data-date-declaration="2023-05-20" data-date-ramassage="2023-05-22" data-id-utilisateur="4" data-id-pret="7">
+                    <td>3</td>
+                    <td>Utilisation d'Équipement</td>
+                    <td>Inactif</td>
+                    <td>2023-05-20</td>
+                    <td>2023-05-22</td>
+                    <td>Non-respect des exigences d'utilisation</td>
+                    <td>4</td>
+                    <td>7</td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal-3">Résoudre</button>
+                    </td>
+                </tr>
+                <tr data-id-rapport="4" data-type-de-rapport="Utilisation d'Équipement" data-status="En attente" data-date-declaration="2023-06-01" data-date-ramassage="2023-06-03" data-id-utilisateur="5" data-id-pret="8">
+                    <td>4</td>
+                    <td>Utilisation d'Équipement</td>
+                    <td>En attente</td>
+                    <td>2023-06-01</td>
+                    <td>2023-06-03</td>
+                    <td>Retard dans le retour du matériel</td>
+                    <td>5</td>
+                    <td>8</td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal-4">Résoudre</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
