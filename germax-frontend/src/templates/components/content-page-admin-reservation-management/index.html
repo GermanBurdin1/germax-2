@@ -55,18 +55,24 @@
 				<table class="table" id="reservationsTable">
 					<thead>
 						<tr>
-							<th>ID Réservation <button class="btn btn-link p-0 border-0" id="sortById"><i
-										class="fas fa-sort"></i></button></th>
-							<th>Utilisateur <button class="btn btn-link p-0 border-0" id="sortByUser"><i
-										class="fas fa-sort"></i></button></th>
-							<th>Équipement <button class="btn btn-link p-0 border-0" id="sortByEquipment"><i
-										class="fas fa-sort"></i></button></th>
-							<th>Date Début <button class="btn btn-link p-0 border-0" id="sortByStartDate"><i
-										class="fas fa-sort"></i></button></th>
-							<th>Date Fin <button class="btn btn-link p-0 border-0" id="sortByEndDate"><i
-										class="fas fa-sort"></i></button></th>
-							<th>Statut <button class="btn btn-link p-0 border-0" id="sortByStatus"><i
-										class="fas fa-sort"></i></button></th>
+							<th data-column="id" data-type="number">ID Réservation <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="user" data-type="text">Utilisateur <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="equipment" data-type="text">Équipement <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="startdate" data-type="date">Date Début <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="enddate" data-type="date">Date Fin <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="status" data-type="status">Statut <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
@@ -111,8 +117,8 @@
 												data-bs-target="#detailsModal">Voir les détails</a>
 										</li>
 										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
-												<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
-														href="#">Восстановить</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Восстановить</a></li>
 									</ul>
 								</div>
 							</td>

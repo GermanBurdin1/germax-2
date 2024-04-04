@@ -3,6 +3,7 @@ import Modal from "bootstrap/js/dist/modal";
 import Collapse from "bootstrap/js/dist/collapse";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Tab from "bootstrap/js/dist/tab";
+import { sortTable, sortOrder } from "../../../utils/sort";
 
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("Начало выполнения кода внутри DOMContentLoaded");
@@ -70,99 +71,28 @@ document.addEventListener("DOMContentLoaded", () => {
 		filter.addEventListener("change", fetchData);
 	});
 
-	let sortOrder = {
-		id: true,
-		user: true,
-		startDate: true,
-		endDate: true,
-		status: true,
-	};
+	//sort
+	document.querySelectorAll(".sortButton").forEach((button) => {
+		button.addEventListener("click", function () {
+			const header = this.closest("th");
+			const column = header.getAttribute("data-column");
+			const dataType = header.getAttribute("data-type");
+			const tbody = header.closest("table").querySelector("tbody");
 
-	function sortTable(column, dataType) {
-		const tbody = document.querySelector("#reservationsTable tbody");
-		const rows = Array.from(tbody.querySelectorAll("tr"));
+			// Определение направления сортировки
+			const currentSortingColumn = localStorage.getItem("sortingColumn");
+			let isAscending = true; // Значение по умолчанию
+			if (currentSortingColumn === column) {
+				// Инвертируем направление, если предыдущая сортировка была по этому же столбцу
+				isAscending = localStorage.getItem("sortingOrder") !== "asc";
+			}
+			localStorage.setItem("sortingColumn", column);
+			localStorage.setItem("sortingOrder", isAscending ? "asc" : "desc");
 
-		let sortedRows;
-		if (column === "status") {
-			sortedRows = sortByStatus(rows, sortOrder[column]);
-		} else {
-			sortedRows = rows.sort((a, b) => {
-				let aValue, bValue;
-				if (dataType === "number") {
-					aValue = Number(a.dataset[column]);
-					bValue = Number(b.dataset[column]);
-				} else if (dataType === "date") {
-					aValue = new Date(a.dataset[column]);
-					bValue = new Date(b.dataset[column]);
-				} else {
-					// text and others
-					aValue = a.dataset[column].toLowerCase();
-					bValue = b.dataset[column].toLowerCase();
-				}
-
-				if (dataType === "text") {
-					return sortOrder[column]
-						? aValue < bValue
-							? -1
-							: 1
-						: aValue > bValue
-						? -1
-						: 1;
-				} else {
-					return sortOrder[column]
-						? aValue - bValue
-						: bValue - aValue;
-				}
-			});
-		}
-
-		// Toggle sort order for next click
-		sortOrder[column] = !sortOrder[column];
-
-		// Update DOM
-		tbody.innerHTML = "";
-		sortedRows.forEach((row) => tbody.appendChild(row));
-	}
-
-	function sortByStatus(rows, ascending) {
-		// Определение приоритетов статусов
-		const statusPriority = ascending
-			? {
-					Actif: 1,
-					"En attente": 2,
-					Annulé: 3,
-			  }
-			: {
-					Annulé: 1,
-					"En attente": 2,
-					Actif: 3,
-			  };
-
-		return rows.sort((a, b) => {
-			const priorityA = statusPriority[a.dataset.status] || 999;
-			const priorityB = statusPriority[b.dataset.status] || 999;
-			return priorityA - priorityB;
+			// Вызываем функцию сортировки с обновленными параметрами
+			sortTable(tbody, column, dataType, isAscending);
 		});
-	}
-
-	document
-		.getElementById("sortById")
-		.addEventListener("click", () => sortTable("id", "number"));
-	document
-		.getElementById("sortByUser")
-		.addEventListener("click", () => sortTable("user", "text"));
-	document
-		.getElementById("sortByEquipment")
-		.addEventListener("click", () => sortTable("equipment", "text")); // Исправлено
-	document
-		.getElementById("sortByStartDate")
-		.addEventListener("click", () => sortTable("startdate", "date"));
-	document
-		.getElementById("sortByEndDate")
-		.addEventListener("click", () => sortTable("enddate", "date"));
-	document
-		.getElementById("sortByStatus")
-		.addEventListener("click", () => sortTable("status", "text"));
+	});
 
 	// Всплывающие подсказки для кнопок сортировки
 	document.querySelectorAll(".btn-link").forEach((btn) => {
@@ -419,7 +349,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Дополнительные функции, такие как reinitializeDropdowns, initializeTabs и прочие
 		reinitializeDropdowns();
 		initializeTabs();
-		// Здесь добавьте любые другие функции инициализации, которые вам нужны
+
+		// Восстановление состояния сортировки
+		const sortingColumn = localStorage.getItem("sortingColumn");
+		const sortingOrder = localStorage.getItem("sortingOrder");
+		if (sortingColumn && sortingOrder) {
+			const isAscending = sortingOrder === "asc";
+			const tbody = document.querySelector("#reservationsTable tbody");
+			const dataType = document
+				.querySelector(`th[data-column="${sortingColumn}"]`)
+				.getAttribute("data-type");
+			sortTable(tbody, sortingColumn, dataType, isAscending);
+		}
+
+		// Инициализация других компонентов страницы
+		reinitializeDropdowns();
+		initializeTabs();
 	});
 
 	const dropdownElementList = [].slice.call(
