@@ -4,7 +4,6 @@ import Collapse from "bootstrap/js/dist/collapse";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Tab from "bootstrap/js/dist/tab";
 
-
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("Начало выполнения кода внутри DOMContentLoaded");
 	const generateReportButton = document.querySelector(
@@ -381,23 +380,46 @@ document.addEventListener("DOMContentLoaded", () => {
 				`reservation_${reservationId}`
 			);
 			if (savedData) {
-				const { user, equipment, startDate, endDate, status } =
-					JSON.parse(savedData);
-				row.dataset.user = user;
-				row.dataset.equipment = equipment;
-				row.dataset.startdate = startDate;
-				row.dataset.enddate = endDate;
-				row.dataset.status = status;
+				const reservationData = JSON.parse(savedData);
+				row.dataset.user = reservationData.user;
+				row.dataset.equipment = reservationData.equipment;
+				row.dataset.startdate = reservationData.startDate;
+				row.dataset.enddate = reservationData.endDate;
+				row.dataset.status = reservationData.status;
 
-				row.querySelector("td:nth-child(2)").textContent = user;
-				row.querySelector("td:nth-child(3)").textContent = equipment;
+				// Обновление текста в строке на основе сохранённых данных
+				row.querySelector("td:nth-child(2)").textContent =
+					reservationData.user;
+				row.querySelector("td:nth-child(3)").textContent =
+					reservationData.equipment;
 				row.querySelector(`span[data-name="startdate"]`).textContent =
-					startDate;
+					reservationData.startDate;
 				row.querySelector(`span[data-name="enddate"]`).textContent =
-					endDate;
-				row.querySelector("td:nth-child(6) span").textContent = status;
+					reservationData.endDate;
+				row.querySelector("td:nth-child(6) span").textContent =
+					reservationData.status;
+
+				// Проверка статуса архивации и перемещение строки в соответствующий раздел
+				if (reservationData.archived) {
+					const completedReservationsBody = document.querySelector(
+						"#completedReservations tbody"
+					);
+					completedReservationsBody.appendChild(row);
+					updateActionButtonsForRow(row, true); // Обновляем кнопки для архивированных строк
+				} else {
+					const activeReservationsBody = document.querySelector(
+						"#activeReservations tbody"
+					);
+					activeReservationsBody.appendChild(row);
+					updateActionButtonsForRow(row, false); // Обновляем кнопки для активных строк
+				}
 			}
 		});
+
+		// Дополнительные функции, такие как reinitializeDropdowns, initializeTabs и прочие
+		reinitializeDropdowns();
+		initializeTabs();
+		// Здесь добавьте любые другие функции инициализации, которые вам нужны
 	});
 
 	const dropdownElementList = [].slice.call(
@@ -489,26 +511,48 @@ document.addEventListener("DOMContentLoaded", () => {
 			completedTab.show();
 
 			reinitializeDropdowns();
+
+			const reservationId = row.dataset.id;
+			const reservationData =
+				JSON.parse(
+					localStorage.getItem(`reservation_${reservationId}`)
+				) || {};
+			reservationData.archived = true; // Устанавливаем статус архивации
+			localStorage.setItem(
+				`reservation_${reservationId}`,
+				JSON.stringify(reservationData)
+			);
+
+			updateActionButtonsForRow(row, true);
 		});
 	}
 
 	function attachRestoreHandler(button) {
 		button.addEventListener("click", function () {
 			const row = button.closest("tr");
+			const reservationId = row.dataset.id;
+			// Получаем данные о бронировании из localStorage
+			const reservationData =
+				JSON.parse(
+					localStorage.getItem(`reservation_${reservationId}`)
+				) || {};
+
+			// Обновляем статус архивации
+			reservationData.archived = false; // Указываем, что бронирование больше не архивировано
+
+			// Сохраняем обновлённые данные обратно в localStorage
+			localStorage.setItem(
+				`reservation_${reservationId}`,
+				JSON.stringify(reservationData)
+			);
+
 			const activeReservationsBody = document.querySelector(
 				"#activeReservations tbody"
 			);
 			activeReservationsBody.appendChild(row);
+			updateActionButtonsForRow(row, false); // Обновляем кнопки для активных строк
 
-			// Обновляем действия для строки
-			updateActionButtonsForRow(row, false);
-
-			// Переключаемся на вкладку 'Активные резервации'
-			const activeTab = new Tab(
-				document.querySelector("#active-reservations-tab")
-			);
-			activeTab.show();
-
+			// Не забудьте вызвать функции переинициализации компонентов, если это необходимо
 			reinitializeDropdowns();
 		});
 	}
@@ -529,7 +573,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (archiveButton) archiveButton.classList.add("d-none");
 
 			// Показываем кнопку "Восстановить" и "Удалить"
-			if (restoreButton) restoreButton.parentNode.classList.remove("d-none"); // Используем parentNode, чтобы управлять видимостью <li>
+			if (restoreButton)
+				restoreButton.parentNode.classList.remove("d-none"); // Используем parentNode, чтобы управлять видимостью <li>
 			if (deleteButton) deleteButton.classList.remove("d-none");
 		} else {
 			// Для активных записей возвращаем видимость кнопок "Редактировать", "Посмотреть детали" и "Архивировать"
