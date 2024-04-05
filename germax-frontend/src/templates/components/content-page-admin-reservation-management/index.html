@@ -118,7 +118,7 @@
 										</li>
 										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
 										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
-												href="#">Восстановить</a></li>
+												href="#">Rétablir</a></li>
 									</ul>
 								</div>
 							</td>
@@ -481,37 +481,53 @@
 </div>
 
 <div class="container mt-4">
-    <!-- Вкладки для переключения между активными и завершенными резервациями -->
-    <div class="nav nav-tabs" id="reservationTabs" role="tablist">
-        <a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
-            role="tab" aria-controls="activeReservations" aria-selected="true">Réservations actives</a>
-        <a class="nav-link" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
-            role="tab" aria-controls="completedReservations" aria-selected="false">Réservations archivées</a>
-    </div>
+	<!-- Вкладки для переключения между активными и завершенными резервациями -->
+	<div class="nav nav-tabs" id="reservationTabs" role="tablist">
+		<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
+			role="tab" aria-controls="activeReservations" aria-selected="true">Réservations actives</a>
+		<a class="nav-link" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
+			role="tab" aria-controls="completedReservations" aria-selected="false">Réservations archivées</a>
+	</div>
 
-    <!-- Содержимое вкладок -->
-    <div class="tab-content" id="reservationTabsContent">
-        <!-- Вкладка Активные резервации -->
-        <div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
-            aria-labelledby="active-reservations-tab">
-            <h2>Derniers Conflits Détectés</h2>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
+	<!-- Содержимое вкладок -->
+	<div class="tab-content" id="reservationTabsContent">
+		<!-- Вкладка Активные резервации -->
+		<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
+			aria-labelledby="active-reservations-tab">
+			<h2>Derniers Conflits Détectés</h2>
+			<div class="table-responsive">
+				<table class="table">
+					<thead>
 						<tr>
-							<th data-column="idRapport" data-type="number">ID Rapport<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
-							<th data-column="typeDeRapport" data-type="text">Type de Rapport<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
-							<th data-column="status" data-type="text">Status<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
-							<th data-column="dateDeclaration" data-type="date">Date de Déclaration<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
-							<th data-column="dateRamassage" data-type="date">Date de Ramassage<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+							<th data-column="idRapport" data-type="number">ID Rapport<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="typeDeRapport" data-type="text">Type de Rapport<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="status" data-type="text">Status<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="dateDeclaration" data-type="date">Date de Déclaration<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="dateRamassage" data-type="date">Date de Ramassage<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
 							<th>Description</th>
-							<th data-column="idUtilisateur" data-type="number">ID Utilisateur<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
-							<th data-column="idPret" data-type="number">ID Prêt<button class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button></th>
+							<th data-column="idUtilisateur" data-type="number">ID Utilisateur<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="idPret" data-type="number">ID Prêt<button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr data-id-rapport="1" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif" data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="2" data-id-pret="5">
+						<tr data-id-rapport="1" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif"
+							data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="2"
+							data-id-pret="5">
 							<td>1</td>
 							<td>Utilisation d'Équipement</td>
 							<td>Actif</td>
@@ -521,10 +537,33 @@
 							<td>2</td>
 							<td>5</td>
 							<td>
-								<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal">Résoudre</button>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li><a class="dropdown-item edit-reservation" href="#">Éditer</a></li>
+										<li>
+											<a class="dropdown-item delete-action" href="#">Supprimer</a>
+										</li>
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+										<li> <a class="dropdown-item resolve-action" data-bs-toggle="modal"
+												href="#" data-bs-target="#resolveConflictModal">Résoudre le conflit</a>
+										</li>
+									</ul>
+								</div>
 							</td>
 						</tr>
-						<tr data-id-rapport="2" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif" data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="3" data-id-pret="6">
+						<tr data-id-rapport="2" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif"
+							data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="3"
+							data-id-pret="6">
 							<td>2</td>
 							<td>Utilisation d'Équipement</td>
 							<td>Actif</td>
@@ -534,10 +573,13 @@
 							<td>3</td>
 							<td>6</td>
 							<td>
-								<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal-2">Résoudre</button>
+								<button class="btn btn-primary" data-bs-toggle="modal"
+									data-bs-target="#resolveConflictModal-2">Résoudre</button>
 							</td>
 						</tr>
-						<tr data-id-rapport="3" data-type-de-rapport="Utilisation d'Équipement" data-status="Inactif" data-date-declaration="2023-05-20" data-date-ramassage="2023-05-22" data-id-utilisateur="4" data-id-pret="7">
+						<tr data-id-rapport="3" data-type-de-rapport="Utilisation d'Équipement" data-status="Inactif"
+							data-date-declaration="2023-05-20" data-date-ramassage="2023-05-22" data-id-utilisateur="4"
+							data-id-pret="7">
 							<td>3</td>
 							<td>Utilisation d'Équipement</td>
 							<td>Inactif</td>
@@ -547,10 +589,13 @@
 							<td>4</td>
 							<td>7</td>
 							<td>
-								<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal-3">Résoudre</button>
+								<button class="btn btn-primary" data-bs-toggle="modal"
+									data-bs-target="#resolveConflictModal-3">Résoudre</button>
 							</td>
 						</tr>
-						<tr data-id-rapport="4" data-type-de-rapport="Utilisation d'Équipement" data-status="En attente" data-date-declaration="2023-06-01" data-date-ramassage="2023-06-03" data-id-utilisateur="5" data-id-pret="8">
+						<tr data-id-rapport="4" data-type-de-rapport="Utilisation d'Équipement" data-status="En attente"
+							data-date-declaration="2023-06-01" data-date-ramassage="2023-06-03" data-id-utilisateur="5"
+							data-id-pret="8">
 							<td>4</td>
 							<td>Utilisation d'Équipement</td>
 							<td>En attente</td>
@@ -560,29 +605,30 @@
 							<td>5</td>
 							<td>8</td>
 							<td>
-								<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resolveConflictModal-4">Résoudre</button>
+								<button class="btn btn-primary" data-bs-toggle="modal"
+									data-bs-target="#resolveConflictModal-4">Résoudre</button>
 							</td>
 						</tr>
 					</tbody>
-                </table>
-            </div>
-        </div>
+				</table>
+			</div>
+		</div>
 
-        <!-- Вкладка Завершенные резервации -->
-        <div class="tab-pane fade" id="completedReservations" role="tabpanel"
-            aria-labelledby="completed-reservations-tab">
-            <h2>Conflits Résolus</h2>
-            <div class="table-responsive">
-                <table class="table">
-                    <!-- Сюда можно вставить разметку для таблицы с архивированными резервациями, если у вас она есть -->
-                    <thead>
-                        <!-- Можете скопировать и модифицировать thead из активных резерваций, если структура таблицы похожа -->
-                    </thead>
-                    <tbody>
-                        <!-- Заполните данными об архивированных резервациях -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+		<!-- Вкладка Завершенные резервации -->
+		<div class="tab-pane fade" id="completedReservations" role="tabpanel"
+			aria-labelledby="completed-reservations-tab">
+			<h2>Conflits Résolus</h2>
+			<div class="table-responsive">
+				<table class="table">
+					<!-- Сюда можно вставить разметку для таблицы с архивированными резервациями, если у вас она есть -->
+					<thead>
+						<!-- Можете скопировать и модифицировать thead из активных резерваций, если структура таблицы похожа -->
+					</thead>
+					<tbody>
+						<!-- Заполните данными об архивированных резервациях -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
