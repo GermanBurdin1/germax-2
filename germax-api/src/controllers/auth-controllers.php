@@ -10,13 +10,13 @@ class AuthController {
     }
 
     public function login($email, $password) {
-		$stmt = $this->pdo->prepare("SELECT customer.*, permission.name AS permission_name FROM customer JOIN permission ON customer.id_permission = permission.id_permission WHERE mail = :email LIMIT 1");
+		$stmt = $this->pdo->prepare("SELECT user.*, permission.name AS permission_name FROM user JOIN permission ON customer.id_permission = permission.id_permission WHERE mail = :email LIMIT 1");
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
 		$stmt->execute();
 
 		if ($user = $stmt->fetch()) {
 			if (password_verify($password, $user['password'])) {
-				$_SESSION['user_id'] = $user['Id_customer'];
+				$_SESSION['user_id'] = $user['id_user'];
 				$_SESSION['user_email'] = $user['mail'];
 				$_SESSION['user_type'] = $user['permission_name']; // Сохраняем тип пользователя в сессии
 				return ['status' => 'success', 'message' => 'Logged in successfully', 'user_type' => $user['permission_name']];
@@ -43,7 +43,7 @@ class AuthController {
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 		// Теперь у нас есть id_permission, и мы можем вставить нового пользователя
-		$stmt = $this->pdo->prepare("INSERT INTO customer (lastname, firstname, phone, password, mail, id_permission) VALUES (:lastname, :firstname, :phone, :password, :mail, :id_permission)");
+		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, mail, id_permission) VALUES (:lastname, :firstname, :phone, :password, :mail, :id_permission)");
 		$stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
 		$stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
 		$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
