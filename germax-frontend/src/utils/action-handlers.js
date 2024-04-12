@@ -2,42 +2,54 @@ import {
 	reinitializeDropdowns,
 	updateActionButtonsForRow,
 } from "./dom-utils.js";
-import {
-	saveReservationToLocalStorage,
-	getReservationFromLocalStorage,
-} from "./storage-utils.js";
+import { saveReservationToLocalStorage } from "./storage-utils.js";
 import Tab from "bootstrap/js/dist/tab";
 
 // Аттачим обработчики архивирования
 function attachArchiveHandler(
 	button,
-	tableSelector,
-	selectorCompletedReservationsTab
+	tableSelector, // Селектор таблицы, куда нужно переместить строку
+	tabSelector // Селектор вкладки, которую нужно показать после перемещения
 ) {
-	button.addEventListener("click", function (event) {
-		event.preventDefault();
-		const row = button.closest("tr");
-		const reservationId = row.getAttribute("data-id-rapport"); // или другой атрибут, идентифицирующий резервацию
-		const reservationData =
-			saveReservationToLocalStorage(`reservation_${reservationId}`) || {};
+	console.log("Button clicked, attempting to archive");
+	event.preventDefault();
 
-		// Обновляем статус архивации и сохраняем изменения
-		reservationData.archived = true;
-		saveReservationToLocalStorage(
-			`reservation_${reservationId}`,
-			reservationData
+	const row = button.closest("tr");
+	const reservationId = row.getAttribute("data-id-rapport");
+
+	// Загружаем или создаём данные резервации
+	const reservationData =
+		saveReservationToLocalStorage(`reservation_${reservationId}`) || {};
+	reservationData.archived = true;
+	saveReservationToLocalStorage(
+		`reservation_${reservationId}`,
+		reservationData
+	);
+
+	const targetTableBody = document.querySelector(tableSelector);
+
+	if (targetTableBody) {
+		if (row.parentNode) {
+			row.parentNode.removeChild(row); // Удаляем строку из текущего расположения, если это необходимо
+		}
+		targetTableBody.appendChild(row); // Добавляем строку в новое место
+
+		updateActionButtonsForRow(row, true); // Обновляем состояние кнопок в строке
+		reinitializeDropdowns(); // Переинициализируем компоненты интерфейса
+
+		// Показываем нужную вкладку
+		const tabToShow = document.querySelector(tabSelector);
+		if (tabToShow) {
+			new Tab(tabToShow).show();
+		} else {
+			console.error("Tab to show not found for selector:", tabSelector);
+		}
+	} else {
+		console.error(
+			"Target table body not found for selector:",
+			tableSelector
 		);
-
-		// Перемещаем строку в таблицу архивированных резерваций
-		document.querySelector(tableSelector).appendChild(row);
-		updateActionButtonsForRow(row, true);
-		reinitializeDropdowns();
-
-		// Переключаемся на вкладку архивированных резерваций, если необходимо
-		new Tab(
-			document.querySelector(selectorCompletedReservationsTab)
-		).show();
-	});
+	}
 }
 
 function attachRestoreHandler(button, tableSelector) {

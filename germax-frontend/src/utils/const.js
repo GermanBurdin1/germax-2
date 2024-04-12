@@ -1,7 +1,7 @@
 const COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS  = "#completedReservations tbody";
-const COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS  = "#completedReservations tbody2";
+const COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS  = "#resolvedConflicts tbody";
 const ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB  = "#active-reservations-tab";
-const ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS  = "#active-reservations-tab-2";
+const ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS  = "#active-conflicts-tab";
 
 
 

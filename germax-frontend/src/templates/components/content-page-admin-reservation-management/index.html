@@ -482,18 +482,20 @@
 
 <div class="container mt-4">
 	<!-- Вкладки для переключения между активными и завершенными резервациями -->
-	<div class="nav nav-tabs" id="reservationTabs" role="tablist">
-		<a class="nav-link active" id="active-reservations-tab-2" data-bs-toggle="tab" href="#activeReservations2"
-			role="tab" aria-controls="activeReservations2" aria-selected="true">Conflits actifs</a>
-		<a class="nav-link" id="completed-reservations-tab-2" data-bs-toggle="tab" href="#completedReservations2"
-			role="tab" aria-controls="completedReservations2" aria-selected="false">Conflits résolus</a>
+	<div class="nav nav-tabs" id="conflictTabs" role="tablist">
+		<!-- Вкладка активных резерваций -->
+		<a class="nav-link active" id="active-conflicts-tab" data-bs-toggle="tab" href="#activeConflicts" role="tab"
+			aria-controls="activeConflicts" aria-selected="true">Conflits actifs</a>
+		<!-- Вкладка активных конфликтов -->
+		<a class="nav-link" id="resolved-conflicts-tab" data-bs-toggle="tab" href="#resolvedConflicts" role="tab"
+			aria-controls="resolvedConflicts" aria-selected="false">Conflits résolus</a>
 	</div>
 
 	<!-- Содержимое вкладок -->
-	<div class="tab-content" id="reservationTabsContent">
+	<div class="tab-content" id="conflictTabsContent">
 		<!-- Вкладка Активные резервации -->
-		<div class="tab-pane fade show active" id="activeReservations2" role="tabpanel"
-			aria-labelledby="active-reservations-tab-2">
+		<div class="tab-pane fade show active" id="activeConflicts" role="tabpanel"
+			aria-labelledby="active-conflicts-tab">
 			<h2>Derniers Conflits Détectés</h2>
 			<div class="table-responsive">
 				<table class="table">
@@ -554,8 +556,8 @@
 										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
 										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
 												href="#">Rétablir</a></li>
-										<li> <a class="dropdown-item resolve-action" data-bs-toggle="modal"
-												href="#" data-bs-target="#resolveConflictModal">Résoudre le conflit</a>
+										<li> <a class="dropdown-item resolve-action" data-bs-toggle="modal" href="#"
+												data-bs-target="#resolveConflictModal">Résoudre le conflit</a>
 										</li>
 									</ul>
 								</div>
@@ -615,8 +617,7 @@
 		</div>
 
 		<!-- Вкладка Завершенные резервации -->
-		<div class="tab-pane fade" id="completedReservations2" role="tabpanel"
-			aria-labelledby="completed-reservations-tab-2">
+		<div class="tab-pane fade" id="resolvedConflicts" role="tabpanel" aria-labelledby="resolved-conflicts-tab">
 			<h2>Conflits Résolus</h2>
 			<div class="table-responsive">
 				<table class="table">

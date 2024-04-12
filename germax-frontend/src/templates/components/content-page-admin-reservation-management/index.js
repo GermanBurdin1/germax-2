@@ -4,7 +4,16 @@ import Collapse from "bootstrap/js/dist/collapse";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Tab from "bootstrap/js/dist/tab";
 import { sortTable } from "../../../utils/sort";
-import {COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS, COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS, ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB, ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS} from "../../../utils/const";
+import {
+	attachArchiveHandler,
+	attachRestoreHandler,
+} from "../../../utils/action-handlers";
+import {
+	COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS,
+	COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS,
+	ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB,
+	ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS,
+} from "../../../utils/const";
 
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("Начало выполнения кода внутри DOMContentLoaded");
@@ -428,50 +437,50 @@ document.addEventListener("DOMContentLoaded", () => {
 		console.log("Dropdown успешно переинициализированы");
 	}
 
-	// Назначение обработчиков для кнопок "Архивировать"
+	// // Назначение обработчиков для кнопок "Архивировать"
+	// document.querySelectorAll(".archive-action").forEach((button) => {
+	// 	attachArchiveHandler(button, COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS, ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB);
+	// });
+
 	document.querySelectorAll(".archive-action").forEach((button) => {
-		attachArchiveHandler(button);
+		button.addEventListener("click", function () {
+			let tabContent = this.closest(".tab-content");
+			let activePane = tabContent.querySelector(".tab-pane.active");
+			let isActiveConflicts = activePane.id === "activeConflicts";
+			let isResolvedConflicts = activePane.id === "resolvedConflicts";
+			let isActiveReservations = activePane.id === "activeReservations";
+			let iscompletedReservations = activePane.id === "completedReservations";
+
+			if (isActiveReservations) {
+				attachArchiveHandler(
+					button,
+					COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS,
+					ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB
+				);
+			} else if (iscompletedReservations) {
+				console.log(iscompletedReservations);
+			}
+
+			if (isActiveConflicts) {
+				// Если активная вкладка - активные конфликты
+				attachArchiveHandler(
+					button,
+					COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS,
+					ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS
+				);
+			} else if (isResolvedConflicts) {
+				// Если активная вкладка - разрешённые конфликты
+				console.log(
+					"Действие для разрешённых конфликтов - возможно, здесь нужна другая логика"
+				);
+			}
+		});
 	});
 
 	// Назначение обработчиков для кнопок "Восстановить" (если они изначально присутствуют в DOM)
 	document.querySelectorAll(".restore-action").forEach((button) => {
 		attachRestoreHandler(button);
 	});
-
-	function attachArchiveHandler(button) {
-		button.addEventListener("click", function (event) {
-			event.preventDefault();
-			const row = button.closest("tr");
-			const completedReservationsBody = document.querySelector(
-				"#completedReservations tbody"
-			);
-			completedReservationsBody.appendChild(row);
-
-			// Обновляем действия для строки
-			updateActionButtonsForRow(row, true);
-
-			// Переключаемся на вкладку 'Завершенные резервации'
-			const completedTab = new Tab(
-				document.querySelector("#completed-reservations-tab")
-			);
-			completedTab.show();
-
-			reinitializeDropdowns();
-
-			const reservationId = row.dataset.id;
-			const reservationData =
-				JSON.parse(
-					localStorage.getItem(`reservation_${reservationId}`)
-				) || {};
-			reservationData.archived = true; // Устанавливаем статус архивации
-			localStorage.setItem(
-				`reservation_${reservationId}`,
-				JSON.stringify(reservationData)
-			);
-
-			updateActionButtonsForRow(row, true);
-		});
-	}
 
 	function attachRestoreHandler(button) {
 		button.addEventListener("click", function () {
@@ -501,36 +510,5 @@ document.addEventListener("DOMContentLoaded", () => {
 			// Не забудьте вызвать функции переинициализации компонентов, если это необходимо
 			reinitializeDropdowns();
 		});
-	}
-
-	function updateActionButtonsForRow(row, archived) {
-		// Находим все нужные элементы внутри строки
-		const editButton = row.querySelector(".edit-reservation");
-		const deleteButton = row.querySelector(".delete-action");
-		const detailButton = row.querySelector(".view-details");
-		const archiveButton = row.querySelector(".archive-action");
-		const restoreButton = row.querySelector(".restore-action a"); // Обратите внимание, что в вашем HTML восстановление обёрнуто в <a>
-
-		// Устанавливаем видимость кнопок в зависимости от того, архивирована ли запись
-		if (archived) {
-			// Для архивированных записей скрываем кнопки "Редактировать", "Посмотреть детали" и "Архивировать"
-			if (editButton) editButton.classList.add("d-none");
-			if (detailButton) detailButton.classList.add("d-none");
-			if (archiveButton) archiveButton.classList.add("d-none");
-
-			// Показываем кнопку "Восстановить" и "Удалить"
-			if (restoreButton)
-				restoreButton.parentNode.classList.remove("d-none"); // Используем parentNode, чтобы управлять видимостью <li>
-			if (deleteButton) deleteButton.classList.remove("d-none");
-		} else {
-			// Для активных записей возвращаем видимость кнопок "Редактировать", "Посмотреть детали" и "Архивировать"
-			if (editButton) editButton.classList.remove("d-none");
-			if (detailButton) detailButton.classList.remove("d-none");
-			if (archiveButton) archiveButton.classList.remove("d-none");
-
-			// Скрываем кнопку "Восстановить"
-			if (restoreButton) restoreButton.parentNode.classList.add("d-none");
-			if (deleteButton) deleteButton.classList.add("d-none"); // Предположим, что кнопку "Удалить" мы хотим показывать только в архиве
-		}
 	}
 });
