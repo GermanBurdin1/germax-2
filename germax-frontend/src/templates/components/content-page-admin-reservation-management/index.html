@@ -483,17 +483,17 @@
 <div class="container mt-4">
 	<!-- Вкладки для переключения между активными и завершенными резервациями -->
 	<div class="nav nav-tabs" id="reservationTabs" role="tablist">
-		<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
-			role="tab" aria-controls="activeReservations" aria-selected="true">Réservations actives</a>
-		<a class="nav-link" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
-			role="tab" aria-controls="completedReservations" aria-selected="false">Réservations archivées</a>
+		<a class="nav-link active" id="active-reservations-tab-2" data-bs-toggle="tab" href="#activeReservations2"
+			role="tab" aria-controls="activeReservations2" aria-selected="true">Conflits actifs</a>
+		<a class="nav-link" id="completed-reservations-tab-2" data-bs-toggle="tab" href="#completedReservations2"
+			role="tab" aria-controls="completedReservations2" aria-selected="false">Conflits résolus</a>
 	</div>
 
 	<!-- Содержимое вкладок -->
 	<div class="tab-content" id="reservationTabsContent">
 		<!-- Вкладка Активные резервации -->
-		<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
-			aria-labelledby="active-reservations-tab">
+		<div class="tab-pane fade show active" id="activeReservations2" role="tabpanel"
+			aria-labelledby="active-reservations-tab-2">
 			<h2>Derniers Conflits Détectés</h2>
 			<div class="table-responsive">
 				<table class="table">
@@ -615,8 +615,8 @@
 		</div>
 
 		<!-- Вкладка Завершенные резервации -->
-		<div class="tab-pane fade" id="completedReservations" role="tabpanel"
-			aria-labelledby="completed-reservations-tab">
+		<div class="tab-pane fade" id="completedReservations2" role="tabpanel"
+			aria-labelledby="completed-reservations-tab-2">
 			<h2>Conflits Résolus</h2>
 			<div class="table-responsive">
 				<table class="table">

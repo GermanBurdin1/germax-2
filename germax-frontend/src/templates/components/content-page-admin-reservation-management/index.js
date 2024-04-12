@@ -4,6 +4,7 @@ import Collapse from "bootstrap/js/dist/collapse";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Tab from "bootstrap/js/dist/tab";
 import { sortTable } from "../../../utils/sort";
+import {COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS, COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS, ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB, ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS} from "../../../utils/const";
 
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("Начало выполнения кода внутри DOMContentLoaded");
