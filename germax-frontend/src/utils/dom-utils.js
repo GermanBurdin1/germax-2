@@ -1,6 +1,6 @@
 import Dropdown from "bootstrap/js/dist/dropdown";
 
-export function reinitializeDropdowns() {
+function reinitializeDropdowns() {
 	document
 		.querySelectorAll(".dropdown-toggle")
 		.forEach((dropdownToggleEl) => {
@@ -9,7 +9,7 @@ export function reinitializeDropdowns() {
 	console.log("Dropdown успешно переинициализированы");
 }
 
-export function updateActionButtonsForRow(row, archived) {
+function updateActionButtonsForRow(row, archived) {
 	// Находим все нужные элементы внутри строки
 	const editButton = row.querySelector(".edit-reservation");
 	const deleteButton = row.querySelector(".delete-action");
@@ -39,3 +39,5 @@ export function updateActionButtonsForRow(row, archived) {
 		if (deleteButton) deleteButton.classList.add("d-none"); // Предположим, что кнопку "Удалить" мы хотим показывать только в архиве
 	}
 }
+
+export {reinitializeDropdowns, updateActionButtonsForRow};

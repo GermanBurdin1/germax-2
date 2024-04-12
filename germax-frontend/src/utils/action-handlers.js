@@ -11,9 +11,6 @@ function attachArchiveHandler(
 	tableSelector, // Селектор таблицы, куда нужно переместить строку
 	tabSelector // Селектор вкладки, которую нужно показать после перемещения
 ) {
-	console.log("Button clicked, attempting to archive");
-	event.preventDefault();
-
 	const row = button.closest("tr");
 	const reservationId = row.getAttribute("data-id-rapport");
 
@@ -53,30 +50,27 @@ function attachArchiveHandler(
 }
 
 function attachRestoreHandler(button, tableSelector) {
-	button.addEventListener("click", function () {
-		const row = button.closest("tr");
-		const reservationId = row.dataset.id;
-		// Получаем данные о бронировании из localStorage
-		const reservationData =
-			JSON.parse(localStorage.getItem(`reservation_${reservationId}`)) ||
-			{};
+	const row = button.closest("tr");
+	const reservationId = row.dataset.id;
+	// Получаем данные о бронировании из localStorage
+	const reservationData =
+		JSON.parse(localStorage.getItem(`reservation_${reservationId}`)) || {};
 
-		// Обновляем статус архивации
-		reservationData.archived = false; // Указываем, что бронирование больше не архивировано
+	// Обновляем статус архивации
+	reservationData.archived = false; // Указываем, что бронирование больше не архивировано
 
-		// Сохраняем обновлённые данные обратно в localStorage
-		localStorage.setItem(
-			`reservation_${reservationId}`,
-			JSON.stringify(reservationData)
-		);
+	// Сохраняем обновлённые данные обратно в localStorage
+	localStorage.setItem(
+		`reservation_${reservationId}`,
+		JSON.stringify(reservationData)
+	);
 
-		const activeReservationsBody = document.querySelector(tableSelector);
-		activeReservationsBody.appendChild(row);
-		updateActionButtonsForRow(row, false); // Обновляем кнопки для активных строк
+	const activeReservationsBody = document.querySelector(tableSelector);
+	activeReservationsBody.appendChild(row);
+	updateActionButtonsForRow(row, false); // Обновляем кнопки для активных строк
 
-		// Не забудьте вызвать функции переинициализации компонентов, если это необходимо
-		reinitializeDropdowns();
-	});
+	// Не забудьте вызвать функции переинициализации компонентов, если это необходимо
+	reinitializeDropdowns();
 }
 
 export { attachArchiveHandler, attachRestoreHandler };

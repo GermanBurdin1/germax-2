@@ -9,10 +9,16 @@ import {
 	attachRestoreHandler,
 } from "../../../utils/action-handlers";
 import {
+	reinitializeDropdowns,
+	updateActionButtonsForRow,
+} from "../../../utils/dom-utils";
+import {
 	COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS,
 	COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS,
 	ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB,
 	ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS,
+	ACTIVE_RESERVATIONS_TBODY,
+	ACTIVE_CONFLICTS_TBODY
 } from "../../../utils/const";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -428,19 +434,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	function reinitializeDropdowns() {
-		document
-			.querySelectorAll(".dropdown-toggle")
-			.forEach((dropdownToggleEl) => {
-				new Dropdown(dropdownToggleEl); // Используйте Dropdown напрямую
-			});
-		console.log("Dropdown успешно переинициализированы");
-	}
-
-	// // Назначение обработчиков для кнопок "Архивировать"
-	// document.querySelectorAll(".archive-action").forEach((button) => {
-	// 	attachArchiveHandler(button, COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS, ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB);
-	// });
+	reinitializeDropdowns();
 
 	document.querySelectorAll(".archive-action").forEach((button) => {
 		button.addEventListener("click", function () {
@@ -449,7 +443,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			let isActiveConflicts = activePane.id === "activeConflicts";
 			let isResolvedConflicts = activePane.id === "resolvedConflicts";
 			let isActiveReservations = activePane.id === "activeReservations";
-			let iscompletedReservations = activePane.id === "completedReservations";
+			let iscompletedReservations =
+				activePane.id === "completedReservations";
 
 			if (isActiveReservations) {
 				attachArchiveHandler(
@@ -478,37 +473,28 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	// Назначение обработчиков для кнопок "Восстановить" (если они изначально присутствуют в DOM)
+
 	document.querySelectorAll(".restore-action").forEach((button) => {
-		attachRestoreHandler(button);
-	});
-
-	function attachRestoreHandler(button) {
 		button.addEventListener("click", function () {
-			const row = button.closest("tr");
-			const reservationId = row.dataset.id;
-			// Получаем данные о бронировании из localStorage
-			const reservationData =
-				JSON.parse(
-					localStorage.getItem(`reservation_${reservationId}`)
-				) || {};
+			let tabContent = this.closest(".tab-content");
+			let activePane = tabContent.querySelector(".tab-pane.active");
+			let isCompletedReservations = activePane.id === "completedReservations";
+			let isResolvedConflicts = activePane.id === "resolvedConflicts";
 
-			// Обновляем статус архивации
-			reservationData.archived = false; // Указываем, что бронирование больше не архивировано
-
-			// Сохраняем обновлённые данные обратно в localStorage
-			localStorage.setItem(
-				`reservation_${reservationId}`,
-				JSON.stringify(reservationData)
-			);
-
-			const activeReservationsBody = document.querySelector(
-				"#activeReservations tbody"
-			);
-			activeReservationsBody.appendChild(row);
-			updateActionButtonsForRow(row, false); // Обновляем кнопки для активных строк
-
-			// Не забудьте вызвать функции переинициализации компонентов, если это необходимо
-			reinitializeDropdowns();
+			// Восстановление в активные резервации
+			if (isCompletedReservations) {
+				attachRestoreHandler(
+					button,
+					ACTIVE_RESERVATIONS_TBODY // Селектор таблицы активных резерваций
+				);
+			}
+			// Восстановление в активные конфликты
+			if (isResolvedConflicts) {
+				attachRestoreHandler(
+					button,
+					ACTIVE_CONFLICTS_TBODY // Селектор таблицы активных конфликтов
+				);
+			}
 		});
-	}
+	});
 });
