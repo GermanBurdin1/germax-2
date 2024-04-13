@@ -93,22 +93,25 @@ document.addEventListener("DOMContentLoaded", () => {
 			const header = this.closest("th");
 			const column = header.getAttribute("data-column");
 			const dataType = header.getAttribute("data-type");
-			const tbody = header.closest("table").querySelector("tbody");
+			const table = header.closest("table");
+			const tableId = table.id;  // Уникальный ID таблицы
+			const tbody = table.querySelector("tbody");
 
-			// Определение направления сортировки
-			const currentSortingColumn = localStorage.getItem("sortingColumn");
-			let isAscending = true; // Значение по умолчанию
+			// Определение направления сортировки с учетом уникального ключа
+			const sortingKey = tableId + "_sortingColumn";
+			const orderKey = tableId + "_sortingOrder";
+			const currentSortingColumn = localStorage.getItem(sortingKey);
+			let isAscending = true;
 			if (currentSortingColumn === column) {
-				// Инвертируем направление, если предыдущая сортировка была по этому же столбцу
-				isAscending = localStorage.getItem("sortingOrder") !== "asc";
+				isAscending = localStorage.getItem(orderKey) !== "asc";
 			}
-			localStorage.setItem("sortingColumn", column);
-			localStorage.setItem("sortingOrder", isAscending ? "asc" : "desc");
+			localStorage.setItem(sortingKey, column);
+			localStorage.setItem(orderKey, isAscending ? "asc" : "desc");
 
-			// Вызываем функцию сортировки с обновленными параметрами
 			sortTable(tbody, column, dataType, isAscending);
 		});
 	});
+
 
 	// Всплывающие подсказки для кнопок сортировки
 	document.querySelectorAll(".btn-link").forEach((btn) => {
@@ -320,11 +323,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	window.addEventListener("load", () => {
 		setMinMaxDates();
+
+		// Восстановление состояния сортировки для каждой таблицы
+		document.querySelectorAll("table").forEach(table => {
+			const tableId = table.id;
+			const tbody = table.querySelector("tbody");
+			const sortingKey = tableId + "_sortingColumn";
+			const orderKey = tableId + "_sortingOrder";
+			const sortingColumn = localStorage.getItem(sortingKey);
+			const sortingOrder = localStorage.getItem(orderKey);
+
+			if (sortingColumn && sortingOrder) {
+				const isAscending = sortingOrder === "asc";
+				const dataType = table.querySelector(`th[data-column="${sortingColumn}"]`).getAttribute("data-type");
+				sortTable(tbody, sortingColumn, dataType, isAscending);
+			}
+		});
+
 		document.querySelectorAll("tr[data-id]").forEach((row) => {
 			const reservationId = row.dataset.id;
-			const savedData = localStorage.getItem(
-				`reservation_${reservationId}`
-			);
+			const savedData = localStorage.getItem(`reservation_${reservationId}`);
 			if (savedData) {
 				const reservationData = JSON.parse(savedData);
 				row.dataset.user = reservationData.user;
@@ -334,51 +352,25 @@ document.addEventListener("DOMContentLoaded", () => {
 				row.dataset.status = reservationData.status;
 
 				// Обновление текста в строке на основе сохранённых данных
-				row.querySelector("td:nth-child(2)").textContent =
-					reservationData.user;
-				row.querySelector("td:nth-child(3)").textContent =
-					reservationData.equipment;
-				row.querySelector(`span[data-name="startdate"]`).textContent =
-					reservationData.startDate;
-				row.querySelector(`span[data-name="enddate"]`).textContent =
-					reservationData.endDate;
-				row.querySelector("td:nth-child(6) span").textContent =
-					reservationData.status;
+				row.querySelector("td:nth-child(2)").textContent = reservationData.user;
+				row.querySelector("td:nth-child(3)").textContent = reservationData.equipment;
+				row.querySelector(`span[data-name="startdate"]`).textContent = reservationData.startDate;
+				row.querySelector(`span[data-name="enddate"]`).textContent = reservationData.endDate;
+				row.querySelector("td:nth-child(6) span").textContent = reservationData.status;
 
-				// Проверка статуса архивации и перемещение строки в соответствующий раздел
+				// Перемещение строки в соответствующий раздел, если это необходимо
 				if (reservationData.archived) {
-					const completedReservationsBody = document.querySelector(
-						"#completedReservations tbody"
-					);
+					const completedReservationsBody = document.querySelector("#completedReservations tbody");
 					completedReservationsBody.appendChild(row);
-					updateActionButtonsForRow(row, true); // Обновляем кнопки для архивированных строк
+					updateActionButtonsForRow(row, true);
 				} else {
-					const activeReservationsBody = document.querySelector(
-						"#activeReservations tbody"
-					);
+					const activeReservationsBody = document.querySelector("#activeReservations tbody");
 					activeReservationsBody.appendChild(row);
-					updateActionButtonsForRow(row, false); // Обновляем кнопки для активных строк
+					updateActionButtonsForRow(row, false);
 				}
 			}
 		});
 
-		// Дополнительные функции, такие как reinitializeDropdowns, initializeTabs и прочие
-		reinitializeDropdowns();
-		initializeTabs();
-
-		// Восстановление состояния сортировки
-		const sortingColumn = localStorage.getItem("sortingColumn");
-		const sortingOrder = localStorage.getItem("sortingOrder");
-		if (sortingColumn && sortingOrder) {
-			const isAscending = sortingOrder === "asc";
-			const tbody = document.querySelector("#reservationsTable tbody");
-			const dataType = document
-				.querySelector(`th[data-column="${sortingColumn}"]`)
-				.getAttribute("data-type");
-			sortTable(tbody, sortingColumn, dataType, isAscending);
-		}
-
-		// Инициализация других компонентов страницы
 		reinitializeDropdowns();
 		initializeTabs();
 	});
