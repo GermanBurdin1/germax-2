@@ -246,6 +246,17 @@
 			aria-labelledby="completed-reservations-tab">
 			<div class="table-responsive">
 				<table class="table" id="completedReservationsTable">
+					<thead>
+						<tr>
+							<th data-column="id" data-type="number">ID Réservation</th>
+							<th data-column="user" data-type="text">Utilisateur</th>
+							<th data-column="equipment" data-type="text">Équipement</th>
+							<th data-column="startdate" data-type="date">Date Début</th>
+							<th data-column="enddate" data-type="date">Date Fin</th>
+							<th data-column="status" data-type="status">Statut</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
 					<tbody></tbody>
 				</table>
 			</div>
@@ -623,7 +634,29 @@
 				<table class="table">
 					<!-- Сюда можно вставить разметку для таблицы с архивированными резервациями, если у вас она есть -->
 					<thead>
-						<!-- Можете скопировать и модифицировать thead из активных резерваций, если структура таблицы похожа -->
+						<th data-column="idRapport" data-type="number">ID Rapport<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th data-column="typeDeRapport" data-type="text">Type de Rapport<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th data-column="status" data-type="text">Status<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th data-column="dateDeclaration" data-type="date">Date de Déclaration<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th data-column="dateRamassage" data-type="date">Date de Ramassage<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th>Description</th>
+						<th data-column="idUtilisateur" data-type="number">ID Utilisateur<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th data-column="idPret" data-type="number">ID Prêt<button
+								class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+						</th>
+						<th>Actions</th>
 					</thead>
 					<tbody>
 						<!-- Заполните данными об архивированных резервациях -->
