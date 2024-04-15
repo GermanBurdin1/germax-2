@@ -28,7 +28,6 @@ import {
 
 document.addEventListener("DOMContentLoaded", () => {
 	// restoreDataFromLocalStorage();
-	console.log("Начало выполнения кода внутри DOMContentLoaded");
 	const generateReportButton = document.querySelector(
 		'button[data-toggle="modal"]'
 	);
@@ -431,7 +430,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Suppression des réservations
 
 	document.addEventListener("click", function (event) {
-		console.log("клик срабатывает");
 		// Проверяем, содержит ли элемент, по которому кликнули, класс delete-action
 		if (event.target.classList.contains("delete-action")) {
 			event.preventDefault(); // Отменяем действие по умолчанию, если это необходимо
@@ -463,7 +461,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	document.querySelectorAll(".archive-action").forEach((button) => {
 		button.addEventListener("click", function () {
-			let tabContent = this.closest(".tab-content");
+			let tabContent = document.getElementById('reservationTabsContent');
+			console.log(this, tabContent);
 			let activePane = tabContent.querySelector(".tab-pane.active");
 			let isActiveConflicts = activePane.id === "activeConflicts";
 			let isResolvedConflicts = activePane.id === "resolvedConflicts";
@@ -511,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				console.log(activePane);
 				let isCompletedReservations = activePane.id === "completedReservations";
 				console.log(isCompletedReservations);
-				let isResolvedConflicts = activePane.id === "resolved-conflicts-tab";
+				let isResolvedConflicts = activePane.id === "resolvedConflicts";
 
 				if (isCompletedReservations) {
 					attachRestoreHandler(row, "#reservationsTable tbody");

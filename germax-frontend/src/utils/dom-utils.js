@@ -6,7 +6,6 @@ function reinitializeDropdowns() {
 		.forEach((dropdownToggleEl) => {
 			new Dropdown(dropdownToggleEl); // Используйте Dropdown напрямую
 		});
-	console.log("Dropdown успешно переинициализированы");
 }
 
 function updateActionButtonsForRow(row, archived) {
