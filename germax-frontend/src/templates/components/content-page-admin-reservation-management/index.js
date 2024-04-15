@@ -23,7 +23,7 @@ import {
 import {
 	getAllReservationsAndConflicts,
 	saveAllDataToLocalStorage,
-	restoreDataFromLocalStorage
+	restoreDataFromLocalStorage,
 } from "../../../utils/storage-utils";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -96,27 +96,27 @@ document.addEventListener("DOMContentLoaded", () => {
 	//sort
 	document.querySelectorAll(".sortButton").forEach((button) => {
 		button.addEventListener("click", function () {
-		  const header = this.closest("th");
-		  const column = header.getAttribute("data-column");
-		  const dataType = header.getAttribute("data-type");
-		  const table = header.closest("table");
-		  const tbody = table.querySelector("tbody");
+			const header = this.closest("th");
+			const column = header.getAttribute("data-column");
+			const dataType = header.getAttribute("data-type");
+			const table = header.closest("table");
+			const tbody = table.querySelector("tbody");
 
-		  if (!header || !column || !dataType || !table || !tbody) {
-			console.error("One of the elements is not found.");
-			return;
-		  }
+			if (!header || !column || !dataType || !table || !tbody) {
+				console.error("One of the elements is not found.");
+				return;
+			}
 
-		  const sortingKey = table.id + "_sortingColumn";
-		  const orderKey = table.id + "_sortingOrder";
-		  const isAscending = localStorage.getItem(orderKey) !== "asc";
+			const sortingKey = table.id + "_sortingColumn";
+			const orderKey = table.id + "_sortingOrder";
+			const isAscending = localStorage.getItem(orderKey) !== "asc";
 
-		  localStorage.setItem(sortingKey, column);
-		  localStorage.setItem(orderKey, isAscending ? "asc" : "desc");
+			localStorage.setItem(sortingKey, column);
+			localStorage.setItem(orderKey, isAscending ? "asc" : "desc");
 
-		  sortTable(tbody, column, dataType, isAscending);
+			sortTable(tbody, column, dataType, isAscending);
 		});
-	  });
+	});
 
 	// Всплывающие подсказки для кнопок сортировки
 	document.querySelectorAll(".btn-link").forEach((btn) => {
@@ -338,23 +338,28 @@ document.addEventListener("DOMContentLoaded", () => {
 			const sortingColumn = localStorage.getItem(sortingKey);
 			const sortingOrder = localStorage.getItem(orderKey);
 			if (sortingColumn && sortingOrder) {
-				const thElement = table.querySelector(`th[data-column="${sortingColumn}"]`);
+				const thElement = table.querySelector(
+					`th[data-column="${sortingColumn}"]`
+				);
 
 				if (!thElement) {
-				  console.error(`No th element found for column: ${sortingColumn}`);
-				  return;
+					console.error(
+						`No th element found for column: ${sortingColumn}`
+					);
+					return;
 				}
 
 				const dataType = thElement.getAttribute("data-type");
 				if (dataType === null) {
-					console.error(`No data-type attribute found for th element for column: ${sortingColumn}`);
+					console.error(
+						`No data-type attribute found for th element for column: ${sortingColumn}`
+					);
 					return; // Прерывание дальнейшего выполнения функции
 				}
 
 				const isAscending = sortingOrder === "asc";
 				sortTable(tbody, sortingColumn, dataType, isAscending);
 			}
-
 		});
 
 		document.querySelectorAll("tr[data-id]").forEach((row) => {
@@ -493,24 +498,34 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	});
 
-	document.querySelectorAll(".restore-action").forEach((button) => {
-		button.addEventListener("click", function () {
-			let tabContent = this.closest(".tab-content");
-			let activePane = tabContent.querySelector(".tab-pane.active");
-			let isCompletedReservations =
-				activePane.id === "completedReservations";
-			let isResolvedConflicts = activePane.id === "resolvedConflicts";
+	document.querySelectorAll("#completedReservationsTable tbody").forEach((tbody) => {
+		tbody.addEventListener("click", function (e) {
+			e.preventDefault();
+			const restoreButton = e.target.tagName === 'A' && e.target.textContent.trim() === 'Rétablir';
+			if (restoreButton) {
+				console.log("Rétablir clicked");
 
-			if (isCompletedReservations) {
-				attachRestoreHandler(button, ACTIVE_RESERVATIONS_TBODY);
+				const row = e.target.closest('tr');
+				let tabContent = this.closest(".tab-content");
+				let activePane = tabContent.querySelector(".tab-pane.active");
+				console.log(activePane);
+				let isCompletedReservations = activePane.id === "completedReservations";
+				console.log(isCompletedReservations);
+				let isResolvedConflicts = activePane.id === "resolved-conflicts-tab";
+
+				if (isCompletedReservations) {
+					attachRestoreHandler(row, "#reservationsTable tbody");
+				}
+
+				if (isResolvedConflicts) {
+					attachRestoreHandler(row, "#conflictsTable tbody");
+				}
+
+				const allData = getAllReservationsAndConflicts();
+				saveAllDataToLocalStorage(allData);
 			}
-
-			if (isResolvedConflicts) {
-				attachRestoreHandler(button, ACTIVE_CONFLICTS_TBODY);
-			}
-
-			const allData = getAllReservationsAndConflicts();
-			saveAllDataToLocalStorage(allData);
 		});
 	});
+
+
 });

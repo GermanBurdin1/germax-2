@@ -247,7 +247,7 @@
 			<div class="table-responsive">
 				<table class="table" id="completedReservationsTable">
 					<thead>
-						<tr>
+						<tr class="rowToRestore" data-id="rowToRestore-1">
 							<th data-column="id" data-type="number">ID Réservation</th>
 							<th data-column="user" data-type="text">Utilisateur</th>
 							<th data-column="equipment" data-type="text">Équipement</th>
@@ -504,12 +504,12 @@
 
 	<!-- Содержимое вкладок -->
 	<div class="tab-content" id="conflictTabsContent">
-		<!-- Вкладка Активные резервации -->
+		<!-- Вкладка Активные конфликты -->
 		<div class="tab-pane fade show active" id="activeConflicts" role="tabpanel"
 			aria-labelledby="active-conflicts-tab">
 			<h2>Derniers Conflits Détectés</h2>
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table" id="conflictsTable">
 					<thead>
 						<tr>
 							<th data-column="idRapport" data-type="number">ID Rapport<button
