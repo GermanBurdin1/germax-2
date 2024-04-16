@@ -459,72 +459,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	reinitializeDropdowns();
 
-	document.querySelectorAll(".archive-action").forEach((button) => {
-		button.addEventListener("click", function () {
-			let tabContent = document.getElementById('reservationTabsContent');
-			console.log(this, tabContent);
-			let activePane = tabContent.querySelector(".tab-pane.active");
-			let isActiveConflicts = activePane.id === "activeConflicts";
-			let isResolvedConflicts = activePane.id === "resolvedConflicts";
-			let isActiveReservations = activePane.id === "activeReservations";
-			let iscompletedReservations =
-				activePane.id === "completedReservations";
-
-			if (isActiveReservations) {
-				attachArchiveHandler(
-					button,
-					COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS,
-					ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB
-				);
-			} else if (iscompletedReservations) {
-				console.log(iscompletedReservations);
-			}
-
-			if (isActiveConflicts) {
-				attachArchiveHandler(
-					button,
-					COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS,
-					ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS
-				);
-			} else if (isResolvedConflicts) {
-				console.log(
-					"Действие для разрешённых конфликтов - возможно, здесь нужна другая логика"
-				);
-			}
-
-			const allData = getAllReservationsAndConflicts();
-			saveAllDataToLocalStorage(allData);
-		});
-	});
-
-	document.querySelectorAll("#completedReservationsTable tbody").forEach((tbody) => {
-		tbody.addEventListener("click", function (e) {
-			e.preventDefault();
-			const restoreButton = e.target.tagName === 'A' && e.target.textContent.trim() === 'Rétablir';
-			if (restoreButton) {
-				console.log("Rétablir clicked");
-
-				const row = e.target.closest('tr');
-				let tabContent = this.closest(".tab-content");
+	// Прикрепляем обработчики архивации к таблице с активными резервациями и конфликтами
+	document
+		.querySelector("#reservationTabsContent")
+		.addEventListener("click", function (e) {
+			if (e.target.classList.contains("archive-action")) {
+				let tabContent = this;
 				let activePane = tabContent.querySelector(".tab-pane.active");
-				console.log(activePane);
-				let isCompletedReservations = activePane.id === "completedReservations";
-				console.log(isCompletedReservations);
+				let isActiveConflicts = activePane.id === "activeConflicts";
 				let isResolvedConflicts = activePane.id === "resolvedConflicts";
+				let isActiveReservations =
+					activePane.id === "activeReservations";
+				let isCompletedReservations =
+					activePane.id === "completedReservations";
 
-				if (isCompletedReservations) {
-					attachRestoreHandler(row, "#reservationsTable tbody");
+				if (isActiveReservations) {
+					attachArchiveHandler(
+						e.target,
+						COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS,
+						ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB
+					);
+				} else if (isCompletedReservations) {
+					console.log(isCompletedReservations);
 				}
 
-				if (isResolvedConflicts) {
-					attachRestoreHandler(row, "#conflictsTable tbody");
+				if (isActiveConflicts) {
+					attachArchiveHandler(
+						e.target,
+						COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS,
+						ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS
+					);
+				} else if (isResolvedConflicts) {
+					console.log(
+						"Действие для разрешённых конфликтов - возможно, здесь нужна другая логика"
+					);
 				}
 
 				const allData = getAllReservationsAndConflicts();
 				saveAllDataToLocalStorage(allData);
 			}
 		});
-	});
 
+	// Прикрепляем обработчики восстановления к таблице с завершенными резервациями и конфликтами
+	document
+		.querySelectorAll(
+			"#completedReservationsTable tbody, #conflictsTable tbody"
+		)
+		.forEach((tbody) => {
+			tbody.addEventListener("click", function (e) {
+				if (
+					e.target.tagName === "A" &&
+					e.target.textContent.trim() === "Rétablir"
+				) {
+					console.log("Rétablir clicked");
 
+					const row = e.target.closest("tr");
+					let tabContent = this.closest(".tab-content");
+					let activePane =
+						tabContent.querySelector(".tab-pane.active");
+					let isCompletedReservations =
+						activePane.id === "completedReservations";
+					let isResolvedConflicts =
+						activePane.id === "resolvedConflicts";
+
+					if (isCompletedReservations) {
+						attachRestoreHandler(row, "#reservationsTable tbody");
+					}
+
+					if (isResolvedConflicts) {
+						attachRestoreHandler(row, "#conflictsTable tbody");
+					}
+
+					const allData = getAllReservationsAndConflicts();
+					saveAllDataToLocalStorage(allData);
+				}
+			});
+		});
 });
