@@ -485,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Прикрепляем обработчики восстановления к таблице с завершенными резервациями и конфликтами
 	document
 		.querySelectorAll(
-			"#completedReservationsTable tbody, #conflictsTable tbody"
+			"#completedReservationsTable tbody, #resolvedConflictsTable tbody"
 		)
 		.forEach((tbody) => {
 			tbody.addEventListener("click", function (e) {
@@ -494,6 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					e.target.textContent.trim() === "Rétablir"
 				) {
 					e.stopPropagation(); // Остановка всплытия события
+					console.log(e.target);
 					handleRestoreClick(e.target);
 				}
 			});

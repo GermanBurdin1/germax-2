@@ -11,46 +11,51 @@ import {
 import Tab from "bootstrap/js/dist/tab";
 
 function attachArchiveHandler(button, tableSelector, tabSelector) {
-    const row = button.closest("tr");
-    let reservationId = row.dataset.id || row.dataset.idRapport;
+	const row = button.closest("tr");
+	let reservationId = row.dataset.id || row.dataset.idRapport;
 
-    if (!reservationId) {
-        console.error("No reservation ID found.");
-        return;
-    }
+	if (!reservationId) {
+		console.error("No reservation ID found.");
+		return;
+	}
 
-    // Получение данных о резервации из localStorage
-    const reservationData = getReservationFromLocalStorage(`reservation_${reservationId}`);
-    reservationData.archived = true;
-    // Сохранение изменённых данных о резервации обратно в localStorage
-    saveReservationToLocalStorage(`reservation_${reservationId}`, reservationData);
+	// Получение данных о резервации из localStorage
+	const reservationData = getReservationFromLocalStorage(
+		`reservation_${reservationId}`
+	);
+	reservationData.archived = true;
+	// Сохранение изменённых данных о резервации обратно в localStorage
+	saveReservationToLocalStorage(
+		`reservation_${reservationId}`,
+		reservationData
+	);
 
-    // Нахождение тела таблицы, куда должна быть перемещена строка
-    const targetTableBody = document.querySelector(tableSelector);
-    if (targetTableBody) {
-        // Перемещение строки в новую таблицу
-        targetTableBody.appendChild(row);
+	// Нахождение тела таблицы, куда должна быть перемещена строка
+	const targetTableBody = document.querySelector(tableSelector);
+	if (targetTableBody) {
+		// Перемещение строки в новую таблицу
+		targetTableBody.appendChild(row);
 
-        // Обновление кнопок управления для перемещённой строки
-        updateActionButtonsForRow(row, true);
-        // Переинициализация выпадающих меню (если это необходимо)
-        reinitializeDropdowns();
+		// Обновление кнопок управления для перемещённой строки
+		updateActionButtonsForRow(row, true);
+		// Переинициализация выпадающих меню (если это необходимо)
+		reinitializeDropdowns();
 
-        // Активация соответствующей вкладки
-        const tabToShow = document.querySelector(tabSelector);
-        console.log("tabToShow:", tabToShow); // Логирование для отладки
-        if (tabToShow) {
-            new Tab(tabToShow).show(); // Bootstrap 5 активация вкладки
-            console.log("Tab is now shown:", tabToShow);
-        } else {
-            console.error("Tab to show not found for selector:", tabSelector);
-        }
-    } else {
-        console.error("Target table body not found:", tableSelector);
-    }
+		// Активация соответствующей вкладки
+		const tabToShow = document.querySelector(tabSelector);
+		console.log("tabToShow:", tabToShow); // Логирование для отладки
+		if (tabToShow) {
+			new Tab(tabToShow).show(); // Bootstrap 5 активация вкладки
+			console.log("Tab is now shown:", tabToShow);
+		} else {
+			console.error("Tab to show not found for selector:", tabSelector);
+		}
+	} else {
+		console.error("Target table body not found:", tableSelector);
+	}
 
-    // Сохранение состояния таблицы в localStorage
-    saveTableToLocalStorage();
+	// Сохранение состояния таблицы в localStorage
+	saveTableToLocalStorage();
 }
 
 function attachRestoreHandler(row, tableSelector) {
@@ -102,9 +107,7 @@ function saveTableToLocalStorage() {
 		"#completedReservationsTable tbody"
 	);
 
-	const conflictsTable = document.querySelector(
-		"#conflictsTable tbody"
-	);
+	const conflictsTable = document.querySelector("#conflictsTable tbody");
 	const resolvedConflictsTable = document.querySelector(
 		"#resolvedConflicts tbody"
 	);
@@ -113,7 +116,7 @@ function saveTableToLocalStorage() {
 		reservationsHTML: reservationsTable.innerHTML,
 		completedReservationsHTML: completedReservationsTable.innerHTML,
 		conflictsHTML: conflictsTable.innerHTML,
-		resolvedConflictsHTML: resolvedConflictsTable.innerHTML
+		resolvedConflictsHTML: resolvedConflictsTable.innerHTML,
 	});
 }
 
@@ -137,7 +140,9 @@ function handleArchiveAction(button, activePaneId) {
 			console.log("Already completed reservation");
 			break;
 		case "resolvedConflicts":
-			console.log("Action for resolved conflicts might need different logic");
+			console.log(
+				"Action for resolved conflicts might need different logic"
+			);
 			break;
 		default:
 			console.error("Unexpected active pane ID:", activePaneId);
@@ -145,22 +150,32 @@ function handleArchiveAction(button, activePaneId) {
 }
 
 function handleRestoreClick(linkElement) {
-    const row = linkElement.closest("tr");
-    const tabContent = linkElement.closest(".tab-content");
-    const activePane = tabContent.querySelector(".tab-pane.active");
+	console.log(linkElement);
+	const row = linkElement.closest("tr");
+	const tabContent = linkElement.closest(".tab-content");
+	const activePane = tabContent.querySelector(".tab-pane.active");
 
-    if (activePane) {
-        const tableSelector = activePane.id === "completedReservations" ? "#reservationsTable tbody" :
-                              activePane.id === "resolvedConflicts" ? "#conflictsTable tbody" : null;
+	if (activePane) {
+		const tableSelector =
+			activePane.id === "completedReservations"
+				? "#reservationsTable tbody"
+				: activePane.id === "resolvedConflicts"
+				? "#conflictsTable tbody"
+				: null;
 
-        if (tableSelector) {
-            attachRestoreHandler(row, tableSelector);
-            const allData = getAllReservationsAndConflicts();
-            saveAllDataToLocalStorage(allData);
-        } else {
-            console.error("Unsupported pane ID or action: ", activePane.id);
-        }
-    }
+		if (tableSelector) {
+			attachRestoreHandler(row, tableSelector);
+			const allData = getAllReservationsAndConflicts();
+			saveAllDataToLocalStorage(allData);
+		} else {
+			console.error("Unsupported pane ID or action: ", activePane.id);
+		}
+	}
 }
 
-export { attachArchiveHandler, attachRestoreHandler, handleArchiveAction, handleRestoreClick };
+export {
+	attachArchiveHandler,
+	attachRestoreHandler,
+	handleArchiveAction,
+	handleRestoreClick,
+};
