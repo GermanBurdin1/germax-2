@@ -6,7 +6,7 @@ import {
 	saveReservationToLocalStorage,
 	getReservationFromLocalStorage,
 	saveAllDataToLocalStorage,
-	getAllDataFromLocalStorage,
+	getAllReservationsAndConflicts,
 } from "./storage-utils.js";
 import Tab from "bootstrap/js/dist/tab";
 
@@ -28,14 +28,11 @@ function attachArchiveHandler(button, tableSelector, tabSelector) {
     // Нахождение тела таблицы, куда должна быть перемещена строка
     const targetTableBody = document.querySelector(tableSelector);
     if (targetTableBody) {
-        // Клонирование строки для изоляции изменений DOM
-        const clonedRow = row.cloneNode(true);
+        // Перемещение строки в новую таблицу
+        targetTableBody.appendChild(row);
 
-        // Добавление клонированной строки в новую таблицу
-        targetTableBody.appendChild(clonedRow);
-
-        // Обновление кнопок управления для новой строки
-        updateActionButtonsForRow(clonedRow, true);
+        // Обновление кнопок управления для перемещённой строки
+        updateActionButtonsForRow(row, true);
         // Переинициализация выпадающих меню (если это необходимо)
         reinitializeDropdowns();
 
@@ -116,7 +113,7 @@ function saveTableToLocalStorage() {
 		reservationsHTML: reservationsTable.innerHTML,
 		completedReservationsHTML: completedReservationsTable.innerHTML,
 		conflictsHTML: conflictsTable.innerHTML,
-		resolvedConflicts: resolvedConflictsTable.innerHTML
+		resolvedConflictsHTML: resolvedConflictsTable.innerHTML
 	});
 }
 
