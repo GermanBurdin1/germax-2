@@ -20,17 +20,21 @@ function attachArchiveHandler(button, tableSelector, tabSelector) {
 
 	const trReservation = {
 		reservationId,
-        loanUser: row.dataset.user,
-        loanEquipment: row.dataset.equipment,
-        loanStartDate: row.dataset.startdate,
-        loanEndDate: row.dataset.enddate,
-        loanStatus: row.dataset.status,
-    };
+		loanUser: row.dataset.user,
+		loanEquipment: row.dataset.equipment,
+		loanStartDate: row.dataset.startdate,
+		loanEndDate: row.dataset.enddate,
+		loanStatus: row.dataset.status,
+	};
 
 	// Получение данных о резервации из localStorage
 	const reservationData = getReservationFromLocalStorage(trReservation);
 	reservationData.archived = true;
-
+	reservationData.loanUser = trReservation.loanUser;
+	reservationData.loanEquipment = trReservation.loanEquipment;
+	reservationData.loanStartDate = trReservation.loanStartDate;
+	reservationData.loanEndDate = trReservation.loanEndDate;
+	reservationData.loanStatus = trReservation.loanStatus;
 	saveReservationToLocalStorage(reservationId, reservationData);
 
 	// Нахождение тела таблицы, куда должна быть перемещена строка

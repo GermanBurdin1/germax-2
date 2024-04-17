@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			const reservationId = row.dataset.id;
 			const savedData = localStorage.getItem(reservationId);
 
-				console.log("savedData for ID", reservationId, ":", savedData);
+			console.log("savedData for ID", reservationId, ":", savedData);
 			if (savedData) {
 				const reservationData = JSON.parse(savedData);
 				console.log("reservationData:", reservationData);
@@ -386,15 +386,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				// Обновление текста в строке на основе сохранённых данных
 				row.querySelector("td:nth-child(2)").textContent =
-					reservationData.user;
+					reservationData.loanUser;
 				row.querySelector("td:nth-child(3)").textContent =
-					reservationData.equipment;
+					reservationData.loanEquipment;
 				row.querySelector(`span[data-name="startdate"]`).textContent =
-					reservationData.startDate;
+					reservationData.loanStartDate;
 				row.querySelector(`span[data-name="enddate"]`).textContent =
-					reservationData.endDate;
+					reservationData.loanEndDate;
 				row.querySelector("td:nth-child(6) span").textContent =
-					reservationData.status;
+					reservationData.loanStatus;
 
 				// Перемещение строки в соответствующий раздел в зависимости от состояния архивации
 				if (reservationData.archived) {
