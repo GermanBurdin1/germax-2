@@ -5,8 +5,6 @@ import Dropdown from "bootstrap/js/dist/dropdown";
 import Tab from "bootstrap/js/dist/tab";
 import { sortTable } from "../../../utils/sort";
 import {
-	attachArchiveHandler,
-	attachRestoreHandler,
 	handleArchiveAction,
 	handleRestoreClick,
 } from "../../../utils/action-handlers";
@@ -15,17 +13,8 @@ import {
 	updateActionButtonsForRow,
 } from "../../../utils/dom-utils";
 import {
-	COMPLETED_RESERVATIONS_SELECTOR_MANAGEMENT_RESERVATIONS,
-	COMPLETED_RESERVATIONS_SELECTOR_CONFLICTS,
-	ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB,
-	ARIA_LABELLED_BY_ACTIVE_RESERVATIONS_TAB_CONFLICTS,
-	ACTIVE_RESERVATIONS_TBODY,
-	ACTIVE_CONFLICTS_TBODY,
-} from "../../../utils/const";
-import {
 	getAllReservationsAndConflicts,
 	saveAllDataToLocalStorage,
-	restoreDataFromLocalStorage,
 } from "../../../utils/storage-utils";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -374,15 +363,18 @@ document.addEventListener("DOMContentLoaded", () => {
 				const reservationData = JSON.parse(savedData);
 				console.log("reservationData:", reservationData);
 
+				console.log("Before update:", JSON.parse(JSON.stringify(row.dataset)));
+
 				// Обновление dataset и содержимого ячеек строки
 				Object.assign(row.dataset, {
-					user: reservationData.user,
-					equipment: reservationData.equipment,
-					startdate: reservationData.startDate,
-					enddate: reservationData.endDate,
-					status: reservationData.status,
+					loanUser: reservationData.user,
+					loanEquipment: reservationData.equipment,
+					loanStartDate: reservationData.startDate,
+					loanEndDate: reservationData.endDate,
+					loanStatus: reservationData.status,
 					archived: reservationData.archived,
 				});
+				console.log("After update:", JSON.parse(JSON.stringify(row.dataset)));
 
 				// Обновление текста в строке на основе сохранённых данных
 				row.querySelector("td:nth-child(2)").textContent =
@@ -501,7 +493,6 @@ document.addEventListener("DOMContentLoaded", () => {
 					e.target.textContent.trim() === "Rétablir"
 				) {
 					e.stopPropagation(); // Остановка всплытия события
-					console.log(e.target);
 					handleRestoreClick(e.target);
 				}
 			});

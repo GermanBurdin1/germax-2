@@ -27,6 +27,9 @@ function attachArchiveHandler(button, tableSelector, tabSelector) {
 		loanStatus: row.dataset.status,
 	};
 
+	// Сохранение объекта trReservation в localStorage
+    localStorage.setItem(`reservationDetails_${reservationId}`, JSON.stringify(trReservation));
+
 	// Получение данных о резервации из localStorage
 	const reservationData = getReservationFromLocalStorage(trReservation);
 	reservationData.archived = true;
@@ -65,27 +68,49 @@ function attachArchiveHandler(button, tableSelector, tabSelector) {
 
 function attachRestoreHandler(row, tableSelector) {
 	if (!row) {
-		console.error("No row to restore.");
-		return;
-	}
+        console.error("No row to restore.");
+        return;
+    }
 
-	// Определяем, является ли элемент частью таблицы конфликтов
-	let reservationId;
-	if (tableSelector.includes("conflictsTable")) {
-		// Извлекаем ID из соответствующего атрибута для конфликтов
-		reservationId = row.dataset.idRapport;
-	} else {
-		// Извлекаем ID из data атрибута для резерваций
-		reservationId = row.dataset.id;
-	}
+    let reservationId = row.dataset.id || row.dataset.idRapport;
+    if (!reservationId) {
+        console.error("No reservation ID found.");
+        return;
+    }
 
-	if (!reservationId) {
-		console.error("No reservation ID found.");
-		return;
-	}
+    // Извлечение объекта trReservation из localStorage
+    const trReservationJSON = localStorage.getItem(`reservationDetails_${reservationId}`);
+    const trReservation = trReservationJSON ? JSON.parse(trReservationJSON) : null;
+    if (!trReservation) {
+        console.error("Failed to retrieve reservation details from localStorage.");
+        return;
+    }
 
-	const reservationData = getReservationFromLocalStorage(reservationId);
+    const reservationData = getReservationFromLocalStorage(trReservation);
+    if (!reservationData) {
+        console.error("Failed to retrieve reservation data from localStorage.");
+        return;
+    }
+
+	console.log("ПРОВЕРОЧКА:",reservationData);
+
+	// Отмена архивации резервации
 	reservationData.archived = false;
+	row.dataset.user = reservationData.loanUser;
+	row.dataset.equipment = reservationData.loanEquipment;
+	row.dataset.startdate = reservationData.loanStartDate;
+	row.dataset.enddate = reservationData.loanEndDate;
+	row.dataset.status = reservationData.loanStatus;
+	console.log(row.dataset.user);
+
+	// Обновление текстовых полей строки
+    row.querySelector("td:nth-child(2)").textContent = row.dataset.user;
+    row.querySelector("td:nth-child(3)").textContent = row.dataset.equipment;
+    row.querySelector(`span[data-name="startdate"]`).textContent = row.dataset.startdate;
+    row.querySelector(`span[data-name="enddate"]`).textContent = row.dataset.enddate;
+    row.querySelector("td:nth-child(6) span").textContent = row.dataset.status;
+
+	// Сохранение обновленной информации о резервации в localStorage
 	saveReservationToLocalStorage(reservationId, reservationData);
 
 	const activeReservationsBody = document.querySelector(tableSelector);
@@ -150,7 +175,6 @@ function handleArchiveAction(button, activePaneId) {
 }
 
 function handleRestoreClick(linkElement) {
-	console.log(linkElement);
 	const row = linkElement.closest("tr");
 	const tabContent = linkElement.closest(".tab-content");
 	const activePane = tabContent.querySelector(".tab-pane.active");
@@ -174,8 +198,6 @@ function handleRestoreClick(linkElement) {
 }
 
 export {
-	attachArchiveHandler,
-	attachRestoreHandler,
 	handleArchiveAction,
 	handleRestoreClick,
 };

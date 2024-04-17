@@ -4,9 +4,9 @@ function saveReservationToLocalStorage(reservationId, data) {
 }
 
 function getReservationFromLocalStorage(trReservation) {
+	console.log(trReservation);
     try {
         const item = localStorage.getItem(trReservation.reservationId);
-		console.log(item);
         const parsedItem = JSON.parse(item) || {};  // Возвращаем пустой объект, если item === null
         console.log("Retrieved reservation data:", parsedItem);  // Выводим полученные данные в консоль
         return parsedItem;
