@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 
 				const dataType = thElement.getAttribute("data-type");
-				if (dataType === null) {
+				if (!dataType) {
 					console.error(
 						`No data-type attribute found for th element for column: ${sortingColumn}`
 					);
@@ -363,18 +363,26 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 
+		// Восстановление состояния резерваций и перенос их между таблицами
+		console.log("Checking data-ids in rows...");
 		document.querySelectorAll("tr[data-id]").forEach((row) => {
 			const reservationId = row.dataset.id;
-			const savedData = localStorage.getItem(
-				`reservation_${reservationId}`
-			);
+			const savedData = localStorage.getItem(reservationId);
+
+				console.log("savedData for ID", reservationId, ":", savedData);
 			if (savedData) {
 				const reservationData = JSON.parse(savedData);
-				row.dataset.user = reservationData.user;
-				row.dataset.equipment = reservationData.equipment;
-				row.dataset.startdate = reservationData.startDate;
-				row.dataset.enddate = reservationData.endDate;
-				row.dataset.status = reservationData.status;
+				console.log("reservationData:", reservationData);
+
+				// Обновление dataset и содержимого ячеек строки
+				Object.assign(row.dataset, {
+					user: reservationData.user,
+					equipment: reservationData.equipment,
+					startdate: reservationData.startDate,
+					enddate: reservationData.endDate,
+					status: reservationData.status,
+					archived: reservationData.archived,
+				});
 
 				// Обновление текста в строке на основе сохранённых данных
 				row.querySelector("td:nth-child(2)").textContent =
@@ -388,7 +396,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				row.querySelector("td:nth-child(6) span").textContent =
 					reservationData.status;
 
-				// Перемещение строки в соответствующий раздел, если это необходимо
+				// Перемещение строки в соответствующий раздел в зависимости от состояния архивации
 				if (reservationData.archived) {
 					const completedReservationsBody = document.querySelector(
 						"#completedReservations tbody"
@@ -462,25 +470,24 @@ document.addEventListener("DOMContentLoaded", () => {
 	reinitializeDropdowns();
 
 	// Прикрепляем обработчики архивации к таблице с активными резервациями и конфликтами
-	document.querySelectorAll("#reservationTabsContent, #conflictTabsContent")
-    .forEach((tabContent) => {
-        tabContent.addEventListener("click", function (e) {
-            if (e.target.classList.contains("archive-action")) {
-                e.stopPropagation();
-                const activePane = tabContent.querySelector(".tab-pane.active");
-                console.log("Active pane before action:", activePane);
+	document
+		.querySelectorAll("#reservationTabsContent, #conflictTabsContent")
+		.forEach((tabContent) => {
+			tabContent.addEventListener("click", function (e) {
+				if (e.target.classList.contains("archive-action")) {
+					e.stopPropagation();
+					const activePane =
+						tabContent.querySelector(".tab-pane.active");
 
-                if (activePane) {
-                    handleArchiveAction(e.target, activePane.id);
-                }
+					if (activePane) {
+						handleArchiveAction(e.target, activePane.id);
+					}
 
-                const allData = getAllReservationsAndConflicts();
-                saveAllDataToLocalStorage(allData);
-                console.log("Data saved to local storage:", allData);
-            }
-        });
-    });
-
+					const allData = getAllReservationsAndConflicts();
+					saveAllDataToLocalStorage(allData);
+				}
+			});
+		});
 
 	// Прикрепляем обработчики восстановления к таблице с завершенными резервациями и конфликтами
 	document

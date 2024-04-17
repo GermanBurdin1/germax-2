@@ -13,22 +13,25 @@ import Tab from "bootstrap/js/dist/tab";
 function attachArchiveHandler(button, tableSelector, tabSelector) {
 	const row = button.closest("tr");
 	let reservationId = row.dataset.id || row.dataset.idRapport;
-
 	if (!reservationId) {
 		console.error("No reservation ID found.");
 		return;
 	}
 
+	const trReservation = {
+		reservationId,
+        loanUser: row.dataset.user,
+        loanEquipment: row.dataset.equipment,
+        loanStartDate: row.dataset.startdate,
+        loanEndDate: row.dataset.enddate,
+        loanStatus: row.dataset.status,
+    };
+
 	// Получение данных о резервации из localStorage
-	const reservationData = getReservationFromLocalStorage(
-		`reservation_${reservationId}`
-	);
+	const reservationData = getReservationFromLocalStorage(trReservation);
 	reservationData.archived = true;
-	// Сохранение изменённых данных о резервации обратно в localStorage
-	saveReservationToLocalStorage(
-		`reservation_${reservationId}`,
-		reservationData
-	);
+
+	saveReservationToLocalStorage(reservationId, reservationData);
 
 	// Нахождение тела таблицы, куда должна быть перемещена строка
 	const targetTableBody = document.querySelector(tableSelector);
@@ -43,10 +46,8 @@ function attachArchiveHandler(button, tableSelector, tabSelector) {
 
 		// Активация соответствующей вкладки
 		const tabToShow = document.querySelector(tabSelector);
-		console.log("tabToShow:", tabToShow); // Логирование для отладки
 		if (tabToShow) {
 			new Tab(tabToShow).show(); // Bootstrap 5 активация вкладки
-			console.log("Tab is now shown:", tabToShow);
 		} else {
 			console.error("Tab to show not found for selector:", tabSelector);
 		}
@@ -79,14 +80,9 @@ function attachRestoreHandler(row, tableSelector) {
 		return;
 	}
 
-	const reservationData = getReservationFromLocalStorage(
-		`reservation_${reservationId}`
-	);
+	const reservationData = getReservationFromLocalStorage(reservationId);
 	reservationData.archived = false;
-	saveReservationToLocalStorage(
-		`reservation_${reservationId}`,
-		reservationData
-	);
+	saveReservationToLocalStorage(reservationId, reservationData);
 
 	const activeReservationsBody = document.querySelector(tableSelector);
 	if (activeReservationsBody) {

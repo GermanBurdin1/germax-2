@@ -1,16 +1,21 @@
-export function saveReservationToLocalStorage(reservationId, data) {
-    localStorage.setItem(`reservation_${reservationId}`, JSON.stringify(data));
+function saveReservationToLocalStorage(reservationId, data) {
+	console.log('Saving data for', reservationId, data);
+    localStorage.setItem(reservationId, JSON.stringify(data));
 }
 
-function getReservationFromLocalStorage(reservationId) {
+function getReservationFromLocalStorage(trReservation) {
     try {
-        const item = localStorage.getItem(`reservation_${reservationId}`);
-        return JSON.parse(item) || {};  // Возвращаем пустой объект, если item === null
+        const item = localStorage.getItem(trReservation.reservationId);
+		console.log(item);
+        const parsedItem = JSON.parse(item) || {};  // Возвращаем пустой объект, если item === null
+        console.log("Retrieved reservation data:", parsedItem);  // Выводим полученные данные в консоль
+        return parsedItem;
     } catch (error) {
         console.error("Failed to parse reservation data from localStorage", error);
         return {};  // Возвращаем пустой объект в случае ошибки разбора JSON
     }
 }
+
 
 function getAllReservationsAndConflicts() {
     const data = JSON.parse(localStorage.getItem('allReservationsAndConflicts'));
@@ -25,4 +30,4 @@ function saveAllDataToLocalStorage(data) {
     localStorage.setItem('allReservationsAndConflicts', JSON.stringify(data));
 }
 
-export {getReservationFromLocalStorage, getAllReservationsAndConflicts, saveAllDataToLocalStorage}
+export {getReservationFromLocalStorage, getAllReservationsAndConflicts, saveAllDataToLocalStorage, saveReservationToLocalStorage}
