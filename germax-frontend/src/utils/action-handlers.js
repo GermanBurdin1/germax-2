@@ -86,9 +86,10 @@ function attachRestoreHandler(button) {
         console.error("No row to restore.");
         return;
     }
-
+	console.log("проверка строки перед восстановлением",row);
     const isConflict = row.hasAttribute("data-id-rapport");
     const uniqueId = isConflict ? row.dataset.idRapport : row.dataset.id;
+	console.log(uniqueId);
     if (!uniqueId) {
         console.error("No reservation ID found.");
         return;

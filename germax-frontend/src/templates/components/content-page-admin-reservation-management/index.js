@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				Object.keys(row.dataset).forEach(key => delete row.dataset[key]);
 
 				// Обновление данных элемента
-				Object.assign(row.dataset, savedData);
+				Object.assign(row.dataset, savedData, {id: uniqueId});
 				console.log("Dataset after update:", JSON.stringify(row.dataset));
 
 				// Обновление текстового содержимого строк
@@ -397,12 +397,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		initializeTabs();
 
 		function updateTextContent(row, data) {
-			const cellMapping = data.loanUser ? {
-				1: data.loanUser, // Пользователь
-				2: data.loanEquipment, // Оборудование
-				3: data.loanStartDate, // Дата начала
-				4: data.loanEndDate, // Дата окончания
-				5: data.loanStatus // Статус
+			const cellMapping = data.user ? {
+				1: data.user, // Пользователь
+				2: data.equipment, // Оборудование
+				3: data.startdate, // Дата начала
+				4: data.enddate, // Дата окончания
+				5: data.status // Статус
 			} : {
 				1: data.reportType, // Тип отчета
 				2: data.reportStatus, // Статус
