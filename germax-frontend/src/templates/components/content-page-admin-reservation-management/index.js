@@ -15,6 +15,7 @@ import {
 import {
 	getAllReservationsAndConflicts,
 	saveAllDataToLocalStorage,
+	getSavedData,
 } from "../../../utils/storage-utils";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -353,60 +354,70 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 
 		// Восстановление состояния резерваций и перенос их между таблицами
-		console.log("Checking data-ids in rows...");
-		document.querySelectorAll("tr[data-id]").forEach((row) => {
-			const reservationId = row.dataset.id;
-			const savedData = localStorage.getItem(reservationId);
+		console.log("Restoring rows based on saved data...");
 
-			console.log("savedData for ID", reservationId, ":", savedData);
+		document.querySelectorAll("tr[data-id], tr[data-id-rapport]").forEach((row) => {
+			const isConflict = row.hasAttribute("data-id-rapport");
+			const uniqueId = isConflict ? row.dataset.idRapport : row.dataset.id;
+			const savedData = getSavedData(uniqueId, isConflict);
+			console.log(`Данные, полученные из localStorage для ID ${uniqueId}:`, savedData);
+
 			if (savedData) {
-				const reservationData = JSON.parse(savedData);
-				console.log("reservationData:", reservationData);
+				console.log(`Parsed data for ${isConflict ? "conflict" : "reservation"}:`, savedData);
 
-				console.log("Before update:", JSON.parse(JSON.stringify(row.dataset)));
+				// Очистка dataset перед обновлением, чтобы избежать дублирования
+				Object.keys(row.dataset).forEach(key => delete row.dataset[key]);
 
-				// Обновление dataset и содержимого ячеек строки
-				Object.assign(row.dataset, {
-					loanUser: reservationData.user,
-					loanEquipment: reservationData.equipment,
-					loanStartDate: reservationData.startDate,
-					loanEndDate: reservationData.endDate,
-					loanStatus: reservationData.status,
-					archived: reservationData.archived,
-				});
-				console.log("After update:", JSON.parse(JSON.stringify(row.dataset)));
+				// Обновление данных элемента
+				Object.assign(row.dataset, savedData);
+				console.log("Dataset after update:", JSON.stringify(row.dataset));
 
-				// Обновление текста в строке на основе сохранённых данных
-				row.querySelector("td:nth-child(2)").textContent =
-					reservationData.loanUser;
-				row.querySelector("td:nth-child(3)").textContent =
-					reservationData.loanEquipment;
-				row.querySelector(`span[data-name="startdate"]`).textContent =
-					reservationData.loanStartDate;
-				row.querySelector(`span[data-name="enddate"]`).textContent =
-					reservationData.loanEndDate;
-				row.querySelector("td:nth-child(6) span").textContent =
-					reservationData.loanStatus;
+				// Обновление текстового содержимого строк
+				updateTextContent(row, savedData);
+				console.log("Обновление текстового содержимого для строки:", row);
 
-				// Перемещение строки в соответствующий раздел в зависимости от состояния архивации
-				if (reservationData.archived) {
-					const completedReservationsBody = document.querySelector(
-						"#completedReservations tbody"
-					);
-					completedReservationsBody.appendChild(row);
-					updateActionButtonsForRow(row, true);
+				// Определение целевой таблицы для перемещения строки
+				let targetBodySelector = isConflict ?
+					(savedData.archived ? "#resolvedConflicts tbody" : "#conflictsTable tbody") :
+					(savedData.archived ? "#completedReservations tbody" : "#activeReservations tbody");
+
+				const targetBody = document.querySelector(targetBodySelector);
+				if (targetBody) {
+					console.log("до апенда:", targetBody);
+					targetBody.appendChild(row);
+					updateActionButtonsForRow(row, savedData.archived);
+					console.log("после апенда:", targetBody);
 				} else {
-					const activeReservationsBody = document.querySelector(
-						"#activeReservations tbody"
-					);
-					activeReservationsBody.appendChild(row);
-					updateActionButtonsForRow(row, false);
+					console.error("Target table body not found for selector:", targetBodySelector);
 				}
 			}
 		});
 
 		reinitializeDropdowns();
 		initializeTabs();
+
+		function updateTextContent(row, data) {
+			const cellMapping = data.loanUser ? {
+				1: data.loanUser, // Пользователь
+				2: data.loanEquipment, // Оборудование
+				3: data.loanStartDate, // Дата начала
+				4: data.loanEndDate, // Дата окончания
+				5: data.loanStatus // Статус
+			} : {
+				1: data.reportType, // Тип отчета
+				2: data.reportStatus, // Статус
+				3: data.reportDateDeclaration, // Дата декларации
+				4: data.reportPickupDate, // Дата сбора
+				5: data.reportDescription, // Описание
+				6: data.reportIdUser, // ID пользователя
+				7: data.reportIdLoan // ID займа
+			};
+
+			Object.entries(cellMapping).forEach(([index, value]) => {
+				row.cells[index].textContent = value || "N/A";
+			});
+		}
+
 	});
 
 	const dropdownElementList = [].slice.call(

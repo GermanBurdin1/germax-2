@@ -14,7 +14,10 @@ function updateActionButtonsForRow(row, archived) {
 	const deleteButton = row.querySelector(".delete-action");
 	const detailButton = row.querySelector(".view-details");
 	const archiveButton = row.querySelector(".archive-action");
-	const restoreButton = row.querySelector(".restore-action a"); // Обратите внимание, что в вашем HTML восстановление обёрнуто в <a>
+	const restoreButton = row.querySelector(".restore-action a");
+	const resolveConflictAction = row.querySelector(".resolve-action");
+
+	// Обратите внимание, что в вашем HTML восстановление обёрнуто в <a>
 
 	// Устанавливаем видимость кнопок в зависимости от того, архивирована ли запись
 	if (archived) {
@@ -22,6 +25,7 @@ function updateActionButtonsForRow(row, archived) {
 		if (editButton) editButton.classList.add("d-none");
 		if (detailButton) detailButton.classList.add("d-none");
 		if (archiveButton) archiveButton.classList.add("d-none");
+		if (resolveConflictAction) resolveConflictAction.classList.add("d-none");
 
 		// Показываем кнопку "Восстановить" и "Удалить"
 		if (restoreButton)

@@ -527,7 +527,7 @@
 							<th data-column="dateRamassage" data-type="date">Date de Ramassage<button
 									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
 							</th>
-							<th>Description</th>
+							<th data-column="conflictDescription" data-type="text">Description</th>
 							<th data-column="idUtilisateur" data-type="number">ID Utilisateur<button
 									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
 							</th>
@@ -539,7 +539,8 @@
 					</thead>
 					<tbody>
 						<tr data-id-rapport="1" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif"
-							data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="2"
+							data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15"
+							data-conflict-description="Chevauchement des Réservations" data-id-utilisateur="2"
 							data-id-pret="5">
 							<td>1</td>
 							<td>Utilisation d'Équipement</td>
@@ -575,14 +576,15 @@
 							</td>
 						</tr>
 						<tr data-id-rapport="2" data-type-de-rapport="Utilisation d'Équipement" data-status="Actif"
-							data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15" data-id-utilisateur="3"
+							data-date-declaration="2023-04-12" data-date-ramassage="2023-04-15"
+							data-conflict-description="Dépassement de la limite d'utilisation" data-id-utilisateur="3"
 							data-id-pret="6">
 							<td>2</td>
 							<td>Utilisation d'Équipement</td>
 							<td>Actif</td>
 							<td>2023-04-12</td>
 							<td>2023-04-15</td>
-							<td>Дépassement de la limite d'utilisation</td>
+							<td>Dépassement de la limite d'utilisation</td>
 							<td>3</td>
 							<td>6</td>
 							<td>
@@ -591,7 +593,8 @@
 							</td>
 						</tr>
 						<tr data-id-rapport="3" data-type-de-rapport="Utilisation d'Équipement" data-status="Inactif"
-							data-date-declaration="2023-05-20" data-date-ramassage="2023-05-22" data-id-utilisateur="4"
+							data-date-declaration="2023-05-20" data-date-ramassage="2023-05-22"
+							data-conflict-description="Non-respect des exigences d'utilisation" data-id-utilisateur="4"
 							data-id-pret="7">
 							<td>3</td>
 							<td>Utilisation d'Équipement</td>
@@ -607,7 +610,8 @@
 							</td>
 						</tr>
 						<tr data-id-rapport="4" data-type-de-rapport="Utilisation d'Équipement" data-status="En attente"
-							data-date-declaration="2023-06-01" data-date-ramassage="2023-06-03" data-id-utilisateur="5"
+							data-date-declaration="2023-06-01" data-date-ramassage="2023-06-03"
+							data-conflict-description="Retard dans le retour du matériel" data-id-utilisateur="5"
 							data-id-pret="8">
 							<td>4</td>
 							<td>Utilisation d'Équipement</td>
