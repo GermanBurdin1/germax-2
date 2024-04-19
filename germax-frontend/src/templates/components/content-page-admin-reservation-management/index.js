@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				Object.keys(row.dataset).forEach(key => delete row.dataset[key]);
 
 				// Обновление данных элемента
-				Object.assign(row.dataset, savedData, {id: uniqueId});
+				Object.assign(row.dataset, savedData, isConflict ? {idRapport: uniqueId} : {id: uniqueId});
 				console.log("Dataset after update:", JSON.stringify(row.dataset));
 
 				// Обновление текстового содержимого строк
@@ -404,13 +404,13 @@ document.addEventListener("DOMContentLoaded", () => {
 				4: data.enddate, // Дата окончания
 				5: data.status // Статус
 			} : {
-				1: data.reportType, // Тип отчета
-				2: data.reportStatus, // Статус
-				3: data.reportDateDeclaration, // Дата декларации
-				4: data.reportPickupDate, // Дата сбора
-				5: data.reportDescription, // Описание
-				6: data.reportIdUser, // ID пользователя
-				7: data.reportIdLoan // ID займа
+				1: data.typeDeRapport, // Тип отчета
+				2: data.status, // Статус
+				3: data.dateDeclaration, // Дата декларации
+				4: data.dateRamassage, // Дата сбора
+				5: data.conflictDescription, // Описание
+				6: data.idUtilisateur, // ID пользователя
+				7: data.idPret // ID займа
 			};
 
 			Object.entries(cellMapping).forEach(([index, value]) => {

@@ -30,13 +30,13 @@ function attachArchiveHandler(button, tableSelector, tabSelector) {
 	const dataToSave = isConflict
 		? {
 				// Данные конфликта
-				reportType: row.dataset.typeDeRapport,
-				reportStatus: row.dataset.status,
-				reportDateDeclaration: row.dataset.dateDeclaration,
-				reportPickupDate: row.dataset.dateRamassage,
-				reportDescription: row.dataset.conflictDescription,
-				reportIdUser: row.dataset.idUtilisateur,
-				reportIdLoan: row.dataset.idPret,
+				typeDeRapport: row.dataset.typeDeRapport,
+				status: row.dataset.status,
+				dateDeclaration: row.dataset.dateDeclaration,
+				dateRamassage: row.dataset.dateRamassage,
+				conflictDescription: row.dataset.conflictDescription,
+				idUtilisateur: row.dataset.idUtilisateur,
+				idPret: row.dataset.idPret,
 		  }
 		: {
 				// Данные резервации
@@ -88,6 +88,7 @@ function attachRestoreHandler(button) {
     }
 	console.log("проверка строки перед восстановлением",row);
     const isConflict = row.hasAttribute("data-id-rapport");
+	console.log(isConflict);
     const uniqueId = isConflict ? row.dataset.idRapport : row.dataset.id;
 	console.log(uniqueId);
     if (!uniqueId) {
@@ -158,13 +159,13 @@ function updateRowData(row, data) {
 		row.dataset.status = data.status;
 	} else {
 		// Для конфликтов
-		row.dataset.typeDeRapport = data.reportType;
-		row.dataset.status = data.reportStatus;
-		row.dataset.dateDeclaration = data.reportDateDeclaration;
-		row.dataset.dateRamassage = data.reportPickupDate;
-		row.dataset.conflictDescription = data.reportDescription;
-		row.dataset.idUtilisateur = data.reportIdUser;
-		row.dataset.idPret = data.reportIdLoan;
+		row.dataset.typeDeRapport = data.typeDeRapport;
+		row.dataset.status = data.status;
+		row.dataset.dateDeclaration = data.dateDeclaration;
+		row.dataset.dateRamassage = data.dateRamassage;
+		row.dataset.conflictDescription = data.conflictDescription;
+		row.dataset.idUtilisateur = data.idUtilisateur;
+		row.dataset.idPret = data.idPret;
 	}
 
 	// Обновление текста в ячейках на основе новых данных
@@ -180,13 +181,13 @@ function updateTextCells(row, data) {
 		row.cells[4].textContent = data.enddate;
 		row.cells[5].textContent = data.status;
 	} else {
-		row.cells[1].textContent = data.reportType || "N/A";
-		row.cells[2].textContent = data.reportStatus || "N/A";
-		row.cells[3].textContent = data.reportDateDeclaration || "N/A";
-		row.cells[4].textContent = data.reportPickupDate || "N/A";
-		row.cells[5].textContent = data.reportDescription || "N/A";
-		row.cells[6].textContent = data.reportIdUser || "N/A";
-		row.cells[7].textContent = data.reportIdLoan || "N/A";
+		row.cells[1].textContent = data.typeDeRapport || "N/A";
+		row.cells[2].textContent = data.status || "N/A";
+		row.cells[3].textContent = data.dateDeclaration || "N/A";
+		row.cells[4].textContent = data.dateRamassage || "N/A";
+		row.cells[5].textContent = data.conflictDescription || "N/A";
+		row.cells[6].textContent = data.idUtilisateur || "N/A";
+		row.cells[7].textContent = data.idPret || "N/A";
 	}
 }
 
