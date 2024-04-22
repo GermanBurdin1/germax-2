@@ -1,32 +1,31 @@
-
 @import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css);
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css);
 
 .toggle-btn {
-    width: 100%;
-    text-align: left;
-    background-color: #f8f9fa; /* Цвет фона кнопки */
-    color: #007bff; /* Цвет текста кнопки */
-    border-color: #f8f9fa; /* Цвет границы кнопки */
-    box-shadow: none; /* Убрать тень */
+	width: 100%;
+	text-align: left;
+	background-color: #f8f9fa; /* Цвет фона кнопки */
+	color: #007bff; /* Цвет текста кнопки */
+	border-color: #f8f9fa; /* Цвет границы кнопки */
+	box-shadow: none; /* Убрать тень */
 }
 
 .toggle-btn:hover {
-    background-color: #e2e6ea; /* Цвет фона кнопки при наведении */
+	background-color: #e2e6ea; /* Цвет фона кнопки при наведении */
 }
 
 .toggle-btn .icon {
-    float: right; /* Разместить иконку справа */
+	float: right; /* Разместить иконку справа */
 }
 
 .toggle-btn.collapsed .icon i {
-    transform: rotate(-180deg); /* Повернуть иконку, когда контент свёрнут */
+	transform: rotate(-180deg); /* Повернуть иконку, когда контент свёрнут */
 }
 
 .toggle-btn:focus {
-    box-shadow: none; /* Убрать тень при фокусе */
+	box-shadow: none; /* Убрать тень при фокусе */
 }
 
 .d-none {
 	display: none;
-  }
+}

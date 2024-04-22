@@ -51,18 +51,15 @@
 						<table class="table table-hover" id="equipment-table">
 							<thead>
 								<tr>
-									<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i
-												class="fas fa-sort"></i></button></th>
+									<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i class="fas fa-sort"></i></button>
+									</th>
 									<th>Nom de l'équipement<button class="btn btn-link p-0 border-0" id="sortByName"
-											style="text-decoration: none; color: black;"><i
-												class="fas fa-sort"></i></button></th>
+											style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
 									<th>Catégorie<button class="btn btn-link p-0 border-0" id="sortByCategory"
-											style="text-decoration: none; color: black;"><i
-												class="fas fa-sort"></i></button></th>
+											style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
 									<th>Description</th>
 									<th>Statut<button class="btn btn-link p-0 border-0" id="sortByStatus"
-											style="text-decoration: none; color: black;"><i
-												class="fas fa-sort"></i></button></th>
+											style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
 									<th>Actions</th>
 								</tr>
 							</thead>
@@ -72,8 +69,7 @@
 								<tr data-equipment-id="1">
 									<td>1</td>
 									<td><span class="equipment-name">Ordinateur portable</span><input type="text"
-											class="form-control d-none" name="equipment-name"
-											value="Ordinateur portable"></td>
+											class="form-control d-none" name="equipment-name" value="Ordinateur portable"></td>
 									<td>
 										<span class="equipment-category">Informatique</span>
 										<select class="form-select d-none" name="equipment-category">
@@ -91,8 +87,7 @@
 									</td>
 									<td>
 										<span class="equipment-availability">Disponible</span>
-										<input type="text" class="form-control d-none" name="equipment-availability"
-											value="Disponible">
+										<input type="text" class="form-control d-none" name="equipment-availability" value="Disponible">
 										<select class="form-select d-none" name="equipment-availability">
 											<option value="Disponible">Disponible</option>
 											<option value="Non disponible">Non disponible</option>
@@ -100,9 +95,8 @@
 									</td>
 									<td>
 										<div class="dropdown">
-											<button class="btn btn-secondary dropdown-toggle" type="button"
-												id="dropdownMenuButton1" data-bs-toggle="dropdown"
-												aria-expanded="false">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+												data-bs-toggle="dropdown" aria-expanded="false">
 												Choisir une action
 											</button>
 											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -110,8 +104,8 @@
 												<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
 												<li><a class="dropdown-item" href="#">Voir les détails</a></li>
 												<li><a class="dropdown-item" href="#">Réserver</a></li>
-												<li><a class="dropdown-item toggle-log-button" href="#"
-														data-log-id="actionLog-1">Journal des actions</a></li>
+												<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
+														actions</a></li>
 												<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
 												<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
 														href="#">Восстановить</a></li>
@@ -122,21 +116,19 @@
 								</tr>
 
 								<!-- Скрытая строка для журнала действий -->
-								<div class="modal fade" id="actionLogModal" tabindex="-1"
-									aria-labelledby="actionLogModalLabel" aria-hidden="true">
+								<div class="modal fade" id="actionLogModal" tabindex="-1" aria-labelledby="actionLogModalLabel"
+									aria-hidden="true">
 									<div class="modal-dialog modal-lg">
 										<div class="modal-content">
 											<div class="modal-header">
 												<h5 class="modal-title" id="actionLogModalLabel">Journal des actions
 												</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal"
-													aria-label="Закрыть"></button>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
 											</div>
 											<div class="modal-body">
 												<!-- Элементы управления -->
 												<div class="filters">
-													<input type="text" id="searchByName"
-														placeholder="Recherche par nom...">
+													<input type="text" id="searchByName" placeholder="Recherche par nom...">
 													<button id="sortByDate">Trier par date</button>
 												</div>
 												<div id="actionLogEntries">
@@ -150,8 +142,7 @@
 												</div>
 											</div>
 											<div class="modal-footer">
-												<button type="button" class="btn btn-secondary"
-													data-bs-dismiss="modal">Закрыть</button>
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
 												<button type="button" id="exportLog">Exporter le journal</button>
 											</div>
 										</div>
@@ -293,8 +284,8 @@
 					<li>Nombre d'unités en maintenance: Valeur 2</li>
 				</ul>
 				<h4>Documentation:</h4>
-				<p>Vous pouvez télécharger la documentation de la modèle <a href="/path/to/documentation.pdf"
-						download>ici</a>.</p>
+				<p>Vous pouvez télécharger la documentation de la modèle <a href="/path/to/documentation.pdf" download>ici</a>.
+				</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -313,18 +304,15 @@
 			</div>
 			<div class="modal-body">
 				<div class="container-fluid">
-					<input type="text" id="searchUser" class="form-control mb-3"
-						placeholder="Rechercher par nom ou prénom...">
+					<input type="text" id="searchUser" class="form-control mb-3" placeholder="Rechercher par nom ou prénom...">
 					<div class="row">
 						<div class="col-md-3">
-							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
-								aria-orientation="vertical">
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 								<a class="nav-link active" id="v-pills-enseignants-tab" data-bs-toggle="pill"
 									href="#v-pills-enseignants" role="tab" aria-controls="v-pills-enseignants"
 									aria-selected="true">Enseignants</a>
-								<a class="nav-link" id="v-pills-etudiants-tab" data-bs-toggle="pill"
-									href="#v-pills-etudiants" role="tab" aria-controls="v-pills-etudiants"
-									aria-selected="false">Étudiants</a>
+								<a class="nav-link" id="v-pills-etudiants-tab" data-bs-toggle="pill" href="#v-pills-etudiants"
+									role="tab" aria-controls="v-pills-etudiants" aria-selected="false">Étudiants</a>
 							</div>
 						</div>
 						<div class="col-md-9">

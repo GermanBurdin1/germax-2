@@ -7,7 +7,7 @@ function getSavedData(uniqueId, isConflict) {
 	const storageKey = isConflict
 		? `conflict_${uniqueId}`
 		: `reservation_${uniqueId}`;
-	console.log(storageKey);
+	// console.log(storageKey);
 	const savedData = localStorage.getItem(storageKey);
 	return savedData ? JSON.parse(savedData) : null;
 }

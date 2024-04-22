@@ -2,8 +2,15 @@ import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import { Tab } from "bootstrap";
+// import {attachEditRowHandlers} from "../../../utils/edit-table"
 
 document.addEventListener("DOMContentLoaded", function () {
+	//Перенос
+	// const editEquipment = '.edit-action';
+	// attachEditRowHandlers(editEquipment);
+
+
+
 	const addEquipmentButton = document.querySelector(
 		"#addEquipmentModal .btn-primary"
 	);
@@ -167,53 +174,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	});
 
-	// archive
-	// document.querySelectorAll(".archive-action").forEach((button) => {
-	// 	button.addEventListener("click", function (event) {
-	// 	  event.preventDefault();
-	// 	  const row = button.closest("tr");
-	// 	  const equipmentId = row.dataset.equipmentId;
-
-	// 	  fetch("/archive-equipment", {
-	// 		method: "POST",
-	// 		headers: {
-	// 		  "Content-Type": "application/json",
-	// 		},
-	// 		body: JSON.stringify({ id: equipmentId }),
-	// 	  })
-	// 	  .then((response) => response.json())
-	// 	  .then((data) => {
-	// 		if (data.success) {
-	// 		  alert("Данные были успешно перемещены в архив.");
-
-	// 		  // Находим таблицу архивного оборудования
-	// 		  const archiveTableBody = document.querySelector("#archiveEquipment tbody");
-
-	// 		  // Убираем кнопку "Архивировать" и добавляем кнопку "Восстановить"
-	// 		  const actionCell = row.querySelector('td:last-child');
-	// 		  actionCell.innerHTML = `
-	// 			<button class="btn btn-primary restore-action" data-equipment-id="${equipmentId}">Восстановить</button>
-	// 		  `;
-
-	// 		  // Добавляем строку в таблицу архива
-	// 		  archiveTableBody.appendChild(row);
-
-	// 		  // Переключаемся на вкладку 'Архив'
-	// 		  const archiveTab = new bootstrap.Tab(document.querySelector('#archive-equipment-tab'));
-	// 		  archiveTab.show();
-
-	// 		  // Вам нужно будет добавить сюда обработчик для кнопки "Восстановить", если он у вас ещё не реализован
-
-	// 		} else {
-	// 		  alert("Произошла ошибка при архивации данных.");
-	// 		}
-	// 	  })
-	// 	  .catch((error) => {
-	// 		console.error("Error:", error);
-	// 		alert("Произошла ошибка при архивации данных.");
-	// 	  });
-	// 	});
-	//   });
 
 	// Обработчик клика для архивации
 	document.querySelectorAll(".archive-action").forEach((button) => {

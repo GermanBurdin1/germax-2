@@ -1,9 +1,10 @@
 import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
-import Collapse from "bootstrap/js/dist/collapse";
 import Dropdown from "bootstrap/js/dist/dropdown";
+import Collapse from "bootstrap/js/dist/collapse";
+// import { initializeCollapseElement } from "../../../utils/bootstrap-components";
 import Tab from "bootstrap/js/dist/tab";
-import { sortTable } from "../../../utils/sort";
+import { sortTable, initializeSortingButtons, attachSortTooltips } from "../../../utils/sort";
 import {
 	handleArchiveAction,
 	handleRestoreClick,
@@ -17,148 +18,45 @@ import {
 	saveAllDataToLocalStorage,
 	getSavedData,
 } from "../../../utils/storage-utils";
+import {attachEditRowHandlers} from "../../../utils/edit-table"
 
 document.addEventListener("DOMContentLoaded", () => {
-	// restoreDataFromLocalStorage();
-	const generateReportButton = document.querySelector(
-		'button[data-toggle="modal"]'
-	);
-	const searchButton = document.querySelector(
-		'button[data-bs-toggle="collapse"]'
-	);
-	let collapseElement = document.getElementById("searchConflictsSection");
-	let collapse = new Collapse(collapseElement, {
-		toggle: false, // Это говорит о том, что Collapse не должен автоматически переключаться при инициализации
-	});
-
-	searchButton.addEventListener("click", () => {
-		collapse.toggle(); // Это будет переключать видимость вашего collapse элемента
-	});
 
 	const filterUser = document.getElementById("filterUser");
 	const filterEquipment = document.getElementById("filterEquipment");
 	const filterStatus = document.getElementById("filterStatus");
+	const searchButton = document.querySelector(
+		'button[data-bs-toggle="collapse"]'
+	);
+	let collapseElement = document.getElementById("searchConflictsSection");
+	let collapse = initializeCollapseElement(
+		collapseElement);
 
-	function fetchData() {
-		const selectedUsers = Array.from(filterUser.selectedOptions)
-			.map((option) => option.value)
-			.join(",");
-		const selectedEquipments = Array.from(filterEquipment.selectedOptions)
-			.map((option) => option.value)
-			.join(",");
-		const selectedStatuses = Array.from(filterStatus.selectedOptions)
-			.map((option) => option.value)
-			.join(",");
-
-		// Пример URL, который может быть использован для запроса к серверу
-		// Необходимо адаптировать URL и параметры в соответствии с вашим API
-		const url = `/api/reservations?users=${selectedUsers}&equipments=${selectedEquipments}&status=${selectedStatuses}`;
-
-		fetch(url)
-			.then((response) => response.json())
-			.then((data) => updateTable(data))
-			.catch((error) => console.error("Error fetching data:", error));
+	function initializeCollapseElement(
+		collapseElement,
+		options = { toggle: false }
+	) {
+		// console.log(
+		// 	"Initialization Collapse pour l'élément:",
+		// 	collapseElement
+		// );
+		return new Collapse(collapseElement, options);
 	}
 
-	function updateTable(data) {
-		const tbody = document.querySelector("#reservationsTable tbody");
-		tbody.innerHTML = ""; // Очищаем текущее содержимое таблицы
-
-		// Создаем новые строки таблицы на основе полученных данных
-		data.forEach((rowData) => {
-			const tr = document.createElement("tr");
-			tr.innerHTML = `
-                <td>${rowData.id}</td>
-                <td>${rowData.user}</td>
-                <td>${rowData.equipment}</td>
-                <td>${rowData.startDate}</td>
-                <td>${rowData.endDate}</td>
-                <td>${rowData.status}</td>
-                <td><button class="btn btn-primary">Détails</button></td>
-            `;
-			tbody.appendChild(tr);
-		});
-	}
-
-	[filterUser, filterEquipment, filterStatus].forEach((filter) => {
-		filter.addEventListener("change", fetchData);
+	searchButton.addEventListener("click", () => {
+		collapse.toggle();
 	});
 
-	//sort
-	document.querySelectorAll(".sortButton").forEach((button) => {
-		button.addEventListener("click", function () {
-			const header = this.closest("th");
-			const column = header.getAttribute("data-column");
-			const dataType = header.getAttribute("data-type");
-			const table = header.closest("table");
-			const tbody = table.querySelector("tbody");
 
-			if (!header || !column || !dataType || !table || !tbody) {
-				console.error("One of the elements is not found.");
-				return;
-			}
-
-			const sortingKey = table.id + "_sortingColumn";
-			const orderKey = table.id + "_sortingOrder";
-			const isAscending = localStorage.getItem(orderKey) !== "asc";
-
-			localStorage.setItem(sortingKey, column);
-			localStorage.setItem(orderKey, isAscending ? "asc" : "desc");
-
-			sortTable(tbody, column, dataType, isAscending);
-		});
-	});
-
-	// Всплывающие подсказки для кнопок сортировки
-	document.querySelectorAll(".btn-link").forEach((btn) => {
-		btn.addEventListener("mouseenter", (e) => {
-			const sortType = e.target.closest("th").textContent.trim();
-			e.target.title = `Sort by ${sortType}`;
-		});
-	});
+	//сортировка
+	initializeSortingButtons();
+	attachSortTooltips();
 
 	// edit-reservation
-
-	document.querySelectorAll(".edit-reservation").forEach((item) => {
-		item.addEventListener("click", function (event) {
-			event.preventDefault();
-			const row = this.closest("tr");
-			row.classList.add("editing");
-
-			// Переключение видимости элементов и установка текущего значения для select
-			toggleElements(row, true);
-			initializeRowForEditing(row);
-
-			// Добавляем кнопки сохранения и отмены, если они еще не добавлены
-			addSaveCancelButtons(row);
-		});
-	});
-
-	function toggleElements(row, isEditing) {
-		row.querySelectorAll("span.view-mode, .edit-mode").forEach(
-			(element) => {
-				element.classList.toggle("d-none");
-			}
-		);
-	}
-
-	function initializeRowForEditing(row) {
-		const statusSelect = row.querySelector("select.edit-mode");
-		const startDateInput = row.querySelector('input[name="startdate"]');
-		const endDateInput = row.querySelector('input[name="enddate"]');
-
-		// Устанавливаем текущее значение статуса из dataset
-		if (statusSelect) {
-			const currentStatus = row.dataset.status;
-			statusSelect.value = currentStatus;
-		}
-
-		// Устанавливаем текущие значения дат из dataset
-		if (startDateInput && endDateInput) {
-			startDateInput.value = row.dataset.startdate;
-			endDateInput.value = row.dataset.enddate;
-		}
-	}
+	const editReservation = "#reservationsTable .edit-reservation";
+	const editConflict = ".edit-conflict";
+	attachEditRowHandlers(editReservation);
+	attachEditRowHandlers(editConflict);
 
 	function setMinMaxDates() {
 		const today = new Date();
@@ -178,143 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				input.setAttribute("min", formatDate(today));
 				input.setAttribute("max", formatDate(maxDate));
 			});
-	}
-
-	function saveChanges(row) {
-		const inputs = row.querySelectorAll(".edit-mode");
-		let isValidDate = true; // Флаг валидности дат
-		let startDate = null;
-		let endDate = null;
-
-		inputs.forEach((input) => {
-			const errorMessageSpan =
-				input.nextElementSibling &&
-				input.nextElementSibling.classList.contains("error-message")
-					? input.nextElementSibling
-					: null;
-
-			if (input.type === "date") {
-				if (errorMessageSpan) {
-					errorMessageSpan.classList.add("d-none");
-					errorMessageSpan.textContent = ""; // Очищаем предыдущие сообщения об ошибке
-				}
-
-				const dateValue = input.value ? new Date(input.value) : null;
-				const minDate = new Date(input.getAttribute("min"));
-				const maxDate = new Date(input.getAttribute("max"));
-
-				if (
-					dateValue &&
-					(isNaN(dateValue.getTime()) ||
-						dateValue < minDate ||
-						dateValue > maxDate)
-				) {
-					isValidDate = false;
-					if (errorMessageSpan) {
-						errorMessageSpan.classList.remove("d-none");
-						errorMessageSpan.textContent =
-							"La date sélectionnée dépasse les limites autorisées. Veuillez choisir une date à partir d'aujourd'hui et dans les 3 prochaines années.";
-					}
-				} else if (!dateValue || isNaN(dateValue.getTime())) {
-					isValidDate = false;
-					if (errorMessageSpan) {
-						errorMessageSpan.classList.remove("d-none");
-						errorMessageSpan.textContent =
-							"La date entrée est invalide.";
-					}
-				} else {
-					// Запоминаем значения даты начала и окончания
-					if (input.name === "startdate") {
-						startDate = dateValue;
-					} else if (input.name === "enddate") {
-						endDate = dateValue;
-					}
-				}
-			}
-		});
-
-		// Проверка, что дата начала не больше даты окончания
-		if (startDate && endDate && startDate > endDate) {
-			isValidDate = false;
-			// Находим элементы для сообщения об ошибке у конкретных полей даты начала и окончания
-			const startErrorMessageSpan = row.querySelector(
-				'input[name="startdate"]'
-			).nextElementSibling;
-			const endErrorMessageSpan = row.querySelector(
-				'input[name="enddate"]'
-			).nextElementSibling;
-
-			if (startErrorMessageSpan && endErrorMessageSpan) {
-				startErrorMessageSpan.classList.remove("d-none");
-				startErrorMessageSpan.textContent =
-					"La date de début doit être antérieure à la date de fin.";
-				endErrorMessageSpan.classList.remove("d-none");
-				endErrorMessageSpan.textContent = "";
-			}
-		}
-
-		if (!isValidDate) return; // Прекращаем выполнение функции, если дата невалидна
-
-		const statusSelect = row.querySelector("select.edit-mode");
-		if (statusSelect) {
-			const statusSpan = row.querySelector("td:nth-child(6) span");
-			statusSpan.textContent =
-				statusSelect.options[statusSelect.selectedIndex].text;
-			// Обновляем dataset статуса
-			row.dataset.status = statusSelect.value;
-		}
-
-		// Формирование объекта данных для сохранения
-		const reservationData = {
-			id: row.dataset.id,
-			user: row.dataset.user,
-			equipment: row.dataset.equipment,
-			startDate: row.dataset.startdate,
-			endDate: row.dataset.enddate,
-			status: row.dataset.status,
-		};
-
-		// Сохранение в LocalStorage
-		localStorage.setItem(
-			`reservation_${reservationData.id}`,
-			JSON.stringify(reservationData)
-		);
-
-		// Очистка редактора и возвращение в исходное состояние
-		toggleElements(row, false);
-		row.classList.remove("editing");
-		removeSaveCancelButtons(row);
-	}
-
-	function addSaveCancelButtons(row) {
-		if (!row.querySelector(".save-changes")) {
-			const saveBtn = document.createElement("button");
-			saveBtn.textContent = "Сохранить изменения";
-			saveBtn.classList.add("btn", "btn-success", "save-changes");
-			saveBtn.addEventListener("click", function () {
-				saveChanges(row);
-			});
-			row.querySelector("td:last-child").appendChild(saveBtn);
-		}
-
-		if (!row.querySelector(".cancel-changes")) {
-			const cancelBtn = document.createElement("button");
-			cancelBtn.textContent = "Отменить изменения";
-			cancelBtn.classList.add("btn", "btn-danger", "cancel-changes");
-			cancelBtn.addEventListener("click", function () {
-				toggleElements(row, false);
-				row.classList.remove("editing");
-				// Удаляем кнопки
-				removeSaveCancelButtons(row);
-			});
-			row.querySelector("td:last-child").appendChild(cancelBtn);
-		}
-	}
-
-	function removeSaveCancelButtons(row) {
-		row.querySelectorAll(".save-changes, .cancel-changes").forEach(
-			(button) => button.remove()
-		);
 	}
 
 	window.addEventListener("load", () => {
@@ -354,27 +115,24 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 
 		// Восстановление состояния резерваций и перенос их между таблицами
-		console.log("Restoring rows based on saved data...");
 
 		document.querySelectorAll("tr[data-id], tr[data-id-rapport]").forEach((row) => {
 			const isConflict = row.hasAttribute("data-id-rapport");
 			const uniqueId = isConflict ? row.dataset.idRapport : row.dataset.id;
 			const savedData = getSavedData(uniqueId, isConflict);
-			console.log(`Данные, полученные из localStorage для ID ${uniqueId}:`, savedData);
-
 			if (savedData) {
-				console.log(`Parsed data for ${isConflict ? "conflict" : "reservation"}:`, savedData);
+				// console.log(`Parsed data for ${isConflict ? "conflict" : "reservation"}:`, savedData);
 
 				// Очистка dataset перед обновлением, чтобы избежать дублирования
 				Object.keys(row.dataset).forEach(key => delete row.dataset[key]);
 
 				// Обновление данных элемента
 				Object.assign(row.dataset, savedData, isConflict ? {idRapport: uniqueId} : {id: uniqueId});
-				console.log("Dataset after update:", JSON.stringify(row.dataset));
+				// console.log("Dataset after update:", JSON.stringify(row.dataset));
 
 				// Обновление текстового содержимого строк
 				updateTextContent(row, savedData);
-				console.log("Обновление текстового содержимого для строки:", row);
+				// console.log("Обновление текстового содержимого для строки:", row);
 
 				// Определение целевой таблицы для перемещения строки
 				let targetBodySelector = isConflict ?
@@ -383,12 +141,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				const targetBody = document.querySelector(targetBodySelector);
 				if (targetBody) {
-					console.log("до апенда:", targetBody);
+					// console.log("до апенда:", targetBody);
 					targetBody.appendChild(row);
 					updateActionButtonsForRow(row, savedData.archived);
-					console.log("после апенда:", targetBody);
+					// console.log("после апенда:", targetBody);
 				} else {
-					console.error("Target table body not found for selector:", targetBodySelector);
+					// console.error("Target table body not found for selector:", targetBodySelector);
 				}
 			}
 		});

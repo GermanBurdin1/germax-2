@@ -59,3 +59,54 @@ function saveEquipment() {
 document
 	.getElementById("saveEquipmentBtn")
 	.addEventListener("click", saveEquipment);
+
+
+
+// page-admin-reservation-management/
+
+function fetchData() {
+		const selectedUsers = Array.from(filterUser.selectedOptions)
+		.map((option) => option.value)
+		.join(",");
+	const selectedEquipments = Array.from(filterEquipment.selectedOptions)
+		.map((option) => option.value)
+		.join(",");
+	const selectedStatuses = Array.from(filterStatus.selectedOptions)
+		.map((option) => option.value)
+		.join(",");
+
+	// Пример URL, который может быть использован для запроса к серверу
+	// Необходимо адаптировать URL и параметры в соответствии с вашим API
+	const url = `/api/reservations?users=${selectedUsers}&equipments=${selectedEquipments}&status=${selectedStatuses}`;
+
+	fetch(url)
+		.then((response) => response.json())
+		.then((data) => updateTable(data))
+		.catch((error) => console.error("Error fetching data:", error));
+}
+
+
+function updateTable(data) {
+	const tbody = document.querySelector("#reservationsTable tbody");
+	tbody.innerHTML = ""; // Очищаем текущее содержимое таблицы
+
+	// Создаем новые строки таблицы на основе полученных данных
+	data.forEach((rowData) => {
+		const tr = document.createElement("tr");
+		tr.innerHTML = `
+			<td>${rowData.id}</td>
+			<td>${rowData.user}</td>
+			<td>${rowData.equipment}</td>
+			<td>${rowData.startDate}</td>
+			<td>${rowData.endDate}</td>
+			<td>${rowData.status}</td>
+			<td><button class="btn btn-primary">Détails</button></td>
+		`;
+		tbody.appendChild(tr);
+	});
+}
+
+
+[filterUser, filterEquipment, filterStatus].forEach((filter) => {
+	filter.addEventListener("change", fetchData);
+});

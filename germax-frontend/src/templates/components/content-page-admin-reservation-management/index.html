@@ -544,9 +544,24 @@
 							data-id-pret="5">
 							<td>1</td>
 							<td>Utilisation d'Équipement</td>
-							<td>Actif</td>
-							<td>2023-04-12</td>
-							<td>2023-04-15</td>
+							<td>
+								<span class="view-mode">Actif</span>
+								<select class="edit-mode d-none">
+									<option value="Actif">Actif</option>
+									<option value="Waiting">En attente</option>
+									<option value="Cancelled">Annulé</option>
+								</select>
+							</td>
+							<td>
+								<span class="view-mode" data-name="startdate">2023-04-01</span>
+								<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode" data-name="enddate">2023-04-03</span>
+								<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
 							<td>Chevauchement des Réservations</td>
 							<td>2</td>
 							<td>5</td>
@@ -557,7 +572,7 @@
 										Choisir une action
 									</button>
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-										<li><a class="dropdown-item edit-reservation" href="#">Éditer</a></li>
+										<li><a class="dropdown-item edit-conflict" href="#">Éditer</a></li>
 										<li>
 											<a class="dropdown-item delete-action" href="#">Supprimer</a>
 										</li>

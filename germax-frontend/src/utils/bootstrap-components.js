@@ -1,6 +1,15 @@
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import { Tab } from "bootstrap";
+import Collapse from "bootstrap/js/dist/collapse";
+
+function initializeCollapseElement(
+	collapseElement,
+	options = { toggle: false }
+) {
+	console.log("Initialization Collapse pour l'élément:", collapseElement);
+	return new Collapse(collapseElement, options);
+}
 
 function initializeModal(idModal) {
 	new Modal(document.getElementById(idModal));
@@ -21,7 +30,7 @@ function initializeHoverDropdowns(dropdowns) {
 			if (dropdownToggle) {
 				let bsDropdown = new Dropdown(dropdownToggle);
 				bsDropdown.show();
-				console.log("произошло наведение мыши:",bsDropdown );
+				console.log("произошло наведение мыши:", bsDropdown);
 			}
 		});
 
@@ -33,7 +42,7 @@ function initializeHoverDropdowns(dropdowns) {
 				let bsDropdown = Dropdown.getInstance(dropdownToggle);
 				if (bsDropdown) {
 					bsDropdown.hide();
-					console.log("ушло наведение мыши:",bsDropdown );
+					console.log("ушло наведение мыши:", bsDropdown);
 				}
 			}
 		});
@@ -41,32 +50,46 @@ function initializeHoverDropdowns(dropdowns) {
 }
 
 function initializeTabs(tabElements) {
-	console.log("вызывалась функция initializeTabs с параметрами:",tabElements[0],tabElements[1] );
-    tabElements.forEach(function(triggerEl) {
+	console.log(
+		"вызывалась функция initializeTabs с параметрами:",
+		tabElements[0],
+		tabElements[1]
+	);
+	tabElements.forEach(function (triggerEl) {
 		console.log(triggerEl);
-        const tabTrigger = new Tab(triggerEl);
+		const tabTrigger = new Tab(triggerEl);
 		console.log(tabTrigger);
-        triggerEl.addEventListener("click", function(e) {
-			console.log("произошла инициализация вкладки:",tabTrigger );
-            e.preventDefault();
-            tabTrigger.show();
-			console.log("произошла инициализация вкладки:",tabTrigger )
-        });
-    });
+		triggerEl.addEventListener("click", function (e) {
+			console.log("произошла инициализация вкладки:", tabTrigger);
+			e.preventDefault();
+			tabTrigger.show();
+			console.log("произошла инициализация вкладки:", tabTrigger);
+		});
+	});
 }
 
 function initializeSingleTab(selector) {
-    console.log("функция initializeSingleTab сработала");
-    const tabElement = document.querySelector(selector);
-    console.log("назначен элемент таблицы функции initializeSingleTab", tabElement);
-    if (tabElement) {
-        const tab = new Tab(tabElement);
-        // Убрать ненужный обработчик клика, если вы хотите сразу показать вкладку
-        tab.show(); // Показываем вкладку немедленно
-        console.log("инициализированный таб элемент:", tabElement);
-    } else {
-        console.error("Tab element not found for selector:", selector);
-    }
+	console.log("функция initializeSingleTab сработала");
+	const tabElement = document.querySelector(selector);
+	console.log(
+		"назначен элемент таблицы функции initializeSingleTab",
+		tabElement
+	);
+	if (tabElement) {
+		const tab = new Tab(tabElement);
+		// Убрать ненужный обработчик клика, если вы хотите сразу показать вкладку
+		tab.show(); // Показываем вкладку немедленно
+		console.log("инициализированный таб элемент:", tabElement);
+	} else {
+		console.error("Tab element not found for selector:", selector);
+	}
 }
 
-export { initializeModal, getModalInstance, initializeHoverDropdowns, initializeTabs, initializeSingleTab };
+export {
+	initializeCollapseElement,
+	initializeModal,
+	getModalInstance,
+	initializeHoverDropdowns,
+	initializeTabs,
+	initializeSingleTab,
+};
