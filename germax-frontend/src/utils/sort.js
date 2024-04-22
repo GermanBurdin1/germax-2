@@ -66,4 +66,24 @@ function sortByStatus(rows, ascending) {
 	});
 }
 
-export {sortTable, sortByStatus};
+function setMinMaxDates() {
+	const today = new Date();
+	const maxDate = new Date(
+		today.getFullYear() + 3,
+		today.getMonth(),
+		today.getDate()
+	);
+
+	// Преобразование в формат YYYY-MM-DD
+	const formatDate = (date) => date.toISOString().split("T")[0];
+
+	// Установка атрибутов min и max для полей ввода даты
+	document
+		.querySelectorAll('.edit-mode[type="date"]')
+		.forEach((input) => {
+			input.setAttribute("min", formatDate(today));
+			input.setAttribute("max", formatDate(maxDate));
+		});
+}
+
+export {sortTable, sortByStatus, setMinMaxDates};
