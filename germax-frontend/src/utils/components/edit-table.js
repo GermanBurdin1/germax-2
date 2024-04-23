@@ -1,9 +1,10 @@
-import { saveDataToLocalStorage } from "./storage-utils";
-import { validateDate, validateEmail } from "./validate-data";
+import { saveDataToLocalStorage } from "../storage-utils";
+import { validateDate, validateEmail } from "../validate-data";
 
 function attachEditRowHandlers(rowHandler) {
 	document.querySelectorAll(rowHandler).forEach((item) => {
 		item.addEventListener("click", function (event) {
+			console.log("произошел клик:", item);
 			event.preventDefault();
 
 			const row = this.closest("tr");

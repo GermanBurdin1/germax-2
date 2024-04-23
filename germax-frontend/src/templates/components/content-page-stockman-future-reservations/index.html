@@ -1,5 +1,5 @@
 <div class="container mt-5">
-	<h2>Réservations à venir</h2>
+	<h2>Réservations à venir et arrivant à échéance</h2>
 	<div class="row">
 		<div class="col-md-3">
 			<div class="list-group mb-4">
@@ -35,16 +35,112 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>ID Réservation</th>
-							<th>Catégorie</th>
-							<th>Modèle</th>
-							<th>Date de début</th>
-							<th>Date de fin</th>
-							<th>Statut</th>
+							<th>Numéro de Réservation <button class="btn btn-link p-0 border-0 sortButton"
+									title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+							<th>Nom de l'Équipement</th>
+							<th>Quantité <button class="btn btn-link p-0 border-0 sortButton" title="Trier par Quantité"><i
+										class="fas fa-sort"></i></button></th>
+							<th>Date de la Commande <button class="btn btn-link p-0 border-0 sortButton"
+									title="Trier par Date de la Commande"><i class="fas fa-sort"></i></button></th>
+							<th>Date de réception <button class="btn btn-link p-0 border-0 sortButton"
+									title="Trier par Date de réception"><i class="fas fa-sort"></i></button></th>
+							<th>Etat du matériel <button class="btn btn-link p-0 border-0 sortButton"
+									title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						<!-- Les réservations filtrées seront affichées ici -->
+						<tr>
+							<td>1001</td>
+							<td>Ordinateur Portable Avancé</td>
+							<td>10</td>
+							<td>01/04/2024</td>
+							<td>03/04/2024</td>
+							<td>Neuf</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item inform-state-action" href="#">Informer l'état du matériel </a>
+											<!-- для manager -->
+										</li>
+										<li>
+											<a class="dropdown-item mark-as-send-action" href="#">Former l'ordre</a>
+											<!-- в таблицу equipment orders -->
+										</li>
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>1002</td>
+							<td>Scanner 3D Pro</td>
+							<td>5</td>
+							<td>05/04/2024</td>
+							<td>09/04/2024</td>
+							<td>Bon état</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item inform-state-action" href="#">Informer l'état du matériel </a>
+											<!-- для manager -->
+										</li>
+										<li>
+											<a class="dropdown-item mark-as-send-action" href="#">Former l'ordre</a>
+											<!-- в таблицу equipment orders -->
+										</li>
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>1003</td>
+							<td>Drones de Surveillance</td>
+							<td>20</td>
+							<td>10/04/2024</td>
+							<td>prévu le 11/04/2024</td>
+							<td>Mauvais état</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item inform-state-action" href="#">Informer l'état du matériel </a>
+											<!-- для manager, для будущих -->
+										</li>
+										<li>
+											<a class="dropdown-item mark-as-send-action" href="#">Former l'ordre</a>
+											<!-- в таблицу equipment orders, для будущих -->
+										</li>
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+											<!-- в таблицу equipment orders, для будущих и подходящих к сроку. для подходящих к сроку узнать о состоянии -->
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

@@ -1,12 +1,12 @@
 import {
 	reinitializeDropdowns,
 	updateActionButtonsForRow,
-} from "./dom-utils.js";
+} from "../dom-utils.js";
 import {
 	getSavedData,
 	saveDataToLocalStorage,
 	saveAllDataToLocalStorage,
-} from "./storage-utils.js";
+} from "../storage-utils.js";
 import Tab from "bootstrap/js/dist/tab";
 
 function attachArchiveHandler(button, tableSelector, tabSelector) {

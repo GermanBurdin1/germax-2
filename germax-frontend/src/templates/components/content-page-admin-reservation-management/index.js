@@ -8,7 +8,7 @@ import { sortTable, initializeSortingButtons, attachSortTooltips } from "../../.
 import {
 	handleArchiveAction,
 	handleRestoreClick,
-} from "../../../utils/action-handlers";
+} from "../../../utils/components/hide-data";
 import {
 	reinitializeDropdowns,
 	updateActionButtonsForRow,
@@ -18,7 +18,7 @@ import {
 	saveAllDataToLocalStorage,
 	getSavedData,
 } from "../../../utils/storage-utils";
-import {attachEditRowHandlers} from "../../../utils/edit-table"
+import {attachEditRowHandlers} from "../../../utils/components/edit-table"
 
 document.addEventListener("DOMContentLoaded", () => {
 

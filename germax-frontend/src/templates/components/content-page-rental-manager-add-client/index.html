@@ -15,8 +15,8 @@
 						aria-controls="students" aria-selected="true">Élèves</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" id="teachers-tab" data-toggle="tab" href="#teachers" role="tab"
-						aria-controls="teachers" aria-selected="false">Enseignants</a>
+					<a class="nav-link" id="teachers-tab" data-toggle="tab" href="#teachers" role="tab" aria-controls="teachers"
+						aria-selected="false">Enseignants</a>
 				</li>
 			</ul>
 		</div>
@@ -85,59 +85,117 @@
 		<table class="table align-middle">
 			<thead>
 				<tr>
-					<th>Client</th>
-					<th>Dernière visite</th>
+					<th>Client <button class="btn btn-link p-0 border-0 sortButton" title="Sort by Client"><i
+								class="fas fa-sort"></i></button></th>
+					<th> <button class="btn btn-link p-0 border-0 sortButton" title="Sort by Date"><i
+								class="fas fa-sort"></i></button>Date de première connexion</th>
 					<th>Email</th>
 					<th>Téléphone</th>
-					<th>Date de location</th>
-					<th>Date de retour</th>
-					<th>Statut</th>
+					<th>Dernier équipement loué</th>
+					<th>Date de prise</th>
+					<th>Date de restitution</th>
+					<th>État du matériel rendu</th>
 					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
-				<!-- Далее следуют строки с данными арендаторов. Пример одной строки: -->
 				<tr>
 					<td>
 						<div class="d-flex align-items-center">
-							<!-- <img src="img/user7.png" class="img-4x rounded-5 me-3" alt="Avatar"> -->
-							<p class="m-0">Felicia Quinn</p>
+							<p class="m-0">Alex Dupont</p>
 						</div>
 					</td>
-					<td>Il y a 2 heures</td>
-					<td>info@example.com</td>
-					<td>(128) 898-0326</td>
-					<td>01/09/2022</td>
-					<td>10/09/2022</td>
+					<td>Il y a 1 jour</td>
+					<td>alex.dupont@example.com</td>
+					<td>(123) 456-7890</td>
+					<td>Ordinateur portable</td>
+					<td>15/04/2024</td>
+					<td>22/04/2024</td>
 					<td>
-						<span class="badge shade-light-green">Payé</span>
+						<span class="badge bg-warning text-dark">En bon état</span>
 					</td>
 					<td>
-						<a class="btn btn-primary" href="./infoClient.html">Gérer</a>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
+								<li><a class="dropdown-item delete-client" href="#">Supprimer le client</a></li>
+								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
+								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
+										data-bs-target="#communication-client">Contacter le client</a></li>
+							</ul>
+						</div>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<div class="d-flex align-items-center">
-							<!-- <img src="img/user7.png" class="img-4x rounded-5 me-3" alt="Avatar"> -->
-							<p class="m-0">Felicia Quinn</p>
+							<p class="m-0">Béatrice Émond</p>
 						</div>
 					</td>
-					<td>Il y a 2 heures</td>
-					<td>info@example.com</td>
-					<td>(128) 898-0326</td>
-					<td>01/09/2022</td>
-					<td>10/09/2022</td>
+					<td>Il y a 3 jours</td>
+					<td>beatrice.emond@example.com</td>
+					<td>(321) 654-9870</td>
+					<td>Scanner 3D</td>
+					<td>10/04/2024</td>
+					<td>20/04/2024</td>
 					<td>
-						<span class="badge shade-light-green">Payé</span>
+						<span class="badge bg-danger">Endommagé</span>
 					</td>
 					<td>
-						<a class="btn btn-primary" href="./infoClient.html">Gérer</a>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
+								<li><a class="dropdown-item delete-client" href="#">Supprimer le client</a></li>
+								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
+								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
+										data-bs-target="#communication-client">Contacter le client</a></li>
+							</ul>
+						</div>
 					</td>
 				</tr>
-				<!-- Добавьте дополнительные строки согласно вашим данным -->
+				<tr>
+					<td>
+						<div class="d-flex align-items-center">
+							<p class="m-0">Claude Mercier</p>
+						</div>
+					</td>
+					<td>Il y a 5 jours</td>
+					<td>claude.mercier@example.com</td>
+					<td>(987) 654-3210</td>
+					<td>Drones de surveillance</td>
+					<td>05/04/2024</td>
+					<td>15/04/2024</td>
+					<td>
+						<span class="badge bg-success">Comme neuf</span>
+					</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
+								<li><a class="dropdown-item delete-client" href="#">Supprimer le client</a></li>
+								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
+								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
+										data-bs-target="#communication-client">Contacter le client</a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
 			</tbody>
 		</table>
-		<!-- Пагинация (если нужна) -->
 	</div>
 </div>
