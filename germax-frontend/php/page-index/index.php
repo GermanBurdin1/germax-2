@@ -1,8 +1,7 @@
 <?php
 
-require_once(['DOCUMENT_ROOT'] . '\\php-utils\\get-absolute-path.php');
-require_once(['DOCUMENT_ROOT'] . '\\php-utils\\serve-html-file.php');
-serveHtmlFile('dist/index.html');
+require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\get-absolute-path.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
 
 ?>
 

@@ -1,8 +1,8 @@
-import {saveDataToLocalStorage} from './storage-utils';
+import { saveDataToLocalStorage } from "./storage-utils";
+import { validateDate, validateEmail } from "./validate-data";
 
 function attachEditRowHandlers(rowHandler) {
 	document.querySelectorAll(rowHandler).forEach((item) => {
-		console.log("item для equipment management:",)
 		item.addEventListener("click", function (event) {
 			event.preventDefault();
 
@@ -35,21 +35,40 @@ function toggleElements(row, isEditing) {
 }
 
 function initializeRowForEditing(row) {
-	const statusSelect = row.querySelector("select.edit-mode");
-	const startDateInput = row.querySelector('input[name="startdate"]');
-	const endDateInput = row.querySelector('input[name="enddate"]');
+	// Определение источника данных: проверяем все возможные data-* атрибуты для идентификаторов
+	const dataKeys = row.dataset;
+	let storageKey = "";
+	let sourceData = {};
 
-	// Устанавливаем текущее значение статуса из dataset
-	if (statusSelect) {
-		const currentStatus = row.dataset.status;
-		statusSelect.value = currentStatus;
+	// Поиск первого ключа, который оканчивается на "Id" и используется в localStorage
+	for (const key in dataKeys) {
+			if (key.endsWith("Id") && localStorage.getItem(`${key}_${dataKeys[key]}`)) {
+					storageKey = `${key}_${dataKeys[key]}`;
+					sourceData = JSON.parse(localStorage.getItem(storageKey));
+					break; // Найден подходящий ключ, прерываем цикл
+			}
 	}
 
-	// Устанавливаем текущие значения дат из dataset
-	if (startDateInput && endDateInput) {
-		startDateInput.value = row.dataset.startdate;
-		endDateInput.value = row.dataset.enddate;
+	// Если подходящих данных в localStorage не нашлось, используем значения из dataset
+	if (!storageKey) {
+			sourceData = Object.assign({}, dataKeys);
 	}
+
+	// Инициализация всех полей ввода, textarea и select
+	row.querySelectorAll("input.edit-mode, select.edit-mode, textarea.edit-mode").forEach(element => {
+			const fieldName = element.name; // Имя поля, соответствующее ключам в sourceData
+			// Для select, checkbox и radio устанавливаем значения
+			if (element.tagName === 'SELECT' || element.type === 'checkbox' || element.type === 'radio') {
+					if (element.type === 'checkbox' || element.type === 'radio') {
+							element.checked = (sourceData[fieldName] === 'true' || sourceData[fieldName] === true);
+					} else {
+							element.value = sourceData[fieldName] || element.value; // Устанавливаем значение select
+					}
+			} else {
+					// Для input и textarea присваиваем значение
+					element.value = sourceData[fieldName] || element.previousElementSibling?.textContent.trim() || '';
+			}
+	});
 }
 
 function addSaveCancelButtons(row) {
@@ -78,112 +97,11 @@ function addSaveCancelButtons(row) {
 }
 
 function saveChanges(row) {
-	const inputs = row.querySelectorAll(".edit-mode");
-	let isValidDate = true; // Флаг валидности дат
-	let startDate = null;
-	let endDate = null;
+	if (!validateRowData(row)) return; // Если данные не прошли валидацию, прекращаем обработку
 
-	inputs.forEach((input) => {
-		const errorMessageSpan =
-			input.nextElementSibling &&
-			input.nextElementSibling.classList.contains("error-message")
-				? input.nextElementSibling
-				: null;
-
-		if (input.type === "date") {
-			if (errorMessageSpan) {
-				errorMessageSpan.classList.add("d-none");
-				errorMessageSpan.textContent = ""; // Очищаем предыдущие сообщения об ошибке
-			}
-
-			const dateValue = input.value ? new Date(input.value) : null;
-			const minDate = new Date(input.getAttribute("min"));
-			const maxDate = new Date(input.getAttribute("max"));
-
-			if (
-				dateValue &&
-				(isNaN(dateValue.getTime()) ||
-					dateValue < minDate ||
-					dateValue > maxDate)
-			) {
-				isValidDate = false;
-				if (errorMessageSpan) {
-					errorMessageSpan.classList.remove("d-none");
-					errorMessageSpan.textContent =
-						"La date sélectionnée dépasse les limites autorisées. Veuillez choisir une date à partir d'aujourd'hui et dans les 3 prochaines années.";
-				}
-			} else if (!dateValue || isNaN(dateValue.getTime())) {
-				isValidDate = false;
-				if (errorMessageSpan) {
-					errorMessageSpan.classList.remove("d-none");
-					errorMessageSpan.textContent = "La date entrée est invalide.";
-				}
-			} else {
-				// Запоминаем значения даты начала и окончания
-				if (input.name === "startdate") {
-					startDate = dateValue;
-				} else if (input.name === "enddate") {
-					endDate = dateValue;
-				}
-			}
-		}
-	});
-
-	// Проверка, что дата начала не больше даты окончания
-	if (startDate && endDate && startDate > endDate) {
-		isValidDate = false;
-		// Находим элементы для сообщения об ошибке у конкретных полей даты начала и окончания
-		const startErrorMessageSpan = row.querySelector(
-			'input[name="startdate"]'
-		).nextElementSibling;
-		const endErrorMessageSpan = row.querySelector(
-			'input[name="enddate"]'
-		).nextElementSibling;
-
-		if (startErrorMessageSpan && endErrorMessageSpan) {
-			startErrorMessageSpan.classList.remove("d-none");
-			startErrorMessageSpan.textContent =
-				"La date de début doit être antérieure à la date de fin.";
-			endErrorMessageSpan.classList.remove("d-none");
-			endErrorMessageSpan.textContent = "";
-		}
-	}
-
-	if (!isValidDate) return; // Прекращаем выполнение функции, если дата невалидна
-
-	const statusSelect = row.querySelector("select.edit-mode");
-	if (statusSelect) {
-		const statusSpan = row.querySelector("td:nth-child(6) span");
-		statusSpan.textContent =
-			statusSelect.options[statusSelect.selectedIndex].text;
-		// Обновляем dataset статуса
-		row.dataset.status = statusSelect.value;
-	}
-
-	// Формирование объекта данных для сохранения
-	const reservationData = {
-		id: row.dataset.id,
-		user: row.dataset.user,
-		equipment: row.dataset.equipment,
-		startDate: row.dataset.startdate,
-		endDate: row.dataset.enddate,
-		status: row.dataset.status,
-	};
-
-	//TODO: нужно будет переписать
-	const conflictData = {
-		id: row.dataset.id,
-		user: row.dataset.user,
-		equipment: row.dataset.equipment,
-		startDate: row.dataset.startdate,
-		endDate: row.dataset.enddate,
-		status: row.dataset.status,
-	};
-
-	// Сохранение в LocalStorage
-	saveDataToLocalStorage(`reservation_${reservationData.id}`,reservationData);
-	saveDataToLocalStorage(`conflict_${conflictData.id}`,conflictData);
-
+	const dataToUpdate = extractDataFromRow(row);
+	updateRowDisplay(row, dataToUpdate);
+	saveDataToLocalStorage(row, dataToUpdate);
 
 	// Очистка редактора и возвращение в исходное состояние
 	toggleElements(row, false);
@@ -191,169 +109,63 @@ function saveChanges(row) {
 	removeSaveCancelButtons(row);
 }
 
-function removeSaveCancelButtons(row) {
-	row
-		.querySelectorAll(".save-changes, .cancel-changes")
-		.forEach((button) => button.remove());
+function validateRowData(row) {
+	let isValid = true;
+	row.querySelectorAll(".edit-mode").forEach(input => {
+			if (input.dataset.validate) {  // Проверка на наличие атрибута валидации
+					switch (input.dataset.validate) {
+							case "date":
+									if (!validateDate(input)) {
+											displayError(input, "Invalid date. Please check the range and format.");
+											isValid = false;
+									}
+									break;
+							case "email":
+									if (!validateEmail(input.value)) {
+											displayError(input, "Invalid email address.");
+											isValid = false;
+									}
+									break;
+							// Добавьте другие случаи валидации по необходимости
+					}
+			}
+	});
+	return isValid;
 }
 
-// document.querySelectorAll(".edit-action").forEach((item) => {
-// 	item.addEventListener("click", function (event) {
-// 		event.preventDefault();
-// 		const row = this.closest("tr");
-// 		row.classList.add("editing");
+function displayError(input, message) {
+	let errorSpan = input.nextElementSibling;
+	if (!errorSpan || !errorSpan.classList.contains("error-message")) {
+			errorSpan = document.createElement("span");
+			errorSpan.classList.add("error-message");
+			input.parentNode.insertBefore(errorSpan, input.nextSibling);
+	}
+	errorSpan.textContent = message;
+	errorSpan.classList.remove("d-none");
+}
 
-// 		// Скрываем span и делаем видимыми поля ввода и select
-// 		row.querySelectorAll("td span").forEach((element) => {
-// 			element.classList.add("d-none");
-// 		});
-// 		row.querySelectorAll("td input, td textarea, td select").forEach(
-// 			(element) => {
-// 				element.classList.remove("d-none");
-// 				if (
-// 					element.tagName === "INPUT" ||
-// 					element.tagName === "TEXTAREA"
-// 				) {
-// 					// Присваиваем input и textarea значение предыдущего span
-// 					element.value = element.previousElementSibling
-// 						? element.previousElementSibling.textContent.trim()
-// 						: "";
-// 				}
-// 			}
-// 		);
+function extractDataFromRow(row) {
+	const data = {};
+	row.querySelectorAll(".edit-mode").forEach(element => {
+			if (element.type === 'checkbox' || element.type === 'radio') {
+					data[element.name] = element.checked;
+			} else {
+					data[element.name] = element.value;
+			}
+	});
+	return data;
+}
 
-// 		// Для select элементов, загружаем и устанавливаем текущее значение из данных оборудования
-// 		const equipmentId = row.dataset.equipmentId;
-// 		const data = JSON.parse(
-// 			localStorage.getItem(`equipment_${equipmentId}`) || "{}"
-// 		);
+function updateRowDisplay(row, data) {
+	Object.keys(data).forEach(key => {
+			const span = row.querySelector(`span[data-bind='${key}']`);
+			if (span) span.textContent = data[key];
+	});
+}
 
-// 		const categorySelect = row.querySelector(
-// 			"select[name='equipment-category']"
-// 		);
-// 		const availabilitySelect = row.querySelector(
-// 			"select[name='equipment-availability']"
-// 		);
-// 		if (categorySelect) {
-// 			categorySelect.value = data.category || ""; // Устанавливаем значение или пустую строку, если данных нет
-// 		}
-// 		if (availabilitySelect) {
-// 			availabilitySelect.value = data.availability || ""; // То же самое для доступности
-// 		}
+function removeSaveCancelButtons(row) {
+	row.querySelectorAll(".save-changes, .cancel-changes").forEach(button => button.remove());
+}
 
-// 		// Добавляем или обновляем кнопки "Сохранить изменения" и "Отменить изменения", если они не были добавлены
-// 		if (!row.querySelector(".save-changes")) {
-// 			const saveButton = document.createElement("button");
-// 			saveButton.textContent = "Sauvegarder les changements";
-// 			saveButton.classList.add("btn", "btn-primary", "save-changes");
-// 			row.querySelector("td:last-child").appendChild(saveButton);
-// 		}
-// 		if (!row.querySelector(".cancel-changes")) {
-// 			const cancelButton = document.createElement("button");
-// 			cancelButton.textContent = "Annuler les changements";
-// 			cancelButton.classList.add(
-// 				"btn",
-// 				"btn-secondary",
-// 				"cancel-changes"
-// 			);
-// 			row.querySelector("td:last-child").appendChild(cancelButton);
-// 		};
-
-// document.addEventListener("click", function (event) {
-// 	const target = event.target;
-
-// 	if (target.classList.contains("save-changes")) {
-// 		const row = target.closest("tr");
-// 		const equipmentId = row.dataset.equipmentId;
-// 		// Извлечение данных
-// 		const nameInput = row.querySelector("input[name='equipment-name']");
-// 		const categorySelect = row.querySelector(
-// 			"select[name='equipment-category']"
-// 		);
-// 		const descriptionTextarea = row.querySelector(
-// 			"textarea[name='equipment-description']"
-// 		);
-// 		const availabilitySelect = row.querySelector(
-// 			"select[name='equipment-availability']"
-// 		);
-
-// 		if (nameInput && row.querySelector(".equipment-name")) {
-// 			row.querySelector(".equipment-name").textContent =
-// 				nameInput.value;
-// 		}
-// 		if (categorySelect && row.querySelector(".equipment-category")) {
-// 			row.querySelector(".equipment-category").textContent =
-// 				categorySelect.options[categorySelect.selectedIndex].text;
-// 		}
-// 		if (
-// 			descriptionTextarea &&
-// 			row.querySelector(".equipment-description")
-// 		) {
-// 			row.querySelector(".equipment-description").textContent =
-// 				descriptionTextarea.value;
-// 		}
-// 		if (
-// 			availabilitySelect &&
-// 			row.querySelector(".equipment-availability")
-// 		) {
-// 			row.querySelector(".equipment-availability").textContent =
-// 				availabilitySelect.options[
-// 					availabilitySelect.selectedIndex
-// 				].text;
-// 		}
-
-// 		// Сохраняем изменения в localStorage
-// 		const data = {
-// 			name: nameInput.value,
-// 			category: categorySelect.value,
-// 			description: descriptionTextarea.value,
-// 			availability: availabilitySelect.value,
-// 		};
-// 		localStorage.setItem(
-// 			`equipment_${equipmentId}`,
-// 			JSON.stringify(data)
-// 		);
-
-// 		// Возвращаем элементы <span> к видимости и скрываем поля ввода
-// 		row.querySelectorAll("td span").forEach((element) => {
-// 			element.classList.remove("d-none");
-// 		});
-// 		row.querySelectorAll("td input, td textarea, td select").forEach(
-// 			(element) => {
-// 				element.classList.add("d-none");
-// 			}
-// 		);
-
-// 		// Удаление кнопок "Sauvegarder les changements" и "Annuler les changements"
-// 		row.querySelectorAll(".save-changes, .cancel-changes").forEach(
-// 			(button) => {
-// 				button.remove();
-// 			}
-// 		);
-
-// 		row.classList.remove("editing");
-// 	} else if (target.classList.contains("cancel-changes")) {
-// 		const row = target.closest("tr");
-
-// 		// Возвращаем элементы <span> к видимости и скрываем поля ввода без сохранения изменений
-// 		row.querySelectorAll("td span").forEach((element) => {
-// 			element.classList.remove("d-none");
-// 		});
-// 		row.querySelectorAll("td input, td textarea, td select").forEach(
-// 			(element) => {
-// 				element.classList.add("d-none");
-// 			}
-// 		);
-
-// 		// Удаление кнопок "Sauvegarder les changements" и "Annuler les changements"
-// 		row.querySelectorAll(".save-changes, .cancel-changes").forEach(
-// 			(button) => {
-// 				button.remove();
-// 			}
-// 		);
-
-// 		row.classList.remove("editing");
-// 	}
-// });
 
 export { attachEditRowHandlers };

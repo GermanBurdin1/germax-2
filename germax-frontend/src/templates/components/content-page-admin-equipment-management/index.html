@@ -36,7 +36,7 @@
 		<!-- Вкладки для переключения между активным оборудованием и архивом -->
 		<div class="nav nav-tabs" id="equipmentTabs" role="tablist">
 			<a class="nav-link active" id="active-equipment-tab" data-bs-toggle="tab" href="#activeEquipment" role="tab"
-				aria-controls="activeEquipment" aria-selected="true">Активное оборудование</a>
+				aria-controls="activeEquipment" aria-selected="true">Equipement actif</a>
 			<a class="nav-link" id="archive-equipment-tab" data-bs-toggle="tab" href="#archiveEquipment" role="tab"
 				aria-controls="archiveEquipment" aria-selected="false">Архив</a>
 		</div>
@@ -66,54 +66,54 @@
 							<tbody>
 
 								<!-- Предположим, что это оборудование с ID 1 -->
-								<tr data-equipment-id="1">
+								<tr data-equipment-id="1" class="">
 									<td>1</td>
-									<td><span class="equipment-name">Ordinateur portable</span><input type="text"
-											class="form-control d-none" name="equipment-name" value="Ordinateur portable"></td>
 									<td>
-										<span class="equipment-category">Informatique</span>
-										<select class="form-select d-none" name="equipment-category">
-											<option value="Informatique">Ordinateur portable</option>
-											<option value="Informatique">Ecran d'ordinateur</option>
-											<option value="Informatique">Smartphone</option>
-											<option value="Informatique">Accessoires</option>
-											<option value="Informatique">Tablette</option>
-											<option value="Autre catégorie">Casque VR</option>
-										</select>
+											<span class="equipment-name view-mode">Ordinateur portable</span>
+											<input type="text" class="form-control d-none edit-mode" name="equipment-name" value="Ordinateur portable">
 									</td>
 									<td>
-										<span class="equipment-description">Haute performance pour le gaming</span>
-										<textarea class="form-control d-none" name="equipment-description"></textarea>
+											<span class="equipment-category view-mode">Informatique</span>
+											<select class="form-select d-none edit-mode" name="equipment-category">
+													<option value="Informatique">Ordinateur portable</option>
+													<option value="Informatique">Ecran d'ordinateur</option>
+													<option value="Informatique">Smartphone</option>
+													<option value="Informatique">Accessoires</option>
+													<option value="Informatique">Tablette</option>
+													<option value="Autre catégorie">Casque VR</option>
+											</select>
 									</td>
 									<td>
-										<span class="equipment-availability">Disponible</span>
-										<input type="text" class="form-control d-none" name="equipment-availability" value="Disponible">
-										<select class="form-select d-none" name="equipment-availability">
-											<option value="Disponible">Disponible</option>
-											<option value="Non disponible">Non disponible</option>
-										</select>
+											<span class="equipment-description view-mode">Haute performance pour le gaming</span>
+											<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
 									</td>
 									<td>
-										<div class="dropdown">
-											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-												data-bs-toggle="dropdown" aria-expanded="false">
-												Choisir une action
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-												<li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
-												<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
-												<li><a class="dropdown-item" href="#">Voir les détails</a></li>
-												<li><a class="dropdown-item" href="#">Réserver</a></li>
-												<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
-														actions</a></li>
-												<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
-												<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
-														href="#">Восстановить</a></li>
-											</ul>
-										</div>
+											<span class="equipment-availability view-mode">Disponible</span>
+											<input type="text" class="form-control d-none edit-mode" name="equipment-availability" value="Disponible">
+											<select class="form-select edit-mode d-none" name="equipment-availability">
+													<option value="Disponible">Disponible</option>
+													<option value="Non disponible">Non disponible</option>
+											</select>
+									</td>
+									<td>
+											<div class="dropdown">
+													<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+															Choisir une action
+													</button>
+													<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+															<li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
+															<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
+															<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+															<li><a class="dropdown-item" href="#">Réserver</a></li>
+															<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
+																			actions</a></li>
+															<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+															<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a href="#">Восстановить</a></li>
+													</ul>
+											</div>
+									</td>
+							</tr>
 
-									</td>
-								</tr>
 
 								<!-- Скрытая строка для журнала действий -->
 								<div class="modal fade" id="actionLogModal" tabindex="-1" aria-labelledby="actionLogModalLabel"

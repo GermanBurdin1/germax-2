@@ -23,9 +23,6 @@
 	pointer-events: none;
   }
 
-  .unique-background-2 {
-	/* background-image: url("../../../public/images/laptopbackground.jpg"); */
-  }
 
   .unique-background-2::before {
 	content: "";
