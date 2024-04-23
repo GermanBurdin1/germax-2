@@ -2,18 +2,20 @@
 	<h2>Surveillance et Interventions Utilisateurs</h2>
 	<div class="row mb-3">
 		<div class="col">
-			<input type="text" class="form-control" placeholder="Поиск по имени пользователя или email...">
+			<input type="text" class="form-control" placeholder="Recherche par nom d'utilisateur ou email...">
 		</div>
 		<div class="col">
 			<select class="form-control">
-				<option value="">Фильтр по роли</option>
-				<!-- Опции фильтра -->
+				<option value="">Filtrer par rôle</option>
+				<option value="admin">Administrateur</option>
+				<option value="user">Utilisateur</option>
+				<option value="guest">Invité</option>
 			</select>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-12">
-			<button class="btn btn-secondary">Экспорт отчета об активности</button>
+			<button class="btn btn-secondary">Exporter le rapport d'activité</button>
 		</div>
 	</div>
 	<div class="row mt-3">
@@ -21,34 +23,109 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Nom d'utilisateur</th>
+						<th>Nom d'utilisateur <button class="btn btn-link p-0 border-0 sortButton"><i
+									class="fas fa-sort"></i></button></th>
 						<th>Email</th>
 						<th>Rôle</th>
-						<th>Dernière activité</th>
+						<th>Dernière activité <button class="btn btn-link p-0 border-0 sortButton"><i
+									class="fas fa-sort"></i></button></th>
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					<!-- Dynamically populated user list -->
+					<tr>
+						<td>JeanDupont</td>
+						<td>jeandupont@example.com</td>
+						<td>Administrateur</td>
+						<td>Il y a 2 jours</td>
+						<td>
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+									data-bs-toggle="dropdown" aria-expanded="false">
+									Choisir une action
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+									<li><a class="dropdown-item reinitialize-password" href="#">Réinitialiser le mot de passe</a></li>
+									<li>
+										<a class="dropdown-item suspend-action" href="#">Suspension du compte</a>
+									</li>
+									<li>
+										<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+											data-bs-target="#detailsModal">Détails de l'utilisateur</a>
+									</li>
+									<li>
+										<a class="dropdown-item send-message" href="#" data-bs-toggle="modal"
+											data-bs-target="#detailsModal">Envoyer un message</a>
+									</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>MarieCurie</td>
+						<td>mariecurie@example.com</td>
+						<td>Utilisateur</td>
+						<td>Il y a 1 heure</td>
+						<td>
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+									data-bs-toggle="dropdown" aria-expanded="false">
+									Choisir une action
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+									<li><a class="dropdown-item reinitialize-password" href="#">Réinitialiser le mot de passe</a></li>
+									<li>
+										<a class="dropdown-item suspend-action" href="#">Suspension du compte</a>
+									</li>
+									<li>
+										<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+											data-bs-target="#detailsModal">Détails de l'utilisateur</a>
+									</li>
+									<li>
+										<a class="dropdown-item send-message" href="#" data-bs-toggle="modal"
+											data-bs-target="#detailsModal">Envoyer un message</a>
+									</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>LucasRoux</td>
+						<td>lucasroux@example.com</td>
+						<td>Invité</td>
+						<td>Il y a 5 minutes</td>
+						<td>
+							<div class="dropdown">
+								<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+									data-bs-toggle="dropdown" aria-expanded="false">
+									Choisir une action
+								</button>
+								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+									<li><a class="dropdown-item reinitialize-password" href="#">Réinitialiser le mot de passe</a></li>
+									<li>
+										<a class="dropdown-item suspend-action" href="#">Suspension du compte</a>
+									</li>
+									<li>
+										<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+											data-bs-target="#detailsModal">Détails de l'utilisateur</a>
+									</li>
+									<li>
+										<a class="dropdown-item send-message" href="#" data-bs-toggle="modal"
+											data-bs-target="#detailsModal">Envoyer un message</a>
+									</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-	<div class="row mt-3">
-		<div class="col-12 d-flex justify-content-between">
-			<button class="btn btn-info" data-toggle="modal" data-target="#userDetailsModal">Détails de
-				l'utilisateur</button>
-			<button class="btn btn-warning">Réinitialiser Mot de Passe</button>
-			<button class="btn btn-danger">Suspension de Compte</button>
-			<button class="btn btn-info" data-toggle="modal" data-target="#sendMessageModal">Отправить
-				сообщение</button>
-		</div>
-	</div>
 </div>
 
+
 <!-- Modal for User Details -->
-<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel"
-	aria-hidden="true">
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -76,8 +153,7 @@
 </div>
 
 <!-- Modal for Sending Message -->
-<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel"
-	aria-hidden="true">
+<div class="modal fade" id="sendMessageModal" tabindex="-1" aria-labelledby="sendMessageModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
