@@ -18,7 +18,7 @@ import {
 	saveAllDataToLocalStorage,
 	getSavedData,
 } from "../../../utils/storage-utils";
-import {attachEditRowHandlers} from "../../../utils/components/edit-table"
+import {attachEditRowHandlers} from "../../../utils/components/edit-table-admin"
 
 document.addEventListener("DOMContentLoaded", () => {
 

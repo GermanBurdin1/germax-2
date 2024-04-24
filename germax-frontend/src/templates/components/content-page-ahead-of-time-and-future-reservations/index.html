@@ -65,16 +65,20 @@
 									</button>
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 										<li>
-											<a class="dropdown-item inform-state-action" href="#">Informer l'état du matériel </a>
-											<!-- для manager -->
+											<a class="dropdown-item verify-booking-action" href="#">Vérifier une réservation existante pour ce matériel</a>
+											<!-- будет искать сначала во вкладке 'future résérvation'. во вкладке arrivant à échéance -->
 										</li>
 										<li>
-											<a class="dropdown-item mark-as-send-action" href="#">Former l'ordre</a>
-											<!-- в таблицу equipment orders -->
+											<a class="dropdown-item verify-booking-action" href="#">Vérifier une réservation arrivant à échéance</a>
+											<!-- будет искать сначала во вкладке 'arrivant à échéance' -->
 										</li>
 										<li>
 											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
 												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li>
+											<a class="dropdown-item inform-state-action" href="#">Informer sur le changement d'état du matériel </a>
+											<!-- для stockman. По умолачнию Bon état. Будет возможность  -->
 										</li>
 									</ul>
 								</div>

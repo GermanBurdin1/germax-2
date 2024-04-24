@@ -95,6 +95,7 @@
 					<th>Date de prise</th>
 					<th>Date de restitution</th>
 					<th>État du matériel rendu</th>
+					<th>Statut du client</th>
 					<th>Action</th>
 				</tr>
 			</thead>
@@ -114,6 +115,7 @@
 					<td>
 						<span class="badge bg-warning text-dark">En bon état</span>
 					</td>
+					<td>Autorisé</td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -121,12 +123,12 @@
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
-								<li><a class="dropdown-item delete-client" href="#">Supprimer le client</a></li>
 								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
 										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
 								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
 										data-bs-target="#communication-client">Contacter le client</a></li>
+								<li><a class="dropdown-item delete-client" href="#">Bloquer</a></li>
+								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
 							</ul>
 						</div>
 					</td>
@@ -146,6 +148,7 @@
 					<td>
 						<span class="badge bg-danger">Endommagé</span>
 					</td>
+					<td>Accès suspendu</td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -153,12 +156,12 @@
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
-								<li><a class="dropdown-item delete-client" href="#">Supprimer le client</a></li>
 								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
 										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
 								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
 										data-bs-target="#communication-client">Contacter le client</a></li>
+								<li><a class="dropdown-item delete-client" href="#">Bloquer</a></li>
+								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
 							</ul>
 						</div>
 					</td>
@@ -178,6 +181,7 @@
 					<td>
 						<span class="badge bg-success">Comme neuf</span>
 					</td>
+					<td>Bloqué</td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -185,12 +189,12 @@
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
-								<li><a class="dropdown-item delete-client" href="#">Supprimer le client</a></li>
 								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
 										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
 								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
 										data-bs-target="#communication-client">Contacter le client</a></li>
+								<li><a class="dropdown-item delete-client" href="#">Bloquer</a></li>
+								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
 							</ul>
 						</div>
 					</td>

@@ -1,9 +1,9 @@
-<?php
+<!-- <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\get-absolute-path.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
+// require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\get-absolute-path.php');
+// require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
 
-?>
+// ?>
 
 <!DOCTYPE html>
 <html lang='fr'>
@@ -14,7 +14,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
 </head>
 <body>
     <?php serveHtmlFile('dist/header.html'); ?>
-    <?php serveHtmlFile('dist/content-page-rental-manager-loans-order-new-equipment.html'); ?>
+    <?php serveHtmlFile('dist/content-page-loans-rental-history.html'); ?>
     <?php serveHtmlFile('dist/footer.html'); ?>
 </body>
-</html>
+</html> -->
