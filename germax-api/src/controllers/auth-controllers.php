@@ -21,15 +21,22 @@ class AuthController
 			if (password_verify($password, $user['password'])) {
 				$_SESSION['user_id'] = $user['id_user'];
 				$_SESSION['user_email'] = $user['email'];
-				$_SESSION['user_type'] = $user['permission_name']; // Сохраняем тип пользователя в сессии
-				return ['status' => 'success', 'message' => 'Logged in successfully', 'user_type' => $user['permission_name']];
+				$_SESSION['user_type'] = $user['permission_name'];
+				echo json_encode([
+					'status' => 'success',
+					'message' => 'Logged in successfully',
+					'user_type' => $user['permission_name'],
+					'user_email' => $user['email']
+				]);
 			} else {
-				return ['status' => 'error', 'message' => 'Invalid login credentials'];
+				echo json_encode(['status' => 'error', 'message' => 'Invalid login credentials']);
 			}
 		} else {
-			return ['status' => 'error', 'message' => 'User not found'];
+			echo json_encode(['status' => 'error', 'message' => 'User not found']);
 		}
+		exit(); // Добавьте exit() чтобы гарантировать прекращение скрипта после отправки ответа.
 	}
+
 
 
 	public function register($lastname, $firstname, $phone, $mail, $password, $type)

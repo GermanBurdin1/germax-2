@@ -11,10 +11,8 @@ session_start();
 
 $authController = new AuthController();
 
-$email = $_POST['mail'] ?? '';
+$email = $_POST['mail'] ?? ''; // Убедитесь, что ключ 'mail' соответствует имени поля в вашей форме
 $password = $_POST['password'] ?? '';
 
-$response = $authController->login($email, $password);
-
-echo json_encode($response);
+$authController->login($email, $password); // Теперь метод login сам отправляет JSON и завершает выполнение скрипта
 ?>

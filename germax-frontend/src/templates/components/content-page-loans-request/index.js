@@ -1,4 +1,4 @@
-import './index.css';
+import "./index.css";
 
 let offset = 0;
 const limit = 10;
