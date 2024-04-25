@@ -1,15 +1,18 @@
 <?php
 // AuthController.php
-require_once './src/utils/database.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php';
 
-class AuthController {
-    private $pdo;
+class AuthController
+{
+	private $pdo;
 
-    public function __construct() {
-        $this->pdo = Database::connect();
-    }
+	public function __construct()
+	{
+		$this->pdo = Database::connect();
+	}
 
-    public function login($email, $password) {
+	public function login($email, $password)
+	{
 		$stmt = $this->pdo->prepare("SELECT user.*, permission.name AS permission_name FROM user JOIN permission ON customer.id_permission = permission.id_permission WHERE mail = :email LIMIT 1");
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
 		$stmt->execute();
@@ -29,11 +32,12 @@ class AuthController {
 	}
 
 
-    public function register($lastname, $firstname, $phone, $mail, $password, $type) {
+	public function register($lastname, $firstname, $phone, $mail, $password, $type)
+	{
 		// Получаем id_permission для данного типа пользователя
 		$permissionStmt = $this->pdo->prepare("SELECT id_permission FROM permission WHERE name = :type");
-		$permissionStmt->bindParam(':type', $type, PDO::PARAM_STR);
-		$permissionStmt->execute();
+		$permissionStmt->bindParam(':type', $type, PDO::PARAM_STR); // Привязываем параметр перед вызовом execute
+		$permissionStmt->execute(); // Теперь выполняем запрос
 
 		$permission = $permissionStmt->fetch();
 		if (!$permission) {
@@ -43,7 +47,7 @@ class AuthController {
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 		// Теперь у нас есть id_permission, и мы можем вставить нового пользователя
-		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, mail, id_permission) VALUES (:lastname, :firstname, :phone, :password, :mail, :id_permission)");
+		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission) VALUES (:lastname, :firstname, :phone, :password, :mail, :id_permission)");
 		$stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
 		$stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
 		$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
@@ -54,6 +58,4 @@ class AuthController {
 
 		return ['status' => 'success', 'message' => 'User registered successfully'];
 	}
-
 }
-?>

@@ -4,42 +4,48 @@
 			<div class="card">
 				<div class="card-body">
 					<h5 class="card-title text-center">Registration</h5>
-					<form method="POST" action="../../controllers/RegistrationController.php">
+					<form method="POST" action="../../../../../germax-api/src/endpoints/register.php" id="registrationForm">
 						<div class="mb-3">
-							<label for="inputLastname" class="form-label">Lastname</label>
+							<label for="inputLastname" class="form-label">Nom</label>
 							<input type="text" class="form-control" id="inputLastname" name="lastname"
 								placeholder="Enter your lastname">
 						</div>
 						<div class="mb-3">
-							<label for="inputFirstname" class="form-label">Firstname</label>
+							<label for="inputFirstname" class="form-label">Prénom</label>
 							<input type="text" class="form-control" id="inputFirstname" name="firstname"
 								placeholder="Enter your firstname">
 						</div>
 						<div class="mb-3">
-							<label for="inputEmail" class="form-label">Email address</label>
-							<input type="email" class="form-control" id="inputEmail" name="mail"
-								placeholder="Enter your best email">
+							<label for="inputPhone" class="form-label">Téléphone</label>
+							<input type="tel" class="form-control" id="inputPhone" name="phone" placeholder="Enter your phone number">
 						</div>
 						<div class="mb-3">
-							<label for="inputPassword" class="form-label">Password</label>
+							<label for="inputEmail" class="form-label">Adresse mail</label>
+							<input type="email" class="form-control" id="inputEmail" name="mail" placeholder="Enter your best email">
+						</div>
+						<div class="mb-3">
+							<label for="inputPassword" class="form-label">Mot de passe</label>
 							<input type="password" class="form-control" id="inputPassword" name="password"
 								placeholder="Invent your Password">
 						</div>
 						<div class="mb-3">
-							<label for="confirmPassword" class="form-label">Confirm Password</label>
+							<label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
 							<input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
 								placeholder="Confirm Password">
-							<select name="type">
+						</div>
+						<div class="mb-3">
+							<label for="typeOfUser" class="form-label">Type d'utilisateur</label>
+							<select class="form-control" name="typeOfUser">
 								<option value="admin">Admin</option>
 								<option value="rental-manager">Manager</option>
 								<option value="stockman">Gestionnaire de stocks</option>
 								<option value="teacher">Enseignant</option>
 								<option value="student">Etudiant</option>
-
 							</select>
 						</div>
 						<button type="submit" class="btn btn-primary btn-block">Register</button>
 					</form>
+
 				</div>
 			</div>
 		</div>
@@ -50,8 +56,7 @@
 					<form method="POST" action="../../controllers/LoginController.php">
 						<div class="mb-3">
 							<label for="loginEmail" class="form-label">Email address</label>
-							<input type="email" class="form-control" id="loginEmail" name="mail"
-								placeholder="Enter your email">
+							<input type="email" class="form-control" id="loginEmail" name="mail" placeholder="Enter your email">
 						</div>
 						<div class="mb-3">
 							<label for="loginPassword" class="form-label">Password</label>

@@ -57,7 +57,6 @@ class AuthService {
 	}
 
 	private function getUserByEmail($email) {
-		// $stmt = self::$pdo->prepare("SELECT user.*, permission.name AS permission_name FROM user JOIN permission ON user.id_permission = permission.id_permission WHERE mail = :email LIMIT 1");
 		$stmt = self::$pdo->prepare("SELECT * FROM user WHERE email = :email LIMIT 1");
 
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
