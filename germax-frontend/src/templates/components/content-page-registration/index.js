@@ -13,6 +13,10 @@ document.getElementById('registrationForm').addEventListener('submit', function(
 	.then(response => response.json()) // Преобразовать ответ в JSON
 	.then(data => {
 			console.log('Success:', data); // Вывести данные ответа в консоль
+			if (data.status === 'success') {
+				// Переход на страницу логина
+				window.location.href = '/page-login';
+		}
 	})
 	.catch((error) => {
 			console.error('Error:', error); // Вывести ошибку в консоль, если она произошла
