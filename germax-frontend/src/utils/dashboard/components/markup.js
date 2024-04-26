@@ -126,12 +126,45 @@ function getManagerHorizontalNav() {
 			</a>
 		</li>
 		<li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<i class="fa fa-user"></i>
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				<a class="dropdown-item" href="./dashboard.html">Profil</a>
-				<a class="dropdown-item" href="./subpages/nav/settings.html">Paramètres</a>
+				<a class="dropdown-item" href="./">Profil</a>
+				<a class="dropdown-item" href="#" id="settings-dropdown-link">Paramètres</a>
+				<a class="dropdown-item" href="login.html">Déconnexion</a>
+			</div>
+		</li>
+	</ul>
+</div>`;
+}
+
+function getStockmanHorizontalNav() {
+	return `<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
+	<ul class="navbar-nav align-items-center">
+		<li class="nav-item">
+			<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+				<i class="fa fa-bell">Notifications</i>
+				<span class="badge badge-danger">3</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="#settings" id="settings-link">
+				<i class="fa fa-cog" aria-hidden="true"></i>
+			</a>
+		</li>
+		<li class="nav-item">
+				<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#supportModal">
+					<i class="fa fa-question-circle">Support</i>
+				</a>
+		</li>
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<i class="fa fa-user"></i>
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+				<a class="dropdown-item" href="./">Profil</a>
+				<a class="dropdown-item" href="#" id="settings-dropdown-link">Paramètres</a>
 				<a class="dropdown-item" href="login.html">Déconnexion</a>
 			</div>
 		</li>
@@ -213,7 +246,68 @@ function returnSettingsTab() {
 
 		</div>
 		<!-- Ajoutez le contenu d'autres onglets ici si nécessaire -->
-	</div>`
+	</div>`;
+}
+
+function returnModalSupport() {
+	return `
+	<!-- Modal -->
+	<div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="supportModalLabel">Formulaire de contact du service support</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="topicSelect">Sujet de la demande</label>
+							<select class="form-control" id="topicSelect">
+								<option>Problèmes techniques avec l'équipement</option>
+								<option>Erreurs sur la plateforme de réservation</option>
+								<option>Dommage à l'équipement</option>
+								<!-- Ajoutez d'autres sujets ici -->
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="descriptionTextarea">Description du problème</label>
+							<textarea class="form-control" id="descriptionTextarea" rows="3"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="prioritySelect">Priorité</label>
+							<select class="form-control" id="prioritySelect">
+								<option>Bas</option>
+								<option>Moyen</option>
+								<option>Élevé</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="fileUpload">Joindre des fichiers</label>
+							<input type="file" class="form-control-file" id="fileUpload" multiple>
+						</div>
+						<div class="form-group">
+							<label for="userName">Votre nom</label>
+							<input type="text" class="form-control" id="userName" required>
+						</div>
+						<div class="form-group">
+							<label for="userEmail">Votre email</label>
+							<input type="email" class="form-control" id="userEmail" required>
+						</div>
+						<div class="form-group">
+							<label for="userPhone">Votre téléphone</label>
+							<input type="tel" class="form-control" id="userPhone">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="submit" class="btn btn-primary">Envoyer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	`
 }
 
 export {
@@ -225,5 +319,7 @@ export {
 	returnAdminNotificationsModal,
 	getAdminHorizontalNav,
 	getManagerHorizontalNav,
-	returnSettingsTab
+	returnSettingsTab,
+	getStockmanHorizontalNav,
+	returnModalSupport
 };

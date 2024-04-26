@@ -103,6 +103,23 @@ function setupTabActivation(buttonSelector, tabSelector) {
 	}
 }
 
+function initializeDropdown() {
+	const dropdownToggleEl = document.querySelector('.dropdown-toggle');
+	if (dropdownToggleEl) {
+			const dropdownInstance = new Dropdown(dropdownToggleEl);
+			dropdownToggleEl.addEventListener('click', function (event) {
+					event.preventDefault();
+					if (dropdownInstance._element.classList.contains('show')) {
+							dropdownInstance.hide();
+					} else {
+							dropdownInstance.show();
+					}
+			});
+	} else {
+			console.error('Элемент для инициализации дропдауна не найден.');
+	}
+}
+
 export {
 	initializeCollapseElement,
 	initializeModal,
@@ -111,5 +128,6 @@ export {
 	initializeTabs,
 	initializeSingleTab,
 	initializeTabsWithoutShow,
-	setupTabActivation
+	setupTabActivation,
+	initializeDropdown
 };
