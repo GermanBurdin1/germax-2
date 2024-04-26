@@ -139,7 +139,7 @@ function getManagerHorizontalNav() {
 </div>`;
 }
 
-function getStockmanHorizontalNav() {
+function getStockmanStudentTeacherHorizontalNav() {
 	return `<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
 	<ul class="navbar-nav align-items-center">
 		<li class="nav-item">
@@ -320,6 +320,6 @@ export {
 	getAdminHorizontalNav,
 	getManagerHorizontalNav,
 	returnSettingsTab,
-	getStockmanHorizontalNav,
+	getStockmanStudentTeacherHorizontalNav,
 	returnModalSupport
 };

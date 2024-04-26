@@ -9,7 +9,7 @@ import {
 	returnAdminNotificationsModal,
 	getManagerHorizontalNav,
 	returnSettingsTab,
-	getStockmanHorizontalNav,
+	getStockmanStudentTeacherHorizontalNav,
 	returnModalSupport
 } from "../../../utils/dashboard/components/markup";
 
@@ -44,13 +44,15 @@ document.addEventListener("DOMContentLoaded", function () {
 				verticalNav = getRentalManagerNav();
 				break;
 			case "stockman":
-				horizontalNav = getStockmanHorizontalNav()
+				horizontalNav = getStockmanStudentTeacherHorizontalNav();
 				verticalNav = getStockmanNav();
 				break;
 			case "student":
+				horizontalNav = getStockmanStudentTeacherHorizontalNav();
 				verticalNav = getStudentNav();
 				break;
 			case "teacher":
+				horizontalNav = getStockmanStudentTeacherHorizontalNav();
 				verticalNav = getTeacherNav();
 				break;
 			default:
