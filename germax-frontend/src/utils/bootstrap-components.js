@@ -13,6 +13,7 @@ function initializeCollapseElement(
 
 function initializeModal(idModal) {
 	new Modal(document.getElementById(idModal));
+	console.log("произошла инициализация");
 }
 
 function getModalInstance(idModal) {
@@ -68,13 +69,16 @@ function initializeTabs(tabElements) {
 	});
 }
 
+function initializeTabsWithoutShow(selector) {
+	const tabElements = document.querySelectorAll(selector);
+	tabElements.forEach(function (triggerEl) {
+			new Tab(triggerEl); // Просто инициализируем, не показываем
+	});
+}
+
+
 function initializeSingleTab(selector) {
-	console.log("функция initializeSingleTab сработала");
 	const tabElement = document.querySelector(selector);
-	console.log(
-		"назначен элемент таблицы функции initializeSingleTab",
-		tabElement
-	);
 	if (tabElement) {
 		const tab = new Tab(tabElement);
 		// Убрать ненужный обработчик клика, если вы хотите сразу показать вкладку
@@ -85,6 +89,20 @@ function initializeSingleTab(selector) {
 	}
 }
 
+function setupTabActivation(buttonSelector, tabSelector) {
+	const button = document.querySelector(buttonSelector);
+	if (button) {
+			button.addEventListener("click", function (e) {
+					e.preventDefault();
+					const tabElement = document.querySelector(tabSelector);
+					if (tabElement) {
+							const tab = new Tab(tabElement);
+							tab.show();
+					}
+			});
+	}
+}
+
 export {
 	initializeCollapseElement,
 	initializeModal,
@@ -92,4 +110,6 @@ export {
 	initializeHoverDropdowns,
 	initializeTabs,
 	initializeSingleTab,
+	initializeTabsWithoutShow,
+	setupTabActivation
 };

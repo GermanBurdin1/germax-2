@@ -3,42 +3,26 @@
 		<a class="navbar-brand" href="/school/">
 			<img src="../../../assets/img/GERMAX.jpg" alt="logo" style="height: 50px;">
 		</a>
-		<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
-			<ul class="navbar-nav align-items-center">
-				<li class="nav-item">
-					<a class="nav-link" href="./subpages/nav/notfifcations.html" data-toggle="modal"
-						data-target="#notificationsModal">
-						<i class="fa fa-bell">Notifications</i>
-						<span class="badge badge-danger">3</span>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="./subpages/nav/settings.html">
-						<i class="fa fa-cog" aria-hidden="true"></i>
-					</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false">
-						<i class="fa fa-user"></i>
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="./dashboard.html">Profil</a>
-						<a class="dropdown-item" href="./subpages/nav/settings.html">Paramètres</a>
-						<a class="dropdown-item" href="login.html">Déconnexion</a>
-					</div>
-				</li>
-			</ul>
+		<div class="collapse navbar-collapse justify-content-end" id="horizontalNavbar">
+			<!-- генерация вертикального меню -->
+		</div>
+		<div id="modalPlace"> <!-- Положение для модального окна -->
 		</div>
 	</nav>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="list-group">
-          <div id="dynamicMenu"></div>
-        </div>
-      </div>
-      <div class="col-md-9">
-        <!-- Содержимое выбранной секции -->
-      </div>
-    </div>
+	 <!-- Контейнер для вкладок, расположенный прямо под навигацией -->
+	 <div id="tabPlace">
+    <!-- Здесь будет разметка вкладок -->
   </div>
+
+	<div class="row">
+		<div class="col-md-3">
+			<div class="list-group">
+				<!-- вертикальное меню слева -->
+				<div id="dynamicMenu"></div>
+			</div>
+		</div>
+		<div class="col-md-9">
+			<!-- Содержимое выбранной секции -->
+		</div>
+	</div>
+</div>
