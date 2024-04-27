@@ -10,16 +10,19 @@ import {
 	getManagerHorizontalNav,
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
-	returnModalSupport
+	returnModalSupport,
 } from "../../../utils/dashboard/components/markup";
-
 import {
 	getModalInstance,
 	initializeTabsWithoutShow,
 	setupTabActivation,
 	initializeSingleTab,
 	initializeDropdown,
+	initializeDropdowns,
+	initializeModals,
 } from "../../../utils/bootstrap-components";
+import { returnClientLoans } from "../../../utils/dashboard/loans";
+import Modal from "bootstrap/js/dist/modal";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const userType = localStorage.getItem("userType");
@@ -58,10 +61,36 @@ document.addEventListener("DOMContentLoaded", function () {
 			default:
 				console.log("Unknown user type");
 		}
-		dynamicMenu.innerHTML = verticalNav; // Вставка подготовленного контента в меню
+		dynamicMenu.innerHTML = verticalNav;
 		horizontalNavbar.innerHTML = horizontalNav;
 		initializeDropdown();
 	}
+
+	document.addEventListener("click", function (event) {
+		// Обработчик для клика по ссылке 'Mes locations'
+		if (event.target.matches("#loans")) {
+			console.log("Клик на my loans");
+			const myLoans = document.getElementById("myLoans");
+			if (myLoans) {
+				myLoans.innerHTML = returnClientLoans();
+				initializeSingleTab("#activeReservations");
+				initializeDropdowns();
+				initializeModals();
+			}
+		}
+		// Обработка других элементов с data-bs-toggle="modal"
+		const modalToggle = event.target.closest('[data-bs-toggle="modal"]');
+		if (modalToggle && modalToggle.id !== "loans") {
+			const modalId = modalToggle.getAttribute("data-bs-target");
+			const modalElement = document.querySelector(modalId);
+			if (modalElement) {
+				const modalInstance = new Modal(modalElement);
+				modalInstance.show();
+			} else {
+				console.error("Modal element not found:", modalId);
+			}
+		}
+	});
 
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
@@ -74,23 +103,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	);
 	const tabPlace = document.getElementById("tabPlace");
 
-	// Получаем экземпляр модального окна
-	const notificationsModal = getModalInstance("notificationsModal");
-
-	// Добавляем обработчик на кнопку, которая должна открыть модальное окно
-	document
-		.querySelector("[data-bs-toggle='modal']")
-		.addEventListener("click", () => {
-			notificationsModal.show();
-		});
-
-	// Обработчик для ссылки в горизонтальном меню
+	// Обработчики для настроек
 	settingsLink.addEventListener("click", (e) => {
 		e.preventDefault();
 		activateSettingsTab();
 	});
-
-	// Обработчик для ссылки в выпадающем меню
 	settingsDropdownLink.addEventListener("click", (e) => {
 		e.preventDefault();
 		activateSettingsTab();

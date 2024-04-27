@@ -17,7 +17,21 @@ function initializeModal(idModal) {
 }
 
 function getModalInstance(idModal) {
-	return new Modal(document.getElementById(idModal));
+	const modalElement = document.getElementById(idModal);
+	if (modalElement) {
+		console.log(`Инициализация модального окна с ID: ${idModal}`);
+		try {
+			return new Modal(modalElement, {
+				keyboard: true, // Использовать настройки по вашему выбору
+				backdrop: "static", // 'true', 'false' или 'static'
+			});
+		} catch (error) {
+			console.error("Ошибка при инициализации модального окна:", error);
+		}
+	} else {
+		console.error(`Элемент модального окна с ID ${idModal} не найден.`);
+		return null;
+	}
 }
 
 // Инициализация и показ/скрытие выпадающего меню при наведении мыши
@@ -72,10 +86,9 @@ function initializeTabs(tabElements) {
 function initializeTabsWithoutShow(selector) {
 	const tabElements = document.querySelectorAll(selector);
 	tabElements.forEach(function (triggerEl) {
-			new Tab(triggerEl); // Просто инициализируем, не показываем
+		new Tab(triggerEl); // Просто инициализируем, не показываем
 	});
 }
-
 
 function initializeSingleTab(selector) {
 	const tabElement = document.querySelector(selector);
@@ -92,32 +105,69 @@ function initializeSingleTab(selector) {
 function setupTabActivation(buttonSelector, tabSelector) {
 	const button = document.querySelector(buttonSelector);
 	if (button) {
-			button.addEventListener("click", function (e) {
-					e.preventDefault();
-					const tabElement = document.querySelector(tabSelector);
-					if (tabElement) {
-							const tab = new Tab(tabElement);
-							tab.show();
-					}
-			});
+		button.addEventListener("click", function (e) {
+			e.preventDefault();
+			const tabElement = document.querySelector(tabSelector);
+			if (tabElement) {
+				const tab = new Tab(tabElement);
+				tab.show();
+			}
+		});
 	}
 }
 
 function initializeDropdown() {
-	const dropdownToggleEl = document.querySelector('.dropdown-toggle');
+	const dropdownToggleEl = document.querySelector(".dropdown-toggle");
 	if (dropdownToggleEl) {
-			const dropdownInstance = new Dropdown(dropdownToggleEl);
-			dropdownToggleEl.addEventListener('click', function (event) {
-					event.preventDefault();
-					if (dropdownInstance._element.classList.contains('show')) {
-							dropdownInstance.hide();
-					} else {
-							dropdownInstance.show();
-					}
-			});
+		const dropdownInstance = new Dropdown(dropdownToggleEl);
+		dropdownToggleEl.addEventListener("click", function (event) {
+			event.preventDefault();
+			if (dropdownInstance._element.classList.contains("show")) {
+				dropdownInstance.hide();
+			} else {
+				dropdownInstance.show();
+			}
+		});
 	} else {
-			console.error('Элемент для инициализации дропдауна не найден.');
+		console.error("Элемент для инициализации дропдауна не найден.");
 	}
+}
+
+function initializeDropdowns() {
+	const dropdownElements = document.querySelectorAll(".dropdown-toggle");
+	dropdownElements.forEach(function (dropdownToggle) {
+		const dropdownInstance = new Dropdown(dropdownToggle); // Создаем экземпляр Dropdown для каждого элемента
+
+		// Добавляем обработчик клика для управления состоянием dropdown
+		dropdownToggle.addEventListener("click", function (event) {
+			event.preventDefault(); // Предотвратим стандартное поведение ссылки
+			// Проверяем, открыт ли dropdown
+			if (dropdownInstance._element.classList.contains("show")) {
+				dropdownInstance.hide();
+			} else {
+				dropdownInstance.show();
+			}
+		});
+	});
+}
+
+function initializeModals() {
+	// Делегирование событий для обработки всех кликов по элементам, которые должны открыть модалки
+	document.body.addEventListener("click", function (event) {
+		console.log("Клик произошел на элементе:", event.target);
+		const toggle = event.target.closest('[data-bs-toggle="modal"]');
+		if (toggle) {
+			const targetModalId = toggle.dataset.bsTarget;
+			const targetModal = document.querySelector(targetModalId);
+			if (targetModal) {
+				console.log("Найден элемент модального окна", targetModal);
+				const modalInstance = new Modal(targetModal);
+				modalInstance.show();
+			} else {
+				console.error("Modal element not found:", targetModalId);
+			}
+		}
+	});
 }
 
 export {
@@ -129,5 +179,7 @@ export {
 	initializeSingleTab,
 	initializeTabsWithoutShow,
 	setupTabActivation,
-	initializeDropdown
+	initializeDropdown,
+	initializeDropdowns,
+	initializeModals,
 };

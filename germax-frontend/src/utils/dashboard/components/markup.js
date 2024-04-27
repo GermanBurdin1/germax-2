@@ -1,4 +1,5 @@
 function getAdminNav() {
+	// Nav tabs
 	return `
 	<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
@@ -31,20 +32,20 @@ function getStockmanNav() {
 	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
 	<a class="nav-link" id="locationsLink" href="/page-stockman-equipment-under-repair">Matériel en maintenance ou sous signalement</a>
 	<a class="nav-link" id="reservations-echeance-link" href="/page-stockman-communication-with-rental-manager"
-		role="tab" data-toggle="pill">Communication avec les gestionnaires de location</a>
+		role="tab" data-bs-toggle="pill">Communication avec les gestionnaires de location</a>
 </div>`;
 }
 
 function getStudentNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
-	<a class="nav-link" id="locationsLink" href="/page-info-user">Сделать таблицу! Mes
-		locations</a>
+	<a class="nav-link" id="locationsLink" href="./">Profil</a>
+	<a class="nav-link active" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">My loans</a>
 	<a class="nav-link" id="indicateursLink" href="/page-loans-request">Louer un
 		nouveau matériel</a>
-		<a class="nav-link" id="rentalHistoryLink" href="./subpages/loansRequests/rentalHistory.html" data-toggle="pill">СДЕЛАТЬ!!История
+		<a class="nav-link" id="rentalHistoryLink" href="./subpages/loansRequests/rentalHistory.html" data-bs-toggle="pill">СДЕЛАТЬ!!История
 			аренды и статус бронирований</a>
-</div>`;
+</div>
+`;
 }
 
 function getTeacherNav() {
@@ -54,7 +55,7 @@ function getTeacherNav() {
 		locations. Сделать таблицу!!!</a>
 	<a class="nav-link" id="indicateursLink" href="/page-loans-request">Louer un
 		nouveau matériel</a>
-	<a class="nav-link active" id="pageTeacherEquipmentUsageReports" href="/page-teacher-equipment-usage-reports" data-toggle="pill">Rapport sur l'utilisation de l'équipement
+	<a class="nav-link active" id="pageTeacherEquipmentUsageReports" href="/page-teacher-equipment-usage-reports" data-bs-toggle="pill">Rapport sur l'utilisation de l'équipement
 	</a>
 </div>`;
 }
@@ -77,7 +78,7 @@ function returnAdminNotificationsModal() {
 	  <div class="modal-content">
 		<div class="modal-header">
 		  <h5 class="modal-title" id="notificationsModalLabel">Notifications</h5>
-		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">&times;</span>
 		  </button>
 		</div>
@@ -104,7 +105,7 @@ function returnAdminNotificationsModal() {
 		  </div>
 		</div>
 		<div class="modal-footer">
-		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
 		</div>
 	  </div>
 	</div>
@@ -252,7 +253,7 @@ function returnSettingsTab() {
 function returnModalSupport() {
 	return `
 	<!-- Modal -->
-	<div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+	<div class="modal fade" id="supportModal" tabindex="-1" role="dialog" aria-labelledby="supportModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -307,9 +308,8 @@ function returnModalSupport() {
 			</div>
 		</div>
 	</div>
-	`
+	`;
 }
-
 export {
 	getAdminNav,
 	getRentalManagerNav,
@@ -321,5 +321,5 @@ export {
 	getManagerHorizontalNav,
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
-	returnModalSupport
+	returnModalSupport,
 };
