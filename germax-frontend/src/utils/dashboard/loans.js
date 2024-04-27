@@ -51,7 +51,7 @@ function returnClientLoans() {
 								</button>
 								<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
     							<li>
-        						<a class="dropdown-item" id="communication-manager-link" data-bs-toggle="modal" href="#" data-bs-target="#communication-manager-modal">
+        						<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#communication-manager-modal">
             				Contacter le manager
         						</a>
     							</li>

@@ -163,6 +163,13 @@ function initializeModals() {
 				console.log("Найден элемент модального окна", targetModal);
 				const modalInstance = new Modal(targetModal);
 				modalInstance.show();
+				// Удаление modal-backdrop после закрытия модального окна
+				targetModal.addEventListener('hidden.bs.modal', function () {
+					const backdrops = document.querySelectorAll('.modal-backdrop');
+					if (backdrops.length > 0) {
+							backdrops.forEach(backdrop => backdrop.remove());
+					}
+			});
 			} else {
 				console.error("Modal element not found:", targetModalId);
 			}

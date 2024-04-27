@@ -13,16 +13,13 @@ import {
 	returnModalSupport,
 } from "../../../utils/dashboard/components/markup";
 import {
-	getModalInstance,
 	initializeTabsWithoutShow,
 	setupTabActivation,
 	initializeSingleTab,
-	initializeDropdown,
 	initializeDropdowns,
 	initializeModals,
 } from "../../../utils/bootstrap-components";
 import { returnClientLoans } from "../../../utils/dashboard/loans";
-import Modal from "bootstrap/js/dist/modal";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const userType = localStorage.getItem("userType");
