@@ -63,31 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 		dynamicMenu.innerHTML = verticalNav;
 		horizontalNavbar.innerHTML = horizontalNav;
-		initializeDropdown();
 	}
 
 	document.addEventListener("click", function (event) {
 		// Обработчик для клика по ссылке 'Mes locations'
 		if (event.target.matches("#loans")) {
-			console.log("Клик на my loans");
 			const myLoans = document.getElementById("myLoans");
 			if (myLoans) {
 				myLoans.innerHTML = returnClientLoans();
 				initializeSingleTab("#activeReservations");
 				initializeDropdowns();
 				initializeModals();
-			}
-		}
-		// Обработка других элементов с data-bs-toggle="modal"
-		const modalToggle = event.target.closest('[data-bs-toggle="modal"]');
-		if (modalToggle && modalToggle.id !== "loans") {
-			const modalId = modalToggle.getAttribute("data-bs-target");
-			const modalElement = document.querySelector(modalId);
-			if (modalElement) {
-				const modalInstance = new Modal(modalElement);
-				modalInstance.show();
-			} else {
-				console.error("Modal element not found:", modalId);
 			}
 		}
 	});
