@@ -2,7 +2,7 @@ RewriteEngine On
 RewriteBase /
 
 # Перенаправление запросов для /{route}/
-RewriteRule ^([^/]+)/?$ src/controllers/$1/index.php [L]
+RewriteRule ^([^/]+)/?$ src/endpoints/$1/index.php [L]
 
 # Перенаправление запросов для /{route}/{route-child}/
-RewriteRule ^([^/]+)/([^/]+)/?$ src/controllers/$1/$2.php [L]
+RewriteRule ^([^/]+)/([^/]+)/?$ src/endpoints/$1/$2.php [L]

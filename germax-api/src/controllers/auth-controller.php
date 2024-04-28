@@ -1,40 +1,48 @@
 <?php
+
 // AuthController.php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php';
+
+// AuthService.php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
 
 class AuthController
 {
 	private $pdo;
+	private $authService;
 
 	public function __construct()
 	{
 		$this->pdo = Database::connect();
+		$this->authService = new AuthService();
 	}
 
 	public function login($email, $password)
 	{
-		$stmt = $this->pdo->prepare("SELECT user.*, permission.name AS permission_name FROM user JOIN permission ON user.id_permission = permission.id_permission WHERE email = :email LIMIT 1");
-		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
-		$stmt->execute();
+		// $authService->login();
+		// $stmt = $this->pdo->prepare("SELECT user.*, permission.name AS permission_name FROM user JOIN permission ON user.id_permission = permission.id_permission WHERE email = :email LIMIT 1");
+		// $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+		// $stmt->execute();
 
-		if ($user = $stmt->fetch()) {
-			if (password_verify($password, $user['password'])) {
-				$_SESSION['user_id'] = $user['id_user'];
-				$_SESSION['user_email'] = $user['email'];
-				$_SESSION['user_type'] = $user['permission_name'];
-				echo json_encode([
-					'status' => 'success',
-					'message' => 'Logged in successfully',
-					'user_type' => $user['permission_name'],
-					'user_email' => $user['email']
-				]);
-			} else {
-				echo json_encode(['status' => 'error', 'message' => 'Invalid login credentials']);
-			}
-		} else {
-			echo json_encode(['status' => 'error', 'message' => 'User not found']);
-		}
-		exit(); // Добавьте exit() чтобы гарантировать прекращение скрипта после отправки ответа.
+		// if ($user = $stmt->fetch()) {
+		// 	if (password_verify($password, $user['password'])) {
+		// 		$_SESSION['user_id'] = $user['id_user'];
+		// 		$_SESSION['user_email'] = $user['email'];
+		// 		$_SESSION['user_type'] = $user['permission_name'];
+		// 		echo json_encode([
+		// 			'status' => 'success',
+		// 			'message' => 'Logged in successfully',
+		// 			'user_type' => $user['permission_name'],
+		// 			'user_email' => $user['email']
+		// 		]);
+		// 	} else {
+		// 		echo json_encode(['status' => 'error', 'message' => 'Invalid login credentials']);
+		// 	}
+		// } else {
+		// 	echo json_encode(['status' => 'error', 'message' => 'User not found']);
+		// }
+		// exit(); // Добавьте exit() чтобы гарантировать прекращение скрипта после отправки ответа.
+
 	}
 
 

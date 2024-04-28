@@ -42,8 +42,11 @@ function getStudentNav() {
 	<a class="nav-link active" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">My loans</a>
 	<a class="nav-link" id="indicateursLink" href="/page-loans-request">Louer un
 		nouveau matériel</a>
-		<a class="nav-link" id="rentalHistoryLink" href="#">СДЕЛАТЬ!!История
-			аренды и статус бронирований</a>
+	<a class="nav-link" id="rentalHistoryLink" href="#">СДЕЛАТЬ!!История
+		аренды и статус бронирований</a>
+	<a role="button" class="nav-link btn btn-primary" data-bs-toggle="modal" data-bs-target="#fullScreenModal">
+		Открыть полный поиск
+	</a>
 </div>
 `;
 }

@@ -1,5 +1,5 @@
 <?php
-require_once '../controllers/auth-controllers.php';
+require_once '../controllers/auth-controller.php';
 session_start();
 
 header("Access-Control-Allow-Origin: http://germax-frontend"); // Разрешить запросы только с этого домена

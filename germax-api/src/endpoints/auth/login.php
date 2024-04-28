@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once '../controllers/auth-controllers.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/auth-controller.php';
 
 session_start();
 

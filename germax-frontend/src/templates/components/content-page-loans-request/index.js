@@ -1,7 +1,11 @@
 import "./index.css";
-
+import {initializeModals} from "../../../utils/bootstrap-components"
 let offset = 0;
 const limit = 10;
+
+document.addEventListener('DOMContentLoaded', (event) => {
+	initializeModals();
+});
 
 function loadModel(type = "") {
 	fetch(

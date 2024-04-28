@@ -1,24 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	<a class="navbar-brand" href="#">Логотип Компании</a>
-	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-		aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="collapse navbar-collapse" id="navbarNav">
-		<ul class="navbar-nav">
-			<li class="nav-item active">
-				<a class="nav-link" href="../../dashboard.html">Retour à la page principale <span
-						class="sr-only">(current)</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#requestForm">Запрос на аренду</a>
-			</li>
-		</ul>
-	</div>
-</nav>
-
 <div class="jumbotron">
-	<h1 class="display-4">Vérifier la disponibilité</h1>
 	<div class="input-group mb-3">
 		<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
 		<div class="input-group-append">
@@ -30,9 +10,9 @@
 			<div id="type-filter" class="col-md-3">
 				<div class="container-fluid">
 					<div class="row">
-						<div id="type-filter" class="col-md-3">
+						<div id="type-filter" class="col-md-9">
 							<div class="list-group">
-								<a href="#" class="list-group-item list-group-item-action" data-type="laptop">Ordinateurs portables</a>
+								<a href="#" class="list-group-item list-group-item-action active" data-type="laptop">Ordinateurs portables</a>
 								<a href="#" class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans
 									d'ordinateurs</a>
 								<a href="#" class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
@@ -57,16 +37,63 @@
 	</div>
 </div>
 <div class="jumbotron">
-	<h1 class="display-4" id="requestForm">Запрос на аренду оборудования</h1>
-	<p class="lead">Здесь вы можете быстро и удобно отправить запрос на аренду нужного оборудования у менеджера
-		склада.</p>
+	<p class="lead">Vous n'avez pas trouvé ce dont vous avez besoin ?</p>
 	<hr class="my-4">
-	<p>Просто заполните форму ниже, и мы с вами свяжемся.</p>
-	<a class="btn btn-primary btn-lg" href="/page-loans-form" role="button">Перейти к форме</a>
-</div>
-
-<footer class="footer mt-auto py-3 bg-light">
-	<div class="container">
-		<span class="text-muted">© Ваша Компания, 2024.</span>
+	<p>Ici, vous pouvez rapidement et facilement envoyer une demande de location de l'équipement nécessaire au gestionnaire de l'entrepôt.</p>
+	<!-- Button trigger modal -->
+	<a class="btn btn-primary btn-sm nav-link active" id="loans" href="#" data-bs-toggle="modal"
+		data-bs-target="#loanFormModal">Aller au formulaire</a>
+	<div class="modal fade" id="loanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="loanFormModalLabel">Форма запроса на аренду</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="mb-3">
+							<label for="managerName" class="form-label">Ваше имя</label>
+							<input type="text" class="form-control" id="managerName" placeholder="Иван Иванов">
+						</div>
+						<div class="mb-3">
+							<label for="managerContact" class="form-label">Контактная информация</label>
+							<input type="email" class="form-control" id="managerContact" placeholder="email@example.com">
+						</div>
+						<div class="mb-3">
+							<label for="equipmentCategory" class="form-label">Категория оборудования</label>
+							<select class="form-select" id="equipmentCategory">
+								<option>Ноутбуки</option>
+								<option>Мониторы</option>
+								<option>Смартфоны</option>
+								<option>Аксессуары</option>
+								<option>Планшеты</option>
+								<option>VR-гарнитуры</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label for="modelInput" class="form-label">Начните вводить название модели</label>
+							<input type="text" class="form-control" id="modelInput" placeholder="Введите название модели">
+						</div>
+						<div class="mb-3">
+							<label for="quantity" class="form-label">Количество</label>
+							<input type="number" class="form-control" id="quantity" placeholder="1">
+						</div>
+						<div class="mb-3">
+							<label for="rentalDates" class="form-label">Даты аренды</label>
+							<input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
+						</div>
+						<div class="mb-3">
+							<label for="comments" class="form-label">Комментарии</label>
+							<textarea class="form-control" id="comments" rows="3"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+					<button type="submit" class="btn btn-primary">Отправить запрос</button>
+				</div>
+			</div>
+		</div>
 	</div>
-</footer>
+</div>

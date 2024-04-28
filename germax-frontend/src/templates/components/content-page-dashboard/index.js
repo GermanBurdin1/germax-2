@@ -19,7 +19,8 @@ import {
 	initializeDropdowns,
 	initializeModals,
 } from "../../../utils/bootstrap-components";
-import { returnClientLoans } from "../../../utils/dashboard/loans";
+import { returnClientLoans, returnLoanRequestModal } from "../../../utils/dashboard/loans";
+import Modal from "bootstrap/js/dist/modal";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const userType = localStorage.getItem("userType");
@@ -77,8 +78,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
+	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
+	modalRequestLoan.innerHTML = returnLoanRequestModal();
+
+	const firstModalElement = document.getElementById('fullScreenModal');
+  const secondModalElement = document.getElementById('loanFormModal');
+  if (firstModalElement && secondModalElement) {
+    const firstModal = new Modal(firstModalElement);
+    const secondModal = new Modal(secondModalElement);
+
+    // Обработчик для кнопки, открывающей первое модальное окно
+    firstModalElement.addEventListener('shown.bs.modal', () => {
+			console.log("обработчик сработал на:",firstModalElement)
+      // Кнопка в первом модальном окне, которая откроет второе модальное окно
+      const loansRequestButton = firstModalElement.querySelector('#loansRequest');
+      if (loansRequestButton) {
+        loansRequestButton.addEventListener('click', () => {
+          // Скрыть первое модальное окно
+          firstModal.hide();
+          // Показать второе модальное окно
+          secondModal.show();
+        });
+      }
+    });
+  }
 
 	const settingsLink = document.getElementById("settings-link");
 	const settingsDropdownLink = document.getElementById(

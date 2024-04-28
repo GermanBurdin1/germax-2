@@ -12,7 +12,11 @@ class AuthService {
 	}
 
 	public function login($email, $password) {
+		$foundUser = $this->getUserByEmail($email);
 
+		if (isset($foundUser)) {
+			return $foundUser;
+		}
 	}
 
 	/**
