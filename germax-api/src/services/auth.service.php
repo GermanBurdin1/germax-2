@@ -3,20 +3,45 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/error.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/validate.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/token.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/permissions.service.php');
 
 class AuthService {
-	private static $pdo;
+	private $pdo;
+	private $permissionsService;
 
 	public function __construct() {
-		self::$pdo = Database::connect();
+		$this->pdo = (new Database())->connect();
+		$this->permissionsService = new PermissionsService();
 	}
 
 	public function login($email, $password) {
 		$foundUser = $this->getUserByEmail($email);
 
-		if (isset($foundUser)) {
-			return $foundUser;
+		if (empty($foundUser)) {
+			return renderErrorAndExit(['There is no user with this email'], 401);
 		}
+
+		// Пользователь всегда существует ниже
+
+		if (!password_verify($password, $foundUser['password'])) {
+			return renderErrorAndExit(["The password for user $email is incorrect"], 401);
+		}
+
+		// Код ниже выполняется, только если пользователь существует и передали правильный пароль
+
+		$token = generateToken($foundUser['email']);
+
+		// var_dump($token);
+
+		if ($token == false) {
+			return renderErrorAndExit(['Token could not be created'], 401);
+		}
+
+		return renderSuccessAndExit(['Token success created'], 200, [
+			'token' => $token
+		]);
 	}
 
 	/**
@@ -30,38 +55,53 @@ class AuthService {
 	 * @property string $user->password Пароль пользователя.
 	 * @return void
 	 */
-	public function register($user) {
-		$createdUser = $this->createUser($user);
+	public function register(
+		$lastname, $firstname, $phone, $email, $password, $typePermission
+	) {
+		$foundUser = $this->getUserByEmail($email);
+
+		if (empty($foundUser)) return renderErrorAndExit(
+			["Пользователь с email {$email} уже существует"],
+			401
+		);
+
+		$createdUser = $this->createUser(
+			$lastname, $firstname, $phone, $email, $password, $typePermission
+		);
 
 		return $createdUser;
 	}
 
-	private function createUser($user) {
-		validateArrAssoc([
-			"data" => $user,
-			"errorCode" => 400,
-			"errors" => [
-				"lastName" => "lastName не отправлен, обязательное поле",
-				"firstName" => "firstName не отправлен, обязательное поле",
-			]
-		]);
+	// Создание пользователя, отдельная функция
+	private function createUser(
+		$lastname, $firstname, $phone, $email, $password, $typePermission
+	) {
+		$permission = $this->permissionsService->getByName($typePermission);
 
-		$foundUser = $this->getUserByEmail($user["email"]);
+		if (!isset($permission)) return renderErrorAndExit(
+			["Permission by name {$typePermission} not exist"],
+			401
+		);
 
-		if (isset($foundUser)) {
-			renderErrorAndExit(
-				["Пользователь с email {$user["email"]} уже существует"],
-				409
-			);
-		}
+		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-		// Создание пользователя, отдельная функция
+		// Теперь у нас есть id_permission, и мы можем вставить нового пользователя
+		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission) VALUES (:lastname, :firstname, :phone, :password, :email, :id_permission)");
+		$stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+		$stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+		$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+		$stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
+		$stmt->bindParam(':id_permission', $permission['id_permission'], PDO::PARAM_INT);
+		$stmt->execute();
 
-		return $foundUser;
+		$createdUser = $stmt->fetch();
+
+		return renderSuccessAndExit(['User successfully registered'], 200, $createdUser);
 	}
 
 	private function getUserByEmail($email) {
-		$stmt = self::$pdo->prepare("SELECT * FROM user WHERE email = :email LIMIT 1");
+		$stmt = $this->pdo->prepare("SELECT * FROM user WHERE email = :email LIMIT 1");
 
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
 		$stmt->execute();

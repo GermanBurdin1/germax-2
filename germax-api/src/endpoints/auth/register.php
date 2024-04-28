@@ -1,28 +1,32 @@
 <?php
-require_once '../controllers/auth-controller.php';
-session_start();
+
+// AuthController.php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/auth.controller.php';
 
 header("Access-Control-Allow-Origin: http://germax-frontend"); // Разрешить запросы только с этого домена
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST"); // Разрешить только POST-методы
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Разрешить только необходимые заголовки
 
-// Создаем экземпляр AuthController
 $authController = new AuthController();
 
-// Извлекаем переменные из массива
-$lastname = $_POST['lastname'] ?? '';
-$firstname = $_POST['firstname'] ?? '';
-$phone = $_POST['phone'] ?? '';
-$mail = $_POST['mail'] ?? '';
-$password = $_POST['password'] ?? '';
-$type = $_POST['typeOfUser'] ?? '';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-// Вызываем метод register и передаем ему необходимые параметры
-$response = $authController->register($lastname, $firstname, $phone, $mail, $password, $type);
+	$_POST = json_decode(file_get_contents("php://input"), true);
+	// Извлекаем переменные из массива
+	$lastname = $_POST['lastname'] ?? null;
+	$firstname = $_POST['firstname'] ?? null;
+	$phone = $_POST['phone'] ?? null;
+	$email = $_POST['email'] ?? null;
+	$password = $_POST['password'] ?? null;
+	$typePermission = $_POST['type-permission'] ?? null;
 
-// Отправляем ответ клиенту в формате JSON
-echo json_encode($response);
-exit();
+	// Вызываем метод register и передаем ему необходимые параметры
+	$authController->register($lastname, $firstname, $phone, $email, $password, $type);
+
+}
+
+renderErrorAndExit(['This route does not support this HTTP method'], 405);
+
 ?>
 

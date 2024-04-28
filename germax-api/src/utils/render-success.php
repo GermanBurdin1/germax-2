@@ -8,7 +8,7 @@ function renderSuccessAndExit($messagesText, $code = 200, $data = [])
 	// Формируем массив с данными об ошибке
 	$successData = [
 		'success' => true,
-		'error' => [...$messagesText],
+		'messages' => [...$messagesText],
 		'data' => $data
 	];
 
