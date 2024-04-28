@@ -27,7 +27,7 @@ class PermissionsService {
 	}
 
 	public function getById($id) {
-		$stmt = $this->pdo->prepare("SELECT id_permission FROM permission WHERE id_permission = :id");
+		$stmt = $this->pdo->prepare("SELECT * FROM permission WHERE id_permission = :id");
 		$stmt->bindParam(':id', $id, PDO::PARAM_STR); // Привязываем параметр перед вызовом execute
 		$stmt->execute(); // Теперь выполняем запрос
 

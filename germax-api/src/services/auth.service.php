@@ -7,16 +7,19 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/token.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/permissions.service.php');
 
-class AuthService {
+class AuthService
+{
 	private $pdo;
 	private $permissionsService;
 
-	public function __construct() {
+	public function __construct()
+	{
 		$this->pdo = (new Database())->connect();
 		$this->permissionsService = new PermissionsService();
 	}
 
-	public function login($email, $password) {
+	public function login($email, $password)
+	{
 		$foundUser = $this->getUserByEmail($email);
 
 		if (empty($foundUser)) {
@@ -32,12 +35,6 @@ class AuthService {
 		// Код ниже выполняется, только если пользователь существует и передали правильный пароль
 
 		$token = generateToken($foundUser['email']);
-
-		// var_dump($token);
-
-		if ($token == false) {
-			return renderErrorAndExit(['Token could not be created'], 401);
-		}
 
 		return renderSuccessAndExit(['Token success created'], 200, [
 			'token' => $token
@@ -56,7 +53,12 @@ class AuthService {
 	 * @return void
 	 */
 	public function register(
-		$lastname, $firstname, $phone, $email, $password, $typePermission
+		$lastname,
+		$firstname,
+		$phone,
+		$email,
+		$password,
+		$typePermission
 	) {
 		$foundUser = $this->getUserByEmail($email);
 
@@ -66,30 +68,58 @@ class AuthService {
 		);
 
 		$createdUser = $this->createUser(
-			$lastname, $firstname, $phone, $email, $password, $typePermission
+			$lastname,
+			$firstname,
+			$phone,
+			$email,
+			$password,
+			$typePermission
 		);
 
 		return $createdUser;
 	}
 
-	public function me($token) {
+	public function me($token)
+	{
 		$userByToken = $this->getUserByToken($token);
 
-		// проверки, ошибки или успешный ответ
+		// если userByToken не существует
+		if ($userByToken == false) return renderErrorAndExit(['Invalid token'], 401);
+		if ($userByToken == null) return renderErrorAndExit(['There is no user with this email'], 401);
+
+		// если userByToken существует
+		return renderSuccessAndExit(['User found'], 200, $userByToken);
 	}
 
-	private function getUserByToken($token) {
+	private function getUserByToken($token)
+	{
+		// Декодируем токен
+		$decodedToken = decrypt_token($token);  // Используем функцию для декодирования токена
 
+		// Если токен недействителен или не может быть декодирован
+		if ($decodedToken == false) return false;
+
+		$user = $this->getUserByEmail($decodedToken['email']);
+
+		if (empty($user)) return null;
+
+		return $user;
 	}
+
 
 	// Создание пользователя, отдельная функция
 	private function createUser(
-		$lastname, $firstname, $phone, $email, $password, $typePermission
+		$lastname,
+		$firstname,
+		$phone,
+		$email,
+		$password,
+		$namePermission
 	) {
-		$permission = $this->permissionsService->getByName($typePermission);
+		$permission = $this->permissionsService->getByName($namePermission);
 
 		if (!isset($permission)) return renderErrorAndExit(
-			["Permission by name {$typePermission} not exist"],
+			["Permission by name {$namePermission} not exist"],
 			401
 		);
 
@@ -106,20 +136,23 @@ class AuthService {
 		$stmt->execute();
 
 		$createdUser = $stmt->fetch();
+		$createdUser['name_permission'] = $namePermission;
 
 		return renderSuccessAndExit(['User successfully registered'], 200, $createdUser);
 	}
 
-	private function getUserByEmail($email) {
+	private function getUserByEmail($email)
+	{
 		$stmt = $this->pdo->prepare("SELECT * FROM user WHERE email = :email LIMIT 1");
 
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
 		$stmt->execute();
 
-		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		$user = $stmt->fetch();
+		// var_dump($user);
+		$permission = $this->permissionsService->getById($user['id_permission']);
+		$user['name_permission'] = $permission['name'];
 
-		return $result;
+		return $user;
 	}
 }
-
-?>
