@@ -1,26 +1,37 @@
+import { getFormData } from "../../../utils/dom-utils";
 import "./index.css";
 
-document
-	.getElementById("loginForm")
-	.addEventListener("submit", function (event) {
-		event.preventDefault();
-		const formData = new FormData(this);
-		const url = "http://germax-api/src/endpoints/login.php";
+const loginFormNode = document.getElementById("loginForm");
 
-		fetch(url, {
-			method: "POST",
-			body: formData,
+loginFormNode.addEventListener("submit", function (event) {
+	event.preventDefault();
+	const formData = getFormData("loginForm");
+
+	loginFetch("http://germax-api/auth/login", formData);
+});
+
+function loginFetch(url, data) {
+	fetch(url, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	})
+		.then(async (response) => {
+			const json = await response.json();
+			if (!response.ok) return Promise.reject(json);
+			return json;
 		})
-			.then((response) => response.json())
-			.then((data) => {
-				if (data.status === "success") {
-					localStorage.setItem("userType", data.user_type);
-					window.location.href = "/page-dashboard"; // Перенаправить на страницу после входа
-				} else {
-					alert("Login failed: " + data.message);
-				}
-			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
-	});
+		.then((data) => {
+			loginLogic(data);
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+}
+
+function loginLogic(responseData) {
+	localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
+	window.location.href = "/page-dashboard"; // Перенаправить на страницу после входа
+}

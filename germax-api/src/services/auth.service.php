@@ -72,6 +72,16 @@ class AuthService {
 		return $createdUser;
 	}
 
+	public function me($token) {
+		$userByToken = $this->getUserByToken($token);
+
+		// проверки, ошибки или успешный ответ
+	}
+
+	private function getUserByToken($token) {
+
+	}
+
 	// Создание пользователя, отдельная функция
 	private function createUser(
 		$lastname, $firstname, $phone, $email, $password, $typePermission

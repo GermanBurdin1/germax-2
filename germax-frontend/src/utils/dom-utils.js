@@ -1,14 +1,12 @@
 import Dropdown from "bootstrap/js/dist/dropdown";
 
-function reinitializeDropdowns() {
-	document
-		.querySelectorAll(".dropdown-toggle")
-		.forEach((dropdownToggleEl) => {
-			new Dropdown(dropdownToggleEl); // Используйте Dropdown напрямую
-		});
+export function reinitializeDropdowns() {
+	document.querySelectorAll(".dropdown-toggle").forEach((dropdownToggleEl) => {
+		new Dropdown(dropdownToggleEl); // Используйте Dropdown напрямую
+	});
 }
 
-function updateActionButtonsForRow(row, archived) {
+export function updateActionButtonsForRow(row, archived) {
 	// Находим все нужные элементы внутри строки
 	const editButton = row.querySelector(".edit-reservation");
 	const deleteButton = row.querySelector(".delete-action");
@@ -28,8 +26,7 @@ function updateActionButtonsForRow(row, archived) {
 		if (resolveConflictAction) resolveConflictAction.classList.add("d-none");
 
 		// Показываем кнопку "Восстановить" и "Удалить"
-		if (restoreButton)
-			restoreButton.parentNode.classList.remove("d-none"); // Используем parentNode, чтобы управлять видимостью <li>
+		if (restoreButton) restoreButton.parentNode.classList.remove("d-none"); // Используем parentNode, чтобы управлять видимостью <li>
 		if (deleteButton) deleteButton.classList.remove("d-none");
 	} else {
 		// Для активных записей возвращаем видимость кнопок "Редактировать", "Посмотреть детали" и "Архивировать"
@@ -43,4 +40,23 @@ function updateActionButtonsForRow(row, archived) {
 	}
 }
 
-export {reinitializeDropdowns, updateActionButtonsForRow};
+export function getFormData(formId) {
+	const formData = {};
+	const form = document.getElementById(formId);
+
+	// Получаем все элементы формы
+	const elements = form.elements;
+
+	// Проходимся по всем элементам формы
+	for (let i = 0; i < elements.length; i++) {
+		const element = elements[i];
+
+		// Исключаем кнопки отправки формы и другие элементы без атрибута name
+		if (element.tagName !== "BUTTON" && element.name) {
+			// Добавляем данные из элемента в объект formData
+			formData[element.name] = element.value;
+		}
+	}
+
+	return formData;
+}

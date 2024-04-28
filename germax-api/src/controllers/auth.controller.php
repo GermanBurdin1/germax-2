@@ -43,28 +43,11 @@ class AuthController
 		return $this->authService->register(
 			$lastname, $firstname, $phone, $email, $password, $typePermission
 		);
-		// Получаем id_permission для данного типа пользователя
-		// $permissionStmt = $this->pdo->prepare("SELECT id_permission FROM permission WHERE name = :type");
-		// $permissionStmt->bindParam(':type', $type, PDO::PARAM_STR); // Привязываем параметр перед вызовом execute
-		// $permissionStmt->execute(); // Теперь выполняем запрос
+	}
 
-		// $permission = $permissionStmt->fetch();
-		// if (!$permission) {
-		// 	return ['status' => 'error', 'message' => 'Permission type not found'];
-		// }
+	public function me($token) {
+		if (empty($token)) return renderErrorAndExit(["token does not exist"], 400);
 
-		// $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-		// // Теперь у нас есть id_permission, и мы можем вставить нового пользователя
-		// $stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission) VALUES (:lastname, :firstname, :phone, :password, :mail, :id_permission)");
-		// $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
-		// $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
-		// $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
-		// $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
-		// $stmt->bindParam(':mail', $mail, PDO::PARAM_STR);
-		// $stmt->bindParam(':id_permission', $permission['id_permission'], PDO::PARAM_INT);
-		// $stmt->execute();
-
-		// return ['status' => 'success', 'message' => 'User registered successfully'];
+		return $this->authService->me($token);
 	}
 }
