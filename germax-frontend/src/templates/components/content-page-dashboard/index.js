@@ -17,6 +17,7 @@ import {
 	setupTabActivation,
 	initializeSingleTab,
 	initializeDropdowns,
+	initializeDropdown,
 	initializeModals,
 } from "../../../utils/bootstrap-components";
 import {
@@ -227,12 +228,14 @@ function initListeners() {
 				break;
 			case "settings-link":
 			case "settings-dropdown-link":
-				event.preventDefault();
 				if (typeof activateSettingsTab === "function") {
 					activateSettingsTab();
 				} else {
 					console.error("Function activateSettingsTab() is not defined.");
 				}
+				break;
+			case "navbarDropdownMenuLink":
+				initializeDropdown();
 				break;
 			default:
 				console.log(`No case for targetId: ${targetId}`);

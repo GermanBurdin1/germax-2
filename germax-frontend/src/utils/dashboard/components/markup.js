@@ -44,8 +44,7 @@ function getStudentNav() {
 		nouveau matériel</a>
 	<a class="nav-link" id="rentalHistoryLink" href="#">СДЕЛАТЬ!!История
 		аренды и статус бронирований</a>
-	<a role="button" id="openFullScreenSearch" class="nav-link btn btn-primary">
-		Mes locations
+	<a role="button" id="openFullScreenSearch" class="nav-link btn btn-primary">Mes locations
 	</a>
 </div>
 `;
@@ -162,7 +161,7 @@ function getStockmanStudentTeacherHorizontalNav() {
 					<i class="fa fa-question-circle">Support</i>
 				</a>
 		</li>
-		<li class="nav-item dropdown">
+		<li class="nav-item dropdown" id="nav-item-dropdown">
 			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<i class="fa fa-user"></i>
 			</a>
