@@ -202,62 +202,8 @@ function returnLoanRequestModal() {
 	<hr class="my-4">
 	<p>Ici, vous pouvez rapidement et facilement envoyer une demande de location de l'équipement nécessaire au gestionnaire de l'entrepôt.</p>
 	<!-- Button trigger modal -->
-	<a class="btn btn-primary btn-sm nav-link active" id="loansRequest" href="#" data-bs-toggle="modal"
+	<a class="btn btn-primary btn-sm" id="loansRequest" href="#" data-bs-toggle="modal"
 		data-bs-target="#loanFormModal">Aller au formulaire</a>
-	<div class="modal fade" id="loanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="loanFormModalLabel">Форма запроса на аренду</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form>
-						<div class="mb-3">
-							<label for="managerName" class="form-label">Ваше имя</label>
-							<input type="text" class="form-control" id="managerName" placeholder="Иван Иванов">
-						</div>
-						<div class="mb-3">
-							<label for="managerContact" class="form-label">Контактная информация</label>
-							<input type="email" class="form-control" id="managerContact" placeholder="email@example.com">
-						</div>
-						<div class="mb-3">
-							<label for="equipmentCategory" class="form-label">Категория оборудования</label>
-							<select class="form-select" id="equipmentCategory">
-								<option>Ноутбуки</option>
-								<option>Мониторы</option>
-								<option>Смартфоны</option>
-								<option>Аксессуары</option>
-								<option>Планшеты</option>
-								<option>VR-гарнитуры</option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label for="modelInput" class="form-label">Начните вводить название модели</label>
-							<input type="text" class="form-control" id="modelInput" placeholder="Введите название модели">
-						</div>
-						<div class="mb-3">
-							<label for="quantity" class="form-label">Количество</label>
-							<input type="number" class="form-control" id="quantity" placeholder="1">
-						</div>
-						<div class="mb-3">
-							<label for="rentalDates" class="form-label">Даты аренды</label>
-							<input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
-						</div>
-						<div class="mb-3">
-							<label for="comments" class="form-label">Комментарии</label>
-							<textarea class="form-control" id="comments" rows="3"></textarea>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-					<button type="submit" class="btn btn-primary">Отправить запрос</button>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 			<!-- Здесь заканчивается ваш код -->
 		</div>
 		<div class="modal-footer">
@@ -268,4 +214,60 @@ function returnLoanRequestModal() {
 </div>`;
 }
 
-export { returnClientLoans, returnLoanRequestModal };
+function returnLoanFormModal() {
+	return `<div class="modal fade show" id="loanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="loanFormModalLabel">Форма запроса на аренду</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="mb-3">
+					<label for="managerName" class="form-label">Ваше имя</label>
+					<input type="text" class="form-control" id="managerName" placeholder="Иван Иванов">
+				</div>
+				<div class="mb-3">
+					<label for="managerContact" class="form-label">Контактная информация</label>
+					<input type="email" class="form-control" id="managerContact" placeholder="email@example.com">
+				</div>
+				<div class="mb-3">
+					<label for="equipmentCategory" class="form-label">Категория оборудования</label>
+					<select class="form-select" id="equipmentCategory">
+						<option>Ноутбуки</option>
+						<option>Мониторы</option>
+						<option>Смартфоны</option>
+						<option>Аксессуары</option>
+						<option>Планшеты</option>
+						<option>VR-гарнитуры</option>
+					</select>
+				</div>
+				<div class="mb-3">
+					<label for="modelInput" class="form-label">Начните вводить название модели</label>
+					<input type="text" class="form-control" id="modelInput" placeholder="Введите название модели">
+				</div>
+				<div class="mb-3">
+					<label for="quantity" class="form-label">Количество</label>
+					<input type="number" class="form-control" id="quantity" placeholder="1">
+				</div>
+				<div class="mb-3">
+					<label for="rentalDates" class="form-label">Даты аренды</label>
+					<input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
+				</div>
+				<div class="mb-3">
+					<label for="comments" class="form-label">Комментарии</label>
+					<textarea class="form-control" id="comments" rows="3"></textarea>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			<button type="submit" class="btn btn-primary">Отправить запрос</button>
+		</div>
+	</div>
+</div>
+</div>
+</div>`;
+}
+export { returnClientLoans, returnLoanRequestModal, returnLoanFormModal };

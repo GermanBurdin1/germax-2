@@ -22,6 +22,7 @@ import {
 import {
 	returnClientLoans,
 	returnLoanRequestModal,
+	returnLoanFormModal,
 } from "../../../utils/dashboard/loans";
 import Modal from "bootstrap/js/dist/modal";
 
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function initListeners() {
 	document.addEventListener("click", function (event) {
 		// Обработчик для клика по ссылке 'Mes locations'
+		console.log(event.target);
 		if (event.target.matches("#loans")) {
 			const myLoans = document.getElementById("myLoans");
 			if (myLoans) {
@@ -51,29 +53,49 @@ function initListeners() {
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
+	const modalLoanForm = document.getElementById("modalLoanForm");
+
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
+	// Предполагаем, что returnLoanFormModal() - это ваша функция для генерации модального окна
+	modalLoanForm.innerHTML = returnLoanFormModal();
 
 	const firstModalElement = document.getElementById("fullScreenModal");
 	const secondModalElement = document.getElementById("loanFormModal");
+
 	if (firstModalElement && secondModalElement) {
 		const firstModal = new Modal(firstModalElement);
-		const secondModal = new Modal(secondModalElement);
+		const secondModal = new Modal(secondModalElement); // Пересоздаем экземпляр для secondModal
 
-		// Обработчик для кнопки, открывающей первое модальное окно
-		firstModalElement.addEventListener("shown.bs.modal", () => {
-			console.log("обработчик сработал на:", firstModalElement);
-			// Кнопка в первом модальном окне, которая откроет второе модальное окно
-			const loansRequestButton =
-				firstModalElement.querySelector("#loansRequest");
-			if (loansRequestButton) {
-				loansRequestButton.addEventListener("click", () => {
-					// Скрыть первое модальное окно
-					firstModal.hide();
-					// Показать второе модальное окно
-					secondModal.show();
-				});
+		firstModalElement.addEventListener("click", (event) => {
+			if (event.target.matches("#loansRequest")) {
+				console.log("click on loansRequestButton:", event.target);
+
+				firstModalElement.addEventListener(
+					"hidden.bs.modal",
+					function onModalHidden() {
+						// Удаление всех фонов модального окна
+						const backdrops = document.querySelectorAll(".modal-backdrop");
+						backdrops.forEach((backdrop) => backdrop.remove());
+
+						// Показываем второе модальное окно
+						secondModal.show();
+						console.log(
+							"Событие secondModal.show для второго модального окна вызывается."
+						);
+
+						// Удаляем обработчик события, чтобы он не сработал повторно
+						firstModalElement.removeEventListener(
+							"hidden.bs.modal",
+							onModalHidden
+						);
+					},
+					{ once: true }
+				);
+				console.log("firstModal перед hide", firstModal);
+				// Скрываем первое модальное окно
+				firstModal.hide();
 			}
 		});
 	}
