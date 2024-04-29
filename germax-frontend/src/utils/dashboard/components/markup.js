@@ -44,8 +44,8 @@ function getStudentNav() {
 		nouveau matériel</a>
 	<a class="nav-link" id="rentalHistoryLink" href="#">СДЕЛАТЬ!!История
 		аренды и статус бронирований</a>
-	<a role="button" class="nav-link btn btn-primary" data-bs-toggle="modal" data-bs-target="#fullScreenModal">
-		Открыть полный поиск
+	<a role="button" id="openFullScreenSearch" class="nav-link btn btn-primary">
+		Mes locations
 	</a>
 </div>
 `;

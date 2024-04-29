@@ -35,21 +35,104 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 });
 
-function initListeners() {
-	document.addEventListener("click", function (event) {
-		// Обработчик для клика по ссылке 'Mes locations'
-		console.log(event.target);
-		if (event.target.matches("#loans")) {
-			const myLoans = document.getElementById("myLoans");
-			if (myLoans) {
-				myLoans.innerHTML = returnClientLoans();
-				initializeSingleTab("#activeReservations");
-				initializeDropdowns();
-				initializeModals();
-			}
-		}
-	});
+// function initListeners() {
+// 	const modalPlace = document.getElementById("modalPlace");
+// 	const modalSupport = document.getElementById("modalSupport");
+// 	const modalRequestLoan = document.getElementById("modalRequestLoan");
+// 	const modalLoanForm = document.getElementById("modalLoanForm");
 
+// 	modalPlace.innerHTML = returnAdminNotificationsModal();
+// 	modalSupport.innerHTML = returnModalSupport();
+// 	modalRequestLoan.innerHTML = returnLoanRequestModal();
+// 	// Предполагаем, что returnLoanFormModal() - это ваша функция для генерации модального окна
+// 	modalLoanForm.innerHTML = returnLoanFormModal();
+
+// 	document.addEventListener("click", function (event) {
+// 		// Обработчик для клика по ссылке 'Mes locations'
+// 		console.log(event.target);
+// 		if (event.target.matches("#loans")) {
+// 			const myLoans = document.getElementById("myLoans");
+// 			if (myLoans) {
+// 				myLoans.innerHTML = returnClientLoans();
+// 				initializeSingleTab("#activeReservations");
+// 				initializeDropdowns();
+// 				initializeModals();
+// 			}
+// 		}
+// 	});
+
+// 	const firstModalElement = document.getElementById("fullScreenModal");
+// 	const secondModalElement = document.getElementById("loanFormModal");
+
+// 	if (firstModalElement && secondModalElement) {
+// 		const firstModal = new Modal(firstModalElement);
+// 		const secondModal = new Modal(secondModalElement); // Пересоздаем экземпляр для secondModal
+
+// 		console.log("firstModal and secondModal", firstModal, secondModal);
+// 		console.log("содержимое firstModalElement:",firstModalElement);
+
+// 		document.addEventListener("click", (event) => {
+// 			console.log("проверка клика",event.target)
+// 			if (event.target.matches("#loansRequest")) {
+// 				if (firstModal._isShown) {
+// 					console.log("Attempting to hide firstModal");
+// 					// Проверка, открыто ли модальное окно
+// 					firstModal.hide();
+// 				} else {
+// 					console.log("firstModal is not shown");
+// 				}
+
+// 				firstModalElement.addEventListener(
+// 					"hidden.bs.modal",
+// 					function onModalHidden() {
+// 						// Показываем второе модальное окно
+// 						secondModal.show();
+// 						console.log(
+// 							"Событие secondModal.show для второго модального окна вызывается."
+// 						);
+
+// 						// Удаляем обработчик события, чтобы он не сработал повторно
+// 						firstModalElement.removeEventListener(
+// 							"hidden.bs.modal",
+// 							onModalHidden
+// 						);
+// 					},
+// 					{ once: true }
+// 				);
+// 				console.log("firstModal перед hide", firstModal);
+// 			}
+// 		});
+// 	}
+
+// 	const settingsLink = document.getElementById("settings-link");
+// 	const settingsDropdownLink = document.getElementById(
+// 		"settings-dropdown-link"
+// 	);
+// 	const tabPlace = document.getElementById("tabPlace");
+
+// 	if (settingsLink === null) {
+// 		throw new Error("#settings-link not found");
+// 	}
+
+// 	if (settingsDropdownLink === null) {
+// 		throw new Error("#settings-dropdown-link not found");
+// 	}
+
+// 	if (tabPlace === null) {
+// 		throw new Error("#tabPlace not found");
+// 	}
+
+// 	// Обработчики для настроек
+// 	settingsLink.addEventListener("click", (e) => {
+// 		e.preventDefault();
+// 		activateSettingsTab();
+// 	});
+// 	settingsDropdownLink.addEventListener("click", (e) => {
+// 		e.preventDefault();
+// 		activateSettingsTab();
+// 	});
+// }
+function initListeners() {
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
@@ -58,74 +141,103 @@ function initListeners() {
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
-	// Предполагаем, что returnLoanFormModal() - это ваша функция для генерации модального окна
 	modalLoanForm.innerHTML = returnLoanFormModal();
 
 	const firstModalElement = document.getElementById("fullScreenModal");
 	const secondModalElement = document.getElementById("loanFormModal");
 
-	if (firstModalElement && secondModalElement) {
-		const firstModal = new Modal(firstModalElement);
-		const secondModal = new Modal(secondModalElement); // Пересоздаем экземпляр для secondModal
+	let firstModal, secondModal;
 
-		firstModalElement.addEventListener("click", (event) => {
-			if (event.target.matches("#loansRequest")) {
-				console.log("click on loansRequestButton:", event.target);
-
-				firstModalElement.addEventListener(
-					"hidden.bs.modal",
-					function onModalHidden() {
-						// Удаление всех фонов модального окна
-						const backdrops = document.querySelectorAll(".modal-backdrop");
-						backdrops.forEach((backdrop) => backdrop.remove());
-
-						// Показываем второе модальное окно
-						secondModal.show();
-						console.log(
-							"Событие secondModal.show для второго модального окна вызывается."
-						);
-
-						// Удаляем обработчик события, чтобы он не сработал повторно
-						firstModalElement.removeEventListener(
-							"hidden.bs.modal",
-							onModalHidden
-						);
-					},
-					{ once: true }
-				);
-				console.log("firstModal перед hide", firstModal);
-				// Скрываем первое модальное окно
-				firstModal.hide();
-			}
-		});
+	if (firstModalElement) {
+		firstModal = new Modal(firstModalElement);
+	} else {
+		console.error("fullScreenModal element not found");
 	}
 
-	const settingsLink = document.getElementById("settings-link");
-	const settingsDropdownLink = document.getElementById(
-		"settings-dropdown-link"
-	);
-	const tabPlace = document.getElementById("tabPlace");
-
-	if (settingsLink === null) {
-		throw new Error("#settings-link not found");
+	if (secondModalElement) {
+		secondModal = new Modal(secondModalElement);
+	} else {
+		console.error("loanFormModal element not found");
 	}
 
-	if (settingsDropdownLink === null) {
-		throw new Error("#settings-dropdown-link not found");
-	}
+	console.log(firstModal, secondModal);
 
-	if (tabPlace === null) {
-		throw new Error("#tabPlace not found");
-	}
+	document.addEventListener("click", function (event) {
+		const targetId = event.target.id;
 
-	// Обработчики для настроек
-	settingsLink.addEventListener("click", (e) => {
-		e.preventDefault();
-		activateSettingsTab();
-	});
-	settingsDropdownLink.addEventListener("click", (e) => {
-		e.preventDefault();
-		activateSettingsTab();
+		switch (targetId) {
+			case "openFullScreenSearch":
+				event.preventDefault();
+				event.stopPropagation();
+				console.log("Trying to open fullScreenModal");
+				console.log("fullScreenModal element:", firstModalElement);
+				console.log("fullScreenModal instance:", firstModal);
+				if (firstModalElement && firstModal) {
+					firstModal.show();
+				} else {
+					console.error(
+						"Cannot show the first modal - element or instance is missing."
+					);
+				}
+				break;
+			case "loans":
+				const myLoans = document.getElementById("myLoans");
+				if (myLoans) {
+					myLoans.innerHTML = returnClientLoans();
+					initializeSingleTab("#activeReservations");
+					initializeDropdowns();
+					initializeModals();
+				} else {
+					console.error("Element #myLoans not found.");
+				}
+				break;
+			case "loansRequest":
+				if (
+					firstModalElement &&
+					firstModal &&
+					typeof firstModal.hide === "function"
+				) {
+					firstModal.hide();
+					firstModalElement.addEventListener(
+						"hidden.bs.modal",
+						function onModalHidden() {
+							if (
+								secondModalElement &&
+								secondModal &&
+								typeof secondModal.show === "function"
+							) {
+								secondModal.show();
+							} else {
+								console.error(
+									"secondModal is not initialized or show is not a function"
+								);
+							}
+							firstModalElement.removeEventListener(
+								"hidden.bs.modal",
+								onModalHidden
+							);
+						},
+						{ once: true }
+					);
+				} else {
+					console.error(
+						"firstModal is not initialized or hide is not a function"
+					);
+				}
+				break;
+			case "settings-link":
+			case "settings-dropdown-link":
+				event.preventDefault();
+				if (typeof activateSettingsTab === "function") {
+					activateSettingsTab();
+				} else {
+					console.error("Function activateSettingsTab() is not defined.");
+				}
+				break;
+			default:
+				console.log(`No case for targetId: ${targetId}`);
+				break;
+		}
 	});
 }
 

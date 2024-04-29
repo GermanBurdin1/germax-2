@@ -202,8 +202,8 @@ function returnLoanRequestModal() {
 	<hr class="my-4">
 	<p>Ici, vous pouvez rapidement et facilement envoyer une demande de location de l'équipement nécessaire au gestionnaire de l'entrepôt.</p>
 	<!-- Button trigger modal -->
-	<a class="btn btn-primary btn-sm" id="loansRequest" href="#" data-bs-toggle="modal"
-		data-bs-target="#loanFormModal">Aller au formulaire</a>
+	<a class="btn btn-primary btn-sm" id="loansRequest" href="#"
+		>Aller au formulaire</a>
 			<!-- Здесь заканчивается ваш код -->
 		</div>
 		<div class="modal-footer">
