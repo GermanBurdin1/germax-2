@@ -134,6 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
 // 	});
 // }
 function initListeners() {
+	//для navbarDropdownMenuLink
+	initializeDropdown();
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
@@ -235,7 +237,6 @@ function initListeners() {
 				}
 				break;
 			case "navbarDropdownMenuLink":
-				initializeDropdown();
 				break;
 			default:
 				console.log(`No case for targetId: ${targetId}`);

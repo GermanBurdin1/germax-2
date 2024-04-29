@@ -39,12 +39,10 @@ function getStockmanNav() {
 function getStudentNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link" id="locationsLink" href="#">Profil</a>
-	<a class="nav-link active" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">My loans</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-request">Louer un
-		nouveau matériel</a>
+	<a class="nav-link active" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">Mes locations</a>
 	<a class="nav-link" id="rentalHistoryLink" href="#">СДЕЛАТЬ!!История
 		аренды и статус бронирований</a>
-	<a role="button" id="openFullScreenSearch" class="nav-link btn btn-primary">Mes locations
+	<a role="button" id="openFullScreenSearch" class="nav-link">Louer un nouveau matériel
 	</a>
 </div>
 `;
@@ -162,7 +160,7 @@ function getStockmanStudentTeacherHorizontalNav() {
 				</a>
 		</li>
 		<li class="nav-item dropdown" id="nav-item-dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" aria-haspopup="true" aria-expanded="false">
 				<i class="fa fa-user"></i>
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
