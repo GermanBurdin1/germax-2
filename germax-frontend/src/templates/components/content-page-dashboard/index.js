@@ -82,7 +82,8 @@ function initListeners() {
 	console.log(firstModal, secondModal, clientsHistoryModal);
 
 	document.addEventListener("click", function (event) {
-		const targetId = event.target.id;
+		const target = event.target.closest("a"); // Найдем ближайший элемент <a>
+    const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
 		const settingsTabContent = document.getElementById("tabPlace");
@@ -178,6 +179,7 @@ function initListeners() {
 				break;
 			case "settings-link":
 			case "settings-dropdown-link":
+				console.log("Clicked element ID:", targetId);
 				event.preventDefault();
 				hideActiveTabs();
 				if (typeof activateSettingsTab === "function") {
