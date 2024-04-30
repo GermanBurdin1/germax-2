@@ -7,9 +7,9 @@ function getAdminNav() {
 <a class="nav-link" id="adminReservationHistoryLink" href="/page-reservation-history">Historique des résérvations</a>
 <a class="nav-link" id="adminEquipmentManagementLink" href="/page-equipment-management">Gestion de l'équipement</a>
 <a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
-<a class="nav-link" id="adminReportsLink" href="/page-admin-reports">Faire un rapport</a>
-<a class="nav-link" id="adminFeedBackLink" href="/page-admin-feedback">Retours et remarques</a>
-<a class="nav-link" id="adminSettingsLink" href="/page-admin-settings">Réglages globales</a>
+<a class="nav-link" id="adminReportsLink">Faire un rapport</a>
+<a class="nav-link" id="adminFeedBackLink">Retours et remarques</a>
+<a class="nav-link" id="adminSettingsLink">Réglages globales</a>
 </div>`;
 }
 

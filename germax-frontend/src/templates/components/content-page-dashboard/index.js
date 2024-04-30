@@ -33,7 +33,11 @@ import {
 import Modal from "bootstrap/js/dist/modal";
 
 //imorts for admin
-import {returnAdminReportsModal, returnAdminFeedbackModal} from "../../../utils/dashboard/adminModals"
+import {
+	returnAdminReportsModal,
+	returnAdminFeedbackModal,
+	returnAdminSettingsModal,
+} from "../../../utils/dashboard/adminModals";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
@@ -54,13 +58,11 @@ function initListeners() {
 	const modalClientLoans = document.getElementById("modalClientLoans");
 	// контейнер модалки для админа
 
-
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
 	modalClientLoans.innerHTML = rentalClientDetails();
-
 
 	const firstModalElement = document.getElementById("fullScreenModal");
 	const secondModalElement = document.getElementById("loanFormModal");
@@ -94,8 +96,12 @@ function initListeners() {
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
 		const settingsTabContent = document.getElementById("tabPlace");
 		// контейнер для админа
-		const adminReportsModalContainer = document.getElementById("adminReportsModal");
-		const adminFeedBackContainer = document.getElementById("adminFeedBackModal");
+		const adminReportsModalContainer =
+			document.getElementById("adminReportsModal");
+		const adminFeedBackContainer =
+			document.getElementById("adminFeedBackModal");
+		const adminSettingsContainter =
+			document.getElementById("adminSettingsModal");
 
 		switch (targetId) {
 			// кейсы админа
@@ -105,17 +111,25 @@ function initListeners() {
 				const adminReportsModal = document.getElementById("adminReportModal");
 				const initializedAdminReportsModal = new Modal(adminReportsModal);
 				initializedAdminReportsModal.show();
-					break;
+				break;
 			case "adminFeedBackLink":
 				event.preventDefault();
 				adminFeedBackContainer.innerHTML = returnAdminFeedbackModal();
-				console.log(adminFeedBackContainer.innerHTML);
-				const adminFeedBackModal = document.getElementById("adminFeedbackModal");
-				console.log(adminFeedBackModal);
+				const adminFeedBackModal =
+					document.getElementById("adminFeedbackModal");
 				const initializedAdminFeedbackModal = new Modal(adminFeedBackModal);
 				console.log(initializedAdminFeedbackModal);
 				initializedAdminFeedbackModal.show();
-					break;
+				break;
+			case "adminSettingsLink":
+				event.preventDefault();
+				adminSettingsContainter.innerHTML = returnAdminSettingsModal();
+				const adminSettingsModal =
+					document.getElementById("adminSettingsModal");
+				const initializedAdminSettingsModal = new Modal(adminSettingsModal);
+				console.log(initializedAdminSettingsModal);
+				initializedAdminSettingsModal.show();
+				break;
 			case "openFullScreenSearch":
 				event.preventDefault();
 				event.stopPropagation();
