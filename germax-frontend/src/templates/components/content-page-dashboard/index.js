@@ -107,6 +107,7 @@ function initListeners() {
 			// кейсы админа
 			case "adminReportsLink":
 				event.preventDefault();
+				console.log("клик на reportslink");
 				adminReportsModalContainer.innerHTML = returnAdminReportsModal();
 				const adminReportsModal = document.getElementById("adminReportModal");
 				const initializedAdminReportsModal = new Modal(adminReportsModal);
@@ -123,7 +124,9 @@ function initListeners() {
 				break;
 			case "adminSettingsLink":
 				event.preventDefault();
+				console.log("привет");
 				adminSettingsContainter.innerHTML = returnAdminSettingsModal();
+				console.log(adminSettingsContainter);
 				const adminSettingsModal =
 					document.getElementById("adminSettingsModal");
 				const initializedAdminSettingsModal = new Modal(adminSettingsModal);

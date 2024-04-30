@@ -95,49 +95,49 @@ function returnAdminFeedbackModal() {
 
 function returnAdminSettingsModal() {
 	return `<!-- Модальное окно для настроек -->
-	<div class="modal fade show active" id="adminSettingsModal" tabindex="-1" aria-labelledby="adminSettingsModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-xl">
-					<div class="modal-content">
-							<div class="modal-header">
-									<h5 class="modal-title" id="adminSettingsModalLabel">Paramètres</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-							</div>
-							<div class="modal-body">
-									<form>
-											<h4>Paramètres de sécurité</h4>
-											<div class="form-group">
-													<label for="passwordPolicy">Politique de mot de passe</label>
-													<select class="form-control" id="passwordPolicy">
-															<option>Standard</option>
-															<option>Renforcée</option>
-													</select>
-											</div>
-											<div class="form-group">
-													<label for="autoLogout">Déconnexion automatique</label>
-													<select class="form-control" id="autoLogout">
-															<option>5 minutes</option>
-															<option>15 minutes</option>
-															<option>30 minutes</option>
-															<option>Jamais</option>
-													</select>
-											</div>
-											<h4>Configuration de l'interface</h4>
-											<div class="form-group">
-													<label for="themeSelect">Thème d'affichage</label>
-													<select class="form-control" id="themeSelect">
-															<option>Clair</option>
-															<option>Sombre</option>
-													</select>
-											</div>
-											<button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-									</form>
-							</div>
-							<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-							</div>
-					</div>
-			</div>
-	</div>
+	<!-- Модальное окно для настроек -->
+<div class="modal fade active show" id="adminSettingsModal" tabindex="-1" aria-labelledby="adminSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl"> <!-- modal-xl для большего размера модального окна -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminSettingsModalLabel">Paramètres</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма настроек -->
+                <form>
+                    <div class="mb-3">
+                        <label for="passwordPolicy" class="form-label">Politique de mot de passe</label>
+                        <select class="form-select" id="passwordPolicy">
+                            <option>Standard</option>
+                            <option>Renforcée</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="autoLogout" class="form-label">Déconnexion automatique</label>
+                        <select class="form-select" id="autoLogout">
+                            <option>5 minutes</option>
+                            <option>15 minutes</option>
+                            <option>30 minutes</option>
+                            <option>Jamais</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="themeSelect" class="form-label">Thème d'affichage</label>
+                        <select class="form-select" id="themeSelect">
+                            <option>Clair</option>
+                            <option>Sombre</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 	`;
 }
