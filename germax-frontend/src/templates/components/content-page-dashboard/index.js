@@ -33,7 +33,7 @@ import {
 import Modal from "bootstrap/js/dist/modal";
 
 //imorts for admin
-import {returnAdminReportsModal} from "../../../utils/dashboard/adminModals"
+import {returnAdminReportsModal, returnAdminFeedbackModal} from "../../../utils/dashboard/adminModals"
 
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
@@ -95,21 +95,27 @@ function initListeners() {
 		const settingsTabContent = document.getElementById("tabPlace");
 		// контейнер для админа
 		const adminReportsModalContainer = document.getElementById("adminReportsModal");
+		const adminFeedBackContainer = document.getElementById("adminFeedBackModal");
 
 		switch (targetId) {
 			// кейсы админа
 			case "adminReportsLink":
 				event.preventDefault();
-				console.log("в кейсе adminReportsLink");
-				hideActiveTabs();
 				adminReportsModalContainer.innerHTML = returnAdminReportsModal();
 				const adminReportsModal = document.getElementById("adminReportModal");
-				console.log(adminReportsModal);
 				const initializedAdminReportsModal = new Modal(adminReportsModal);
-				console.log("Initialized Modal:", initializedAdminReportsModal);
 				initializedAdminReportsModal.show();
 					break;
-
+			case "adminFeedBackLink":
+				event.preventDefault();
+				adminFeedBackContainer.innerHTML = returnAdminFeedbackModal();
+				console.log(adminFeedBackContainer.innerHTML);
+				const adminFeedBackModal = document.getElementById("adminFeedbackModal");
+				console.log(adminFeedBackModal);
+				const initializedAdminFeedbackModal = new Modal(adminFeedBackModal);
+				console.log(initializedAdminFeedbackModal);
+				initializedAdminFeedbackModal.show();
+					break;
 			case "openFullScreenSearch":
 				event.preventDefault();
 				event.stopPropagation();
