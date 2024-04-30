@@ -83,14 +83,13 @@ function initListeners() {
 
 	document.addEventListener("click", function (event) {
 		const targetId = event.target.id;
+		const myLoans = document.getElementById("myLoans");
+		const clientLoansHistory = document.getElementById("clientLoansHistory");
 
 		switch (targetId) {
 			case "openFullScreenSearch":
 				event.preventDefault();
 				event.stopPropagation();
-				console.log("Trying to open fullScreenModal");
-				console.log("fullScreenModal element:", firstModalElement);
-				console.log("fullScreenModal instance:", firstModal);
 				if (firstModalElement && firstModal) {
 					firstModal.show();
 				} else {
@@ -100,8 +99,14 @@ function initListeners() {
 				}
 				break;
 			case "loans":
-				const myLoans = document.getElementById("myLoans");
+				event.preventDefault();
+				// Скрытие истории аренды, если она отображается
+				if (clientLoansHistory) {
+					clientLoansHistory.style.display = "none";
+				}
+				// Проверка и отображение текущих аренд, даже если это первый клик
 				if (myLoans) {
+					myLoans.style.display = "block";
 					myLoans.innerHTML = returnClientLoans();
 					initializeSingleTab("#activeReservations");
 					initializeDropdowns();
@@ -112,10 +117,13 @@ function initListeners() {
 				break;
 			case "rentalHistoryLink":
 				event.preventDefault();
-				// Обновление контента
-				const clientLoansHistory =
-					document.getElementById("clientLoansHistory");
+				// Скрытие текущих аренд
+				if (myLoans) {
+					myLoans.style.display = "none";
+				}
+				// Отображение истории аренд, если она скрыта
 				if (clientLoansHistory) {
+					clientLoansHistory.style.display = "block";
 					clientLoansHistory.innerHTML = loansClientHistory();
 					// Привязка событий к новым ссылкам
 					document
