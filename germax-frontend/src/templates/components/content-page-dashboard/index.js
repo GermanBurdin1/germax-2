@@ -83,7 +83,7 @@ function initListeners() {
 
 	document.addEventListener("click", function (event) {
 		const target = event.target.closest("a"); // Найдем ближайший элемент <a>
-    const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
+		const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
 		const settingsTabContent = document.getElementById("tabPlace");
@@ -102,34 +102,29 @@ function initListeners() {
 				break;
 			case "loans":
 				event.preventDefault();
-				hideActiveTabs();
-				// Скрытие истории аренды, если она отображается
-				if (clientLoansHistory) {
-					clientLoansHistory.style.display = "none";
-				}
-				// Проверка и отображение текущих аренд, даже если это первый клик
-				if (myLoans) {
+				if (myLoans.dataset.visible === "true") {
+					myLoans.style.display = "none";
+					myLoans.dataset.visible = "false";
+				} else {
+					hideActiveTabs(myLoans);
 					myLoans.style.display = "block";
+					myLoans.dataset.visible = "true";
 					myLoans.innerHTML = returnClientLoans();
 					initializeSingleTab("#activeReservations");
 					initializeDropdowns();
 					initializeModals();
-				} else {
-					console.error("Element #myLoans not found.");
 				}
 				break;
 			case "rentalHistoryLink":
 				event.preventDefault();
-				hideActiveTabs();
-				// Скрытие текущих аренд
-				if (myLoans) {
-					myLoans.style.display = "none";
-				}
-				// Отображение истории аренд, если она скрыта
-				if (clientLoansHistory) {
+				if (clientLoansHistory.dataset.visible === "true") {
+					clientLoansHistory.style.display = "none";
+					clientLoansHistory.dataset.visible = "false";
+				} else {
+					hideActiveTabs(clientLoansHistory);
 					clientLoansHistory.style.display = "block";
+					clientLoansHistory.dataset.visible = "true";
 					clientLoansHistory.innerHTML = loansClientHistory();
-					// Привязка событий к новым ссылкам
 					document
 						.querySelectorAll("#clientLoansHistory .view-details")
 						.forEach((element) => {
@@ -138,8 +133,6 @@ function initListeners() {
 								clientsHistoryModal.show();
 							});
 						});
-				} else {
-					console.error("clientLoansHistory container not found.");
 				}
 				break;
 			case "loansRequest":
@@ -181,19 +174,14 @@ function initListeners() {
 			case "settings-dropdown-link":
 				console.log("Clicked element ID:", targetId);
 				event.preventDefault();
-				hideActiveTabs();
-				if (typeof activateSettingsTab === "function") {
-					if (
-						settingsTabContent.style.display === "none" ||
-						settingsTabContent.innerHTML === ""
-					) {
-						activateSettingsTab();
-						settingsTabContent.style.display = "block"; // Показать настройки
-					} else {
-						settingsTabContent.style.display = "none"; // Скрыть настройки
-					}
+				if (settingsTabContent.dataset.visible === "true") {
+					settingsTabContent.style.display = "none";
+					settingsTabContent.dataset.visible = "false";
 				} else {
-					console.error("Function activateSettingsTab() is not defined.");
+					hideActiveTabs(settingsTabContent);
+					settingsTabContent.style.display = "block";
+					settingsTabContent.dataset.visible = "true";
+					activateSettingsTab();
 				}
 				break;
 			case "navbarDropdownMenuLink":
@@ -205,20 +193,21 @@ function initListeners() {
 	});
 }
 
-function hideActiveTabs() {
-	const activeTabs = [document.getElementById("myLoans"), document.getElementById("clientLoansHistory"), document.getElementById("loanFormModal")]; // Список всех вкладок, которые могут быть открыты
-	activeTabs.forEach(tab => {
-			if (tab) {
-					tab.style.display = "none";
-			}
+function hideActiveTabs(except) {
+	const activeTabs = [
+		document.getElementById("myLoans"),
+		document.getElementById("clientLoansHistory"),
+		document.getElementById("tabPlace"),
+		document.getElementById("loanFormModal"),
+	];
+
+	activeTabs.forEach((tab) => {
+		if (tab !== except) {
+			tab.style.display = "none";
+			tab.dataset.visible = "false"; // Устанавливаем, что вкладка не видима
+		}
 	});
-
-	const settingsTabContent = document.getElementById("tabPlace");
-	if (settingsTabContent) {
-			settingsTabContent.style.display = "none";
-	}
 }
-
 
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
