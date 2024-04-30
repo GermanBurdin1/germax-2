@@ -101,6 +101,7 @@ function initListeners() {
 				break;
 			case "loans":
 				event.preventDefault();
+				hideActiveTabs();
 				// Скрытие истории аренды, если она отображается
 				if (clientLoansHistory) {
 					clientLoansHistory.style.display = "none";
@@ -118,6 +119,7 @@ function initListeners() {
 				break;
 			case "rentalHistoryLink":
 				event.preventDefault();
+				hideActiveTabs();
 				// Скрытие текущих аренд
 				if (myLoans) {
 					myLoans.style.display = "none";
@@ -140,6 +142,7 @@ function initListeners() {
 				}
 				break;
 			case "loansRequest":
+				hideActiveTabs();
 				if (
 					firstModalElement &&
 					firstModal &&
@@ -176,6 +179,7 @@ function initListeners() {
 			case "settings-link":
 			case "settings-dropdown-link":
 				event.preventDefault();
+				hideActiveTabs();
 				if (typeof activateSettingsTab === "function") {
 					if (
 						settingsTabContent.style.display === "none" ||
@@ -198,6 +202,21 @@ function initListeners() {
 		}
 	});
 }
+
+function hideActiveTabs() {
+	const activeTabs = [document.getElementById("myLoans"), document.getElementById("clientLoansHistory"), document.getElementById("loanFormModal")]; // Список всех вкладок, которые могут быть открыты
+	activeTabs.forEach(tab => {
+			if (tab) {
+					tab.style.display = "none";
+			}
+	});
+
+	const settingsTabContent = document.getElementById("tabPlace");
+	if (settingsTabContent) {
+			settingsTabContent.style.display = "none";
+	}
+}
+
 
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));

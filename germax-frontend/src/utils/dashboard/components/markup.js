@@ -149,7 +149,7 @@ function getStockmanStudentTeacherHorizontalNav() {
 			</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="#settings" id="settings-link">
+			<a class="nav-link" href="#" id="settings-link">
 				<i class="fa fa-cog" aria-hidden="true"></i>
 			</a>
 		</li>
