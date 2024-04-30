@@ -40,8 +40,7 @@ function getStudentNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link" id="locationsLink" href="#">Profil</a>
 	<a class="nav-link active" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">Mes locations</a>
-	<a class="nav-link" id="rentalHistoryLink" href="#">СДЕЛАТЬ!!История
-		аренды и статус бронирований</a>
+	<a class="nav-link" id="rentalHistoryLink" href="#">Historique de mes locations</a>
 	<a role="button" id="openFullScreenSearch" class="nav-link">Louer un nouveau matériel
 	</a>
 </div>
@@ -64,7 +63,7 @@ function getAdminHorizontalNav() {
 	return `<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
 	<ul class="navbar-nav align-items-center">
 		<li class="nav-item">
-			<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+			<a class="nav-link" href="#">
 				<i class="fa fa-bell">Notifications</i>
 				<span class="badge badge-danger">3</span>
 			</a>

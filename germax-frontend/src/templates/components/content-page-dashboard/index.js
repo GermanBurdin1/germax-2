@@ -25,6 +25,10 @@ import {
 	returnLoanRequestModal,
 	returnLoanFormModal,
 } from "../../../utils/dashboard/loans";
+import {
+	loansClientHistory,
+	rentalClientDetails,
+} from "../../../utils/dashboard/clientHistory";
 import Modal from "bootstrap/js/dist/modal";
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -36,103 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 });
 
-// function initListeners() {
-// 	const modalPlace = document.getElementById("modalPlace");
-// 	const modalSupport = document.getElementById("modalSupport");
-// 	const modalRequestLoan = document.getElementById("modalRequestLoan");
-// 	const modalLoanForm = document.getElementById("modalLoanForm");
-
-// 	modalPlace.innerHTML = returnAdminNotificationsModal();
-// 	modalSupport.innerHTML = returnModalSupport();
-// 	modalRequestLoan.innerHTML = returnLoanRequestModal();
-// 	// Предполагаем, что returnLoanFormModal() - это ваша функция для генерации модального окна
-// 	modalLoanForm.innerHTML = returnLoanFormModal();
-
-// 	document.addEventListener("click", function (event) {
-// 		// Обработчик для клика по ссылке 'Mes locations'
-// 		console.log(event.target);
-// 		if (event.target.matches("#loans")) {
-// 			const myLoans = document.getElementById("myLoans");
-// 			if (myLoans) {
-// 				myLoans.innerHTML = returnClientLoans();
-// 				initializeSingleTab("#activeReservations");
-// 				initializeDropdowns();
-// 				initializeModals();
-// 			}
-// 		}
-// 	});
-
-// 	const firstModalElement = document.getElementById("fullScreenModal");
-// 	const secondModalElement = document.getElementById("loanFormModal");
-
-// 	if (firstModalElement && secondModalElement) {
-// 		const firstModal = new Modal(firstModalElement);
-// 		const secondModal = new Modal(secondModalElement); // Пересоздаем экземпляр для secondModal
-
-// 		console.log("firstModal and secondModal", firstModal, secondModal);
-// 		console.log("содержимое firstModalElement:",firstModalElement);
-
-// 		document.addEventListener("click", (event) => {
-// 			console.log("проверка клика",event.target)
-// 			if (event.target.matches("#loansRequest")) {
-// 				if (firstModal._isShown) {
-// 					console.log("Attempting to hide firstModal");
-// 					// Проверка, открыто ли модальное окно
-// 					firstModal.hide();
-// 				} else {
-// 					console.log("firstModal is not shown");
-// 				}
-
-// 				firstModalElement.addEventListener(
-// 					"hidden.bs.modal",
-// 					function onModalHidden() {
-// 						// Показываем второе модальное окно
-// 						secondModal.show();
-// 						console.log(
-// 							"Событие secondModal.show для второго модального окна вызывается."
-// 						);
-
-// 						// Удаляем обработчик события, чтобы он не сработал повторно
-// 						firstModalElement.removeEventListener(
-// 							"hidden.bs.modal",
-// 							onModalHidden
-// 						);
-// 					},
-// 					{ once: true }
-// 				);
-// 				console.log("firstModal перед hide", firstModal);
-// 			}
-// 		});
-// 	}
-
-// 	const settingsLink = document.getElementById("settings-link");
-// 	const settingsDropdownLink = document.getElementById(
-// 		"settings-dropdown-link"
-// 	);
-// 	const tabPlace = document.getElementById("tabPlace");
-
-// 	if (settingsLink === null) {
-// 		throw new Error("#settings-link not found");
-// 	}
-
-// 	if (settingsDropdownLink === null) {
-// 		throw new Error("#settings-dropdown-link not found");
-// 	}
-
-// 	if (tabPlace === null) {
-// 		throw new Error("#tabPlace not found");
-// 	}
-
-// 	// Обработчики для настроек
-// 	settingsLink.addEventListener("click", (e) => {
-// 		e.preventDefault();
-// 		activateSettingsTab();
-// 	});
-// 	settingsDropdownLink.addEventListener("click", (e) => {
-// 		e.preventDefault();
-// 		activateSettingsTab();
-// 	});
-// }
 function initListeners() {
 	//для navbarDropdownMenuLink
 	initializeDropdown();
@@ -140,16 +47,19 @@ function initListeners() {
 	const modalSupport = document.getElementById("modalSupport");
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
+	const modalClientLoans = document.getElementById("modalClientLoans");
 
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
+	modalClientLoans.innerHTML = rentalClientDetails();
 
 	const firstModalElement = document.getElementById("fullScreenModal");
 	const secondModalElement = document.getElementById("loanFormModal");
+	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
 
-	let firstModal, secondModal;
+	let firstModal, secondModal, clientsHistoryModal;
 
 	if (firstModalElement) {
 		firstModal = new Modal(firstModalElement);
@@ -163,7 +73,13 @@ function initListeners() {
 		console.error("loanFormModal element not found");
 	}
 
-	console.log(firstModal, secondModal);
+	if (clientLoansHistoryModal) {
+		clientsHistoryModal = new Modal(clientLoansHistoryModal);
+	} else {
+		console.error("loanFormModal element not found");
+	}
+
+	console.log(firstModal, secondModal, clientsHistoryModal);
 
 	document.addEventListener("click", function (event) {
 		const targetId = event.target.id;
@@ -192,6 +108,26 @@ function initListeners() {
 					initializeModals();
 				} else {
 					console.error("Element #myLoans not found.");
+				}
+				break;
+			case "rentalHistoryLink":
+				event.preventDefault();
+				// Обновление контента
+				const clientLoansHistory =
+					document.getElementById("clientLoansHistory");
+				if (clientLoansHistory) {
+					clientLoansHistory.innerHTML = loansClientHistory();
+					// Привязка событий к новым ссылкам
+					document
+						.querySelectorAll("#clientLoansHistory .view-details")
+						.forEach((element) => {
+							element.addEventListener("click", function (e) {
+								e.preventDefault();
+								clientsHistoryModal.show();
+							});
+						});
+				} else {
+					console.error("clientLoansHistory container not found.");
 				}
 				break;
 			case "loansRequest":

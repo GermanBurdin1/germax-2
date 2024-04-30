@@ -122,6 +122,7 @@ function initializeDropdown() {
 		console.log("был клик");
 		const dropdownInstance = new Dropdown(dropdownToggleEl);
 		dropdownToggleEl.addEventListener("click", function (event) {
+			console.log("dropdownInstance",dropdownInstance);
 			event.preventDefault();
 			if (dropdownInstance._element.classList.contains("show")) {
 				dropdownInstance.hide();
