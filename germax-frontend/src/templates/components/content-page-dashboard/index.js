@@ -29,7 +29,11 @@ import {
 	loansClientHistory,
 	rentalClientDetails,
 } from "../../../utils/dashboard/clientHistory";
+
 import Modal from "bootstrap/js/dist/modal";
+
+//imorts for admin
+import {returnAdminReportsModal} from "../../../utils/dashboard/adminModals"
 
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
@@ -48,12 +52,15 @@ function initListeners() {
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
+	// контейнер модалки для админа
+
 
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
 	modalClientLoans.innerHTML = rentalClientDetails();
+
 
 	const firstModalElement = document.getElementById("fullScreenModal");
 	const secondModalElement = document.getElementById("loanFormModal");
@@ -79,16 +86,30 @@ function initListeners() {
 		console.error("loanFormModal element not found");
 	}
 
-	console.log(firstModal, secondModal, clientsHistoryModal);
-
 	document.addEventListener("click", function (event) {
 		const target = event.target.closest("a"); // Найдем ближайший элемент <a>
 		const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
+		console.log("получил targetId", targetId);
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
 		const settingsTabContent = document.getElementById("tabPlace");
+		// контейнер для админа
+		const adminReportsModalContainer = document.getElementById("adminReportsModal");
 
 		switch (targetId) {
+			// кейсы админа
+			case "adminReportsLink":
+				event.preventDefault();
+				console.log("в кейсе adminReportsLink");
+				hideActiveTabs();
+				adminReportsModalContainer.innerHTML = returnAdminReportsModal();
+				const adminReportsModal = document.getElementById("adminReportModal");
+				console.log(adminReportsModal);
+				const initializedAdminReportsModal = new Modal(adminReportsModal);
+				console.log("Initialized Modal:", initializedAdminReportsModal);
+				initializedAdminReportsModal.show();
+					break;
+
 			case "openFullScreenSearch":
 				event.preventDefault();
 				event.stopPropagation();

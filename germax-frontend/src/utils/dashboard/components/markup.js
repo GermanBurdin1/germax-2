@@ -3,13 +3,13 @@ function getAdminNav() {
 	return `
 	<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
-<a class="nav-link" id="locationsLink" href="/page-client-management">Gestion des utilisateurs</a>
-<a class="nav-link" id="emprunteursLink" href="/page-reservation-history">Historique des résérvations</a>
-<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Gestion de l'équipement</a>
-<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
-<a class="nav-link" id="indicateursLink" href="/page-admin-reports">Faire un rapport</a>
-<a class="nav-link" id="indicateursLink" href="/page-admin-feedback">Retours et remarques</a>
-<a class="nav-link" id="indicateursLink" href="/page-admin-settings">Réglages globales</a>
+<a class="nav-link" id="adminClientManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
+<a class="nav-link" id="adminReservationHistoryLink" href="/page-reservation-history">Historique des résérvations</a>
+<a class="nav-link" id="adminEquipmentManagementLink" href="/page-equipment-management">Gestion de l'équipement</a>
+<a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
+<a class="nav-link" id="adminReportsLink" href="/page-admin-reports">Faire un rapport</a>
+<a class="nav-link" id="adminFeedBackLink" href="/page-admin-feedback">Retours et remarques</a>
+<a class="nav-link" id="adminSettingsLink" href="/page-admin-settings">Réglages globales</a>
 </div>`;
 }
 
