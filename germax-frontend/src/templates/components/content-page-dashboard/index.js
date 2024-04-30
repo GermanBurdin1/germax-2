@@ -85,6 +85,7 @@ function initListeners() {
 		const targetId = event.target.id;
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
+		const settingsTabContent = document.getElementById("tabPlace");
 
 		switch (targetId) {
 			case "openFullScreenSearch":
@@ -174,8 +175,17 @@ function initListeners() {
 				break;
 			case "settings-link":
 			case "settings-dropdown-link":
+				event.preventDefault();
 				if (typeof activateSettingsTab === "function") {
-					activateSettingsTab();
+					if (
+						settingsTabContent.style.display === "none" ||
+						settingsTabContent.innerHTML === ""
+					) {
+						activateSettingsTab();
+						settingsTabContent.style.display = "block"; // Показать настройки
+					} else {
+						settingsTabContent.style.display = "none"; // Скрыть настройки
+					}
 				} else {
 					console.error("Function activateSettingsTab() is not defined.");
 				}
