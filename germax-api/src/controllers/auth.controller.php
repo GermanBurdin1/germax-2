@@ -1,14 +1,7 @@
 <?php
 
-// AuthController.php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php';
-
-// AuthService.php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
-
-// AuthService.php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
-
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/error.php');
 
 class AuthController

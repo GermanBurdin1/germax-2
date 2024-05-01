@@ -6,18 +6,15 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, *");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/auth.controller.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/goods.controller.php';
 
 
-$authController = new AuthController();
+$goodsController = new GoodsController();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$_POST = json_decode(file_get_contents("php://input"), true);
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
-	$email = $_POST['email'] ?? null;
-	$password = $_POST['password'] ?? null;
-
-	$authController->login($email, $password);
+	$goodsController->getAll();
+	// Теперь метод login сам отправляет JSON и завершает выполнение скрипта
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

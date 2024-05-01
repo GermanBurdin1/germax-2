@@ -76,7 +76,7 @@ class AuthService
 			$typePermission
 		);
 
-		return $createdUser;
+		return renderSuccessAndExit(['User registered'], 200, $createdUser);
 	}
 
 	public function me($token)

@@ -23,7 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	// Вызываем метод register и передаем ему необходимые параметры
 	$authController->register($lastname, $firstname, $phone, $email, $password, $type);
-
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
