@@ -101,7 +101,7 @@ function initListeners() {
 		const adminFeedBackContainer =
 			document.getElementById("adminFeedBackModal");
 		const adminSettingsContainter =
-			document.getElementById("adminSettingsModal");
+			document.getElementById("adminContainerSettingsModal");
 
 		switch (targetId) {
 			// кейсы админа

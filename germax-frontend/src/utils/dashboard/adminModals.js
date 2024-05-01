@@ -112,31 +112,31 @@ function returnAdminSettingsModal() {
                             <option>Standard</option>
                             <option>Renforcée</option>
                         </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="autoLogout" class="form-label">Déconnexion automatique</label>
-                        <select class="form-select" id="autoLogout">
-                            <option>5 minutes</option>
-                            <option>15 minutes</option>
-                            <option>30 minutes</option>
-                            <option>Jamais</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="themeSelect" class="form-label">Thème d'affichage</label>
-                        <select class="form-select" id="themeSelect">
-                            <option>Clair</option>
-                            <option>Sombre</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
+					</div>
+					<div class="mb-3">
+					<label for="autoLogout" class="form-label">Déconnexion automatique</label>
+					<select class="form-select" id="autoLogout">
+							<option>5 minutes</option>
+							<option>15 minutes</option>
+							<option>30 minutes</option>
+							<option>Jamais</option>
+					</select>
+			</div>
+			<div class="mb-3">
+					<label for="themeSelect" class="form-label">Thème d'affichage</label>
+					<select class="form-select" id="themeSelect">
+							<option>Clair</option>
+							<option>Sombre</option>
+					</select>
+			</div>
+			<button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+</div>
+</div>
+</div>
 </div>
 
 	`;
