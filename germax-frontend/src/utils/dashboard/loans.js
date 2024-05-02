@@ -152,66 +152,54 @@ function returnClientLoans() {
 
 function returnLoanRequestModal() {
 	return `<div class="modal fade" id="fullScreenModal" tabindex="-1" aria-labelledby="fullScreenModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-fullscreen">
-	<div class="modal-content">
-		<div class="modal-header">
-			<h5 class="modal-title" id="fullScreenModalLabel">Поиск и Фильтрация Оборудования</h5>
-			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		</div>
-		<div class="modal-body">
-		<div class="jumbotron">
-		<div class="input-group mb-3">
-			<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
-			<div class="input-group-append">
-				<button class="btn btn-outline-secondary" type="button" id="search-button">Rechercher</button>
-			</div>
-		</div>
-		<div class="container-fluid">
-			<div class="row">
-				<div id="type-filter" class="col-md-3">
-					<div class="container-fluid">
-						<div class="row">
-							<div id="type-filter" class="col-md-9">
-								<div class="list-group">
-									<a href="#" class="list-group-item list-group-item-action active" data-type="laptop">Ordinateurs portables</a>
-									<a href="#" class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans
-										d'ordinateurs</a>
-									<a href="#" class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
-									<a href="#" class="list-group-item list-group-item-action" data-type="accessory">Accessoires</a>
-									<a href="#" class="list-group-item list-group-item-action" data-type="tablet">Tablettes</a>
-									<a href="#" class="list-group-item list-group-item-action" data-type="VR_headset">Casque VR</a>
-								</div>
-							</div>
-							<div id="equipment-list" class="col-md-9">
-								<!-- Les unités du matériel apparaîtront ici -->
-							</div>
-						</div>
+	<div class="modal-dialog modal-fullscreen">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="fullScreenModalLabel">Поиск и Фильтрация Оборудования</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-				</div>
-				<div id="equipment-list" class="col-md-9">
-					<!-- Сюда будут загружаться результаты -->
-				</div>
+					<div class="modal-body">
+							<div class="jumbotron">
+									<div class="input-group mb-3">
+											<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
+											<div class="input-group-append">
+													<button class="btn btn-outline-secondary" type="button" id="search-button">Rechercher</button>
+											</div>
+									</div>
+									<div class="container-fluid">
+											<div class="row">
+													<div class="col-md-3">
+															<div class="list-group" id="type-filter">
+																	<a href="#" class="list-group-item list-group-item-action active" data-type="laptop">Ordinateurs portables</a>
+																	<a href="#" class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+																	<a href="#" class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
+																	<a href="#" class="list-group-item list-group-item-action" data-type="accessory">Accessoires</a>
+																	<a href="#" class="list-group-item list-group-item-action" data-type="tablet">Tablettes</a>
+																	<a href="#" class="list-group-item list-group-item-action" data-type="VR_headset">Casque VR</a>
+															</div>
+													</div>
+													<div class="col-md-9">
+															<div id="equipment-list">
+																	<!-- Сюда будут загружаться результаты -->
+															</div>
+													</div>
+											</div>
+									</div>
+							</div>
+							<div class="jumbotron">
+									<p class="lead">Vous n'avez pas trouvé ce dont vous avez besoin ?</p>
+									<hr class="my-4">
+									<p>Ici, vous pouvez rapidement et facilement envoyer une demande de location de l'équipement nécessaire au gestionnaire de l'entrepôt.</p>
+									<a class="btn btn-primary btn-sm" id="loansRequest" href="#">Aller au formulaire</a>
+							</div>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+					</div>
 			</div>
-			<div class="col-md-12 text-center">
-				<button id="load-more" class="btn btn-primary mt-3">Charger plus</button>
-			</div>
-		</div>
-	</div>
-			<div class="jumbotron">
-	<p class="lead">Vous n'avez pas trouvé ce dont vous avez besoin ?</p>
-	<hr class="my-4">
-	<p>Ici, vous pouvez rapidement et facilement envoyer une demande de location de l'équipement nécessaire au gestionnaire de l'entrepôt.</p>
-	<!-- Button trigger modal -->
-	<a class="btn btn-primary btn-sm" id="loansRequest" href="#"
-		>Aller au formulaire</a>
-			<!-- Здесь заканчивается ваш код -->
-		</div>
-		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-		</div>
 	</div>
 </div>
-</div>`;
+`;
 }
 
 function returnLoanFormModal() {

@@ -5,23 +5,20 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/is-json-content-type.php';
 
 function renderErrorAndExit($errorsText, $errorCode = 500, $data = [])
 {
-	// Формируем массив с данными об ошибке
-	$errorData = [
-		'success' => false,
-		'error' => [...$errorsText],
-		'data' => $data
-	];
+    // Преобразуем строку в массив, если $errorsText не массив
+    $errorsText = is_array($errorsText) ? $errorsText : [$errorsText];
 
-	// Проверяем, установлен ли уже заголовок Content-Type: application/json
-	if (isJsonContentType()) header('Content-Type: application/json');
+    $errorData = [
+        'success' => false,
+        'error' => $errorsText, // Теперь здесь точно будет массив
+        'data' => $data
+    ];
 
-	http_response_code($errorCode);
-
-	// Выводим JSON с данными об ошибке
-	echo json_encode($errorData);
-
-	// Прекращаем выполнение скрипта
-	exit;
+    header('Content-Type: application/json');
+    http_response_code($errorCode);
+    echo json_encode($errorData);
+    exit;
 }
+
 
 ?>

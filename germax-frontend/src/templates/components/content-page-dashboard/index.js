@@ -39,6 +39,8 @@ import {
 	returnAdminSettingsModal,
 } from "../../../utils/dashboard/adminModals";
 
+import { setupCategoryFilterEventListener } from "../../../utils/dashboard/data/student/booking";
+
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
 
@@ -64,14 +66,14 @@ function initListeners() {
 	modalLoanForm.innerHTML = returnLoanFormModal();
 	modalClientLoans.innerHTML = rentalClientDetails();
 
-	const firstModalElement = document.getElementById("fullScreenModal");
+	const bookEquipmentModalElement = document.getElementById("fullScreenModal");
 	const secondModalElement = document.getElementById("loanFormModal");
 	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
 
-	let firstModal, secondModal, clientsHistoryModal;
+	let bookEquipmentModal, secondModal, clientsHistoryModal;
 
-	if (firstModalElement) {
-		firstModal = new Modal(firstModalElement);
+	if (bookEquipmentModalElement) {
+		bookEquipmentModal = new Modal(bookEquipmentModalElement);
 	} else {
 		console.error("fullScreenModal element not found");
 	}
@@ -136,8 +138,8 @@ function initListeners() {
 			case "openFullScreenSearch":
 				event.preventDefault();
 				event.stopPropagation();
-				if (firstModalElement && firstModal) {
-					firstModal.show();
+				if (bookEquipmentModalElement && bookEquipmentModal) {
+					bookEquipmentModal.show();
 				} else {
 					console.error(
 						"Cannot show the first modal - element or instance is missing."
@@ -182,12 +184,12 @@ function initListeners() {
 			case "loansRequest":
 				hideActiveTabs();
 				if (
-					firstModalElement &&
-					firstModal &&
-					typeof firstModal.hide === "function"
+					bookEquipmentModalElement &&
+					bookEquipmentModal &&
+					typeof bookEquipmentModal.hide === "function"
 				) {
-					firstModal.hide();
-					firstModalElement.addEventListener(
+					bookEquipmentModal.hide();
+					bookEquipmentModalElement.addEventListener(
 						"hidden.bs.modal",
 						function onModalHidden() {
 							if (
@@ -201,7 +203,7 @@ function initListeners() {
 									"secondModal is not initialized or show is not a function"
 								);
 							}
-							firstModalElement.removeEventListener(
+							bookEquipmentModalElement.removeEventListener(
 								"hidden.bs.modal",
 								onModalHidden
 							);
@@ -210,7 +212,7 @@ function initListeners() {
 					);
 				} else {
 					console.error(
-						"firstModal is not initialized or hide is not a function"
+						"bookEquipmentModal is not initialized or hide is not a function"
 					);
 				}
 				break;
@@ -284,6 +286,8 @@ function fetchAuthUser(url) {
 function renderDashboard(responseData) {
 	adjustUIBasedOnUserType(responseData.data.name_permission);
 	initListeners();
+	// фильтрация оборудования studentsAndTeacher
+	setupCategoryFilterEventListener();
 }
 
 function adjustUIBasedOnUserType(userType) {

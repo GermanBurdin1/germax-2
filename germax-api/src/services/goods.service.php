@@ -4,17 +4,21 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/error.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/validate.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql-requests.php');
 
 class GoodsService
 {
 	private $pdo;
+	private $sqlRequests;
 
 	public function __construct()
 	{
 		$this->pdo = (new Database())->connect();
+		$this->sqlRequests = new SqlRequests();
 	}
 
-	public function getAll() {
+	public function getAll()
+	{
 		$stmt = $this->pdo->prepare("
 			SELECT
 				good.id_good,
@@ -43,40 +47,101 @@ class GoodsService
 		$stmt->execute();
 
 		$goods = $stmt->fetchAll();
-		$formatedGoods = array_map(function($good) {
+		$formatedGoods = array_map(function ($good) {
 			return $this->formatGood($good);
 		}, $goods);
 
 		return renderSuccessAndExit(['User found'], 200, $formatedGoods);
 	}
 
-	public function getAllByModelName($modelName) {
+	public function getFirstModelName($modelName)
+	{
+		$sql = $this->sqlRequests->returnRequestForGetFirstModelByName();
 
+		$stmt = $this->pdo->prepare($sql);
+
+		$modelNameWithWildcard = "%" . $modelName . "%";
+		$stmt->bindParam(':modelName', $modelNameWithWildcard);
+
+		$stmt->execute();
+
+		$model = $stmt->fetch();
+
+		if ($model) {
+			return $model;
+		} else {
+			return null;
+		}
 	}
 
-	private function formatGood($good) {
-		return [
-			"id" => $good["id_good"],
-			"serial_number" => $good["serial_number"],
-			"serial_number" => $good["id_good"],
+	public function getLaptops()
+	{
+		$sql = $this->sqlRequests->returnRequestForGetLaptopsByCategories();
+		return $this->executeQuery($sql);
+	}
+
+	public function getSmartphones()
+	{
+		$sql = $this->sqlRequests->returnRequestForGetSmartphonesByCategories();
+		return $this->executeQuery($sql);
+	}
+
+	public function getTablets()
+	{
+		$sql = $this->sqlRequests->returnRequestForGetTabletsByCategories();
+		return $this->executeQuery($sql);
+	}
+
+	public function getVRHeadsets()
+	{
+		$sql = $this->sqlRequests->returnRequestForGetVR_headsetsByCategories();
+		return $this->executeQuery($sql);
+	}
+
+	private function executeQuery($sql)
+	{
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute();
+		$results = $stmt->fetchAll();
+
+		if ($results) {
+			$formattedResults = array_map([$this, 'formatGood'], $results);
+			return renderSuccessAndExit(['Items found'], 200, $formattedResults);
+		} else {
+			return renderErrorAndExit('No items found', 404);
+		}
+	}
+
+	private function formatGood($good)
+	{
+		$formattedGood = [
+			"id" => isset($good["id_good"]) ? $good["id_good"] : null,
+			"serial_number" => isset($good["serial_number"]) ? $good["serial_number"] : null,
 			"model" => [
-				"id" => $good["id_model"],
-				"name" => $good["model_name"],
-				"description" => $good["model_description"],
-				"photo" => $good["model_photo"],
+				"id" => isset($good["id_model"]) ? $good["id_model"] : null,
+				"name" => isset($good["model_name"]) ? $good["model_name"] : null,
+				"description" => isset($good["model_description"]) ? $good["model_description"] : null,
+				"photo" => isset($good["model_photo"]) ? $good["model_photo"] : null,
 				"type" => [
-					"id" => $good["model_id_type"],
-					"name" => $good["model_type_name"]
+					"id" => isset($good["model_id_type"]) ? $good["model_id_type"] : null,
+					"name" => isset($good["model_type_name"]) ? $good["model_type_name"] : null
 				],
 				"brand" => [
-					"id" => $good["model_id_brand"],
-					"name" => $good["model_brand_name"]
+					"id" => isset($good["model_id_brand"]) ? $good["model_id_brand"] : null,
+					"name" => isset($good["model_brand_name"]) ? $good["model_brand_name"] : null
 				]
 			],
 			"status" => [
-				"id" => $good["id_status"],
-				"name" => $good["status_name"]
+				"id" => isset($good["id_status"]) ? $good["id_status"] : null,
+				"name" => isset($good["status_name"]) ? $good["status_name"] : null
 			],
 		];
+
+		// Убираем пустые поля, если они не содержат данных
+		array_walk_recursive($formattedGood, function (&$item, $key) {
+			$item = $item === null ? 'Unknown' : $item;
+		});
+
+		return $formattedGood;
 	}
 }
