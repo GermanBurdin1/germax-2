@@ -39,7 +39,7 @@ import {
 	returnAdminSettingsModal,
 } from "../../../utils/dashboard/adminModals";
 
-import { setupCategoryFilterEventListener, setupModelSearchEventListener } from "../../../utils/dashboard/data/student/booking";
+import { setupCategoryFilterEventListener, setupModelSearchEventListener, setupBrandFilterEventListener } from "../../../utils/dashboard/data/student/booking";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
@@ -289,6 +289,7 @@ function renderDashboard(responseData) {
 	// фильтрация оборудования, поиск для studentsAndTeacher
 	setupCategoryFilterEventListener();
 	setupModelSearchEventListener();
+	setupBrandFilterEventListener();
 }
 
 function adjustUIBasedOnUserType(userType) {
