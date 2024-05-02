@@ -27,7 +27,7 @@ class GoodsController
 		}
 
 		$modelName = $_GET['modelName'];
-		$model = $this->goodsService->getFirstModelName($modelName);
+		$model = $this->goodsService->getModelsByName($modelName);
 
 		// Проверка, была ли модель найдена
 		if ($model) {

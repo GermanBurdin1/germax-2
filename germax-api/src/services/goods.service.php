@@ -54,25 +54,27 @@ class GoodsService
 		return renderSuccessAndExit(['User found'], 200, $formatedGoods);
 	}
 
-	public function getFirstModelName($modelName)
+	public function getModelsByName($modelName)
 	{
-		$sql = $this->sqlRequests->returnRequestForGetFirstModelByName();
-
-		$stmt = $this->pdo->prepare($sql);
+		if (!isset($modelName)) {
+			return renderErrorAndExit('Model name is required', 400);
+		}
 
 		$modelNameWithWildcard = "%" . $modelName . "%";
+		$sql = $this->sqlRequests->returnRequestForGetModelByName();
+		$stmt = $this->pdo->prepare($sql);
 		$stmt->bindParam(':modelName', $modelNameWithWildcard);
-
 		$stmt->execute();
 
-		$model = $stmt->fetch();
+		$models = $stmt->fetchAll();
 
-		if ($model) {
-			return $model;
+		if ($models) {
+			return renderSuccessAndExit(['Models found'], 200, $models);
 		} else {
-			return null;
+			return renderErrorAndExit('No models found', 404);
 		}
 	}
+
 
 	public function getLaptops()
 	{

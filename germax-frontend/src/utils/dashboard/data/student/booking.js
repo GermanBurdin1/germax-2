@@ -25,6 +25,42 @@ function setupCategoryFilterEventListener() {
 	}
 }
 
+async function setupModelSearchEventListener() {
+	const searchButton = document.getElementById("search-button");
+	const modelSearchInput = document.getElementById("model-search");
+	const equipmentList = document.getElementById("equipment-list");
+
+	console.log("Model search event listener setup.");
+
+	if (searchButton && modelSearchInput) {
+			searchButton.addEventListener("click", async () => {
+					const modelName = modelSearchInput.value.trim();
+					if (modelName) {
+							console.log(`Fetching data for model: ${modelName}`);
+							try {
+									const response = await fetch(`http://germax-api/goods?modelName=${encodeURIComponent(modelName)}`);
+									if (!response.ok) {
+											throw new Error(`HTTP status ${response.status}`);
+									}
+									const data = await response.json();
+									if (data && data.success) {
+											displayModelData(data.data);
+									} else {
+											equipmentList.innerHTML = '<p>Модель не найдена.</p>';
+									}
+							} catch (error) {
+									console.error("Error loading model data: ", error);
+									equipmentList.innerHTML = `<p>Ошибка при загрузке данных: ${error.message}</p>`;
+							}
+					} else {
+							equipmentList.innerHTML = '<p>Введите название модели.</p>';
+					}
+			});
+	} else {
+			console.error("Search button or model search input not found");
+	}
+}
+
 
 function displayEquipment(data) {
 	const equipmentList = document.getElementById("equipment-list");
@@ -40,4 +76,26 @@ function displayEquipment(data) {
 	});
 }
 
-export { setupCategoryFilterEventListener };
+function displayModelData(models) {
+	const equipmentList = document.getElementById("equipment-list");
+	equipmentList.innerHTML = ''; // Очистка списка оборудования перед отображением новых данных
+	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
+
+	models.forEach(model => {
+			if (!seenModels.has(model.model_name)) {
+					seenModels.add(model.model_name); // Добавляем имя модели в Set
+					const modelElement = document.createElement('div');
+					modelElement.className = 'model-details';
+					modelElement.innerHTML = `
+							<h3>${model.model_name}</h3>
+							<p>${model.model_description}</p>
+							<img src="${model.model_photo || 'default-image.png'}" alt="${model.model_name}" style="width: 100%;">
+					`;
+					equipmentList.appendChild(modelElement);
+			}
+	});
+}
+
+
+
+export { setupCategoryFilterEventListener, setupModelSearchEventListener };

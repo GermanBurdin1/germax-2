@@ -1,7 +1,7 @@
 <?php
 class sqlRequests
 {
-	function returnRequestForGetFirstModelByName()
+	function returnRequestForGetModelByName()
 	{
 		return "
 		SELECT
@@ -26,8 +26,7 @@ class sqlRequests
 			brand ON model.id_brand = brand.id_brand
 	WHERE
 			statu.name = 'available'
-			AND model.name LIKE :modelName
-	LIMIT 1;
+			AND model.name LIKE :modelName;
 	";
 	}
 
