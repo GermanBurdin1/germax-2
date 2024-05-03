@@ -1,3 +1,5 @@
+import Modal from "bootstrap/js/dist/modal";
+
 let allModelsData = [];
 let currentBrand = ""; // Здесь будут храниться все загруженные данные моделей
 let currentSearchQuery = ""; // Переменная для хранения текущего поискового запроса
@@ -5,11 +7,8 @@ let isBrandFilterActive = false; // Флаг для контроля актив�
 
 function setupCategoryFilterEventListener() {
 	const typeFilter = document.getElementById("type-filter");
-	console.log("Setup category filter event listener.");
-
 	if (typeFilter) {
 		typeFilter.addEventListener("click", function (e) {
-			console.log("вызов функции setupCategoryFilterEventListener");
 			const target = e.target.closest("a[data-type]");
 			if (target && !isBrandFilterActive) {
 				const category = e.target.getAttribute("data-type");
@@ -25,7 +24,6 @@ function setupCategoryFilterEventListener() {
 						return response.json();
 					})
 					.then((data) => {
-						console.log("Data received for category:", data);
 						allModelsData = data; // Сохраняем загруженные данные
 						displayEquipment(data.data);
 					})
@@ -42,9 +40,6 @@ function setupBrandFilterEventListener() {
 		button.addEventListener("click", (e) => {
 			// e.stopPropagation(); // Остановим всплывание чтобы не вызвать лишние события
 			const category = button.getAttribute("data-type");
-			console.log(
-				`Filtering data for category: ${category} and brand: ${currentBrand}`
-			);
 			const filteredData = allModelsData.filter(
 				(model) =>
 					model.model_type_name === category &&
@@ -63,15 +58,12 @@ async function setupModelSearchEventListener() {
 	const modelSearchInput = document.getElementById("model-search");
 	const equipmentList = document.getElementById("equipment-list");
 
-	console.log("Model search event listener setup.");
-
 	if (searchButton && modelSearchInput) {
 		searchButton.addEventListener("click", async () => {
 			const modelName = modelSearchInput.value.trim();
 			currentSearchQuery = modelName; // Сохраняем текущий поисковый запрос
 			if (modelName) {
 				isBrandFilterActive = true;
-				console.log(`Fetching data for model: ${modelName}`);
 				try {
 					const response = await fetch(
 						`http://germax-api/goods?modelName=${encodeURIComponent(modelName)}`
@@ -104,7 +96,6 @@ async function setupModelSearchEventListener() {
 }
 
 function displayEquipment(items) {
-	console.log("Полученные элементы для отображения:", items);
 	const equipmentList = document.getElementById("equipment-list");
 	equipmentList.innerHTML = ""; // Очистка предыдущих данных
 	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
@@ -115,19 +106,16 @@ function displayEquipment(items) {
 			// Проверяем, была ли уже такая модель добавлена
 			if (!seenModels.has(normalizedData.name)) {
 				seenModels.add(normalizedData.name); // Добавляем имя модели в Set
-				console.log(`Элемент ${index}:`, normalizedData);
 				const itemElement = document.createElement("div");
 				itemElement.innerHTML = `
+									<br>
 									<h2>${normalizedData.name}</h2>
 									<p>${normalizedData.description}</p>
-									<img src="${normalizedData.photo}" alt="Фото ${normalizedData.name}" style="width: 100%;">`;
+									<img src="${normalizedData.photo}" alt="Фото ${normalizedData.name}" style="width: 100%;"><br><br>
+									<button class="btn btn-primary reservation-modal-btn" data-model="${normalizedData.name}">Demander la réservation</button><br>`;
 				equipmentList.appendChild(itemElement);
 			}
 		});
-		console.log(
-			"Конечное состояние equipmentList после добавления элементов:",
-			equipmentList.innerHTML
-		);
 	} else {
 		console.error("Полученные данные не являются массивом:", items);
 		equipmentList.innerHTML =
@@ -176,8 +164,57 @@ function normalizeModelData(item) {
 	}
 }
 
+function setupNewReservationModalForTeachersAndStudentEventListeners() {
+	// Установка обработчиков событий на кнопки после их добавления в DOM
+	document.querySelectorAll('.reservation-modal-btn').forEach(button => {
+			button.addEventListener('click', function() {
+					const modelName = this.getAttribute('data-model');
+					newLoanFormModal.show(); // Открывает модальное окно
+					// Дополнительно обновите содержимое модального окна, если необходимо
+					const modalTitle = document.querySelector('#newLoanFormModal .modal-title');
+					modalTitle.textContent = `Demande de location pour ${modelName}`;
+			});
+	});
+}
+
+function returnNewLoanFormModalForTeachersOrStundents() {
+	return `<div class="modal fade show" id="newLoanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="loanFormModalLabel">Demande de location</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="mb-3">
+					<label for="quantity" class="form-label">Quantité</label>
+					<input type="number" class="form-control" id="quantity" placeholder="1">
+				</div>
+				<div class="mb-3">
+					<label for="rentalDates" class="form-label">Dates de location</label>
+					<input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
+				</div>
+				<div class="mb-3">
+					<label for="comments" class="form-label">Commentaires</label>
+					<textarea class="form-control" id="comments" rows="3"></textarea>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			<button type="submit" class="btn btn-primary">Confirmer la demande</button>
+		</div>
+	</div>
+</div>
+</div>
+</div>`;
+}
+
 export {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
+	returnNewLoanFormModalForTeachersOrStundents,
+	setupNewReservationModalForTeachersAndStudentEventListeners,
 };

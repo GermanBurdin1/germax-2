@@ -119,7 +119,6 @@ function setupTabActivation(buttonSelector, tabSelector) {
 function initializeDropdown() {
 	const dropdownToggleEl = document.querySelector(".dropdown-toggle");
 	if (dropdownToggleEl) {
-		console.log("был клик");
 		const dropdownInstance = new Dropdown(dropdownToggleEl);
 		dropdownToggleEl.addEventListener("click", function (event) {
 			console.log("dropdownInstance",dropdownInstance);

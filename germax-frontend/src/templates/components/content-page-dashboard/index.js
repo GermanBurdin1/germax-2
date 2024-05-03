@@ -39,7 +39,12 @@ import {
 	returnAdminSettingsModal,
 } from "../../../utils/dashboard/adminModals";
 
-import { setupCategoryFilterEventListener, setupModelSearchEventListener, setupBrandFilterEventListener } from "../../../utils/dashboard/data/student/booking";
+import {
+	setupCategoryFilterEventListener,
+	setupModelSearchEventListener,
+	setupBrandFilterEventListener,
+	returnNewLoanFormModalForTeachersOrStundents,
+} from "../../../utils/dashboard/data/student/booking";
 
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
@@ -55,11 +60,16 @@ function initListeners() {
 	initializeDropdown();
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
+	const modalNewStudentOrTeacherRequest = document.getElementById(
+		"modalNewStudentOrTeacherRequest"
+	);
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
 	// контейнер модалки для админа
 
+	modalNewStudentOrTeacherRequest.innerHTML =
+		returnNewLoanFormModalForTeachersOrStundents();
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
@@ -67,10 +77,14 @@ function initListeners() {
 	modalClientLoans.innerHTML = rentalClientDetails();
 
 	const bookEquipmentModalElement = document.getElementById("fullScreenModal");
-	const secondModalElement = document.getElementById("loanFormModal");
+	const newLoanFormModalElement = document.getElementById("newLoanFormModal");
+	const otherLoansFormModalElement = document.getElementById("loanFormModal");
 	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
 
-	let bookEquipmentModal, secondModal, clientsHistoryModal;
+	let bookEquipmentModal,
+		otherLoansFormModal,
+		clientsHistoryModal,
+		newLoanFormModal;
 
 	if (bookEquipmentModalElement) {
 		bookEquipmentModal = new Modal(bookEquipmentModalElement);
@@ -78,8 +92,14 @@ function initListeners() {
 		console.error("fullScreenModal element not found");
 	}
 
-	if (secondModalElement) {
-		secondModal = new Modal(secondModalElement);
+	if (newLoanFormModalElement) {
+		newLoanFormModal = new Modal(newLoanFormModalElement);
+	} else {
+		console.error("newLoanFormModalElement element not found");
+	}
+
+	if (otherLoansFormModalElement) {
+		otherLoansFormModal = new Modal(otherLoansFormModalElement);
 	} else {
 		console.error("loanFormModal element not found");
 	}
@@ -91,9 +111,40 @@ function initListeners() {
 	}
 
 	document.addEventListener("click", function (event) {
+		if (event.target.closest(".reservation-modal-btn")) {
+			// Если кликнули по кнопке reservation-modal-btn
+			const button = event.target;
+			const modelName = button.getAttribute("data-model");
+			const modalTitle = document.querySelector(
+				"#newLoanFormModal .modal-title"
+			);
+			modalTitle.textContent = `Demande de location pour ${modelName}`;
+
+			// Закрываем bookEquipmentModal перед показом newLoanFormModal
+			if (bookEquipmentModal && typeof bookEquipmentModal.hide === "function") {
+				bookEquipmentModal.hide();
+				bookEquipmentModalElement.addEventListener(
+					"hidden.bs.modal",
+					function onModalHidden() {
+						newLoanFormModal.show();
+						bookEquipmentModalElement.removeEventListener(
+							"hidden.bs.modal",
+							onModalHidden
+						);
+					},
+					{ once: true }
+				);
+			} else {
+				// Если bookEquipmentModal недоступен или не имеет метода hide, просто показываем newLoanFormModal
+				newLoanFormModal.show();
+			}
+
+			event.stopPropagation();
+			return;
+		}
+
 		const target = event.target.closest("a"); // Найдем ближайший элемент <a>
 		const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
-		console.log("получил targetId", targetId);
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
 		const settingsTabContent = document.getElementById("tabPlace");
@@ -102,8 +153,9 @@ function initListeners() {
 			document.getElementById("adminReportsModal");
 		const adminFeedBackContainer =
 			document.getElementById("adminFeedBackModal");
-		const adminSettingsContainter =
-			document.getElementById("adminContainerSettingsModal");
+		const adminSettingsContainter = document.getElementById(
+			"adminContainerSettingsModal"
+		);
 
 		switch (targetId) {
 			// кейсы админа
@@ -193,14 +245,14 @@ function initListeners() {
 						"hidden.bs.modal",
 						function onModalHidden() {
 							if (
-								secondModalElement &&
-								secondModal &&
-								typeof secondModal.show === "function"
+								otherLoansFormModalElement &&
+								otherLoansFormModal &&
+								typeof otherLoansFormModal.show === "function"
 							) {
-								secondModal.show();
+								otherLoansFormModal.show();
 							} else {
 								console.error(
-									"secondModal is not initialized or show is not a function"
+									"otherLoansFormModal is not initialized or show is not a function"
 								);
 							}
 							bookEquipmentModalElement.removeEventListener(
@@ -218,7 +270,6 @@ function initListeners() {
 				break;
 			case "settings-link":
 			case "settings-dropdown-link":
-				console.log("Clicked element ID:", targetId);
 				event.preventDefault();
 				if (settingsTabContent.dataset.visible === "true") {
 					settingsTabContent.style.display = "none";
