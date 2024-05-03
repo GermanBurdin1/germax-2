@@ -107,22 +107,31 @@ function displayEquipment(items) {
 	console.log("Полученные элементы для отображения:", items);
 	const equipmentList = document.getElementById("equipment-list");
 	equipmentList.innerHTML = ""; // Очистка предыдущих данных
+	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
 
 	if (Array.isArray(items)) {
-			items.forEach((item, index) => {
-					const normalizedData = normalizeModelData(item);
-					console.log(`Элемент ${index}:`, normalizedData);
-					const itemElement = document.createElement("div");
-					itemElement.innerHTML = `
-							<h2>${normalizedData.name}</h2>
-							<p>${normalizedData.description}</p>
-							<img src="${normalizedData.photo}" alt="Фото ${normalizedData.name}" style="width: 100%;">`;
-					equipmentList.appendChild(itemElement);
-			});
-			console.log("Конечное состояние equipmentList после добавления элементов:", equipmentList.innerHTML);
+		items.forEach((item, index) => {
+			const normalizedData = normalizeModelData(item);
+			// Проверяем, была ли уже такая модель добавлена
+			if (!seenModels.has(normalizedData.name)) {
+				seenModels.add(normalizedData.name); // Добавляем имя модели в Set
+				console.log(`Элемент ${index}:`, normalizedData);
+				const itemElement = document.createElement("div");
+				itemElement.innerHTML = `
+									<h2>${normalizedData.name}</h2>
+									<p>${normalizedData.description}</p>
+									<img src="${normalizedData.photo}" alt="Фото ${normalizedData.name}" style="width: 100%;">`;
+				equipmentList.appendChild(itemElement);
+			}
+		});
+		console.log(
+			"Конечное состояние equipmentList после добавления элементов:",
+			equipmentList.innerHTML
+		);
 	} else {
-			console.error("Полученные данные не являются массивом:", items);
-			equipmentList.innerHTML = "<p>Данные не загружены или не в корректном формате.</p>";
+		console.error("Полученные данные не являются массивом:", items);
+		equipmentList.innerHTML =
+			"<p>Данные не загружены или не в корректном формате.</p>";
 	}
 }
 
