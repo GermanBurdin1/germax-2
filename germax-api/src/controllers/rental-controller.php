@@ -12,9 +12,6 @@ class RentalController
 
 	public function createRental($data)
 	{
-		$logFile = '../utils/debug.php';
-		error_log("Received rental data: " . json_encode($data), 3, $logFile);
-		var_dump("Received rental data: ", $data);
 		$response = $this->rentalService->addRental($data);
 		echo json_encode($response);
 	}
