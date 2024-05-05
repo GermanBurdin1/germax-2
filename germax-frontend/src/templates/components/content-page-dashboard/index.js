@@ -114,7 +114,14 @@ function initListeners() {
 		if (event.target.closest(".reservation-modal-btn")) {
 			// Если кликнули по кнопке reservation-modal-btn
 			const button = event.target;
-			const modelName = button.getAttribute("data-model");
+			const modelId = button.getAttribute("data-model-id");
+			const modelName = button.getAttribute("data-model-name");
+			console.log(modelId, modelName);
+			const confirmButton = document.getElementById("confirmRentalButton");
+			if (confirmButton) {
+				confirmButton.setAttribute("data-model-id", modelId);
+				confirmButton.setAttribute("data-model-name", modelName);
+			}
 			const modalTitle = document.querySelector(
 				"#newLoanFormModal .modal-title"
 			);
@@ -308,6 +315,8 @@ function hideActiveTabs(except) {
 
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
+	const id_user = JSON.parse(localStorage.getItem("id_user"));
+	console.log(id_user);
 
 	if (!token) {
 		console.error("No token found, please login first");
@@ -339,6 +348,12 @@ function renderDashboard(responseData) {
 	initListeners();
 	// фильтрация оборудования, поиск для studentsAndTeacher
 	setupCategoryFilterEventListener();
+	const confirmButton = document.getElementById("confirmRentalButton");
+	if (confirmButton) {
+		confirmButton.addEventListener("click", submitRentalRequest);
+	} else {
+		console.log("Button with id 'confirmRentalButton' does not exist.");
+	}
 	setupModelSearchEventListener();
 	setupBrandFilterEventListener();
 }
@@ -386,4 +401,42 @@ function activateSettingsTab() {
 	setupTabActivation("#settings-tab", "#settings-tab");
 	setupTabActivation("#general-tab", "#general-tab");
 	initializeSingleTab("#general-tab");
+}
+
+function submitRentalRequest() {
+	const button = document.getElementById("confirmRentalButton");
+	const modelId = button.getAttribute("data-model-id");
+	const modelName = button.getAttribute("data-model-name");
+	const quantity = document.getElementById("quantity").value;
+	const rentalDates = document.getElementById("rentalDates").value;
+	const comments = document.getElementById("comments").value;
+	const id_user = JSON.parse(localStorage.getItem("id_user")); // Получаем id_user из localStorage
+
+	if (!quantity || !rentalDates) {
+		alert("All fields must be filled out");
+		return;
+	}
+
+	fetch("http://germax-api/rental", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			id_user: id_user, // Добавляем id_user в запрос
+			modelId: modelId,
+			modelName: modelName,
+			quantity: quantity,
+			rentalDates: rentalDates,
+			comments: comments,
+		}),
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			console.log("Success:", data);
+			// Обновите таблицу на странице управления бронированиями
+		})
+		.catch((error) => {
+			console.error("Error:", error);
+		});
 }

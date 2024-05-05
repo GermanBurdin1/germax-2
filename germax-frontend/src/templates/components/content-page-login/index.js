@@ -33,5 +33,6 @@ function loginFetch(url, data) {
 
 function loginLogic(responseData) {
 	localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
+	localStorage.setItem("id_user", JSON.stringify(responseData.data.id_user));
 	window.location.href = "/page-dashboard"; // Перенаправить на страницу после входа
 }

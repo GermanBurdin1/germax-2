@@ -33,6 +33,7 @@ class sqlRequests
 	function returnRequestForGetLaptopsByCategories()
 	{
 		return "SELECT
+		model.id_model,
 		model.name AS model_name,
 		model.description AS model_description,
 		model.photo AS model_photo,
@@ -60,6 +61,7 @@ class sqlRequests
 	function returnRequestForGetSmartphonesByCategories()
 	{
 		return "SELECT
+		model.id_model,
 		model.name AS model_name,
 		model.description AS model_description,
 		model.photo AS model_photo,
@@ -87,6 +89,7 @@ class sqlRequests
 	function returnRequestForGetTabletsByCategories()
 	{
 		return "SELECT
+		model.id_model,
 		model.name AS model_name,
 		model.description AS model_description,
 		model.photo AS model_photo,
@@ -114,6 +117,7 @@ class sqlRequests
 	function returnRequestForGetVR_headsetsByCategories()
 	{
 		return "SELECT
+		model.id_model,
 		model.name AS model_name,
 		model.description AS model_description,
 		model.photo AS model_photo,
@@ -137,4 +141,6 @@ class sqlRequests
 		statu.name = 'available'
 		AND model.id_type = 6;";
 	}
+
+
 }

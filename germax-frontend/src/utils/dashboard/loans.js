@@ -207,51 +207,43 @@ function returnLoanFormModal() {
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h5 class="modal-title" id="loanFormModalLabel">Форма запроса на аренду</h5>
+			<h5 class="modal-title" id="loanFormModalLabel">Demande du matériel non trouvé</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
 		<div class="modal-body">
 			<form>
 				<div class="mb-3">
-					<label for="managerName" class="form-label">Ваше имя</label>
-					<input type="text" class="form-control" id="managerName" placeholder="Иван Иванов">
-				</div>
-				<div class="mb-3">
-					<label for="managerContact" class="form-label">Контактная информация</label>
-					<input type="email" class="form-control" id="managerContact" placeholder="email@example.com">
-				</div>
-				<div class="mb-3">
-					<label for="equipmentCategory" class="form-label">Категория оборудования</label>
+					<label for="equipmentCategory" class="form-label">Catégorie du matériel</label>
 					<select class="form-select" id="equipmentCategory">
-						<option>Ноутбуки</option>
-						<option>Мониторы</option>
-						<option>Смартфоны</option>
-						<option>Аксессуары</option>
-						<option>Планшеты</option>
-						<option>VR-гарнитуры</option>
+						<option>Ordinateurs portables</option>
+						<option>Ecrans d'ordinateurs</option>
+						<option>Smartphones/option>
+						<option>Accessoires</option>
+						<option>Tablettes</option>
+						<option>Casques-VR</option>
 					</select>
 				</div>
 				<div class="mb-3">
-					<label for="modelInput" class="form-label">Начните вводить название модели</label>
-					<input type="text" class="form-control" id="modelInput" placeholder="Введите название модели">
+					<label for="modelInput" class="form-label">Commencez à rentrer le nom du modèle</label>
+					<input type="text" class="form-control" id="modelInput" placeholder="Rentrez le nom du modèle">
 				</div>
 				<div class="mb-3">
-					<label for="quantity" class="form-label">Количество</label>
+					<label for="quantity" class="form-label">Quantité</label>
 					<input type="number" class="form-control" id="quantity" placeholder="1">
 				</div>
 				<div class="mb-3">
-					<label for="rentalDates" class="form-label">Даты аренды</label>
+					<label for="rentalDates" class="form-label">Dates de location</label>
 					<input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
 				</div>
 				<div class="mb-3">
-					<label for="comments" class="form-label">Комментарии</label>
+					<label for="comments" class="form-label">Commentaires</label>
 					<textarea class="form-control" id="comments" rows="3"></textarea>
 				</div>
 			</form>
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-			<button type="submit" class="btn btn-primary">Отправить запрос</button>
+			<button type="submit" class="btn btn-primary">Envoyer la requête</button>
 		</div>
 	</div>
 </div>

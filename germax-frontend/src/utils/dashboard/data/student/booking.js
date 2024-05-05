@@ -24,6 +24,7 @@ function setupCategoryFilterEventListener() {
 						return response.json();
 					})
 					.then((data) => {
+						console.log(data.data);
 						allModelsData = data; // Сохраняем загруженные данные
 						displayEquipment(data.data);
 					})
@@ -97,29 +98,28 @@ async function setupModelSearchEventListener() {
 
 function displayEquipment(items) {
 	const equipmentList = document.getElementById("equipment-list");
-	equipmentList.innerHTML = ""; // Очистка предыдущих данных
-	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
+	equipmentList.innerHTML = "";
+	const seenModels = new Set();
 
 	if (Array.isArray(items)) {
-		items.forEach((item, index) => {
+		items.forEach((item) => {
 			const normalizedData = normalizeModelData(item);
-			// Проверяем, была ли уже такая модель добавлена
-			if (!seenModels.has(normalizedData.name)) {
-				seenModels.add(normalizedData.name); // Добавляем имя модели в Set
+			if (!seenModels.has(normalizedData.id)) {
+				seenModels.add(normalizedData.id);
 				const itemElement = document.createElement("div");
+
 				itemElement.innerHTML = `
 									<br>
 									<h2>${normalizedData.name}</h2>
 									<p>${normalizedData.description}</p>
-									<img src="${normalizedData.photo}" alt="Фото ${normalizedData.name}" style="width: 100%;"><br><br>
-									<button class="btn btn-primary reservation-modal-btn" data-model="${normalizedData.name}">Demander la réservation</button><br>`;
+									<img src="${normalizedData.photo}" alt="Photo of ${normalizedData.name}" style="width: 100%;">
+									<button class="btn btn-primary reservation-modal-btn" data-model-id="${normalizedData.id}" data-model-name="${normalizedData.name}">Demander la réservation</button><br>`;
 				equipmentList.appendChild(itemElement);
 			}
 		});
 	} else {
-		console.error("Полученные данные не являются массивом:", items);
-		equipmentList.innerHTML =
-			"<p>Данные не загружены или не в корректном формате.</p>";
+		console.error("Provided data is not an array:", items);
+		equipmentList.innerHTML = "<p>Data not loaded or in incorrect format.</p>";
 	}
 }
 
@@ -150,6 +150,7 @@ function normalizeModelData(item) {
 	if (item.model && item.model.name) {
 		// Структура с вложенным объектом model
 		return {
+			id: item.model.id,
 			name: item.model.name,
 			description: item.model.description,
 			photo: item.model.photo || "default-image.png",
@@ -157,24 +158,12 @@ function normalizeModelData(item) {
 	} else {
 		// Плоская структура
 		return {
+			id: item.id_model,
 			name: item.model_name,
 			description: item.model_description,
 			photo: item.model_photo || "default-image.png",
 		};
 	}
-}
-
-function setupNewReservationModalForTeachersAndStudentEventListeners() {
-	// Установка обработчиков событий на кнопки после их добавления в DOM
-	document.querySelectorAll('.reservation-modal-btn').forEach(button => {
-			button.addEventListener('click', function() {
-					const modelName = this.getAttribute('data-model');
-					newLoanFormModal.show(); // Открывает модальное окно
-					// Дополнительно обновите содержимое модального окна, если необходимо
-					const modalTitle = document.querySelector('#newLoanFormModal .modal-title');
-					modalTitle.textContent = `Demande de location pour ${modelName}`;
-			});
-	});
 }
 
 function returnNewLoanFormModalForTeachersOrStundents() {
@@ -187,6 +176,7 @@ function returnNewLoanFormModalForTeachersOrStundents() {
 		</div>
 		<div class="modal-body">
 			<form>
+				<input type="hidden" id="modelId" value="ID_модели_здесь">  <!-- Скрытое поле для modelId -->
 				<div class="mb-3">
 					<label for="quantity" class="form-label">Quantité</label>
 					<input type="number" class="form-control" id="quantity" placeholder="1">
@@ -203,7 +193,7 @@ function returnNewLoanFormModalForTeachersOrStundents() {
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-			<button type="submit" class="btn btn-primary">Confirmer la demande</button>
+			<button type="submit" class="btn btn-primary" id="confirmRentalButton">Confirmer la demande</button>
 		</div>
 	</div>
 </div>
@@ -215,6 +205,5 @@ export {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
-	returnNewLoanFormModalForTeachersOrStundents,
-	setupNewReservationModalForTeachersAndStudentEventListeners,
+	returnNewLoanFormModalForTeachersOrStundents
 };

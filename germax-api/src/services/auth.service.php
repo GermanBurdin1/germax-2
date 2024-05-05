@@ -37,7 +37,8 @@ class AuthService
 		$token = generateToken($foundUser['email']);
 
 		return renderSuccessAndExit(['Token success created'], 200, [
-			'token' => $token
+			'token' => $token,
+			'id_user' => $foundUser['id_user']
 		]);
 	}
 
