@@ -11,9 +11,9 @@ function setupCategoryFilterEventListener() {
 		typeFilter.addEventListener("click", function (e) {
 			const target = e.target.closest("a[data-type]");
 			if (target && !isBrandFilterActive) {
-				const category = e.target.getAttribute("data-type");
+				const typeName = e.target.getAttribute("data-type");
 				// e.stopPropagation(); // Останавливаем всплывание события
-				fetch(`http://germax-api/goods?category=${category}`)
+				fetch(`http://germax-api/goods?typeName=${typeName}`)
 					.then((response) => {
 						if (!response.ok) {
 							console.error("Response status:", response.status);
@@ -24,8 +24,8 @@ function setupCategoryFilterEventListener() {
 						return response.json();
 					})
 					.then((data) => {
-						console.log(data.data);
-						allModelsData = data; // Сохраняем загруженные данные
+						console.log(data);
+						allModelsData = data.data; // Сохраняем загруженные данные
 						displayEquipment(data.data);
 					})
 					.catch((error) => console.error("Error loading data: ", error));
@@ -73,6 +73,7 @@ async function setupModelSearchEventListener() {
 						throw new Error(`HTTP status ${response.status}`);
 					}
 					const data = await response.json();
+					console.log(data);
 					if (data && data.success) {
 						allModelsData = data.data; // Обновляем данные моделей
 						if (data.data.length > 0) {
@@ -129,22 +130,22 @@ function displayModelData(models) {
 	equipmentList.innerHTML = ""; // Очистка списка оборудования перед отображением новых данных
 	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
 
-	models.forEach((model) => {
-		if (!seenModels.has(model.model_name)) {
-			seenModels.add(model.model_name); // Добавляем имя модели в Set
-			const modelElement = document.createElement("div");
-			modelElement.className = "model-details";
-			modelElement.innerHTML = `
-							<h3>${model.model_name}</h3>
-							<p>${model.model_description}</p>
-							<img src="${model.model_photo || "default-image.png"}" alt="${
-				model.model_name
-			}" style="width: 100%;">
-					`;
-			equipmentList.appendChild(modelElement);
-		}
+	models.forEach((item) => {
+			const model = item.model; // Здесь мы берем объект model из каждого item
+			if (!seenModels.has(model.name)) {
+					seenModels.add(model.name); // Добавляем имя модели в Set
+					const modelElement = document.createElement("div");
+					modelElement.className = "model-details";
+					modelElement.innerHTML = `
+													<h3>${model.name}</h3>
+													<p>${model.description}</p>
+													<img src="${model.photo || "default-image.png"}" alt="${model.name}" style="width: 100%;">
+									`;
+					equipmentList.appendChild(modelElement);
+			}
 	});
 }
+
 
 function normalizeModelData(item) {
 	// Проверяем, содержит ли элемент информацию в "model" или напрямую в элементе
