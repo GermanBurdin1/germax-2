@@ -11,28 +11,40 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/goods.controller.php'
 
 $goodsController = new GoodsController();
 
+// if ($_SERVER["REQUEST_METHOD"] == "GET") {
+// 	if (isset($_GET['modelName'])) {
+// 		$goodsController->getFirstModelByName();
+// 	} elseif (isset($_GET['category'])) {
+// 		switch ($_GET['category']) {
+// 			case 'laptop':
+// 				$goodsController->getLaptops();
+// 				break;
+// 			case 'smartphone':
+// 				$goodsController->getSmartphones();
+// 				break;
+// 			case 'tablet':
+// 				$goodsController->getTablets();
+// 				break;
+// 			case 'VR_headset':
+// 				$goodsController->getVRHeadsets();
+// 				break;
+// 			default:
+// 				renderErrorAndExit('Category not found', 404);
+// 		}
+// 	} else {
+// 		$goodsController->getAll();
+// 	}
+// }
+
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-	if (isset($_GET['modelName'])) {
-		$goodsController->getFirstModelByName();
-	} elseif (isset($_GET['category'])) {
-		switch ($_GET['category']) {
-			case 'laptop':
-				$goodsController->getLaptops();
-				break;
-			case 'smartphone':
-				$goodsController->getSmartphones();
-				break;
-			case 'tablet':
-				$goodsController->getTablets();
-				break;
-			case 'VR_headset':
-				$goodsController->getVRHeadsets();
-				break;
-			default:
-				renderErrorAndExit('Category not found', 404);
-		}
-	}
-	exit;
+	$modelName = isset($_GET['modelName']) ? $_GET['modelName'] : NULL;
+	$typeName = isset($_GET['typeName']) ? $_GET['typeName'] : NULL;
+	$statusName = isset($_GET['statusName']) ? $_GET['statusName'] : NULL;
+
+	$goodsController->getAllByParams($modelName, $typeName, $statusName);
+	// if ($modelName == NULL && $typeName == NULL && $statusName == NULL) {
+	// 	$goodsController->getAll();
+	// }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

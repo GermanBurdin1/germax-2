@@ -18,8 +18,13 @@ class GoodsController
 		return $this->goodsService->getAll();
 	}
 
-	public function getFirstModelByName()
-	{
+	public function getAllByParams($modelName, $typeName, $statusName) {
+		return $this->goodsService->getAllByParams(
+			$modelName, $typeName, $statusName
+		);
+	}
+
+	public function getFirstModelByName() {
 		// Проверяем, есть ли параметр 'modelName' в запросе
 		if (!isset($_GET['modelName'])) {
 			// Возвращаем ошибку, если параметр не найден

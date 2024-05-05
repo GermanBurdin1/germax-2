@@ -5,6 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/error.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/validate.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql-requests.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/remove-special-characters.php');
 
 class GoodsService
 {
@@ -17,8 +18,109 @@ class GoodsService
 		$this->sqlRequests = new SqlRequests();
 	}
 
-	public function getAll()
-	{
+	public function getAllByParams($modelName, $typeName, $statusName) {
+		$sql = "
+			SELECT
+				good.id_good,
+				good.serial_number,
+				good.id_model,
+				model.name AS model_name,
+				model.description AS model_description,
+				model.photo AS model_photo,
+				good.id_status,
+				statu.name AS status_name,
+				model.id_type AS model_id_type,
+				typ.name AS model_type_name,
+				model.id_brand AS model_id_brand,
+				brand.name AS model_brand_name
+			FROM
+				good good
+			JOIN
+				status statu ON good.id_status = statu.id_status
+			JOIN
+				model model ON good.id_model = model.id_model
+			JOIN
+				type typ ON model.id_type = typ.id_type
+			JOIN
+				brand brand ON model.id_brand = brand.id_brand
+		";
+
+		$params = [
+			"modelName" => [
+				"exists" => $modelName != NULL,
+				"sql" => "model.name LIKE :modelName ",
+				"matches" => true,
+				"value" => $modelName
+			],
+			"typeName" => [
+				"exists" => $typeName != NULL,
+				"sql" => "typ.name LIKE :typeName ",
+				"matches" => true,
+				"value" => $typeName
+			],
+			"statusName" => [
+				"exists" => $statusName != NULL,
+				"sql" => "statu.name LIKE :statusName ",
+				"matches" => false,
+				"value" => $statusName
+			]
+		];
+
+		$whereSql = $this->generateWhereClause($params);
+		$sql .= $whereSql;
+		$sql .= ";";
+
+		try {
+			$stmt = $this->pdo->prepare($sql);
+
+			foreach ($params as $paramName => $param) {
+				if ($param["exists"] == true) {
+					$value = $param["matches"] === true ? "%$param[value]%" : $param["value"];
+					// echo $value;
+					$stmt->bindValue(":" . $paramName, $value);
+				}
+			}
+
+			$stmt->execute();
+			$goods = $stmt->fetchAll();
+			$formatedGoods = $this->formatArrGoods($goods);
+
+			return renderSuccessAndExit([
+				'Goods found', removeSpecialCharacters($sql)
+			], 200, $formatedGoods);
+		} catch (PDOException $e) {
+			return renderErrorAndExit('sql query error', 404, [
+				"error" => $e,
+				"sql" => removeSpecialCharacters($sql),
+				"params" => $params
+			]);
+		}
+
+		// $stmt->execute();
+		// $goods = $stmt->fetchAll();
+
+		// return renderSuccessAndExit(['Items found'], 200, $this->formatArrGoods($goods));
+
+		// if ($goods) {
+		// 	$formatedGoods = $this->formatArrGoods($goods);
+		// 	return renderSuccessAndExit(['Items found'], 200, $formatedGoods);
+		// } else {
+		// 	$errorInfo = $stmt->errorInfo();
+
+		// 	return renderErrorAndExit('sql query error', 404, [
+		// 		// $errorInfo[0] содержит SQLSTATE код ошибки
+		// 		// $errorInfo[1] содержит код ошибки PDO
+		// 		// $errorInfo[2] содержит текст ошибки
+		// 		"sqlStateErrorName" => $errorInfo[0],
+		// 		"pdoErrorCode" => $errorInfo[1],
+		// 		"errorName" => $errorInfo[2],
+		// 		"sql" => removeSpecialCharacters($sql),
+		// 		"params" => $params
+		// 	]);
+		// }
+	}
+
+	public function getAll() {
 		$stmt = $this->pdo->prepare("
 			SELECT
 				good.id_good,
@@ -47,15 +149,12 @@ class GoodsService
 		$stmt->execute();
 
 		$goods = $stmt->fetchAll();
-		$formatedGoods = array_map(function ($good) {
-			return $this->formatGood($good);
-		}, $goods);
+		$formatedGoods = $this->formatArrGoods($goods);
 
-		return renderSuccessAndExit(['User found'], 200, $formatedGoods);
+		return renderSuccessAndExit(['Goods found'], 200, $formatedGoods);
 	}
 
-	public function getModelsByName($modelName)
-	{
+	public function getModelsByName($modelName) {
 		if (!isset($modelName)) {
 			return renderErrorAndExit('Model name is required', 400);
 		}
@@ -100,6 +199,24 @@ class GoodsService
 		return $this->executeQuery($sql);
 	}
 
+	private function generateWhereClause($params) {
+    $whereClause = '';
+    $firstParam = true;
+
+		foreach ($params as $key => $param) {
+			if ($param['exists']) {
+				if (!$firstParam) {
+					$whereClause .= ' AND ';
+				} else {
+					$firstParam = false;
+				}
+				$whereClause .= "$param[sql]";
+			}
+		}
+
+		return $whereClause ? "WHERE $whereClause" : '';
+	}
+
 	private function executeQuery($sql)
 	{
 		$stmt = $this->pdo->prepare($sql);
@@ -114,36 +231,38 @@ class GoodsService
 		}
 	}
 
-	private function formatGood($good)
-	{
+	private function formatArrGoods($goods) {
+		return array_map(function ($good) {
+			return $this->formatGood($good);
+		}, $goods);
+	}
+
+	private function formatGood($good) {
 		$formattedGood = [
-			"id" => isset($good["id_good"]) ? $good["id_good"] : null,
-			"serial_number" => isset($good["serial_number"]) ? $good["serial_number"] : null,
+			"id" => $good["id_good"],
+			"serial_number" => $good["serial_number"],
 			"model" => [
-				"id" => isset($good["id_model"]) ? $good["id_model"] : null,
-				"name" => isset($good["model_name"]) ? $good["model_name"] : null,
-				"description" => isset($good["model_description"]) ? $good["model_description"] : null,
-				"photo" => isset($good["model_photo"]) ? $good["model_photo"] : null,
+				"id" => $good["id_model"],
+				"name" => $good["model_name"],
+				"description" => $good["model_description"],
+				"photo" => $good["model_photo"],
 				"type" => [
-					"id" => isset($good["model_id_type"]) ? $good["model_id_type"] : null,
-					"name" => isset($good["model_type_name"]) ? $good["model_type_name"] : null
+					"id" => $good["model_id_type"],
+					"name" => $good["model_type_name"]
 				],
 				"brand" => [
-					"id" => isset($good["model_id_brand"]) ? $good["model_id_brand"] : null,
-					"name" => isset($good["model_brand_name"]) ? $good["model_brand_name"] : null
+					"id" => $good["model_id_brand"],
+					"name" => $good["model_brand_name"]
 				]
 			],
 			"status" => [
-				"id" => isset($good["id_status"]) ? $good["id_status"] : null,
-				"name" => isset($good["status_name"]) ? $good["status_name"] : null
+				"id" => $good["id_status"],
+				"name" => $good["status_name"]
 			],
 		];
-
-		// Убираем пустые поля, если они не содержат данных
-		array_walk_recursive($formattedGood, function (&$item, $key) {
-			$item = $item === null ? 'Unknown' : $item;
-		});
 
 		return $formattedGood;
 	}
 }
+
+?>

@@ -109,11 +109,12 @@ function displayEquipment(items) {
 				const itemElement = document.createElement("div");
 
 				itemElement.innerHTML = `
-									<br>
-									<h2>${normalizedData.name}</h2>
-									<p>${normalizedData.description}</p>
-									<img src="${normalizedData.photo}" alt="Photo of ${normalizedData.name}" style="width: 100%;">
-									<button class="btn btn-primary reservation-modal-btn" data-model-id="${normalizedData.id}" data-model-name="${normalizedData.name}">Demander la réservation</button><br>`;
+					<br>
+					<h2>${normalizedData.name}</h2>
+					<p>${normalizedData.description}</p>
+					<img src="${normalizedData.photo}" alt="Photo of ${normalizedData.name}" style="width: 100%;">
+					<button class="btn btn-primary reservation-modal-btn" data-model-id="${normalizedData.id}" data-model-name="${normalizedData.name}">Demander la réservation</button><br>
+				`;
 				equipmentList.appendChild(itemElement);
 			}
 		});

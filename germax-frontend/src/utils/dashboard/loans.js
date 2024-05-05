@@ -170,12 +170,12 @@ function returnLoanRequestModal() {
 											<div class="row">
 													<div class="col-md-3">
 															<div class="list-group" id="type-filter">
-																	<a href="#" class="list-group-item list-group-item-action active" data-type="laptop">Ordinateurs portables</a>
-																	<a href="#" class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
-																	<a href="#" class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
-																	<a href="#" class="list-group-item list-group-item-action" data-type="accessory">Accessoires</a>
-																	<a href="#" class="list-group-item list-group-item-action" data-type="tablet">Tablettes</a>
-																	<a href="#" class="list-group-item list-group-item-action" data-type="VR_headset">Casque VR</a>
+																	<a class="list-group-item list-group-item-action active" data-type="laptop">Ordinateurs portables</a>
+																	<a class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+																	<a class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
+																	<a class="list-group-item list-group-item-action" data-type="accessory">Accessoires</a>
+																	<a class="list-group-item list-group-item-action" data-type="tablet">Tablettes</a>
+																	<a class="list-group-item list-group-item-action" data-type="VR_headset">Casque VR</a>
 															</div>
 													</div>
 													<div class="col-md-9">
