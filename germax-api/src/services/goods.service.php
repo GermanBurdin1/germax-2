@@ -95,29 +95,6 @@ class GoodsService
 				"params" => $params
 			]);
 		}
-
-		// $stmt->execute();
-		// $goods = $stmt->fetchAll();
-
-		// return renderSuccessAndExit(['Items found'], 200, $this->formatArrGoods($goods));
-
-		// if ($goods) {
-		// 	$formatedGoods = $this->formatArrGoods($goods);
-		// 	return renderSuccessAndExit(['Items found'], 200, $formatedGoods);
-		// } else {
-		// 	$errorInfo = $stmt->errorInfo();
-
-		// 	return renderErrorAndExit('sql query error', 404, [
-		// 		// $errorInfo[0] содержит SQLSTATE код ошибки
-		// 		// $errorInfo[1] содержит код ошибки PDO
-		// 		// $errorInfo[2] содержит текст ошибки
-		// 		"sqlStateErrorName" => $errorInfo[0],
-		// 		"pdoErrorCode" => $errorInfo[1],
-		// 		"errorName" => $errorInfo[2],
-		// 		"sql" => removeSpecialCharacters($sql),
-		// 		"params" => $params
-		// 	]);
-		// }
 	}
 
 	public function getAll() {
@@ -154,51 +131,6 @@ class GoodsService
 		return renderSuccessAndExit(['Goods found'], 200, $formatedGoods);
 	}
 
-	public function getModelsByName($modelName) {
-		if (!isset($modelName)) {
-			return renderErrorAndExit('Model name is required', 400);
-		}
-
-		$modelNameWithWildcard = "%" . $modelName . "%";
-		$sql = $this->sqlRequests->returnRequestForGetModelByName();
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->bindParam(':modelName', $modelNameWithWildcard);
-		$stmt->execute();
-
-		$models = $stmt->fetchAll();
-
-		if ($models) {
-			return renderSuccessAndExit(['Models found'], 200, $models);
-		} else {
-			return renderErrorAndExit('No models found', 404);
-		}
-	}
-
-
-	public function getLaptops()
-	{
-		$sql = $this->sqlRequests->returnRequestForGetLaptopsByCategories();
-		return $this->executeQuery($sql);
-	}
-
-	public function getSmartphones()
-	{
-		$sql = $this->sqlRequests->returnRequestForGetSmartphonesByCategories();
-		return $this->executeQuery($sql);
-	}
-
-	public function getTablets()
-	{
-		$sql = $this->sqlRequests->returnRequestForGetTabletsByCategories();
-		return $this->executeQuery($sql);
-	}
-
-	public function getVRHeadsets()
-	{
-		$sql = $this->sqlRequests->returnRequestForGetVR_headsetsByCategories();
-		return $this->executeQuery($sql);
-	}
-
 	private function generateWhereClause($params) {
     $whereClause = '';
     $firstParam = true;
@@ -215,20 +147,6 @@ class GoodsService
 		}
 
 		return $whereClause ? "WHERE $whereClause" : '';
-	}
-
-	private function executeQuery($sql)
-	{
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute();
-		$results = $stmt->fetchAll();
-
-		if ($results) {
-			$formattedResults = array_map([$this, 'formatGood'], $results);
-			return renderSuccessAndExit(['Items found'], 200, $formattedResults);
-		} else {
-			return renderErrorAndExit('No items found', 404);
-		}
 	}
 
 	private function formatArrGoods($goods) {

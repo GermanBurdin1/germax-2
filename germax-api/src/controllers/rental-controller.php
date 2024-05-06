@@ -15,4 +15,10 @@ class RentalController
 		$response = $this->rentalService->addRental($data);
 		echo json_encode($response);
 	}
+
+	public function fetchRentals()
+    {
+        $rentals = $this->rentalService->fetchRentals();
+        echo json_encode(['success' => true, 'data' => $rentals]);
+    }
 }

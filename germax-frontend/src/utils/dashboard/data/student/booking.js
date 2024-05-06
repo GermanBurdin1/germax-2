@@ -1,5 +1,3 @@
-import Modal from "bootstrap/js/dist/modal";
-
 let allModelsData = [];
 let currentBrand = ""; // Здесь будут храниться все загруженные данные моделей
 let currentSearchQuery = ""; // Переменная для хранения текущего поискового запроса
@@ -24,7 +22,7 @@ function setupCategoryFilterEventListener() {
 						return response.json();
 					})
 					.then((data) => {
-						console.log(data);
+						console.log(data.data);
 						allModelsData = data.data; // Сохраняем загруженные данные
 						displayEquipment(data.data);
 					})
@@ -101,12 +99,11 @@ function displayEquipment(items) {
 	const equipmentList = document.getElementById("equipment-list");
 	equipmentList.innerHTML = "";
 	const seenModels = new Set();
-
 	if (Array.isArray(items)) {
 		items.forEach((item) => {
 			const normalizedData = normalizeModelData(item);
-			if (!seenModels.has(normalizedData.id)) {
-				seenModels.add(normalizedData.id);
+			if (!seenModels.has(normalizedData.id_model)) {
+				seenModels.add(normalizedData.id_model);
 				const itemElement = document.createElement("div");
 
 				itemElement.innerHTML = `
@@ -114,7 +111,7 @@ function displayEquipment(items) {
 					<h2>${normalizedData.name}</h2>
 					<p>${normalizedData.description}</p>
 					<img src="${normalizedData.photo}" alt="Photo of ${normalizedData.name}" style="width: 100%;">
-					<button class="btn btn-primary reservation-modal-btn" data-model-id="${normalizedData.id}" data-model-name="${normalizedData.name}">Demander la réservation</button><br>
+					<button class="btn btn-primary reservation-modal-btn" data-model-id="${normalizedData.id_model}" data-model-name="${normalizedData.name}" data-good-id="${normalizedData.id_good}">Demander la réservation</button><br>
 				`;
 				equipmentList.appendChild(itemElement);
 			}
@@ -131,28 +128,30 @@ function displayModelData(models) {
 	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
 
 	models.forEach((item) => {
-			const model = item.model; // Здесь мы берем объект model из каждого item
-			if (!seenModels.has(model.name)) {
-					seenModels.add(model.name); // Добавляем имя модели в Set
-					const modelElement = document.createElement("div");
-					modelElement.className = "model-details";
-					modelElement.innerHTML = `
+		const model = item.model; // Здесь мы берем объект model из каждого item
+		if (!seenModels.has(model.name)) {
+			seenModels.add(model.name); // Добавляем имя модели в Set
+			const modelElement = document.createElement("div");
+			modelElement.className = "model-details";
+			modelElement.innerHTML = `
 													<h3>${model.name}</h3>
 													<p>${model.description}</p>
-													<img src="${model.photo || "default-image.png"}" alt="${model.name}" style="width: 100%;">
+													<img src="${model.photo || "default-image.png"}" alt="${
+				model.name
+			}" style="width: 100%;">
 									`;
-					equipmentList.appendChild(modelElement);
-			}
+			equipmentList.appendChild(modelElement);
+		}
 	});
 }
-
 
 function normalizeModelData(item) {
 	// Проверяем, содержит ли элемент информацию в "model" или напрямую в элементе
 	if (item.model && item.model.name) {
 		// Структура с вложенным объектом model
 		return {
-			id: item.model.id,
+			id_good: item.id,
+			id_model: item.model.id,
 			name: item.model.name,
 			description: item.model.description,
 			photo: item.model.photo || "default-image.png",
@@ -184,9 +183,13 @@ function returnNewLoanFormModalForTeachersOrStundents() {
 					<input type="number" class="form-control" id="quantity" placeholder="1">
 				</div>
 				<div class="mb-3">
-					<label for="rentalDates" class="form-label">Dates de location</label>
-					<input type="text" class="form-control" id="rentalDates" placeholder="с 01.01.2024 по 10.01.2024">
-				</div>
+          <label for="dateStart" class="form-label">Date de début</label>
+          <input type="date" class="form-control" id="dateStart">
+        </div>
+        <div class="mb-3">
+          <label for="dateEnd" class="form-label">Date de fin</label>
+          <input type="date" class="form-control" id="dateEnd">
+        </div>
 				<div class="mb-3">
 					<label for="comments" class="form-label">Commentaires</label>
 					<textarea class="form-control" id="comments" rows="3"></textarea>
@@ -203,9 +206,10 @@ function returnNewLoanFormModalForTeachersOrStundents() {
 </div>`;
 }
 
+
 export {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
-	returnNewLoanFormModalForTeachersOrStundents
+	returnNewLoanFormModalForTeachersOrStundents,
 };

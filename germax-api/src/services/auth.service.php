@@ -7,8 +7,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/token.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/permissions.service.php');
 
-class AuthService
-{
+class AuthService {
 	private $pdo;
 	private $permissionsService;
 
@@ -35,10 +34,12 @@ class AuthService
 		// Код ниже выполняется, только если пользователь существует и передали правильный пароль
 
 		$token = generateToken($foundUser['email']);
+		$permission = $this->permissionsService->getById($foundUser['id_permission']);
 
 		return renderSuccessAndExit(['Token success created'], 200, [
 			'token' => $token,
-			'id_user' => $foundUser['id_user']
+			'id_user' => $foundUser['id_user'],
+			'role' => $permission['name']
 		]);
 	}
 

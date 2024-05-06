@@ -17,10 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Обработка POST запроса
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $rentalController->createRental($data);
+	$data = json_decode(file_get_contents('php://input'), true);
+	$rentalController->createRental($data);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+	// Обработка GET запроса для получения текущих аренд
+	$rentalController->fetchRentals();
 } else {
-    // Если метод не поддерживается
-    http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
+	// Если метод не поддерживается
+	http_response_code(405);
+	echo json_encode(['error' => 'Method not allowed']);
 }

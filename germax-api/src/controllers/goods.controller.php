@@ -23,42 +23,4 @@ class GoodsController
 			$modelName, $typeName, $statusName
 		);
 	}
-
-	public function getFirstModelByName() {
-		// Проверяем, есть ли параметр 'modelName' в запросе
-		if (!isset($_GET['modelName'])) {
-			// Возвращаем ошибку, если параметр не найден
-			return renderErrorAndExit('Model name is required', 400);
-		}
-
-		$modelName = $_GET['modelName'];
-		$model = $this->goodsService->getModelsByName($modelName);
-
-		// Проверка, была ли модель найдена
-		if ($model) {
-			return renderSuccessAndExit(['Model found'], 200, $model);
-		} else {
-			return renderErrorAndExit('Model not found', 404);
-		}
-	}
-
-	public function getLaptops()
-	{
-		return $this->goodsService->getLaptops();
-	}
-
-	public function getSmartphones()
-	{
-		return $this->goodsService->getSmartphones();
-	}
-
-	public function getTablets()
-	{
-		return $this->goodsService->getTablets();
-	}
-
-	public function getVRHeadsets()
-	{
-		return $this->goodsService->getVRHeadsets();
-	}
 }
