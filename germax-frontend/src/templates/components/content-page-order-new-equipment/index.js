@@ -3,6 +3,7 @@ import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
 
 document.addEventListener("DOMContentLoaded", function () {
+	updateEquipmentRequestsTable();
 	const authToken = localStorage.getItem("authToken");
 	console.log("Auth token:", authToken);
 
@@ -223,7 +224,7 @@ function renderEquipmentOrder(userData) {
 		};
 
 		// Отправляем запрос на сервер
-		fetch('http://germax-api/equipment_requests', { // Замените URL на актуальный endpoint
+		fetch('http://germax-api/equipment_requests', {
 				method: 'POST',
 				headers: {
 						'Content-Type': 'application/json',
@@ -234,12 +235,67 @@ function renderEquipmentOrder(userData) {
 		.then(data => {
 				console.log('Success:', data);
 				alert('Запрос на оборудование успешно отправлен!');
-				// Очистите форму или закройте модальное окно после успешной отправки
+				updateEquipmentRequestsTable();
 		})
 		.catch((error) => {
 				console.error('Error:', error);
 				alert('Ошибка при отправке запроса на оборудование');
 		});
+	});
+}
+
+// обновление таблицы данными
+
+function updateEquipmentRequestsTable() {
+	fetch('http://germax-api/equipment_requests', {
+			method: 'GET',
+			headers: {
+					'Content-Type': 'application/json',
+			}
+	})
+	.then(response => response.json())
+	.then(data => {
+			console.log(data);  // Проверяем структуру полученных данных
+			const tableBody = document.querySelector('.table tbody');
+			tableBody.innerHTML = ''; // Очистить текущее содержимое таблицы
+
+			if (data.success && Array.isArray(data.data)) { // Проверка на успешный ответ и что data.data действительно массив
+					data.data.forEach(request => {
+							const row = `
+									<tr>
+											<td>${request.id_request}</td>
+											<td>${request.equipment_name}</td>
+											<td>${request.quantity}</td>
+											<td>${request.request_date}</td>
+											<td>${request.status}</td>
+											<td>${request.response_date || 'Statut à décider'}</td>
+											<td>
+													<div class="dropdown">
+															<button class="btn btn-secondary dropdown-toggle" type="button"
+																	id="dropdownMenuButton${request.id_request}" data-bs-toggle="dropdown" aria-expanded="false">
+																	Choisir une action
+															</button>
+															<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${request.id_request}">
+																	<li><a class="dropdown-item" href="#">Confirmer la réception</a></li>
+																	<li><a class="dropdown-item" href="#">Annuler la commande</a></li>
+																	<li><a class="dropdown-item" href="#">Marquer comme livré</a></li>
+																	<li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+																			data-bs-target="#detailsModal">Voir les détails</a></li>
+															</ul>
+													</div>
+											</td>
+									</tr>
+							`;
+							tableBody.innerHTML += row;
+					});
+			} else {
+					console.error('No data found or data is not an array:', data);
+					alert('No data found or data format error.');
+			}
+	})
+	.catch(error => {
+			console.error('Failed to fetch equipment requests:', error);
+			alert('Error fetching equipment requests.');
 	});
 }
 
