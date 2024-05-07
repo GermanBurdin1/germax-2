@@ -131,20 +131,117 @@ function fetchAuthUser(url) {
 // отрисовка заказа оборудования только для stockman
 
 function renderEquipmentOrder(userData) {
-	const container = document.getElementById('equipmentOrderContainer');
+	const titleAddingOrders = document.getElementById("titleAddingOrders");
+	const addingEquipmentContainer = document.getElementById(
+		"equipmentAddingContainer"
+	);
+	const titleOrdersRequest = document.getElementById("titleOrdersRequest");
+	const orderEquipmentContainer = document.getElementById("orderForm");
+	const titleOrders = document.getElementById("titleOrders");
+	const listOrdersTitle = document.getElementById("listOrdersTitle");
 
-	container.innerHTML = '';
+	//stockman
+	titleAddingOrders.innerHTML = "";
+	addingEquipmentContainer.innerHTML = "";
+	titleOrdersRequest.innerHTML = "";
+	//manager
+	orderEquipmentContainer.innerHTML = "";
+	titleOrders.innerHTML = ``;
+	listOrdersTitle.innerHTML = ``;
 
 	if (userData.name_permission === "stockman") {
-			const markup = `
+		const titleAddingOrdersMarkup = `<h2>Ajout du nouvel équipement</h2>`;
+		const markup = `
 					<div class="mb-4">
-							<h2>Gestion de l'Équipement</h2>
 							<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Ajouter un équipement</button>
 							<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Ajouter une catégorie</button>
 					</div>
 			`;
+		const titleOrdersRequestMarkup = `<h2>Requêtes du nouvel équipement</h2>`;
+		titleAddingOrders.innerHTML = titleAddingOrdersMarkup;
+		addingEquipmentContainer.innerHTML = markup;
+		titleOrdersRequest.innerHTML = titleOrdersRequestMarkup;
+	} else if (userData.name_permission === "rental-manager") {
+		const titleOrdersMarkup = `<h2>Nouvelle commande d'équipement</h2>`;
+		const markup = `
+		<div class="order-form mb-4">
+    <form id="equipmentRequestForm">
+        <div class="form-group">
+            <label for="equipmentName">Nom de l'équipement</label>
+            <input type="text" class="form-control" id="equipmentName" placeholder="Entrez le nom de l'équipement">
+        </div>
+        <div class="form-group">
+            <label for="categoryName">Catégorie</label>
+            <select class="form-control" id="categoryName">
+                <option value="1">Laptop</option>
+                <option value="2">Computer Monitor</option>
+                <option value="3">Smartphone</option>
+                <option value="4">Accessory</option>
+                <option value="5">Tablet</option>
+                <option value="6">VR Headset</option>
+                <!-- Динамическое заполнение категорий должно быть реализовано здесь -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantité</label>
+            <input type="number" class="form-control" id="quantity" placeholder="1">
+        </div>
+        <div class="form-group">
+            <label for="equipmentDescription">Commentaire</label>
+            <textarea class="form-control" id="equipmentDescription" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-control mt-3" id="equipmentRequestForm">Faire une requête</button>
+    </form>
+</div>
 
-			container.innerHTML = markup;
+		`;
+		const listOrdersTitleMarkup = `<h2>Liste des commandes</h2>`;
+
+		orderEquipmentContainer.innerHTML = markup;
+		titleOrders.innerHTML = titleOrdersMarkup;
+		listOrdersTitle.innerHTML = listOrdersTitleMarkup;
 	}
+
+	const id_user = JSON.parse(localStorage.getItem("id_user"));
+	// отправка на equipment_requests
+	document.getElementById('equipmentRequestForm').addEventListener('submit', function(event) {
+		event.preventDefault(); // Предотвратить стандартное поведение формы
+
+		// Собираем данные формы
+		const equipmentName = document.getElementById('equipmentName').value;
+		const quantity = document.getElementById('quantity').value;
+		const comment = document.getElementById('equipmentDescription').value;
+		const id_type = document.getElementById('categoryName').value;
+
+		// Создаем объект с данными для отправки на сервер
+		const requestData = {
+				equipment_name: equipmentName,
+				quantity: parseInt(quantity, 10),
+				comment: comment,
+				id_type,
+				id_user,
+		};
+
+		// Отправляем запрос на сервер
+		fetch('http://germax-api/equipment_requests', { // Замените URL на актуальный endpoint
+				method: 'POST',
+				headers: {
+						'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(requestData)
+		})
+		.then(response => response.json())
+		.then(data => {
+				console.log('Success:', data);
+				alert('Запрос на оборудование успешно отправлен!');
+				// Очистите форму или закройте модальное окно после успешной отправки
+		})
+		.catch((error) => {
+				console.error('Error:', error);
+				alert('Ошибка при отправке запроса на оборудование');
+		});
+	});
 }
 
+
+// затем у stockman надо проверить через запрос есть ли нужное оборудование и если нет предложить другое похожее, если нет ничего похожего то просто статус-нет

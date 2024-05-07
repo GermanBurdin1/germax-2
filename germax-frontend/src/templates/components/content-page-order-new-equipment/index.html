@@ -1,8 +1,17 @@
 <div class="tab-pane fade show active" id="commandes-equipement" role="tabpanel"
 	aria-labelledby="commandes-equipement-link">
-	<h2>Commandes d'équipement</h2>
 
-	<div id="equipmentOrderContainer"></div>
+	<!-- Заголовок Добавления оборудования для менеджера -->
+	<div id="titleAddingOrders"></div>
+	<div id="equipmentAddingContainer"></div>
+	<div id="titleOrdersRequest"></div>
+
+	<!-- Заголовок Заказов для менеджера -->
+	<div id="titleOrders"></div>
+	<!-- Новая форма для заказа для менеджера -->
+	<div id="orderForm"></div>
+	<!-- Заголовок список заказов для менеджера -->
+	<div id="listOrdersTitle"></div>
 
 	<!-- Modal for Adding Equipment -->
 	<div class="modal fade show active" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel"
@@ -77,27 +86,6 @@
 		</div>
 	</div>
 
-	<!-- Новая форма для заказа оборудования -->
-	<div class="order-form mb-4">
-		<h3>Nouvelle commande d'équipement</h3>
-		<form>
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					<label for="equipmentName">Nom de l'équipement</label>
-					<input type="text" class="form-control" id="equipmentName" placeholder="Entrez le nom de l'équipement">
-				</div>
-				<div class="form-group col-md-4">
-					<label for="quantity">Quantité</label>
-					<input type="number" class="form-control" id="quantity" placeholder="1">
-				</div>
-				<div class="form-group col-md-2">
-					<label for="submitOrder" style="opacity: 0;">Envoyer</label>
-					<button type="submit" class="btn btn-primary form-control">Commander</button>
-				</div>
-			</div>
-		</form>
-	</div>
-
 	<div class="table-responsive">
 		<table class="table">
 			<thead>
@@ -109,6 +97,8 @@
 								class="fas fa-sort"></i></button></th>
 					<th>Date de la Commande <button class="btn btn-link p-0 border-0 sortButton"
 							title="Trier par Date de la Commande"><i class="fas fa-sort"></i></button></th>
+					<th>Statut de la Requête <button class="btn btn-link p-0 border-0 sortButton"
+						title="Trier par Statut de la requête"><i class="fas fa-sort"></i></button></th>
 					<th>Statut de Livraison <button class="btn btn-link p-0 border-0 sortButton"
 							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
 					<th>Actions</th>
@@ -120,7 +110,8 @@
 					<td>Ordinateur Portable Avancé</td>
 					<td>10</td>
 					<td>01/04/2024</td>
-					<td>En cours</td>
+					<td>Pending</td>
+					<td>Statut à décider</td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -165,6 +156,7 @@
 					<td>Scanner 3D Pro</td>
 					<td>5</td>
 					<td>05/04/2024</td>
+					<td>Article trouvé</td>
 					<td>Livrée</td>
 					<td>
 						<div class="dropdown">
@@ -210,7 +202,8 @@
 					<td>Drones de Surveillance</td>
 					<td>20</td>
 					<td>10/04/2024</td>
-					<td>En préparation</td>
+					<td>Article non trouvé</td>
+					<td>Pas de livraison possible</td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
