@@ -1,6 +1,9 @@
 import "./index.css";
 // Confirmer la réception; marqué comme reçu как подстраховка (а так, будет автоматически делаться)
 import Modal from "bootstrap/js/dist/modal";
+import Dropdown from "bootstrap/js/dist/dropdown";
+
+const id_user = JSON.parse(localStorage.getItem("id_user"));
 
 document.addEventListener("DOMContentLoaded", function () {
 	updateEquipmentRequestsTable();
@@ -122,7 +125,10 @@ function fetchAuthUser(url) {
 		})
 		.then((data) => {
 			console.log("data:", data);
+			console.log("namePermission", data.data.name_permission);
 			renderEquipmentOrder(data.data);
+			localStorage.setItem("namePermission", data.data.name_permission); // Сохраняем роль пользователя
+			updateEquipmentRequestsTable(data.data.name_permission);
 		})
 		.catch((error) => {
 			console.error("Failed to fetch data:", error);
@@ -201,103 +207,146 @@ function renderEquipmentOrder(userData) {
 		orderEquipmentContainer.innerHTML = markup;
 		titleOrders.innerHTML = titleOrdersMarkup;
 		listOrdersTitle.innerHTML = listOrdersTitleMarkup;
+		// отправка на equipment_requests
+		document
+			.getElementById("equipmentRequestForm")
+			.addEventListener("submit", function (event) {
+				event.preventDefault(); // Предотвратить стандартное поведение формы
+
+				// Собираем данные формы
+				const equipmentName = document.getElementById("equipmentName").value;
+				const quantity = document.getElementById("quantity").value;
+				const comment = document.getElementById("equipmentDescription").value;
+				const id_type = document.getElementById("categoryName").value;
+
+				// Создаем объект с данными для отправки на сервер
+				const requestData = {
+					equipment_name: equipmentName,
+					quantity: parseInt(quantity, 10),
+					comment: comment,
+					id_type,
+					id_user,
+				};
+
+				// Отправляем запрос на сервер
+				fetch("http://germax-api/equipment_requests", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(requestData),
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						console.log("Success:", data);
+						alert("Запрос на оборудование успешно отправлен!");
+						updateEquipmentRequestsTable();
+					})
+					.catch((error) => {
+						console.error("Error:", error);
+						alert("Ошибка при отправке запроса на оборудование");
+					});
+			});
 	}
-
-	const id_user = JSON.parse(localStorage.getItem("id_user"));
-	// отправка на equipment_requests
-	document.getElementById('equipmentRequestForm').addEventListener('submit', function(event) {
-		event.preventDefault(); // Предотвратить стандартное поведение формы
-
-		// Собираем данные формы
-		const equipmentName = document.getElementById('equipmentName').value;
-		const quantity = document.getElementById('quantity').value;
-		const comment = document.getElementById('equipmentDescription').value;
-		const id_type = document.getElementById('categoryName').value;
-
-		// Создаем объект с данными для отправки на сервер
-		const requestData = {
-				equipment_name: equipmentName,
-				quantity: parseInt(quantity, 10),
-				comment: comment,
-				id_type,
-				id_user,
-		};
-
-		// Отправляем запрос на сервер
-		fetch('http://germax-api/equipment_requests', {
-				method: 'POST',
-				headers: {
-						'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(requestData)
-		})
-		.then(response => response.json())
-		.then(data => {
-				console.log('Success:', data);
-				alert('Запрос на оборудование успешно отправлен!');
-				updateEquipmentRequestsTable();
-		})
-		.catch((error) => {
-				console.error('Error:', error);
-				alert('Ошибка при отправке запроса на оборудование');
-		});
-	});
 }
-
 // обновление таблицы данными
 
-function updateEquipmentRequestsTable() {
-	fetch('http://germax-api/equipment_requests', {
-			method: 'GET',
-			headers: {
-					'Content-Type': 'application/json',
-			}
+function updateEquipmentRequestsTable(namePermission) {
+	fetch("http://germax-api/equipment_requests", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
 	})
-	.then(response => response.json())
-	.then(data => {
-			console.log(data);  // Проверяем структуру полученных данных
-			const tableBody = document.querySelector('.table tbody');
-			tableBody.innerHTML = ''; // Очистить текущее содержимое таблицы
+		.then((response) => response.json())
+		.then((data) => {
+			const tableBody = document.querySelector(".table tbody");
+			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
 
-			if (data.success && Array.isArray(data.data)) { // Проверка на успешный ответ и что data.data действительно массив
-					data.data.forEach(request => {
-							const row = `
-									<tr>
-											<td>${request.id_request}</td>
-											<td>${request.equipment_name}</td>
-											<td>${request.quantity}</td>
-											<td>${request.request_date}</td>
-											<td>${request.status}</td>
-											<td>${request.response_date || 'Statut à décider'}</td>
-											<td>
-													<div class="dropdown">
-															<button class="btn btn-secondary dropdown-toggle" type="button"
-																	id="dropdownMenuButton${request.id_request}" data-bs-toggle="dropdown" aria-expanded="false">
-																	Choisir une action
-															</button>
-															<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${request.id_request}">
-																	<li><a class="dropdown-item" href="#">Confirmer la réception</a></li>
-																	<li><a class="dropdown-item" href="#">Annuler la commande</a></li>
-																	<li><a class="dropdown-item" href="#">Marquer comme livré</a></li>
-																	<li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-																			data-bs-target="#detailsModal">Voir les détails</a></li>
-															</ul>
-													</div>
-											</td>
-									</tr>
-							`;
-							tableBody.innerHTML += row;
-					});
+			if (data.success && Array.isArray(data.data)) {
+				data.data.forEach((request) => {
+					const row = createTableRow(request, namePermission);
+					tableBody.innerHTML += row;
+				});
 			} else {
-					console.error('No data found or data is not an array:', data);
-					alert('No data found or data format error.');
+				console.error("No data found or data is not an array:", data);
+				alert("No data found or data format error.");
 			}
-	})
-	.catch(error => {
-			console.error('Failed to fetch equipment requests:', error);
-			alert('Error fetching equipment requests.');
+		})
+		.catch((error) => {
+			console.error("Failed to fetch equipment requests:", error);
+			alert("Error fetching equipment requests.");
+		});
+}
+
+function createTableRow(request, namePermission) {
+	let actionsMarkup = "";
+
+	if (namePermission === "rental-manager") {
+		actionsMarkup = `
+					<li><a class="dropdown-item" href="#">Confirmer la réception</a></li>
+					<li><a class="dropdown-item" href="#">Annuler la commande</a></li>
+					<li><a class="dropdown-item" href="#">Marquer comme livré</a></li>
+					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal">Voir les détails</a></li>
+			`;
+	} else if (namePermission === "stockman") {
+		actionsMarkup = `
+					<li><a class="dropdown-item check-availability" href="#">Vérifier la disponibilité</a></li>
+					<li><a class="dropdown-item" href="#">Programmer l'envoi</a></li>
+					<li><a class="dropdown-item" href="#">Annuler l'envoi</a></li>
+					<li><a class="dropdown-item" href="#">Marquer comme envoyé</a></li>
+					<li><a class="dropdown-item" href="#">Marquer comme délivré</a></li>
+			`;
+	}
+
+	return `
+			<tr>
+					<td>${request.id_request}</td>
+					<td data-equipment-name>${request.equipment_name}</td>
+					<td>${request.quantity}</td>
+					<td>${request.request_date}</td>
+					<td>${request.status}</td>
+					<td>${request.sending_status}</td>
+					<td>
+							<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+											id="dropdownMenuButton${request.id_request}" data-bs-toggle="dropdown" aria-expanded="false">
+											Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${request.id_request}">
+											${actionsMarkup}
+									</ul>
+							</div>
+					</td>
+			</tr>
+	`;
+}
+
+// затем у stockman надо проверить через запрос есть ли нужное оборудование и если нет предложить другое похожее, если нет ничего похожего то просто статус-нет
+
+//vérifier la disponibilité
+//модальное окно
+
+function setupAvailabilityModal() {
+	const availabilityModal = new Modal(document.getElementById('availabilityModal'));
+
+	document.querySelector('.table tbody').addEventListener('click', function(e) {
+			// Проверяем, что клик был по элементу с классом 'check-availability'
+			if (e.target.classList.contains('check-availability')) {
+					e.preventDefault();
+					const equipmentName = e.target.closest('tr').querySelector('td[data-equipment-name]').textContent;
+					document.getElementById('equipmentInput').value = equipmentName;
+					availabilityModal.show();
+			}
+	});
+
+	// Обработчик событий для формы отправки запроса на проверку доступности
+	document.getElementById('checkAvailabilityForm').addEventListener('submit', function(e) {
+			e.preventDefault();
+			const equipmentName = document.getElementById('equipmentInput').value;
+			console.log("Checking availability for:", equipmentName);
+			// Тут код для отправки запроса на сервер и обработки ответа
 	});
 }
 
-
-// затем у stockman надо проверить через запрос есть ли нужное оборудование и если нет предложить другое похожее, если нет ничего похожего то просто статус-нет
+setupAvailabilityModal();
