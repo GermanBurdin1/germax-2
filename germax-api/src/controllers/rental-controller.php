@@ -17,8 +17,20 @@ class RentalController
 	}
 
 	public function fetchRentals()
-    {
-        $rentals = $this->rentalService->fetchRentals();
-        echo json_encode(['success' => true, 'data' => $rentals]);
-    }
+	{
+		$rentals = $this->rentalService->fetchRentals();
+		echo json_encode(['success' => true, 'data' => $rentals]);
+	}
+
+	public function approveRental($data)
+	{
+		$response = $this->rentalService->updateRentalStatus($data['loanId'], 3, 2);
+		echo json_encode($response);
+	}
+
+	public function cancelRental($data)
+	{
+		$response = $this->rentalService->updateRentalStatus($data['loanId'], 1, 3);
+		echo json_encode($response);
+	}
 }

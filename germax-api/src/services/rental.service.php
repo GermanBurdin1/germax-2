@@ -6,7 +6,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/validate.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql-requests.php');
 
-class RentalService {
+class RentalService
+{
 	private $pdo;
 
 	public function __construct()
@@ -42,7 +43,7 @@ class RentalService {
 			}
 		} catch (PDOException $e) {
 			$this->pdo->rollBack();  // Откатываем транзакцию при ошибках
-			error_log("Error during loan request: " . $e->getMessage(),3,"../debug.php");
+			error_log("Error during loan request: " . $e->getMessage(), 3, "../debug.php");
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
@@ -56,10 +57,30 @@ class RentalService {
 		return $stmtLoan->rowCount() > 0;
 	}
 
-	public function fetchRentals()
-	{
+	public function fetchRentals() {
 		$stmt = $this->pdo->prepare("SELECT g.id_good, g.id_status, g.serial_number, u.lastname AS user_name, u.firstname AS user_surname, l.date_start, l.date_end, l.comment, m.name AS model_name FROM loan l JOIN good g ON l.id_good = g.id_good JOIN model m ON g.id_model = m.id_model JOIN user u ON l.id_user = u.id_user WHERE g.id_status = 4;");
 		$stmt->execute();
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	public function updateRentalStatus($loanId, $newStatus, $newAccord) {
+		$this->pdo->beginTransaction();
+		try {
+			$sql = "UPDATE loan SET id_status = ?, accord = ?, date_response = CURDATE() WHERE id_loan = ?";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$newStatus, $newAccord, $loanId]);
+
+			if ($stmt->rowCount() > 0) {
+				$this->pdo->commit();
+				return ['success' => true, 'message' => 'Rental status updated successfully'];
+			} else {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'No changes were made. Check the loan ID and try again.'];
+			}
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Error during rental status update: " . $e->getMessage(), 3, "../debug.php");
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
 	}
 }

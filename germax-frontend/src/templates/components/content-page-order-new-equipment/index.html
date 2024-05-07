@@ -2,6 +2,81 @@
 	aria-labelledby="commandes-equipement-link">
 	<h2>Commandes d'équipement</h2>
 
+	<div id="equipmentOrderContainer"></div>
+
+	<!-- Modal for Adding Equipment -->
+	<div class="modal fade show active" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addEquipmentModalLabel">Ajouter un nouvel équipement</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="equipmentName">Nom</label>
+							<input type="text" class="form-control" id="equipmentName">
+						</div>
+						<div class="form-group">
+							<label for="equipmentCategory">Catégorie</label>
+							<select class="form-control" id="categoryName">
+								<option value="laptop">Laptop</option>
+								<option value="computer_monitor">Computer Monitor</option>
+								<option value="smartphone">Smartphone</option>
+								<option value="accessory">Accessory</option>
+								<option value="tablet">Tablet</option>
+								<option value="VR_headset">VR Headset</option>
+								<!-- нужно добавить чтобы категории динамически обновлялись -->
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="equipmentDescription">Description</label>
+							<textarea class="form-control" id="equipmentDescription" rows="3"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" id="saveEquipmentBtn" class="btn btn-primary">Sauvegarder</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for Adding Category -->
+	<div class="modal fade show active" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addCategoryModalLabel">Ajouter une nouvelle catégorie</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="categoryName">Nom de la catégorie</label>
+							<input type="text" class="form-control" id="categoryName">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary
+" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" id="saveCategoryBtn" class="btn btn-primary">Sauvegarder la catégorie</button>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
 	<!-- Новая форма для заказа оборудования -->
 	<div class="order-form mb-4">
 		<h3>Nouvelle commande d'équipement</h3>

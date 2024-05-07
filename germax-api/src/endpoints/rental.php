@@ -18,7 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Обработка POST запроса
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$data = json_decode(file_get_contents('php://input'), true);
-	$rentalController->createRental($data);
+	// Различаем действия по ключу 'action' в переданных данных
+	if (isset($data['action'])) {
+			if ($data['action'] === 'approve') {
+					$rentalController->approveRental($data);
+			} elseif ($data['action'] === 'cancel') {
+					$rentalController->cancelRental($data);
+			} else {
+					// Ответ на неподдерживаемое действие
+					http_response_code(400);
+					echo json_encode(['error' => 'Action not supported']);
+			}
+	} else {
+			// Создаем новую аренду, если не указано действие
+			$rentalController->createRental($data);
+	}
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	// Обработка GET запроса для получения текущих аренд
 	$rentalController->fetchRentals();
