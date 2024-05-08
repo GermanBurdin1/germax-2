@@ -305,8 +305,8 @@ function createTableRow(request, namePermission) {
 					<td data-equipment-name>${request.equipment_name}</td>
 					<td>${request.quantity}</td>
 					<td>${request.request_date}</td>
-					<td>${request.status}</td>
-					<td>${request.sending_status}</td>
+					<td>${request.treatment_status}</td>
+					<td>${request.equipment_status}</td>
 					<td>
 							<div class="dropdown">
 									<button class="btn btn-secondary dropdown-toggle" type="button"
@@ -350,3 +350,5 @@ function setupAvailabilityModal() {
 }
 
 setupAvailabilityModal();
+
+// обновление статуса единицы оборудования
