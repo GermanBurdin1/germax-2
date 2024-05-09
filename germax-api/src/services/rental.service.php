@@ -15,8 +15,7 @@ class RentalService
 		$this->pdo = (new Database())->connect();
 	}
 
-	public function addRental($data)
-	{
+	public function addRental($data) {
 		if (!$data['quantity'] || !$data['rentalDates'] || !isset($data['modelId']) || !isset($data['id_user'])) {
 			return ['success' => false, 'message' => 'All fields including model ID and user ID are required'];
 		}
@@ -48,8 +47,7 @@ class RentalService
 		}
 	}
 
-	private function requestLoan($data)
-	{
+	private function requestLoan($data) {
 		// Добавляем запись в таблицу 'loan'
 		$insertLoanSql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, comment) VALUES (CURDATE(), ?, ?, ?, ?, 1, ?);";
 		$stmtLoan = $this->pdo->prepare($insertLoanSql);

@@ -93,8 +93,7 @@ class AuthService {
 		return renderSuccessAndExit(['User found'], 200, $userByToken);
 	}
 
-	private function getUserByToken($token)
-	{
+	public function getUserByToken($token) {
 		// Декодируем токен
 		$decodedToken = decrypt_token($token);  // Используем функцию для декодирования токена
 

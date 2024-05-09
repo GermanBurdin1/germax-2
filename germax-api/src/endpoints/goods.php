@@ -17,14 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	$statusName = isset($_GET['statusName']) ? $_GET['statusName'] : NULL;
 
 	$goodsController->getAllByParams($modelName, $typeName, $statusName);
-	// if ($modelName == NULL && $typeName == NULL && $statusName == NULL) {
-	// 	$goodsController->getAll();
-	// }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	// Возвращаем успешный статус
-	http_response_code(200);
+	http_response_code(204);
 	exit;
 }
 

@@ -94,7 +94,6 @@ const createConfig = (configDefault) => {
 						{
 							loader: "css-loader",
 							options: {
-								modules: true, // Включаем поддержку CSS модулей
 								import: true,
 								url: true,
 							},

@@ -43,17 +43,70 @@ import {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
-	returnNewLoanFormModalForTeachersOrStundents,
+	createAndAppendModalForTeachersOrStundents,
 } from "../../../utils/dashboard/data/student/booking";
+import { ApiAuth } from "../../../utils/classes/api-auth";
+import { ApiGoods } from "../../../utils/classes/api-goods";
 
-document.addEventListener("DOMContentLoaded", function () {
-	const authToken = localStorage.getItem("authToken");
-	console.log("Auth token:", authToken);
+const apiAuth = ApiAuth.getInstance();
+const apiGoods = new ApiGoods();
 
-	if (authToken) {
-		fetchAuthUser("http://germax-api/auth/me");
-	}
+Promise.all([
+	apiAuth.fetchMeAuthUser(),
+	apiGoods.getAllGoods()
+]).then(([user, goods]) => {
+	renderDashboard(user);
+	setUserPermissions(user);
 });
+
+// apiAuth.fetchMeAuthUser().then((user) => {
+// 	renderDashboard(user);
+// 	setUserPermissions(user);
+// 	ApiGoods
+// });
+
+// document.addEventListener("DOMContentLoaded", function () {
+// 	const authToken = localStorage.getItem("authToken");
+// 	console.log("Auth token:", authToken);
+
+// 	if (authToken) {
+// 		fetchAuthUser("http://germax-api/auth/me");
+// 	}
+// });
+
+// function fetchAuthUser(url) {
+// 	console.log("fetchAuthUser called");
+// 	const token = JSON.parse(localStorage.getItem("authToken"));
+// 	const id_user = JSON.parse(localStorage.getItem("id_user"));
+
+// 	if (!token) {
+// 		console.error("No token found, please login first");
+// 		return;
+// 	}
+
+// 	fetch(url, {
+// 		method: "GET",
+// 		headers: {
+// 			token: token,
+// 			"Content-Type": "application/json",
+// 		},
+// 	})
+// 		.then((response) => {
+// 			console.log("HTTP Status:", response.status);
+// 			const json = response.json();
+// 			if (!response.ok) return Promise.reject(json);
+// 			console.log("Data received:", json);
+// 			return json;
+// 		})
+// 		.then((data) => {
+// 			console.log("data:", data);
+			// renderDashboard(data);
+			// setUserPermissions(data.data);
+// 		})
+// 		.catch((error) => {
+// 			console.error("Failed to fetch data:", error);
+// 		});
+// }
 
 function initListeners() {
 	//для navbarDropdownMenuLink
@@ -69,7 +122,7 @@ function initListeners() {
 	// контейнер модалки для админа
 
 	modalNewStudentOrTeacherRequest.innerHTML =
-		returnNewLoanFormModalForTeachersOrStundents();
+		createAndAppendModalForTeachersOrStundents();
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
@@ -315,42 +368,8 @@ function hideActiveTabs(except) {
 	});
 }
 
-function fetchAuthUser(url) {
-	console.log("fetchAuthUser called");
-	const token = JSON.parse(localStorage.getItem("authToken"));
-	const id_user = JSON.parse(localStorage.getItem("id_user"));
-
-	if (!token) {
-		console.error("No token found, please login first");
-		return;
-	}
-
-	fetch(url, {
-		method: "GET",
-		headers: {
-			token: token,
-			"Content-Type": "application/json",
-		},
-	})
-		.then((response) => {
-			console.log("HTTP Status:", response.status);
-			const json = response.json();
-			if (!response.ok) return Promise.reject(json);
-			console.log("Data received:", json);
-			return json;
-		})
-		.then((data) => {
-			console.log("data:", data);
-			renderDashboard(data);
-			setUserPermissions(data.data);
-		})
-		.catch((error) => {
-			console.error("Failed to fetch data:", error);
-		});
-}
-
 function renderDashboard(responseData) {
-	adjustUIBasedOnUserType(responseData.data.name_permission);
+	adjustUIBasedOnUserType(responseData.name_permission);
 	initListeners();
 	// фильтрация оборудования, поиск для studentsAndTeacher
 	setupCategoryFilterEventListener();
@@ -451,23 +470,23 @@ function submitRentalRequest() {
 		});
 }
 
-function setUserPermissions(userData) {
-	console.log("вызов setUserPermissions")
-	const quantityInput = document.getElementById("quantity");
-	if (!quantityInput) return;
-	console.log(userData);
-	// Устанавливаем ограничения в зависимости от роли пользователя
-	switch (userData.name_permission) {
-		case "student":
-			quantityInput.max = 2;
-			break;
-		case "teacher":
-			quantityInput.max = 10;
-			break;
-		default:
-			quantityInput.max = 1;
-	}
-}
+// function setUserPermissions(userData) {
+// 	console.log("вызов setUserPermissions")
+// 	const quantityInput = document.getElementById("quantity");
+// 	if (!quantityInput) return;
+// 	console.log(userData);
+// 	// Устанавливаем ограничения в зависимости от роли пользователя
+// 	switch (userData.name_permission) {
+// 		case "student":
+// 			quantityInput.max = 2;
+// 			break;
+// 		case "teacher":
+// 			quantityInput.max = 10;
+// 			break;
+// 		default:
+// 			quantityInput.max = 1;
+// 	}
+// }
 
 function checkAvailability(modelId, requestedCount) {
 	fetch(`http://api.example.com/models/${modelId}`)

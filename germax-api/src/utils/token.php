@@ -1,12 +1,10 @@
 <?php
 
-function generateToken($str)
-{
+function generateToken($str) {
 	return base64_encode($str . ':' . time());
 }
 
-function decrypt_token($token)
-{
+function decrypt_token($token) {
 	// В реальном приложении может потребоваться использовать алгоритм расшифровки, соответствующий используемому алгоритму шифрования токена
 	// В этом примере просто декодируем base64 и разбиваем строку по символу ':'
 	$decoded_token = base64_decode($token);

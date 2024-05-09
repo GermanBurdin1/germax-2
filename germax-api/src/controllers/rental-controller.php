@@ -22,8 +22,7 @@ class RentalController
 		echo json_encode(['success' => true, 'data' => $rentals]);
 	}
 
-	public function approveRental($data)
-	{
+	public function approveRental($data, $token) {
 		$response = $this->rentalService->updateRentalStatus($data['loanId'], 3, 2);
 		echo json_encode($response);
 	}

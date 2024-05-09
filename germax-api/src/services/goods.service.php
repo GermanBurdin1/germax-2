@@ -10,12 +10,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/remove-special-characters.p
 class GoodsService
 {
 	private $pdo;
-	private $sqlRequests;
 
 	public function __construct()
 	{
 		$this->pdo = (new Database())->connect();
-		$this->sqlRequests = new SqlRequests();
 	}
 
 	public function getAllByParams($modelName, $typeName, $statusName) {
@@ -88,9 +86,10 @@ class GoodsService
 			$goods = $stmt->fetchAll();
 			$formatedGoods = $this->formatArrGoods($goods);
 
-			return renderSuccessAndExit([
-				'Goods found', removeSpecialCharacters($sql)
-			], 200, $formatedGoods);
+			// return renderSuccessAndExit([
+			// 	'Goods found', removeSpecialCharacters($sql)
+			// ], 200, $formatedGoods);
+			return $formatedGoods;
 		} catch (PDOException $e) {
 			return renderErrorAndExit('sql query error', 404, [
 				"error" => $e,
@@ -98,40 +97,6 @@ class GoodsService
 				"params" => $params
 			]);
 		}
-	}
-
-	public function getAll() {
-		$stmt = $this->pdo->prepare("
-			SELECT
-				good.id_good,
-				good.serial_number,
-				good.id_model,
-				model.name AS model_name,
-				model.description AS model_description,
-				model.photo AS model_photo,
-				good.id_status,
-				statu.name AS status_name,
-				model.id_type AS model_id_type,
-				typ.name AS model_type_name,
-				model.id_brand AS model_id_brand,
-				brand.name AS model_brand_name
-			FROM
-				good good
-			JOIN
-				status statu ON good.id_status = statu.id_status
-			JOIN
-				model model ON good.id_model = model.id_model
-			JOIN
-				type typ ON model.id_type = typ.id_type
-			JOIN
-				brand brand ON model.id_brand = brand.id_brand;
-		");
-		$stmt->execute();
-
-		$goods = $stmt->fetchAll();
-		$formatedGoods = $this->formatArrGoods($goods);
-
-		return renderSuccessAndExit(['Goods found'], 200, $formatedGoods);
 	}
 
 	private function generateWhereClause($params) {

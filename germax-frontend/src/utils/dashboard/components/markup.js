@@ -42,7 +42,8 @@ function getStudentNav() {
 	<a class="nav-link" id="locationsLink" href="./">Profil</a>
 	<a class="nav-link" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">Mes locations</a>
 	<a class="nav-link" id="rentalHistoryLink" href="#">Historique de mes locations</a>
-	<a role="button" id="openFullScreenSearch" class="nav-link">Louer un nouveau matériel
+	<a role="button" href="/loan-equipment" class="nav-link">
+		Louer un nouveau matériel
 	</a>
 </div>
 `;
