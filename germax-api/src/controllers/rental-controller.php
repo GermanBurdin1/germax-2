@@ -1,18 +1,28 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/rental.service.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
 
 class RentalController
 {
 	private $rentalService;
+	private $authService;
 
-	public function __construct()
+	public function __construct($rentalService, $authService)
 	{
-		$this->rentalService = new RentalService();
+		$this->rentalService = $rentalService;
+		$this->authService = $authService;
 	}
 
-	public function createRental($data)
+	public function createRental($data, $token)
 	{
-		$response = $this->rentalService->addRental($data);
+		$user = $this->authService->getUserByToken($token);
+
+		if ($user === null) {
+			echo json_encode(['success' => false, 'message' => 'Invalid token or user not found']);
+			return;
+		}
+
+		$response = $this->rentalService->addRental($data, $user['id_user']);
 		echo json_encode($response);
 	}
 
@@ -22,7 +32,8 @@ class RentalController
 		echo json_encode(['success' => true, 'data' => $rentals]);
 	}
 
-	public function approveRental($data, $token) {
+	public function approveRental($data, $token)
+	{
 		$response = $this->rentalService->updateRentalStatus($data['loanId'], 3, 2);
 		echo json_encode($response);
 	}

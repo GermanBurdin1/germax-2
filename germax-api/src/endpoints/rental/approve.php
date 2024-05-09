@@ -20,7 +20,6 @@ $data = json_decode(file_get_contents('php://input'), true);
 if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
 	$headers = getallheaders();
 	$headerToken = $headers['token'];
-	// Обработка GET запроса для получения текущих аренд
 	$rentalController->approveRental($data, $token);
 }
 

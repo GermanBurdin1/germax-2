@@ -16,7 +16,8 @@ class GoodsService
 		$this->pdo = (new Database())->connect();
 	}
 
-	public function getAllByParams($modelName, $typeName, $statusName) {
+	public function getAllByParams($modelName, $typeName, $statusName)
+	{
 		$sql = "
 			SELECT
 				good.id_good,
@@ -42,9 +43,6 @@ class GoodsService
 			JOIN
 				brand brand ON model.id_brand = brand.id_brand
 		";
-
-		// запрос включающие подсчет оборудования
-		// SELECT good.id_good, good.serial_number, good.id_model, model.name AS model_name, model.description AS model_description, model.photo AS model_photo, good.id_status, statu.name AS status_name, model.id_type AS model_id_type, typ.name AS model_type_name, model.id_brand AS model_id_brand, brand.name AS model_brand_name, (SELECT COUNT(g.id_good) FROM good g WHERE g.id_model = model.id_model AND g.id_status = 1) AS available_count FROM good JOIN status statu ON good.id_status = statu.id_status JOIN model ON good.id_model = model.id_model JOIN type typ ON model.id_type = typ.id_type JOIN brand ON model.id_brand = brand.id_brand;
 
 		$params = [
 			"modelName" => [
@@ -77,7 +75,6 @@ class GoodsService
 			foreach ($params as $paramName => $param) {
 				if ($param["exists"] == true) {
 					$value = $param["matches"] === true ? "%$param[value]%" : $param["value"];
-					// echo $value;
 					$stmt->bindValue(":" . $paramName, $value);
 				}
 			}
@@ -99,9 +96,10 @@ class GoodsService
 		}
 	}
 
-	private function generateWhereClause($params) {
-    $whereClause = '';
-    $firstParam = true;
+	private function generateWhereClause($params)
+	{
+		$whereClause = '';
+		$firstParam = true;
 
 		foreach ($params as $key => $param) {
 			if ($param['exists']) {
@@ -117,13 +115,15 @@ class GoodsService
 		return $whereClause ? "WHERE $whereClause" : '';
 	}
 
-	private function formatArrGoods($goods) {
+	private function formatArrGoods($goods)
+	{
 		return array_map(function ($good) {
 			return $this->formatGood($good);
 		}, $goods);
 	}
 
-	private function formatGood($good) {
+	private function formatGood($good)
+	{
 		$formattedGood = [
 			"id" => $good["id_good"],
 			"serial_number" => $good["serial_number"],
@@ -149,6 +149,61 @@ class GoodsService
 
 		return $formattedGood;
 	}
-}
 
-?>
+	public function checkQuantityAvailableGoods($modelName, $quantity)
+	{
+		$sql = "
+            SELECT
+                model.id_model,
+                model.name AS model_name,
+                (SELECT COUNT(g.id_good)
+                 FROM good g
+                 WHERE g.id_model = model.id_model AND g.id_status = 1
+                ) AS available_count
+            FROM
+                model
+            WHERE
+                model.name = :modelName
+        ";
+
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(['modelName' => $modelName]);
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		if (!$result) {
+			return ['success' => false, 'message' => 'Model not found'];
+		}
+
+		$availableCount = $result['available_count'];
+
+		return [
+			'success' => $availableCount >= $quantity,
+			'available_count' => $availableCount,
+			'model_id' => $result['id_model']
+		];
+	}
+
+	public function reserveGoods($modelId, $quantity)
+	{
+		$sql = "
+            SELECT id_good
+            FROM good
+            WHERE id_model = :modelId AND id_status = 1
+            LIMIT :quantity
+        ";
+
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->bindParam(':modelId', $modelId, PDO::PARAM_INT);
+		$stmt->bindValue(':quantity', $quantity, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	public function updateGoodStatus($goodId, $statusId)
+	{
+		$sql = "UPDATE good SET id_status = :statusId WHERE id_good = :goodId";
+		$stmt = $this->pdo->prepare($sql);
+		return $stmt->execute(['statusId' => $statusId, 'goodId' => $goodId]);
+	}
+}

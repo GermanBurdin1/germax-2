@@ -7,27 +7,29 @@ export class ApiRental {
 	constructor() {}
 
 	async createRequestRental(good, { quantity, dateStart, dateEnd, comments }) {
+		const body = JSON.stringify({
+			formInfo: {
+				quantity,
+				dateStart,
+				dateEnd,
+				comments,
+			},
+			idGood: good.id,
+		});
+
 		return fetch(this._baseUrl, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				token: this._apiAuth.getToken(),
 			},
-			body: {
-				formInfo: {
-					quantity,
-					dateStart,
-					dateEnd,
-					comments
-				},
-				idGood: good.id
-			}
+			body,
 		})
 			.then((response) => {
 				const json = response.json();
 				if (!response.ok) return Promise.reject(json);
 				return json;
 			})
-			.then(data => data.data)
+			.then((data) => data.data);
 	}
 }

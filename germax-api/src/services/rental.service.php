@@ -5,63 +5,108 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/error.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/validate.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql-requests.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/goods.service.php');
 
 class RentalService
 {
 	private $pdo;
+	private $goodsService;
 
 	public function __construct()
 	{
 		$this->pdo = (new Database())->connect();
+		$this->goodsService = new GoodsService();
 	}
 
-	public function addRental($data) {
-		if (!$data['quantity'] || !$data['rentalDates'] || !isset($data['modelId']) || !isset($data['id_user'])) {
-			return ['success' => false, 'message' => 'All fields including model ID and user ID are required'];
+	public function checkAndReserveGoods($modelName, $quantity)
+	{
+		$availability = $this->goodsService->checkQuantityAvailableGoods($modelName, $quantity);
+
+		if (!$availability['success']) {
+			return ['success' => false, 'message' => 'Model not found or insufficient quantity'];
 		}
 
-		$this->pdo->beginTransaction();  // Начинаем транзакцию
+		$reservedGoods = $this->goodsService->reserveGoods($availability['model_id'], $quantity);
+
+		foreach ($reservedGoods as $good) {
+			if (!$this->goodsService->updateGoodStatus($good['id_good'], 4)) {
+				return ['success' => false, 'message' => 'Failed to reserve goods'];
+			}
+		}
+
+		return ['success' => true, 'reservedGoods' => $reservedGoods];
+	}
+
+	public function addRental($data, $userId)
+	{
+		if (!$data['formInfo']['quantity'] || !$data['formInfo']['dateStart'] || !$data['formInfo']['dateEnd'] || !$data['idGood'] || !$userId) {
+			return ['success' => false, 'message' => 'All fields including good ID, rental dates, and user ID are required'];
+		}
+
+		$modelName = $this->getModelNameByGoodId($data['idGood']);
+		if (!$modelName) {
+			return ['success' => false, 'message' => 'Model name not found'];
+		}
+
+		$this->pdo->beginTransaction();
 
 		try {
-			$updateStatusSql = "UPDATE good SET id_status = 4 WHERE id_good = ? AND id_status = 1;";
-			$stmtUpdate = $this->pdo->prepare($updateStatusSql);
-			$stmtUpdate->execute([$data['goodId']]);
+			// Проверка и резервирование необходимого количества оборудования
+			$reservation = $this->checkAndReserveGoods($modelName, $data['formInfo']['quantity']);
 
-			if ($stmtUpdate->rowCount() > 0) {
-				// Добавляем запись в таблицу 'loan' с функцией requestLoan
-				if ($this->requestLoan($data)) {
-					$this->pdo->commit();  // Подтверждаем транзакцию
-					return ['success' => true, 'message' => 'Rental requested and loan recorded successfully'];
-				} else {
-					$this->pdo->rollBack();  // Откатываем транзакцию
+			if (!$reservation['success']) {
+				$this->pdo->rollBack();
+				return $reservation;
+			}
+
+			// Добавление каждой единицы оборудования в таблицу `loan`
+			foreach ($reservation['reservedGoods'] as $good) {
+				if (!$this->requestLoan([
+					'dateStart' => $data['formInfo']['dateStart'],
+					'dateEnd' => $data['formInfo']['dateEnd'],
+					'id_user' => $userId,
+					'goodId' => $good['id_good'],
+					'comments' => $data['formInfo']['comments']
+				])) {
+					$this->pdo->rollBack();
 					return ['success' => false, 'message' => 'Failed to record the loan'];
 				}
-			} else {
-				$this->pdo->rollBack();  // Откатываем транзакцию
-				return ['success' => false, 'message' => 'No equipment found or already loaned'];
 			}
+
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Rental requested and loan recorded successfully'];
 		} catch (PDOException $e) {
-			$this->pdo->rollBack();  // Откатываем транзакцию при ошибках
+			$this->pdo->rollBack();
 			error_log("Error during loan request: " . $e->getMessage(), 3, "../debug.php");
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
 
-	private function requestLoan($data) {
-		// Добавляем запись в таблицу 'loan'
+	private function requestLoan($data)
+	{
 		$insertLoanSql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, comment) VALUES (CURDATE(), ?, ?, ?, ?, 1, ?);";
 		$stmtLoan = $this->pdo->prepare($insertLoanSql);
-		$stmtLoan->execute([$data['rentalDates']['start'], $data['rentalDates']['end'], $data['id_user'], $data['modelId'], $data['comments']]);
+		$stmtLoan->execute([$data['dateStart'], $data['dateEnd'], $data['id_user'], $data['goodId'], $data['comments']]);
 		return $stmtLoan->rowCount() > 0;
 	}
 
-	public function fetchRentals() {
+	private function getModelNameByGoodId($goodId)
+	{
+		$sql = "SELECT model.name FROM good JOIN model ON good.id_model = model.id_model WHERE good.id_good = :goodId";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(['goodId' => $goodId]);
+		return $stmt->fetchColumn();
+	}
+
+	public function fetchRentals()
+	{
 		$stmt = $this->pdo->prepare("SELECT g.id_good, g.id_status, g.serial_number, u.lastname AS user_name, u.firstname AS user_surname, l.date_start, l.date_end, l.comment, m.name AS model_name FROM loan l JOIN good g ON l.id_good = g.id_good JOIN model m ON g.id_model = m.id_model JOIN user u ON l.id_user = u.id_user WHERE g.id_status = 4;");
 		$stmt->execute();
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	public function updateRentalStatus($loanId, $newStatus, $newAccord) {
+	public function updateRentalStatus($loanId, $newStatus, $newAccord)
+	{
 		$this->pdo->beginTransaction();
 		try {
 			$sql = "UPDATE loan SET id_status = ?, accord = ?, date_response = CURDATE() WHERE id_loan = ?";

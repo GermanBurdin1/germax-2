@@ -7,7 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/rental-controller.php';
 
-$rentalController = new RentalController();
+// $rentalController = new RentalController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	// Возвращаем статус 204 No Content
