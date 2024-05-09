@@ -12,24 +12,31 @@ export class ApiRental {
 				quantity,
 				dateStart,
 				dateEnd,
-				comments,
+				comments
 			},
-			idGood: good.id,
+			idGood: good.id
 		});
 
 		return fetch(this._baseUrl, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				token: this._apiAuth.getToken(),
+				"token": this._apiAuth.getToken()
 			},
-			body,
+			body
 		})
 			.then((response) => {
-				const json = response.json();
-				if (!response.ok) return Promise.reject(json);
-				return json;
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
 			})
-			.then((data) => data.data);
+			.then((data) => {
+				return data; // Здесь возвращается непосредственно весь объект данных
+			})
+			.catch((error) => {
+				console.error("Error in createRequestRental:", error);
+				throw error;
+			});
 	}
 }
