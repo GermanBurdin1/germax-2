@@ -108,6 +108,14 @@ function initListeners() {
 		);
 
 		switch (targetId) {
+			case "accountLink": // Добавить обработку клика на "Profil"
+				event.preventDefault();
+				// Повторная загрузка текущего контента при переходе на "Profil"
+				myLoans.style.display = "none";
+				clientLoansHistory.style.display = "none";
+				settingsTabContent.style.display = "none";
+				// Другие действия для загрузки профиля
+				break;
 			case "adminReportsLink":
 				event.preventDefault();
 				adminReportsModalContainer.innerHTML = returnAdminReportsModal();
@@ -140,8 +148,7 @@ function initListeners() {
 					hideActiveTabs(myLoans);
 					myLoans.style.display = "block";
 					myLoans.dataset.visible = "true";
-					myLoans.innerHTML = returnRentalHistoryLoans();
-					initializeSingleTab("#activeReservations");
+					myLoans.innerHTML = returnClientLoans;
 					initializeDropdowns();
 					initializeModals();
 					loadClientLoans();
@@ -157,7 +164,7 @@ function initListeners() {
 					clientLoansHistory.style.display = "block";
 					clientLoansHistory.dataset.visible = "true";
 					clientLoansHistory.innerHTML = returnRentalHistoryLoans();
-					initializeSingleTab("#completedReservations");
+					// initializeSingleTab("#completedReservations");
 					initializeDropdowns();
 					initializeModals();
 					loadRentalHistory();
@@ -193,12 +200,29 @@ function loadRentalHistory() {
 			clientLoansHistory.innerHTML = returnRentalHistoryLoans(rentals);
 			clientLoansHistory.style.display = "block";
 			clientLoansHistory.dataset.visible = "true";
-			initializeSingleTab("#completedReservations");
+			// initializeSingleTab("#completedReservations");
 			initializeDropdowns();
 			initializeModals();
 		})
 		.catch((error) => {
 			console.error("Failed to load rental history:", error);
+		});
+}
+
+function loadClientLoans() {
+	const myLoans = document.getElementById("myLoans");
+	apiRental
+		.getClientRentals()
+		.then((rentals) => {
+			myLoans.innerHTML = returnClientLoans(rentals);
+			myLoans.style.display = "block";
+			myLoans.dataset.visible = "true";
+			initializeSingleTab("#activeRequestReservations");
+			initializeDropdowns();
+			initializeModals();
+		})
+		.catch((error) => {
+			console.error("Failed to load client loans:", error);
 		});
 }
 
@@ -216,21 +240,6 @@ function hideActiveTabs(except) {
 			tab.dataset.visible = "false";
 		}
 	});
-}
-
-function loadClientLoans() {
-	const myLoans = document.getElementById("myLoans");
-	apiRental
-		.getClientRentals()
-		.then((rentals) => {
-			myLoans.innerHTML = returnClientLoans(rentals);
-			initializeSingleTab("#activeReservations");
-			initializeDropdowns();
-			initializeModals();
-		})
-		.catch((error) => {
-			console.error("Failed to load client loans:", error);
-		});
 }
 
 function renderDashboard(responseData) {

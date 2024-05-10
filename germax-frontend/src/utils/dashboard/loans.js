@@ -31,14 +31,14 @@ export function returnClientLoans(rentals = []) {
 		}).join('');
 
 	return `
-		<div class="nav nav-tabs" id="reservationTabs" role="tablist">
-			<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
-				role="tab" aria-controls="activeReservations" aria-selected="true">Réservations</a>
+		<div class="nav nav-tabs" id="requestReservationTabs" role="tablist">
+			<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeRequestReservations"
+				role="tab" aria-controls="activeRequestReservations" aria-selected="true">Réservations</a>
 		</div>
 
-		<div class="tab-content" id="reservationTabsContent">
-			<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
-				aria-labelledby="active-reservations-tab">
+		<div class="tab-content" id="requestReservationTabsContent">
+			<div class="tab-pane fade show active" id="activeRequestReservations" role="tabpanel"
+				aria-labelledby="active-request-reservations-tab">
 				<div class="table-responsive">
 					<table class="table" id="reservationsTable">
 						<thead>
@@ -61,6 +61,38 @@ export function returnClientLoans(rentals = []) {
 							${rows}
 						</tbody>
 					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Модальное окно для связи с менеджером -->
+		<div class="modal fade" id="communication-manager-modal" tabindex="-1" aria-labelledby="communication-manager-modal-label" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="communicationForm">
+							<div class="form-group">
+								<label for="communicationTopicSelect">Sujet de la communication</label>
+								<select class="form-control" id="communicationTopicSelect">
+									<option value="reservation-cancellation">Annulation de réservation</option>
+									<option value="reservation-extension">Autre</option>
+									<option value="future-availability">Disponibilité future</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="communicationMessageText">Message</label>
+								<textarea class="form-control" id="communicationMessageText" rows="3"></textarea>
+							</div>
+							<button type="submit" class="btn btn-primary">Envoyer</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -87,7 +119,7 @@ export function returnRentalHistoryLoans(rentals = []) {
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#change-loan-dates-modal">Changement de dates de location</a></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#change-loan-dates-modal">Contacter le manager</a></li>
 							</ul>
 						</div>
 					</td>
@@ -124,7 +156,43 @@ export function returnRentalHistoryLoans(rentals = []) {
 				</div>
 			</div>
 		</div>
-	`;
+
+		<!-- Модальное окно для связи с менеджером -->
+		<div class="modal fade" id="change-loan-dates-modal" tabindex="-1" aria-labelledby="change-loan-dates-modal-label" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="change-loan-dates-modal-modal-label">Communication avec le gestionnaire d'inventaire</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="communicationForm">
+							<div class="form-group">
+								<label for="communicationTopicSelect">Sujet de la communication</label>
+								<select class="form-control" id="communicationTopicSelect">
+									<option value="reservation-cancellation">Annulation de réservation</option>
+									<option value="general-query">Question générale</option>
+									<option value="reservation-cancellation">Annulation de réservation</option>
+									<option value="reservation-extension">Extension de réservation</option>
+									<option value="maintenance-status">Statut de maintenance</option>
+									<option value="future-availability">Disponibilité future</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="communicationMessageText">Message</label>
+								<textarea class="form-control" id="communicationMessageText" rows="3"></textarea>
+							</div>
+							<button type="submit" class="btn btn-primary">Envoyer</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	`
+	;
 }
 
 function formatDate(date) {
