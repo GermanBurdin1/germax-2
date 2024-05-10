@@ -203,11 +203,16 @@ function submitRentalRequest(good, formInfo) {
 	apiRental.createRequestRental(good, formInfo)
 		.then((response) => {
 			console.log("Rental request successful:", response);
+			alert("Votre demande de location a été enregistrée avec succès."); // Французское сообщение
 		})
 		.catch((error) => {
 			console.error("Rental request failed:", error);
+			// Показать детальную причину отказа
+			const errorMessage = error.message || "Échec de la demande de location. Veuillez réessayer.";
+			alert(`Échec de la demande de location: ${errorMessage}`); // Сообщение об ошибке на французском
 		});
 }
+
 
 
 initMain();

@@ -56,57 +56,7 @@ Promise.all([
 	apiGoods.getAllGoods()
 ]).then(([user, goods]) => {
 	renderDashboard(user);
-	setUserPermissions(user);
 });
-
-// apiAuth.fetchMeAuthUser().then((user) => {
-// 	renderDashboard(user);
-// 	setUserPermissions(user);
-// 	ApiGoods
-// });
-
-// document.addEventListener("DOMContentLoaded", function () {
-// 	const authToken = localStorage.getItem("authToken");
-// 	console.log("Auth token:", authToken);
-
-// 	if (authToken) {
-// 		fetchAuthUser("http://germax-api/auth/me");
-// 	}
-// });
-
-// function fetchAuthUser(url) {
-// 	console.log("fetchAuthUser called");
-// 	const token = JSON.parse(localStorage.getItem("authToken"));
-// 	const id_user = JSON.parse(localStorage.getItem("id_user"));
-
-// 	if (!token) {
-// 		console.error("No token found, please login first");
-// 		return;
-// 	}
-
-// 	fetch(url, {
-// 		method: "GET",
-// 		headers: {
-// 			token: token,
-// 			"Content-Type": "application/json",
-// 		},
-// 	})
-// 		.then((response) => {
-// 			console.log("HTTP Status:", response.status);
-// 			const json = response.json();
-// 			if (!response.ok) return Promise.reject(json);
-// 			console.log("Data received:", json);
-// 			return json;
-// 		})
-// 		.then((data) => {
-// 			console.log("data:", data);
-			// renderDashboard(data);
-			// setUserPermissions(data.data);
-// 		})
-// 		.catch((error) => {
-// 			console.error("Failed to fetch data:", error);
-// 		});
-// }
 
 function initListeners() {
 	//для navbarDropdownMenuLink
@@ -121,35 +71,16 @@ function initListeners() {
 	const modalClientLoans = document.getElementById("modalClientLoans");
 	// контейнер модалки для админа
 
-	modalNewStudentOrTeacherRequest.innerHTML =
-		createAndAppendModalForTeachersOrStundents();
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
 	modalClientLoans.innerHTML = rentalClientDetails();
 
-	const bookEquipmentModalElement = document.getElementById("fullScreenModal");
-	const newLoanFormModalElement = document.getElementById("newLoanFormModal");
 	const otherLoansFormModalElement = document.getElementById("loanFormModal");
 	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
 
-	let bookEquipmentModal,
-		otherLoansFormModal,
-		clientsHistoryModal,
-		newLoanFormModal;
-
-	if (bookEquipmentModalElement) {
-		bookEquipmentModal = new Modal(bookEquipmentModalElement);
-	} else {
-		console.error("fullScreenModal element not found");
-	}
-
-	if (newLoanFormModalElement) {
-		newLoanFormModal = new Modal(newLoanFormModalElement);
-	} else {
-		console.error("newLoanFormModalElement element not found");
-	}
+	let	otherLoansFormModal, clientsHistoryModal
 
 	if (otherLoansFormModalElement) {
 		otherLoansFormModal = new Modal(otherLoansFormModalElement);
@@ -164,46 +95,6 @@ function initListeners() {
 	}
 
 	document.addEventListener("click", function (event) {
-		if (event.target.closest(".reservation-modal-btn")) {
-			// Если кликнули по кнопке reservation-modal-btn
-			const button = event.target;
-			const modelId = button.getAttribute("data-model-id");
-			const modelName = button.getAttribute("data-model-name");
-			const goodId = button.getAttribute("data-good-id");
-			console.log(modelId, modelName);
-			const confirmButton = document.getElementById("confirmRentalButton");
-			if (confirmButton) {
-				confirmButton.setAttribute("data-model-id", modelId);
-				confirmButton.setAttribute("data-model-name", modelName);
-				confirmButton.setAttribute("data-good-id", goodId);
-			}
-			const modalTitle = document.querySelector(
-				"#newLoanFormModal .modal-title"
-			);
-			modalTitle.textContent = `Demande de location pour ${modelName}`;
-
-			// Закрываем bookEquipmentModal перед показом newLoanFormModal
-			if (bookEquipmentModal && typeof bookEquipmentModal.hide === "function") {
-				bookEquipmentModal.hide();
-				bookEquipmentModalElement.addEventListener(
-					"hidden.bs.modal",
-					function onModalHidden() {
-						newLoanFormModal.show();
-						bookEquipmentModalElement.removeEventListener(
-							"hidden.bs.modal",
-							onModalHidden
-						);
-					},
-					{ once: true }
-				);
-			} else {
-				// Если bookEquipmentModal недоступен или не имеет метода hide, просто показываем newLoanFormModal
-				newLoanFormModal.show();
-			}
-
-			event.stopPropagation();
-			return;
-		}
 
 		const target = event.target.closest("a"); // Найдем ближайший элемент <a>
 		const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
@@ -426,77 +317,4 @@ function activateSettingsTab() {
 	setupTabActivation("#settings-tab", "#settings-tab");
 	setupTabActivation("#general-tab", "#general-tab");
 	initializeSingleTab("#general-tab");
-}
-
-function submitRentalRequest() {
-	const button = document.getElementById("confirmRentalButton");
-	const goodId = button.getAttribute("data-good-id");
-	console.log("найденный goodId:", goodId);
-	const modelId = button.getAttribute("data-model-id");
-	const modelName = button.getAttribute("data-model-name");
-	const quantity = document.getElementById("quantity").value;
-	const dateStart = document.getElementById("dateStart").value;
-	const dateEnd = document.getElementById("dateEnd").value;
-	const comments = document.getElementById("comments").value;
-	const id_user = JSON.parse(localStorage.getItem("id_user")); // Получаем id_user из localStorage
-
-	if (!quantity || !dateStart || !dateEnd) {
-		alert("All fields must be filled out");
-		return;
-	}
-
-	fetch("http://germax-api/rental", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			id_user: id_user,
-			goodId: goodId,
-			modelId: modelId,
-			modelName: modelName,
-			quantity: quantity,
-			rentalDates: { start: dateStart, end: dateEnd },
-			comments: comments,
-		}),
-	})
-		.then((response) => response.json())
-		.then((data) => {
-			console.log("Success:", data);
-			// Обновите таблицу на странице управления бронированиями
-		})
-		.catch((error) => {
-			console.error("Error:", error);
-		});
-}
-
-// function setUserPermissions(userData) {
-// 	console.log("вызов setUserPermissions")
-// 	const quantityInput = document.getElementById("quantity");
-// 	if (!quantityInput) return;
-// 	console.log(userData);
-// 	// Устанавливаем ограничения в зависимости от роли пользователя
-// 	switch (userData.name_permission) {
-// 		case "student":
-// 			quantityInput.max = 2;
-// 			break;
-// 		case "teacher":
-// 			quantityInput.max = 10;
-// 			break;
-// 		default:
-// 			quantityInput.max = 1;
-// 	}
-// }
-
-function checkAvailability(modelId, requestedCount) {
-	fetch(`http://api.example.com/models/${modelId}`)
-			.then(response => response.json())
-			.then(data => {
-					if (requestedCount > data.available_count) {
-							alert("К сожалению, запрашиваемое количество не доступно.");
-					} else {
-							// Процесс бронирования
-					}
-			})
-			.catch(error => console.error('Ошибка при получении данных:', error));
 }
