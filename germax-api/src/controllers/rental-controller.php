@@ -32,6 +32,19 @@ class RentalController
 		echo json_encode(['success' => true, 'data' => $rentals]);
 	}
 
+	public function fetchRentalsByUser($token)
+	{
+		$user = $this->authService->getUserByToken($token);
+
+		if ($user === null) {
+			echo json_encode(['success' => false, 'message' => 'Invalid token or user not found']);
+			return;
+		}
+
+		$rentals = $this->rentalService->fetchRentalsByUser($user['id_user']);
+		echo json_encode(['success' => true, 'data' => $rentals]);
+	}
+
 	public function approveRental($data, $token)
 	{
 		$response = $this->rentalService->updateRentalStatus($data['loanId'], 3, 2);

@@ -43,13 +43,14 @@ import {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
-	createAndAppendModalForTeachersOrStundents,
 } from "../../../utils/dashboard/data/student/booking";
 import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiGoods } from "../../../utils/classes/api-goods";
+import { ApiRental } from "../../../utils/classes/api-rental";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
+const apiRental = new ApiRental();
 
 Promise.all([
 	apiAuth.fetchMeAuthUser(),
@@ -153,6 +154,7 @@ function initListeners() {
 					initializeSingleTab("#activeReservations");
 					initializeDropdowns();
 					initializeModals();
+					loadClientLoans();
 				}
 				break;
 			case "rentalHistoryLink":
@@ -210,6 +212,18 @@ function hideActiveTabs(except) {
 			tab.style.display = "none";
 			tab.dataset.visible = "false"; // Устанавливаем, что вкладка не видима
 		}
+	});
+}
+
+function loadClientLoans() {
+	const myLoans = document.getElementById("myLoans");
+	apiRental.getClientRentals().then((rentals) => {
+			myLoans.innerHTML = returnClientLoans(rentals);
+			initializeSingleTab("#activeReservations");
+			initializeDropdowns();
+			initializeModals();
+	}).catch((error) => {
+			console.error("Failed to load client loans:", error);
 	});
 }
 

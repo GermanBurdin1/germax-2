@@ -105,6 +105,32 @@ class RentalService
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
+	public function fetchRentalsByUser($userId)
+	{
+		$sql = "
+            SELECT
+                l.id_loan AS id,
+                l.date_start,
+                l.date_end,
+                l.accord,
+                g.serial_number,
+                m.name AS model_name,
+                s.name AS status_name,
+                g.id_status
+            FROM
+                loan l
+                JOIN good g ON l.id_good = g.id_good
+                JOIN model m ON g.id_model = m.id_model
+                JOIN status s ON g.id_status = s.id_status
+            WHERE
+                l.id_user = :userId
+        ";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(['userId' => $userId]);
+
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
 	public function updateRentalStatus($loanId, $newStatus, $newAccord)
 	{
 		$this->pdo->beginTransaction();
