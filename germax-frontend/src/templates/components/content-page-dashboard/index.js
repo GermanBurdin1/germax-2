@@ -140,17 +140,6 @@ function initListeners() {
 				console.log(initializedAdminSettingsModal);
 				initializedAdminSettingsModal.show();
 				break;
-			case "openFullScreenSearch":
-				event.preventDefault();
-				event.stopPropagation();
-				if (bookEquipmentModalElement && bookEquipmentModal) {
-					bookEquipmentModal.show();
-				} else {
-					console.error(
-						"Cannot show the first modal - element or instance is missing."
-					);
-				}
-				break;
 			case "loans":
 				event.preventDefault();
 				if (myLoans.dataset.visible === "true") {
@@ -184,41 +173,6 @@ function initListeners() {
 								clientsHistoryModal.show();
 							});
 						});
-				}
-				break;
-			case "loansRequest":
-				hideActiveTabs();
-				if (
-					bookEquipmentModalElement &&
-					bookEquipmentModal &&
-					typeof bookEquipmentModal.hide === "function"
-				) {
-					bookEquipmentModal.hide();
-					bookEquipmentModalElement.addEventListener(
-						"hidden.bs.modal",
-						function onModalHidden() {
-							if (
-								otherLoansFormModalElement &&
-								otherLoansFormModal &&
-								typeof otherLoansFormModal.show === "function"
-							) {
-								otherLoansFormModal.show();
-							} else {
-								console.error(
-									"otherLoansFormModal is not initialized or show is not a function"
-								);
-							}
-							bookEquipmentModalElement.removeEventListener(
-								"hidden.bs.modal",
-								onModalHidden
-							);
-						},
-						{ once: true }
-					);
-				} else {
-					console.error(
-						"bookEquipmentModal is not initialized or hide is not a function"
-					);
 				}
 				break;
 			case "settings-link":
@@ -264,12 +218,6 @@ function renderDashboard(responseData) {
 	initListeners();
 	// фильтрация оборудования, поиск для studentsAndTeacher
 	setupCategoryFilterEventListener();
-	const confirmButton = document.getElementById("confirmRentalButton");
-	if (confirmButton) {
-		confirmButton.addEventListener("click", submitRentalRequest);
-	} else {
-		console.log("Button with id 'confirmRentalButton' does not exist.");
-	}
 	setupModelSearchEventListener();
 	setupBrandFilterEventListener();
 }
