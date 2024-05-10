@@ -81,7 +81,15 @@ export function returnRentalHistoryLoans(rentals = []) {
 					<td>${formatDate(rental.date_end)}</td>
 					<td>${statusMessage}</td>
 					<td>
-						<button class="btn btn-secondary choose-action-btn">Choisir une action</button>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button"
+									id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#change-loan-dates-modal">Changement de dates de location</a></li>
+							</ul>
+						</div>
 					</td>
 				</tr>
 			`;

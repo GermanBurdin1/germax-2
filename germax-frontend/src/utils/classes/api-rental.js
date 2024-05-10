@@ -62,4 +62,30 @@ export class ApiRental {
                 throw error;
             });
     }
+
+		async approveRental(loanId) {
+			const body = JSON.stringify({ loanId });
+
+			return fetch(`${this._baseUrl}/approve.php`, {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					"token": this._apiAuth.getToken()
+				},
+				body
+			})
+				.then((response) => {
+					if (!response.ok) {
+						return response.json().then((json) => Promise.reject(json));
+					}
+					return response.json();
+				})
+				.then((data) => {
+					return data;
+				})
+				.catch((error) => {
+					console.error("Error in approveRental:", error);
+					throw error;
+				});
+		}
 }
