@@ -40,8 +40,8 @@ function getStockmanNav() {
 function getStudentNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link" id="locationsLink" href="./">Profil</a>
-	<a class="nav-link" id="loans" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">Mes locations</a>
-	<a class="nav-link" id="rentalHistoryLink" href="#">Historique de mes locations</a>
+	<a class="nav-link" id="loansRequests" href="#" data-bs-toggle="tab" data-bs-target="#reservationTabsContent">Mes demandes de locations</a>
+	<a class="nav-link" id="loansRealized" href="#" data-bs-toggle="tab" data-bs-target="#rentalHistoryLink">Mes locations</a>
 	<a role="button" href="/loan-equipment" class="nav-link">
 		Louer un nouveau matériel
 	</a>

@@ -24,6 +24,7 @@ import {
 	returnClientLoans,
 	returnLoanRequestModal,
 	returnLoanFormModal,
+	returnRentalHistoryLoans
 } from "../../../utils/dashboard/loans";
 import {
 	loansClientHistory,
@@ -32,7 +33,7 @@ import {
 
 import Modal from "bootstrap/js/dist/modal";
 
-//imorts for admin
+// Импорты для админа
 import {
 	returnAdminReportsModal,
 	returnAdminFeedbackModal,
@@ -52,26 +53,22 @@ const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
 
-Promise.all([
-	apiAuth.fetchMeAuthUser(),
-	apiGoods.getAllGoods()
-]).then(([user, goods]) => {
-	renderDashboard(user);
-});
+Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
+	([user, goods]) => {
+		renderDashboard(user);
+	}
+);
 
 function initListeners() {
-	//для navbarDropdownMenuLink
+	// Для navbarDropdownMenuLink
 	initializeDropdown();
 	const modalPlace = document.getElementById("modalPlace");
 	const modalSupport = document.getElementById("modalSupport");
-	const modalNewStudentOrTeacherRequest = document.getElementById(
-		"modalNewStudentOrTeacherRequest"
-	);
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
-	// контейнер модалки для админа
 
+	// Контейнер модалки для админа
 	modalPlace.innerHTML = returnAdminNotificationsModal();
 	modalSupport.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
@@ -81,7 +78,7 @@ function initListeners() {
 	const otherLoansFormModalElement = document.getElementById("loanFormModal");
 	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
 
-	let	otherLoansFormModal, clientsHistoryModal
+	let otherLoansFormModal, clientsHistoryModal;
 
 	if (otherLoansFormModalElement) {
 		otherLoansFormModal = new Modal(otherLoansFormModalElement);
@@ -96,9 +93,8 @@ function initListeners() {
 	}
 
 	document.addEventListener("click", function (event) {
-
-		const target = event.target.closest("a"); // Найдем ближайший элемент <a>
-		const targetId = target ? target.id : ""; // Получаем ID этого элемента, если он есть
+		const target = event.target.closest("a");
+		const targetId = target ? target.id : "";
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
 		const settingsTabContent = document.getElementById("tabPlace");
@@ -112,10 +108,8 @@ function initListeners() {
 		);
 
 		switch (targetId) {
-			// кейсы админа
 			case "adminReportsLink":
 				event.preventDefault();
-				console.log("клик на reportslink");
 				adminReportsModalContainer.innerHTML = returnAdminReportsModal();
 				const adminReportsModal = document.getElementById("adminReportModal");
 				const initializedAdminReportsModal = new Modal(adminReportsModal);
@@ -127,21 +121,17 @@ function initListeners() {
 				const adminFeedBackModal =
 					document.getElementById("adminFeedbackModal");
 				const initializedAdminFeedbackModal = new Modal(adminFeedBackModal);
-				console.log(initializedAdminFeedbackModal);
 				initializedAdminFeedbackModal.show();
 				break;
 			case "adminSettingsLink":
 				event.preventDefault();
-				console.log("привет");
 				adminSettingsContainter.innerHTML = returnAdminSettingsModal();
-				console.log(adminSettingsContainter);
 				const adminSettingsModal =
 					document.getElementById("adminSettingsModal");
 				const initializedAdminSettingsModal = new Modal(adminSettingsModal);
-				console.log(initializedAdminSettingsModal);
 				initializedAdminSettingsModal.show();
 				break;
-			case "loans":
+			case "loansRequests":
 				event.preventDefault();
 				if (myLoans.dataset.visible === "true") {
 					myLoans.style.display = "none";
@@ -150,14 +140,14 @@ function initListeners() {
 					hideActiveTabs(myLoans);
 					myLoans.style.display = "block";
 					myLoans.dataset.visible = "true";
-					myLoans.innerHTML = returnClientLoans();
+					myLoans.innerHTML = returnRentalHistoryLoans();
 					initializeSingleTab("#activeReservations");
 					initializeDropdowns();
 					initializeModals();
 					loadClientLoans();
 				}
 				break;
-			case "rentalHistoryLink":
+			case "loansRealized":
 				event.preventDefault();
 				if (clientLoansHistory.dataset.visible === "true") {
 					clientLoansHistory.style.display = "none";
@@ -166,15 +156,11 @@ function initListeners() {
 					hideActiveTabs(clientLoansHistory);
 					clientLoansHistory.style.display = "block";
 					clientLoansHistory.dataset.visible = "true";
-					clientLoansHistory.innerHTML = loansClientHistory();
-					document
-						.querySelectorAll("#clientLoansHistory .view-details")
-						.forEach((element) => {
-							element.addEventListener("click", function (e) {
-								e.preventDefault();
-								clientsHistoryModal.show();
-							});
-						});
+					clientLoansHistory.innerHTML = returnRentalHistoryLoans();
+					initializeSingleTab("#completedReservations");
+					initializeDropdowns();
+					initializeModals();
+					loadRentalHistory();
 				}
 				break;
 			case "settings-link":
@@ -199,6 +185,23 @@ function initListeners() {
 	});
 }
 
+function loadRentalHistory() {
+	const clientLoansHistory = document.getElementById("clientLoansHistory");
+	apiRental
+		.getClientRentals()
+		.then((rentals) => {
+			clientLoansHistory.innerHTML = returnRentalHistoryLoans(rentals);
+			clientLoansHistory.style.display = "block";
+			clientLoansHistory.dataset.visible = "true";
+			initializeSingleTab("#completedReservations");
+			initializeDropdowns();
+			initializeModals();
+		})
+		.catch((error) => {
+			console.error("Failed to load rental history:", error);
+		});
+}
+
 function hideActiveTabs(except) {
 	const activeTabs = [
 		document.getElementById("myLoans"),
@@ -210,27 +213,29 @@ function hideActiveTabs(except) {
 	activeTabs.forEach((tab) => {
 		if (tab !== except) {
 			tab.style.display = "none";
-			tab.dataset.visible = "false"; // Устанавливаем, что вкладка не видима
+			tab.dataset.visible = "false";
 		}
 	});
 }
 
 function loadClientLoans() {
 	const myLoans = document.getElementById("myLoans");
-	apiRental.getClientRentals().then((rentals) => {
+	apiRental
+		.getClientRentals()
+		.then((rentals) => {
 			myLoans.innerHTML = returnClientLoans(rentals);
 			initializeSingleTab("#activeReservations");
 			initializeDropdowns();
 			initializeModals();
-	}).catch((error) => {
+		})
+		.catch((error) => {
 			console.error("Failed to load client loans:", error);
-	});
+		});
 }
 
 function renderDashboard(responseData) {
 	adjustUIBasedOnUserType(responseData.name_permission);
 	initListeners();
-	// фильтрация оборудования, поиск для studentsAndTeacher
 	setupCategoryFilterEventListener();
 	setupModelSearchEventListener();
 	setupBrandFilterEventListener();

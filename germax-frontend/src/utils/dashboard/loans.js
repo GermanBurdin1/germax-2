@@ -1,74 +1,131 @@
 export function returnClientLoans(rentals = []) {
-	const formatDate = (dateStr) => dateStr.split(" ")[0]; // Убираем время из строки даты
+	const rows = rentals
+		.filter((rental) => rental.accord === false || rental.accord === 0) // Только заявки
+		.map((rental) => {
+			let statusMessage = "";
 
-	const rows = rentals.map((rental) => {
-			const status = rental.accord ? `loué le ${formatDate(rental.date_start)}` : `requête effectuée le ${formatDate(rental.date_start)}`;
+			if (rental.id_status === 4) {
+				statusMessage = `requête effectuée le ${formatDate(rental.date_start)}`;
+			}
+
 			return `
-					<tr data-id="${rental.id}">
-							<td>${rental.id}</td>
-							<td>${rental.model_name}</td>
-							<td>
-									<span class="view-mode" data-name="startdate">${formatDate(rental.date_start)}</span>
-									<input type="date" class="edit-mode d-none" name="startdate" value="${formatDate(rental.date_start)}">
-									<span class="error-message d-none"></span>
-							</td>
-							<td>
-									<span class="view-mode" data-name="enddate">${formatDate(rental.date_end)}</span>
-									<input type="date" class="edit-mode d-none" name="enddate" value="${formatDate(rental.date_end)}">
-									<span class="error-message d-none"></span>
-							</td>
-							<td>${status}</td>
-							<td>
-									<div class="dropdown">
-											<button class="btn btn-secondary dropdown-toggle" type="button"
-													id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-													Choisir une action
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#communication-manager-modal">Contacter le manager</a></li>
-													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#rentalDetailsModal">Détails de ma location</a></li>
-											</ul>
-									</div>
-							</td>
-					</tr>
+				<tr data-id="${rental.id}">
+					<td>${rental.id}</td>
+					<td>${rental.model_name}</td>
+					<td>${formatDate(rental.date_start)}</td>
+					<td>${formatDate(rental.date_end)}</td>
+					<td>${statusMessage}</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button"
+									id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#communication-manager-modal">Contacter le manager</a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
 			`;
-	}).join("");
+		}).join('');
 
 	return `
-			<div class="nav nav-tabs" id="reservationTabs" role="tablist">
-					<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
-							role="tab" aria-controls="activeReservations" aria-selected="true">Réservations</a>
-			</div>
+		<div class="nav nav-tabs" id="reservationTabs" role="tablist">
+			<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
+				role="tab" aria-controls="activeReservations" aria-selected="true">Réservations</a>
+		</div>
 
-			<!-- Содержимое вкладок -->
-			<div class="tab-content" id="reservationTabsContent">
-					<!-- Вкладка Активные резервации -->
-					<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
-							aria-labelledby="active-reservations-tab">
-							<div class="table-responsive">
-									<table class="table" id="reservationsTable">
-											<thead>
-													<tr>
-															<th data-column="id" data-type="number">ID Réservation <button
-																			class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-															</th>
-															<th data-column="equipment" data-type="text">Équipement loué</th>
-															<th data-column="startdate" data-type="date">Date de location<button
-																			class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-															</th>
-															<th data-column="enddate" data-type="date">Date de retour<button
-																			class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-															</th>
-															<th>Status</th>
-															<th>Actions</th>
-													</tr>
-											</thead>
-											<tbody>${rows}</tbody>
-									</table>
-							</div>
-					</div>
+		<div class="tab-content" id="reservationTabsContent">
+			<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
+				aria-labelledby="active-reservations-tab">
+				<div class="table-responsive">
+					<table class="table" id="reservationsTable">
+						<thead>
+							<tr>
+								<th data-column="id" data-type="number">ID Réservation <button
+												class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+								</th>
+								<th data-column="equipment" data-type="text">Équipement loué</th>
+								<th data-column="startdate" data-type="date">Date de location<button
+												class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+								</th>
+								<th data-column="enddate" data-type="date">Date de retour<button
+												class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+								</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							${rows}
+						</tbody>
+					</table>
+				</div>
 			</div>
+		</div>
 	`;
+}
+
+export function returnRentalHistoryLoans(rentals = []) {
+	const rows = rentals
+		.filter((rental) => rental.accord === true || rental.accord === 1) // Только подтвержденные аренды
+		.map((rental) => {
+			let statusMessage = `loué le ${formatDate(rental.date_accord)}`;
+
+			return `
+				<tr data-id="${rental.id}">
+					<td>${rental.id}</td>
+					<td>${rental.model_name}</td>
+					<td>${formatDate(rental.date_start)}</td>
+					<td>${formatDate(rental.date_end)}</td>
+					<td>${statusMessage}</td>
+					<td>
+						<button class="btn btn-secondary choose-action-btn">Choisir une action</button>
+					</td>
+				</tr>
+			`;
+		})
+		.join("");
+
+	return `
+		<div class="nav nav-tabs" id="historyTabs" role="tablist">
+			<a class="nav-link active" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
+				role="tab" aria-controls="completedReservations" aria-selected="true">Historique de mes locations</a>
+		</div>
+
+		<div class="tab-content" id="rentalHistoryLink">
+			<div class="tab-pane fade show active" id="completedReservations" role="tabpanel"
+				aria-labelledby="completed-reservations-tab">
+				<div class="table-responsive">
+					<table class="table" id="historyTable">
+						<thead>
+							<tr>
+								<th>ID Réservation</th>
+								<th>Équipement loué</th>
+								<th>Date de location</th>
+								<th>Date de retour</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							${rows}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	`;
+}
+
+function formatDate(date) {
+	if (!date) return '';
+	const d = new Date(date);
+	const year = d.getFullYear();
+	const month = (`0${d.getMonth() + 1}`).slice(-2);
+	const day = (`0${d.getDate()}`).slice(-2);
+	return `${year}-${month}-${day}`;
 }
 
 
