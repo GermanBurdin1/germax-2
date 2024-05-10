@@ -54,8 +54,9 @@ function getTeacherNav() {
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
 	<a class="nav-link" id="myLocations" href="page-info-user">Mes
 		locations. Сделать таблицу!!!</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-request">Louer un
-		nouveau matériel</a>
+		<a role="button" href="/loan-equipment" class="nav-link">
+		Louer un nouveau matériel
+	</a>
 	<a class="nav-link active" id="pageTeacherEquipmentUsageReports" href="/page-teacher-equipment-usage-reports" data-bs-toggle="pill">Rapport sur l'utilisation de l'équipement
 	</a>
 </div>`;

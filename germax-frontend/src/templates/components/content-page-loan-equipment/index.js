@@ -16,6 +16,9 @@ const searchInputNode = document.querySelector("#model-search");
 const equipmentListNode = document.getElementById("equipment-list");
 const timeDebounce = 200;
 
+let newLoanFormModal = null;
+let newLoanFormModalNode = null;
+
 function initRadioBtns(authUser) {
     const typeFilter = document.getElementById("type-filter");
 
@@ -89,6 +92,34 @@ function getUniqueGoods(goods) {
     return uniqueModels;
 }
 
+async function checkAvailableQuantity(event, good) {
+	const quantityInputNode = event.target;
+	const quantity = parseInt(quantityInputNode.value, 10);
+
+	try {
+			const goods = await apiGoods.getAllGoods({ modelName: good.model.name });
+			console.log("Fetched goods:", goods);
+
+			// Проверка статуса с использованием `g.status.id`
+			const availableGoods = goods.filter((g) => {
+					console.log(`Good ID: ${g.id}, Status ID: ${g.status.id}`);
+					return g.status.id === 1;
+			});
+
+			const availableCount = availableGoods.length;
+			console.log("Available goods count:", availableCount);
+
+			if (quantity > availableCount) {
+					alert(`Il n'y a pas assez d'unités disponibles. Unités disponibles : ${availableCount}`);
+					quantityInputNode.value = Math.min(quantity, availableCount);
+			}
+	} catch (error) {
+			console.error("Error checking available quantity:", error);
+			alert("Erreur lors de la vérification de la quantité disponible. Veuillez réessayer.");
+	}
+}
+
+
 function openReservationModal(event, good, authUser) {
     event.preventDefault();
     if (!authUser || !authUser.name_permission) {
@@ -96,18 +127,19 @@ function openReservationModal(event, good, authUser) {
         return;
     }
 
-    const newLoanFormModalNode = document.getElementById("newLoanFormModal");
+    newLoanFormModalNode = document.getElementById("newLoanFormModal");
 
     if (newLoanFormModalNode === null) throw new Error("#newLoanFormModal not defined");
 
     const userPermissions = getUserPermissions(authUser);
-    const newLoanFormModal = new Modal(newLoanFormModalNode);
+    newLoanFormModal = new Modal(newLoanFormModalNode);
     const modalTitle = document.querySelector("#newLoanFormModal .modal-title");
     const newLoanFormNode = newLoanFormModalNode.querySelector("form");
     const quantityInputNode = newLoanFormNode.querySelector("[name=quantity]");
 
     quantityInputNode.min = userPermissions.min;
     quantityInputNode.max = userPermissions.max;
+    quantityInputNode.addEventListener("input", (event) => checkAvailableQuantity(event, good));
 
     modalTitle.textContent = `Demande de location pour ${good.model.name}`;
     newLoanFormModal.show();
@@ -204,6 +236,7 @@ function submitRentalRequest(good, formInfo) {
 		.then((response) => {
 			console.log("Rental request successful:", response);
 			alert("Votre demande de location a été enregistrée avec succès."); // Французское сообщение
+			newLoanFormModal.hide(); // Закрыть модальное окно
 		})
 		.catch((error) => {
 			console.error("Rental request failed:", error);
@@ -213,7 +246,4 @@ function submitRentalRequest(good, formInfo) {
 		});
 }
 
-
-
 initMain();
-
