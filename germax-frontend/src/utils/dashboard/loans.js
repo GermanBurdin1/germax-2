@@ -22,13 +22,15 @@ export function returnClientLoans(rentals = []) {
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#communication-manager-modal">Contacter le manager</a></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
 							</ul>
 						</div>
 					</td>
 				</tr>
 			`;
-		}).join('');
+		})
+		.join("");
 
 	return `
 		<div class="nav nav-tabs" id="requestReservationTabs" role="tablist">
@@ -66,22 +68,15 @@ export function returnClientLoans(rentals = []) {
 		</div>
 
 		<!-- Модальное окно для связи с менеджером -->
-		<div class="modal fade" id="communication-manager-modal" tabindex="-1" aria-labelledby="communication-manager-modal-label" aria-hidden="true">
+		<div class="modal fade" id="request--communication-manager-modal" tabindex="-1" aria-labelledby="request--communication-manager-modal-label" aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
+						<h5 class="modal-title" id="request--communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<form id="communicationForm">
-							<div class="form-group">
-								<label for="communicationTopicSelect">Sujet de la communication</label>
-								<select class="form-control" id="communicationTopicSelect">
-									<option value="reservation-cancellation">Annulation de réservation</option>
-									<option value="reservation-extension">Autre</option>
-								</select>
-							</div>
 							<div class="form-group">
 								<label for="communicationMessageText">Message</label>
 								<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
@@ -95,6 +90,26 @@ export function returnClientLoans(rentals = []) {
 				</div>
 			</div>
 		</div>
+
+
+		<!-- Modal annulation-->
+    <div class="modal fade" id="request--reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-danger">Annuler la réservation</button>
+                </div>
+            </div>
+        </div>
+    </div>
 	`;
 }
 
@@ -118,7 +133,12 @@ export function returnRentalHistoryLoans(rentals = []) {
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#change-loan-dates-modal">Contacter le manager</a></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#communication-manager-modal">Contacter le manager</a></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
+								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#anticipate-return-loan-modal">Retour anticipé</a></li>
+								<li>
+    						<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#extension-loan-modal">Extension de la location</a>
+								</li>
 							</ul>
 						</div>
 					</td>
@@ -157,29 +177,18 @@ export function returnRentalHistoryLoans(rentals = []) {
 		</div>
 
 		<!-- Модальное окно для связи с менеджером -->
-		<div class="modal fade" id="change-loan-dates-modal" tabindex="-1" aria-labelledby="change-loan-dates-modal-label" aria-hidden="true">
+		<div class="modal fade" id="communication-manager-modal" tabindex="-1" aria-labelledby="communication-manager-modal-label" aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="change-loan-dates-modal-modal-label">Communication avec le gestionnaire d'inventaire</h5>
+						<h5 class="modal-title" id="communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<form id="communicationForm">
 							<div class="form-group">
-								<label for="communicationTopicSelect">Sujet de la communication</label>
-								<select class="form-control" id="communicationTopicSelect">
-									<option value="reservation-cancellation">Annulation de réservation</option>
-									<option value="general-query">Question générale</option>
-									<option value="reservation-cancellation">Annulation de réservation</option>
-									<option value="reservation-extension">Extension de réservation</option>
-									<option value="maintenance-status">Statut de maintenance</option>
-									<option value="future-availability">Disponibilité future</option>
-								</select>
-							</div>
-							<div class="form-group">
 								<label for="communicationMessageText">Message</label>
-								<textarea class="form-control" id="communicationMessageText" rows="3"></textarea>
+								<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
 							</div>
 							<button type="submit" class="btn btn-primary">Envoyer</button>
 						</form>
@@ -190,20 +199,86 @@ export function returnRentalHistoryLoans(rentals = []) {
 				</div>
 			</div>
 		</div>
-	`
-	;
+
+
+		<!-- Modal annulation-->
+    <div class="modal fade" id="reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-danger">Annuler la réservation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+		<!-- Modal for anticipate return -->
+		<div class="modal fade" id="anticipate-return-loan-modal" tabindex="-1" aria-labelledby="anticipateReturnModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="anticipateReturnModalLabel">Quelle date voulez-vous rendre l'équipement?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="newDate" class="form-label">Nouvelle date:</label>
+                        <input type="date" class="form-control" id="newDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary">Enregistrer les modifications</button>
+            </div>
+        </div>
+    		</div>
+		</div>
+
+		<!-- Modal for extension -->
+		<div class="modal fade" id="extension-loan-modal" tabindex="-1" aria-labelledby="extensionModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+						<div class="modal-content">
+								<div class="modal-header">
+										<h5 class="modal-title" id="extensionModalLabel">Modifier la date de réservation</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+										<form>
+												<div class="mb-3">
+														<label for="newDate" class="form-label">Nouvelle date:</label>
+														<input type="date" class="form-control" id="newDate">
+												</div>
+										</form>
+								</div>
+								<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+										<button type="button" class="btn btn-primary">Enregistrer les modifications</button>
+								</div>
+						</div>
+				</div>
+		</div>
+
+	`;
 }
 
 function formatDate(date) {
-	if (!date) return '';
+	if (!date) return "";
 	const d = new Date(date);
 	const year = d.getFullYear();
-	const month = (`0${d.getMonth() + 1}`).slice(-2);
-	const day = (`0${d.getDate()}`).slice(-2);
+	const month = `0${d.getMonth() + 1}`.slice(-2);
+	const day = `0${d.getDate()}`.slice(-2);
 	return `${year}-${month}-${day}`;
 }
-
-
 
 function returnLoanRequestModal() {
 	return `<div class="modal fade" id="fullScreenModal" tabindex="-1" aria-labelledby="fullScreenModalLabel" aria-hidden="true">

@@ -239,7 +239,7 @@ function returnSettingsTab() {
 	</div>`;
 }
 
-function returnModalSupport() {
+function returnSupportModal() {
 	return `
 	<!-- Modal -->
 	<div class="modal fade" id="supportModal" tabindex="-1" role="dialog" aria-labelledby="supportModalLabel" aria-hidden="true">
@@ -309,5 +309,5 @@ export {
 	getManagerHorizontalNav,
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
-	returnModalSupport,
+	returnSupportModal,
 };

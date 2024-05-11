@@ -10,7 +10,7 @@ import {
 	getManagerHorizontalNav,
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
-	returnModalSupport,
+	returnSupportModal,
 } from "../../../utils/dashboard/components/markup";
 import {
 	initializeTabsWithoutShow,
@@ -63,20 +63,22 @@ function initListeners() {
 	// Для navbarDropdownMenuLink
 	initializeDropdown();
 	const notificationsModalPlace = document.getElementById("notificationsModalPlace");
-	const supportModal = document.getElementById("supportModal");
+	const supportModalContainer = document.getElementById("supportModalContainer");
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
 
 	// Контейнер модалки для админа
 	notificationsModalPlace.innerHTML = returnNotificationsModal();
-	supportModal.innerHTML = returnModalSupport();
+	supportModalContainer.innerHTML = returnSupportModal();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
 	modalClientLoans.innerHTML = rentalClientDetails();
 
 	const otherLoansFormModalElement = document.getElementById("loanFormModal");
 	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
+	const supportModalElement = document.getElementById("supportModal");
+	const supportModal = new Modal(supportModalElement);
 
 	let otherLoansFormModal, clientsHistoryModal;
 
@@ -164,7 +166,6 @@ function initListeners() {
 					clientLoansHistory.style.display = "block";
 					clientLoansHistory.dataset.visible = "true";
 					clientLoansHistory.innerHTML = returnRentalHistoryLoans();
-					// initializeSingleTab("#completedReservations");
 					initializeDropdowns();
 					initializeModals();
 					loadRentalHistory();
@@ -200,7 +201,6 @@ function loadRentalHistory() {
 			clientLoansHistory.innerHTML = returnRentalHistoryLoans(rentals);
 			clientLoansHistory.style.display = "block";
 			clientLoansHistory.dataset.visible = "true";
-			// initializeSingleTab("#completedReservations");
 			initializeDropdowns();
 			initializeModals();
 		})
