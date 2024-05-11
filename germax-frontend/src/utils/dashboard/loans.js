@@ -80,12 +80,11 @@ export function returnClientLoans(rentals = []) {
 								<select class="form-control" id="communicationTopicSelect">
 									<option value="reservation-cancellation">Annulation de réservation</option>
 									<option value="reservation-extension">Autre</option>
-									<option value="future-availability">Disponibilité future</option>
 								</select>
 							</div>
 							<div class="form-group">
 								<label for="communicationMessageText">Message</label>
-								<textarea class="form-control" id="communicationMessageText" rows="3"></textarea>
+								<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
 							</div>
 							<button type="submit" class="btn btn-primary">Envoyer</button>
 						</form>

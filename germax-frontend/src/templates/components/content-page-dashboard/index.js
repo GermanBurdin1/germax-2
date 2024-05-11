@@ -6,7 +6,7 @@ import {
 	getStudentNav,
 	getTeacherNav,
 	getAdminHorizontalNav,
-	returnAdminNotificationsModal,
+	returnNotificationsModal,
 	getManagerHorizontalNav,
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
@@ -62,15 +62,15 @@ Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 function initListeners() {
 	// Для navbarDropdownMenuLink
 	initializeDropdown();
-	const modalPlace = document.getElementById("modalPlace");
-	const modalSupport = document.getElementById("modalSupport");
+	const notificationsModalPlace = document.getElementById("notificationsModalPlace");
+	const supportModal = document.getElementById("supportModal");
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
 
 	// Контейнер модалки для админа
-	modalPlace.innerHTML = returnAdminNotificationsModal();
-	modalSupport.innerHTML = returnModalSupport();
+	notificationsModalPlace.innerHTML = returnNotificationsModal();
+	supportModal.innerHTML = returnModalSupport();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
 	modalClientLoans.innerHTML = rentalClientDetails();
@@ -148,7 +148,7 @@ function initListeners() {
 					hideActiveTabs(myLoans);
 					myLoans.style.display = "block";
 					myLoans.dataset.visible = "true";
-					myLoans.innerHTML = returnClientLoans;
+					myLoans.innerHTML = returnClientLoans();
 					initializeDropdowns();
 					initializeModals();
 					loadClientLoans();
@@ -248,7 +248,79 @@ function renderDashboard(responseData) {
 	setupCategoryFilterEventListener();
 	setupModelSearchEventListener();
 	setupBrandFilterEventListener();
+	updateNotificationsModal(responseData.name_permission);
 }
+
+// Для менеджеров
+function getManagerNotifications() {
+  return [
+    {
+      title: "Annulation de réservation",
+      message: "Un étudiant a annulé sa réservation.",
+      linkText: "Gestion des locations",
+      linkHref: "/page-bookings-management",
+      timestamp: new Date().toLocaleString(),
+    },
+    {
+      title: "Problème de location",
+      message: "Un étudiant a signalé un problème de location.",
+      linkText: "Voir les détails",
+      linkHref: "/page-loans-management",
+      timestamp: new Date().toLocaleString(),
+    },
+  ];
+}
+
+// Для студентов и enseignants
+function getStudentTeacherNotifications() {
+  return [
+    {
+      title: "Fin de la période de location",
+      message: "Votre période de location pour l'équipement XYZ se termine bientôt.",
+      linkText: "Voir les détails",
+      linkHref: "/page-loans-details",
+      timestamp: new Date().toLocaleString(),
+    },
+    {
+      title: "Prolonger la réservation",
+      message: "Vous pouvez prolonger votre réservation pour l'équipement ABC.",
+      linkText: "Prolonger la réservation",
+      linkHref: "/page-extend-loan",
+      timestamp: new Date().toLocaleString(),
+    },
+  ];
+}
+
+// Создаем динамические уведомления для модального окна
+function createNotificationsList(notifications) {
+  return notifications
+    .map(
+      (notification) => `
+      <a href="${notification.linkHref}" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">${notification.title}</h5>
+          <small class="text-muted">${notification.timestamp}</small>
+        </div>
+        <p class="mb-1">${notification.message}</p>
+        <small class="text-muted">${notification.linkText}</small>
+      </a>
+    `
+    )
+    .join("");
+}
+
+function updateNotificationsModal(userType) {
+  let notifications = [];
+  if (userType === "rental-manager") {
+    notifications = getManagerNotifications();
+  } else {
+    notifications = getStudentTeacherNotifications();
+  }
+
+  const notificationsList = document.getElementById("notificationsList");
+  notificationsList.innerHTML = createNotificationsList(notifications);
+}
+
 
 function adjustUIBasedOnUserType(userType) {
 	const dynamicMenu = document.getElementById("dynamicMenu");
@@ -285,6 +357,9 @@ function adjustUIBasedOnUserType(userType) {
 
 	dynamicMenu.innerHTML = verticalNav;
 	horizontalNavbar.innerHTML = horizontalNav;
+
+	// Обновление содержимого уведомлений в зависимости от типа пользователя
+  // updateNotificationsModal(userType);
 }
 
 function activateSettingsTab() {

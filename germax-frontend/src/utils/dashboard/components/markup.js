@@ -74,45 +74,32 @@ function getAdminHorizontalNav() {
 }
 
 // модалка
-function returnAdminNotificationsModal() {
-	return `<div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="notificationsModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-	  <div class="modal-content">
-		<div class="modal-header">
-		  <h5 class="modal-title" id="notificationsModalLabel">Notifications</h5>
-		  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-		  </button>
-		</div>
-		<div class="modal-body">
-		  <!-- Содержимое уведомлений -->
-		  <div class="list-group">
-			  <!-- Уведомление о запросе на аренду оборудования -->
-			  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-				  <div class="d-flex w-100 justify-content-between">
-					  <h5 class="mb-1">Demandes de location d'équipement</h5>
-					  <small>À expirer</small>
-				  </div>
-				  <p class="mb-1">L'équipement XYZ doit être confirmé avant 18h00 aujourd'hui.</p>
-			  </a>
-			  <!-- Уведомление о просроченном возврате оборудования -->
-			  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-				  <div class="d-flex w-100 justify-content-between">
-					  <h5 class="mb-1">Retour d'équipement en retard</h5>
-					  <small class="text-muted">Il y a 3 jours</small>
-				  </div>
-				  <p class="mb-1">L'équipement ABC n'a pas été retourné à temps.</p>
-			  </a>
-			  <!-- Добавьте дополнительные уведомления по аналогии -->
-		  </div>
-		</div>
-		<div class="modal-footer">
-		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-		</div>
-	  </div>
-	</div>
-  </div>`;
+export function returnNotificationsModal() {
+  return `
+    <div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="notificationsModalLabel">Notifications</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Содержимое уведомлений -->
+            <div class="list-group" id="notificationsList">
+              <!-- Динамически добавляемые уведомления -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 }
+
 
 function getManagerHorizontalNav() {
 	return `<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
@@ -165,7 +152,7 @@ function getStockmanStudentTeacherHorizontalNav() {
 			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" aria-haspopup="true" aria-expanded="false">
 				<i class="fa fa-user"></i>
 			</a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+			<div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
 				<a class="dropdown-item" href="./">Profil</a>
 				<a class="dropdown-item" href="#" id="settings-dropdown-link">Paramètres</a>
 				<a class="dropdown-item" href="login.html">Déconnexion</a>
@@ -318,7 +305,6 @@ export {
 	getStockmanNav,
 	getStudentNav,
 	getTeacherNav,
-	returnAdminNotificationsModal,
 	getAdminHorizontalNav,
 	getManagerHorizontalNav,
 	returnSettingsTab,

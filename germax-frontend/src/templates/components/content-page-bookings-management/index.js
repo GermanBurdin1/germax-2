@@ -1,5 +1,8 @@
 import { Dropdown } from "bootstrap";
 import { Modal } from "bootstrap";
+import { returnAdminNotificationsModal } from "../../../utils/dashboard/data/manager/updates";
+import { returnClientLoans,
+  returnRentalHistoryLoans } from "../../../utils/dashboard/loans";
 import "./index.css";
 
 // получить данные которые были отправлены на странице
@@ -150,3 +153,94 @@ function cancelRental(loanId) {
     console.error("Error:", error);
   });
 }
+
+
+// Обработчик отправки сообщения об аннулировании аренды
+document.getElementById("communicationForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const topic = document.getElementById("communicationTopicSelect").value;
+  const message = document.getElementById("communicationMessageText").value;
+
+  const notification = createNotification({
+    title: `Annulation de réservation`,
+    message: `Sujet: ${topic}, Message: ${message}`,
+    linkText: "Gestion des locations",
+    linkHref: "/page-bookings-management",
+  });
+
+  appendNotification(notification);
+  showNotificationModal();
+});
+
+function createNotification({ title, message, linkText, linkHref }) {
+  return `
+    <a href="${linkHref}" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">${title}</h5>
+      </div>
+      <p class="mb-1">${message}</p>
+      <small class="text-muted">${new Date().toLocaleString()}</small>
+    </a>
+  `;
+}
+
+function appendNotification(notification) {
+  const notificationsList = document.getElementById("notificationsList");
+  notificationsList.innerHTML += notification;
+}
+
+function showNotificationModal() {
+  const notificationsModal = new Modal(document.getElementById("notificationsModal"), {});
+  notificationsModal.show();
+}
+
+function updateBookingTable({ id, name, equipment, quantity, dates, comment, status }) {
+  const bookingTableBody = document.querySelector("#booking-table tbody");
+  bookingTableBody.innerHTML += `
+    <tr data-booking-id="${id}">
+      <td>${id}</td>
+      <td>${name}</td>
+      <td>${equipment}</td>
+      <td>${quantity}</td>
+      <td>${dates}</td>
+      <td>${comment}</td>
+      <td>${status}</td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu${id}"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Choisir une action
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="actionMenu${id}">
+            <li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+            <li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+            <li><a class="dropdown-item" href="#">Gérer la location</a></li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+document.addEventListener("click", function (event) {
+  const target = event.target.closest("a");
+  if (!target) return;
+
+  const targetId = target.id;
+  const bookingLink = document.getElementById("bookingsLink");
+
+  if (targetId === "cancelRentalButton") {
+    event.preventDefault();
+
+    updateBookingTable({
+      id: "4",
+      name: "Test User",
+      equipment: "Ordinateur portable",
+      quantity: 1,
+      dates: "Date1",
+      comment: "Annulation de la réservation",
+      status: "Annulé",
+    });
+  }
+});
