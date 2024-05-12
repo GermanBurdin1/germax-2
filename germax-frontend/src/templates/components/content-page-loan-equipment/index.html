@@ -77,50 +77,50 @@
 
 <div class="modal fade show" id="requestNotFoundItemsModal" tabindex="-1" aria-labelledby="requestNotFoundItemsModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="requestNotFoundItemsModalLabel">Demande du matériel non trouvé</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="requestNotFoundItemsModalLabel">Demande du matériel non trouvé</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<form id="notFoundRequestForm">
+									<div class="mb-3">
+											<label for="equipmentCategory" class="form-label">Catégorie du matériel</label>
+											<select class="form-select" id="equipmentCategory" name="category">
+													<option value="laptops">Ordinateurs portables</option>
+													<option value="monitors">Ecrans d'ordinateurs</option>
+													<option value="smartphones">Smartphones</option>
+													<option value="accessories">Accessoires</option>
+													<option value="tablets">Tablettes</option>
+													<option value="vr_heads">Casques-VR</option>
+											</select>
+									</div>
+									<div class="mb-3">
+											<label for="modelInput" class="form-label">Commencez à rentrer le nom du modèle</label>
+											<input type="text" class="form-control" id="modelInput" name="modelName" placeholder="Rentrez le nom du modèle">
+									</div>
+									<div class="mb-3">
+											<label for="quantity" class="form-label">Quantité</label>
+											<input type="number" class="form-control" id="quantity" name="quantity" placeholder="1" min="1">
+									</div>
+									<div class="mb-3">
+											<label for="dateRequestStart" class="form-label">Date de début</label>
+											<input type="date" class="form-control" id="dateRequestStart" name="dateStart" required>
+									</div>
+									<div class="mb-3">
+											<label for="dateRequestEnd" class="form-label">Date de fin</label>
+											<input type="date" class="form-control" id="dateRequestEnd" name="dateEnd" required>
+									</div>
+									<div class="mb-3">
+											<label for="comments" class="form-label">Commentaires</label>
+											<textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+									</div>
+							</form>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+							<button type="submit" class="btn btn-primary" form="notFoundRequestForm">Envoyer la requête</button>
+					</div>
 			</div>
-			<div class="modal-body">
-				<form>
-					<div class="mb-3">
-						<label for="equipmentCategory" class="form-label">Catégorie du matériel</label>
-						<select class="form-select" id="equipmentCategory">
-							<option>Ordinateurs portables</option>
-							<option>Ecrans d'ordinateurs</option>
-							<option>Smartphones</option>
-							<option>Accessoires</option>
-							<option>Tablettes</option>
-							<option>Casques-VR</option>
-						</select>
-					</div>
-					<div class="mb-3">
-						<label for="modelInput" class="form-label">Commencez à rentrer le nom du modèle</label>
-						<input type="text" class="form-control" id="modelInput" placeholder="Rentrez le nom du modèle">
-					</div>
-					<div class="mb-3">
-						<label for="quantity" class="form-label">Quantité</label>
-						<input type="number" class="form-control" id="quantity" placeholder="1">
-					</div>
-					<div class="mb-3">
-						<label for="dateRequestStart" class="form-label">Date de début</label>
-						<input type="date" name="dateStart" class="form-control" id="dateRequestStart" required="true">
-					</div>
-					<div class="mb-3">
-						<label for="dateRequestEnd" class="form-label">Date de fin</label>
-						<input type="date" name="dateRequestEnd" class="form-control" id="dateEnd" required="true">
-					</div>
-					<div class="mb-3">
-						<label for="comments" class="form-label">Commentaires</label>
-						<textarea class="form-control" id="comments" rows="3"></textarea>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-				<button type="submit" class="btn btn-primary">Envoyer la requête</button>
-			</div>
-		</div>
 	</div>
 </div>
