@@ -263,7 +263,7 @@ function openRequestNotFoundItemsModal(authUser) {
 	}
 
 	const userPermissions = getUserPermissions(authUser);
-	console.log("User permissions:", userPermissions); // Для отладки
+	console.log("User permissions:", userPermissions);
 
 	requestNotFoundItemsModalNode = document.getElementById("requestNotFoundItemsModal");
 	if (requestNotFoundItemsModalNode === null) throw new Error("#requestNotFoundItemsModal not defined");

@@ -2,6 +2,8 @@ import "./index.css";
 // Confirmer la réception; marqué comme reçu как подстраховка (а так, будет автоматически делаться)
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
+import { formDataToObject } from "../../../utils/form-data-to-object";
+import { ApiAuth } from "../../../utils/classes/api-auth";
 
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 
