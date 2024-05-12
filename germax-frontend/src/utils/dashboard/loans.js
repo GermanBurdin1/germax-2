@@ -332,7 +332,7 @@ function returnLoanRequestModal() {
 `;
 }
 
-function returnLoanFormModal() {
+export function returnLoanFormModal() {
 	return `<div class="modal fade show" id="loanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">
@@ -380,4 +380,4 @@ function returnLoanFormModal() {
 </div>
 </div>`;
 }
-export { returnLoanRequestModal, returnLoanFormModal };
+export { returnLoanRequestModal };
