@@ -1,5 +1,5 @@
 <div class="container mt-4">
-	<h1 class="mb-3">Gestion des demandes de réservations</h1>
+	<h1 class="mb-3">Gestion des réservations</h1>
 
 	<div class="mb-3">
 		<!-- Фильтры -->
@@ -54,25 +54,25 @@
 	</div>
 
 	<div class="nav nav-tabs" id="equipmentTabs" role="tablist">
-		<a class="nav-link active" id="active-booking-tab" data-bs-toggle="tab" href="#activeEquipment" role="tab"
-			aria-controls="activeEquipment" aria-selected="true">Gérer les réservations </a>
+		<a class="nav-link active" id="active-booking-tab" data-bs-toggle="tab" href="#requestBookingsManagement" role="tab"
+			aria-controls="requestBookingsManagement" aria-selected="true">Gestion des demandes de réservations </a>
+		<a class="nav-link" id="active-booking-tab" data-bs-toggle="tab" href="#activeEquipment" role="tab"
+			aria-controls="activeEquipment" aria-selected="true">Réservations en cours </a>
 		<a class="nav-link" id="processed-booking-tab" data-bs-toggle="tab" href="#processedEquipmentRequest" role="tab"
 			aria-controls="processedEquipmentRequest" aria-selected="false">Réservations traitées</a>
-		<a class="nav-link" id="future-booking-tab" data-bs-toggle="tab" href="#futureBookings" role="tab"
-			aria-controls="futureBookings" aria-selected="false">Futures réservations</a>
 	</div>
 
 	<!-- Содержимое вкладок -->
 	<div class="tab-content" id="equipmentTabsContent">
-		<!-- Вкладка Активное оборудование -->
-		<div class="tab-pane fade show active" id="activeEquipment" role="tabpanel" aria-labelledby="active-booking-tab">
+		<!-- Вкладка запрос оборудования -->
+		<div class="tab-pane fade show active" id="requestBookingsManagement" role="tabpanel" aria-labelledby="request-bookings-management-tab">
 			<div class="row">
 				<div class="col-12">
-					<table class="table table-hover" id="booking-table">
+					<table class="table table-hover" id="request-bookings-table">
 						<thead>
 							<tr>
 								<th data-column="id" data-type="number">ID Réservation <button
-									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+										class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
 								</th>
 								<th>ID de l'équipement<button class="btn btn-link p-0 border-0" id="sortById"><i
 											class="fas fa-sort"></i></button>
@@ -85,7 +85,7 @@
 								<th>Commentaire laissé</th>
 								<th>Statut de la réservation actuel</th>
 								<th>Etat du matériel <button class="btn btn-link p-0 border-0 sortButton"
-									title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+										title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
 								<th>Actions</th>
 							</tr>
 						</thead>
@@ -172,40 +172,15 @@
 			</div>
 		</div>
 
-		<!-- Вкладка Архив -->
-		<div class="tab-pane fade" id="processedEquipmentRequest" role="tabpanel" aria-labelledby="processed-booking-tab">
-			<div class="row">
-				<div class="col-12">
-					<table class="table table-hover" id="processed-booking-table">
-						<thead>
-							<tr>
-								<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i class="fas fa-sort"></i></button>
-								</th>
-								<th>Nom du locataire</th>
-								<th>Modèle à louer<button class="btn btn-link p-0 border-0" id="sortByName"
-										style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
-								<th>Commentaire laissé</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-
-		<!-- future-reservations-->
-
-		<div class="tab-pane fade show active" id="futureBookings" role="tabpanel" aria-labelledby="future-bookings-tab">
+		<!-- Вкладка аренда оборудования -->
+		<div class="tab-pane fade" id="activeEquipment" role="tabpanel" aria-labelledby="active-equipment-tab">
 			<div class="row">
 				<div class="col-12">
 					<table class="table table-hover" id="booking-table">
 						<thead>
 							<tr>
 								<th data-column="id" data-type="number">ID Réservation <button
-									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+										class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
 								</th>
 								<th>ID de l'équipement<button class="btn btn-link p-0 border-0" id="sortById"><i
 											class="fas fa-sort"></i></button>
@@ -218,7 +193,7 @@
 								<th>Commentaire laissé</th>
 								<th>Statut de la réservation actuel</th>
 								<th>Etat du matériel <button class="btn btn-link p-0 border-0 sortButton"
-									title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+										title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
 								<th>Actions</th>
 							</tr>
 						</thead>
@@ -236,27 +211,15 @@
 								<td>Bon état</td>
 								<td>
 									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu1"
 											data-bs-toggle="dropdown" aria-expanded="false">
 											Choisir une action
 										</button>
-										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-											<li>
-												<a class="dropdown-item verify-booking-action" href="#">Vérifier une réservation existante pour ce matériel</a>
-												<!-- будет искать сначала во вкладке 'future résérvation'. во вкладке arrivant à échéance -->
-											</li>
-											<li>
-												<a class="dropdown-item verify-booking-action" href="#">Vérifier une réservation arrivant à échéance</a>
-												<!-- будет искать сначала во вкладке 'arrivant à échéance' -->
-											</li>
-											<li>
-												<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-													data-bs-target="#detailsModal">Voir les détails</a>
-											</li>
-											<li>
-												<a class="dropdown-item inform-state-action" href="#">Informer sur le changement d'état du matériel </a>
-												<!-- для stockman. По умолачнию Bon état. Будет возможность  -->
-											</li>
+										<ul class="dropdown-menu" aria-labelledby="actionMenu1">
+											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
+											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
 										</ul>
 									</div>
 								</td>
@@ -273,23 +236,15 @@
 								<td>Bon état</td>
 								<td>
 									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu2"
 											data-bs-toggle="dropdown" aria-expanded="false">
 											Choisir une action
 										</button>
-										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-											<li>
-												<a class="dropdown-item inform-state-action" href="#">Informer l'état du matériel </a>
-												<!-- для manager -->
-											</li>
-											<li>
-												<a class="dropdown-item mark-as-send-action" href="#">Former l'ordre</a>
-												<!-- в таблицу equipment orders -->
-											</li>
-											<li>
-												<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-													data-bs-target="#detailsModal">Voir les détails</a>
-											</li>
+										<ul class="dropdown-menu" aria-labelledby="actionMenu2">
+											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
+											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
 										</ul>
 									</div>
 								</td>
@@ -306,28 +261,43 @@
 								<td>Bon état</td>
 								<td>
 									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu3"
 											data-bs-toggle="dropdown" aria-expanded="false">
 											Choisir une action
 										</button>
-										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-											<li>
-												<a class="dropdown-item inform-state-action" href="#">Informer l'état du matériel </a>
-												<!-- для manager, для будущих -->
-											</li>
-											<li>
-												<a class="dropdown-item mark-as-send-action" href="#">Former l'ordre</a>
-												<!-- в таблицу equipment orders, для будущих -->
-											</li>
-											<li>
-												<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-													data-bs-target="#detailsModal">Voir les détails</a>
-												<!-- в таблицу equipment orders, для будущих и подходящих к сроку. для подходящих к сроку узнать о состоянии -->
-											</li>
+										<ul class="dropdown-menu" aria-labelledby="actionMenu3">
+											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
+											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
 										</ul>
 									</div>
 								</td>
 							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Вкладка processed -->
+		<div class="tab-pane fade" id="processedEquipmentRequest" role="tabpanel" aria-labelledby="processed-booking-tab">
+			<div class="row">
+				<div class="col-12">
+					<table class="table table-hover" id="processed-booking-table">
+						<thead>
+							<tr>
+								<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i class="fas fa-sort"></i></button>
+								</th>
+								<th>Nom du locataire</th>
+								<th>Modèle à louer<button class="btn btn-link p-0 border-0" id="sortByName"
+										style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
+								<th>Commentaire laissé</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+
 						</tbody>
 					</table>
 				</div>

@@ -19,8 +19,7 @@ function getRentalManagerNav() {
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
 	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Gestion du nouvel équipement</a>
 	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Attribuer un équipement</a>
-	<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des demandes de réservations</a>
-	<a class="nav-link" id="indicateursLink" href="/page-ahead-of-time-and-future-reservations">Résérvations à venir</a>
+	<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des réservations</a>
 	<a class="nav-link" id="usersManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
 	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Gestion de l'équipement</a>
 	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Communication avec le gestionnaire d'inventaire</a>
@@ -45,6 +44,9 @@ function getStudentNav() {
 	<a class="nav-link" id="loansRealized" href="#" data-bs-toggle="tab" data-bs-target="#rentalHistoryLink">Mes locations</a>
 	<a role="button" href="/loan-equipment" class="nav-link">
 		Louer un nouveau matériel
+	</a>
+	<a role="button" href="/page-stockman-communication-with-rental-manager/" class="nav-link">
+		Communication avec le manager
 	</a>
 </div>
 `;

@@ -1,8 +1,5 @@
 import { Dropdown } from "bootstrap";
 import { Modal } from "bootstrap";
-import { returnAdminNotificationsModal } from "../../../utils/dashboard/data/manager/updates";
-import { returnClientLoans,
-  returnRentalHistoryLoans } from "../../../utils/dashboard/loans";
 import "./index.css";
 
 // получить данные которые были отправлены на странице
@@ -27,7 +24,7 @@ function refreshRentals() {
 
 function updateBookingsTable(rentals) {
 	const tbody = document
-		.getElementById("booking-table")
+		.getElementById("request-bookings-table")
 		.getElementsByTagName("tbody")[0];
 	tbody.innerHTML = ""; // Очистить текущие строки таблицы
 	rentals.forEach((rental) => {

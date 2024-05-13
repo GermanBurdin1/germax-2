@@ -204,7 +204,7 @@ function renderEquipmentOrder(userData) {
 </div>
 
 		`;
-		const listOrdersTitleMarkup = `<h2>Liste des commandes</h2>`;
+		const listOrdersTitleMarkup = `<h2>Gestion des demandes de nouvelles réservations</h2>`;
 
 		orderEquipmentContainer.innerHTML = markup;
 		titleOrders.innerHTML = titleOrdersMarkup;
