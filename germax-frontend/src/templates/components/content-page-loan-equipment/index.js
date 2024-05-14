@@ -164,37 +164,43 @@ function openReservationModal(event, good, authUser) {
 	});
 }
 
+let formSubmitHandler = null;  // Сохраняем ссылку на обработчик
+
 function openRequestNotFoundItemsModal(authUser) {
 	if (!authUser || !authUser.name_permission) {
-		console.error("authUser is not defined or missing 'name_permission'");
-		return;
+			console.error("authUser is not defined or missing 'name_permission'");
+			return;
 	}
 
 	const userPermissions = getUserPermissions(authUser);
 
-	requestNotFoundItemsModalNode = document.getElementById(
-		"requestNotFoundItemsModal"
-	);
-	if (requestNotFoundItemsModalNode === null)
-		throw new Error("#requestNotFoundItemsModal not defined");
+	requestNotFoundItemsModalNode = document.getElementById("requestNotFoundItemsModal");
+	if (requestNotFoundItemsModalNode === null) {
+			throw new Error("#requestNotFoundItemsModal not defined");
+	}
 
 	requestNotFoundItemsModal = new Modal(requestNotFoundItemsModalNode);
 	requestNotFoundItemsModal.show();
-	const quantityInputNode =
-		requestNotFoundItemsModalNode.querySelector("#quantity");
+	const quantityInputNode = requestNotFoundItemsModalNode.querySelector("#quantity");
 	quantityInputNode.min = userPermissions.min;
 	quantityInputNode.max = userPermissions.max;
 
-	const newLoanRequestFormNode =
-		requestNotFoundItemsModalNode.querySelector("form");
-	newLoanRequestFormNode.addEventListener("submit", (event) => {
-		event.preventDefault();
-		const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
-
-		if (formRequestItemInfo.dateStart > formRequestItemInfo.dateEnd)
-			throw new Error("start date must be less than end date");
-		submitRentalNotFoundItemRequest(formRequestItemInfo, requestNotFoundItemsModal);
-	});
+	const newLoanRequestFormNode = requestNotFoundItemsModalNode.querySelector("form");
+	// Удаляем предыдущий обработчик, если он был установлен
+	if (formSubmitHandler) {
+			newLoanRequestFormNode.removeEventListener("submit", formSubmitHandler);
+	}
+	// Создаём новый обработчик
+	formSubmitHandler = (event) => {
+			event.preventDefault();
+			const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
+			if (formRequestItemInfo.dateStart > formRequestItemInfo.dateEnd) {
+					throw new Error("start date must be less than end date");
+			}
+			submitRentalNotFoundItemRequest(formRequestItemInfo, requestNotFoundItemsModal);
+	};
+	// Устанавливаем новый обработчик
+	newLoanRequestFormNode.addEventListener("submit", formSubmitHandler);
 }
 
 function createOneGoodNode(good, authUser) {
