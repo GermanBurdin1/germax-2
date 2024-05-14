@@ -5,10 +5,12 @@ import Modal from "bootstrap/js/dist/modal";
 import "./index.css";
 import { formDataToObject } from "../../../utils/form-data-to-object";
 import { ApiRental } from "../../../utils/classes/api-rental";
+import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
+const apiEquipmentRequest = new ApiEquipmentRequest();
 const categoryItemNodes = Array.from(
 	document.getElementsByClassName("list-group-item")
 );
@@ -162,6 +164,39 @@ function openReservationModal(event, good, authUser) {
 	});
 }
 
+function openRequestNotFoundItemsModal(authUser) {
+	if (!authUser || !authUser.name_permission) {
+		console.error("authUser is not defined or missing 'name_permission'");
+		return;
+	}
+
+	const userPermissions = getUserPermissions(authUser);
+
+	requestNotFoundItemsModalNode = document.getElementById(
+		"requestNotFoundItemsModal"
+	);
+	if (requestNotFoundItemsModalNode === null)
+		throw new Error("#requestNotFoundItemsModal not defined");
+
+	requestNotFoundItemsModal = new Modal(requestNotFoundItemsModalNode);
+	requestNotFoundItemsModal.show();
+	const quantityInputNode =
+		requestNotFoundItemsModalNode.querySelector("#quantity");
+	quantityInputNode.min = userPermissions.min;
+	quantityInputNode.max = userPermissions.max;
+
+	const newLoanRequestFormNode =
+		requestNotFoundItemsModalNode.querySelector("form");
+	newLoanRequestFormNode.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
+
+		if (formRequestItemInfo.dateStart > formRequestItemInfo.dateEnd)
+			throw new Error("start date must be less than end date");
+		submitRentalNotFoundItemRequest(formRequestItemInfo, requestNotFoundItemsModal);
+	});
+}
+
 function createOneGoodNode(good, authUser) {
 	const modelElement = document.createElement("div");
 	const srcStr = `
@@ -256,36 +291,32 @@ function submitRentalRequest(good, formInfo) {
 		});
 }
 
-function openRequestNotFoundItemsModal(authUser) {
-	if (!authUser || !authUser.name_permission) {
-			console.error("authUser is not defined or missing 'name_permission'");
-			return;
-	}
-
-	const userPermissions = getUserPermissions(authUser);
-	console.log("User permissions:", userPermissions);
-
-	requestNotFoundItemsModalNode = document.getElementById("requestNotFoundItemsModal");
-	if (requestNotFoundItemsModalNode === null) throw new Error("#requestNotFoundItemsModal not defined");
-
-	requestNotFoundItemsModal = new Modal(requestNotFoundItemsModalNode);
-	const quantityInputNode = requestNotFoundItemsModalNode.querySelector("#quantity");
-	quantityInputNode.min = userPermissions.min;
-	quantityInputNode.max = userPermissions.max;
-
-	requestNotFoundItemsModal.show();
+function submitRentalNotFoundItemRequest(formInfo, requestNotFoundItemsModal) {
+	apiEquipmentRequest
+		.createEquipmentRequest(formInfo)
+		.then((response) => {
+			console.log("requestNotFoundItemsModal:",requestNotFoundItemsModal);
+			alert("Votre demande de location a été enregistrée avec succès."); // Французское сообщение
+			requestNotFoundItemsModal.hide(); // Закрыть модальное окно
+		})
+		.catch((error) => {
+			console.error("Rental request failed:", error);
+			// Показать детальную причину отказа
+			const errorMessage =
+				error.message || "Échec de la demande de location. Veuillez réessayer.";
+			alert(`Échec de la demande de location: ${errorMessage}`); // Сообщение об ошибке на французском
+		});
 }
-
 
 function initNotFoundItemsModalListener(authUser) {
 	const loansRequestButton = document.getElementById("request-button");
-	if (loansRequestButton === null) throw new Error("loansRequest button not found");
+	if (loansRequestButton === null)
+		throw new Error("loansRequest button not found");
 
 	loansRequestButton.addEventListener("click", (event) => {
-			event.preventDefault();
-			openRequestNotFoundItemsModal(authUser);
+		event.preventDefault();
+		openRequestNotFoundItemsModal(authUser);
 	});
 }
-
 
 initMain();
