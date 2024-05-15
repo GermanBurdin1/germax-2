@@ -59,11 +59,11 @@ export function returnClientLoans(rentals = [], requests = []) {
 			} else if (entry.type === "request") {
 				statusMessage = entry.treatment_status || "unknown status";
 				if (entry.statusMessage === "rental_details_discussion_manager_user") {
-					actionsMarkup += `
+					actionsMarkup = `
             <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
           `;
-				} else if (entry.statusMessage === "pending_manager") {
-					actionsMarkup += `
+				} else {
+					actionsMarkup = `
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
           `;
