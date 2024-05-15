@@ -4,6 +4,9 @@ import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import { formDataToObject } from "../../../utils/form-data-to-object";
 import { ApiAuth } from "../../../utils/classes/api-auth";
+import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
+
+const apiEquipmentRequest = new ApiEquipmentRequest();
 
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 
@@ -254,13 +257,8 @@ function renderEquipmentOrder(userData) {
 // обновление таблицы данными
 
 function updateEquipmentRequestsTable(namePermission) {
-	fetch("http://germax-api/equipment_requests/get-all-requests", {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-		.then((response) => response.json())
+
+	apiEquipmentRequest.getAllRequests()
 		.then((data) => {
 			const tableBody = document.querySelector(".table tbody");
 			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы

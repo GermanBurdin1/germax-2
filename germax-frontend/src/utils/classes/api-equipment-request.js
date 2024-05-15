@@ -58,16 +58,15 @@ export class ApiEquipmentRequest {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				// Убедитесь, что ответ содержит свойство data и оно является массивом
 				if (data.success && Array.isArray(data.data)) {
-					return data.data;
+					return data;
 				} else {
 					throw new Error("Invalid response structure");
 				}
 			})
 			.catch((error) => {
 				console.error("Error fetching equipment requests:", error);
-				return []; // Возвращаем пустой массив в случае ошибки
+				return { success: false, data: [] }; // Возвращаем объект с пустым массивом данных в случае ошибки
 			});
 	}
 }
