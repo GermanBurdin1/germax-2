@@ -288,13 +288,11 @@ function createTableRow(request, namePermission) {
 			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
 			<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
 			`;
-		}
-		else if (request.treatment_status === "treated_manager_user") {
+		} else if (request.treatment_status === "treated_manager_user") {
 			actionsMarkup = `
 			<li><a class="dropdown-item send-to-stockman" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#stockmanApprovalModal">Отправить на согласование с кладовщиком</a></li>
 			`;
-		}
-		else {
+		} else {
 			actionsMarkup = `
 			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
 			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
@@ -335,7 +333,6 @@ function createTableRow(request, namePermission) {
 	`;
 }
 
-
 //vérifier la disponibilité
 //модальное окно
 
@@ -373,20 +370,29 @@ setupAvailabilityModal();
 
 // обновление статуса единицы оборудования
 const editModal = new Modal(document.getElementById("editModal"));
-const confirmationModal = new Modal(document.getElementById("confirmationModal"));
+const confirmationModal = new Modal(
+	document.getElementById("confirmationModal")
+);
+const stockmanApprovalModal = new Modal(
+	document.getElementById("stockmanApprovalModal")
+);
 const namePermission = "rental-manager"; // Замените на реальное значение
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
-  if (event.target.classList.contains("edit-request")) {
-    event.preventDefault();
-    const requestId = event.target.getAttribute("data-id");
-    openEditModal(requestId);
-  } else if (event.target.classList.contains("confirm-approval")) {
-    event.preventDefault();
-    const requestId = event.target.getAttribute("data-id");
-    openConfirmationModal(requestId);
-  }
+	if (event.target.classList.contains("edit-request")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openEditModal(requestId);
+	} else if (event.target.classList.contains("confirm-approval")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openConfirmationModal(requestId);
+	} else if (event.target.classList.contains("send-to-stockman")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openStockmanApprovalModal(requestId);
+	}
 });
 
 function openEditModal(requestId) {
@@ -432,7 +438,7 @@ document
 			.updateEquipmentRequest(updatedData)
 			.then((data) => {
 				updateTableRow(requestId, data);
-				alert("Les données ont bien été renouvelés!")
+				alert("Les données ont bien été renouvelés!");
 				editModal.hide();
 			})
 			.catch((error) => {
@@ -455,41 +461,98 @@ function updateTableRow(requestId, updatedData) {
 }
 
 function openConfirmationModal(requestId) {
-  document.getElementById("confirmApprovalButton").setAttribute("data-id", requestId);
-  confirmationModal.show();
+	document
+		.getElementById("confirmApprovalButton")
+		.setAttribute("data-id", requestId);
+	confirmationModal.show();
 }
 
 function sendUpdatedDataToUser(requestId) {
-  const row = document.querySelector(`tr[data-id="${requestId}"]`);
-  // Здесь можно добавить логику для отправки данных на сервер для согласования
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	// Здесь можно добавить логику для отправки данных на сервер для согласования
 
-  // Пример логики отправки данных на сервер:
-  const approvalData = {
-    id_request: requestId,
-    // Добавьте дополнительные данные, если необходимо
-  };
+	// Пример логики отправки данных на сервер:
+	const approvalData = {
+		id_request: requestId,
+		// Добавьте дополнительные данные, если необходимо
+	};
 
-  apiEquipmentRequest.sendUpdatedDataToUser(approvalData)
-    .then((data) => {
-      alert("Данные успешно подтверждены и отправлены на согласование!");
-      // Обновите статус строки или выполните другие действия
-      updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
-    })
-    .catch((error) => {
-      console.error("Ошибка при отправке данных на согласование:", error);
-      alert("Ошибка при отправке данных на согласование.");
-    });
+	apiEquipmentRequest
+		.sendUpdatedDataToUser(approvalData)
+		.then((data) => {
+			alert("Данные успешно подтверждены и отправлены на согласование!");
+			// Обновите статус строки или выполните другие действия
+			updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
+		})
+		.catch((error) => {
+			console.error("Ошибка при отправке данных на согласование:", error);
+			alert("Ошибка при отправке данных на согласование.");
+		});
 }
 
-document.getElementById("confirmApprovalButton").addEventListener("click", function() {
-  const requestId = this.getAttribute("data-id");
-  sendUpdatedDataToUser(requestId);
-  confirmationModal.hide();
-});
+document
+	.getElementById("confirmApprovalButton")
+	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		sendUpdatedDataToUser(requestId);
+		confirmationModal.hide();
+	});
 
 function updateTableRowStatus(requestId, status) {
-  const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
-  if (row) {
-    row.children[6].textContent = status; // Предполагается, что статус находится в 7-м столбце (индекс 6)
-  }}
+	if (row) {
+		row.children[6].textContent = status; // Предполагается, что статус находится в 7-м столбце (индекс 6)
+	}
+}
+
+function openStockmanApprovalModal(requestId) {
+	console.log("Вызов функции openStockmanApprovalModal ")
+	document
+		.getElementById("confirmStockmanApprovalButton")
+		.setAttribute("data-id", requestId);
+		stockmanApprovalModal.show();
+}
+
+function sendToStockman(requestId) {
+	console.log("вызов функции sendToStockman")
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
+	const quantity = row.children[2].textContent;
+	const dateStart = row.children[3].textContent;
+	const dateEnd = row.children[4].textContent;
+	const comment = row.children[5].textContent;
+
+	const updatedData = {
+		id_request: requestId,
+		equipment_name: equipmentName,
+		quantity: quantity,
+		date_start: dateStart,
+		date_end: dateEnd,
+		comment: comment,
+		treatment_status: "pending_stockman",
+	};
+	console.log(updatedData);
+
+	apiEquipmentRequest
+		.updateEquipmentRequest(updatedData)
+		.then((data) => {
+			alert("Данные успешно отправлены на согласование с кладовщиком!");
+			updateTableRowStatus(requestId, "pending_stockman");
+		})
+		.catch((error) => {
+			console.error(
+				"Ошибка при отправке данных на согласование с кладовщиком:",
+				error
+			);
+			alert("Ошибка при отправке данных на согласование с кладовщиком.");
+		});
+}
+
+document
+	.getElementById("confirmApprovalButton")
+	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		sendToStockman(requestId);
+		stockmanApprovalModal.hide();
+	});

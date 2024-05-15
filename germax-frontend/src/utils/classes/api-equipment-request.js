@@ -71,6 +71,7 @@ export class ApiEquipmentRequest {
 	}
 
 	async updateEquipmentRequest(updatedData) {
+		console.log("вызов updateEquipmentRequest")
     const body = JSON.stringify(updatedData);
     return fetch(`${this._baseUrl}/update-request`, {
       method: "PUT",
