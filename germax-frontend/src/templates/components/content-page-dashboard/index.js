@@ -400,7 +400,7 @@ function confirmApproval(requestId) {
     .then((data) => {
       alert("Данные успешно подтверждены и отправлены на согласование!");
       // Обновите статус строки или выполните другие действия
-      updateTableRowStatus(requestId, "approved");
+      updateTableRowStatus(requestId, "treated_manager_user");
     })
     .catch((error) => {
       console.error("Ошибка при отправке данных на согласование:", error);

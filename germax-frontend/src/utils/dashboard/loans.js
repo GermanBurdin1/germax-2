@@ -44,6 +44,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 	const rows = allEntries
 		.map((entry) => {
 			let statusMessage;
+			let actionsMarkup = "";
 			if (entry.type === "rental") {
 				statusMessage = entry.statusMessage;
 				if (entry.id_status === 4) {
@@ -51,8 +52,22 @@ export function returnClientLoans(rentals = [], requests = []) {
 						entry.date_start
 					)}`;
 				}
+				actionsMarkup = `
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+        `;
 			} else if (entry.type === "request") {
 				statusMessage = entry.treatment_status || "unknown status";
+				if (entry.statusMessage === "rental_details_discussion_manager_user") {
+					actionsMarkup += `
+            <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
+          `;
+				} else if (entry.statusMessage === "pending_manager") {
+					actionsMarkup += `
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+          `;
+				}
 			}
 
 			return `
@@ -69,8 +84,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 															Choisir une action
 													</button>
 													<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-															<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-															<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+													${actionsMarkup}
 													</ul>
 											</div>
 									</td>
