@@ -469,7 +469,7 @@ function sendUpdatedDataToUser(requestId) {
     .then((data) => {
       alert("Данные успешно подтверждены и отправлены на согласование!");
       // Обновите статус строки или выполните другие действия
-      updateTableRowStatus(requestId, "rental_details_discussion_manager_use");
+      updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
     })
     .catch((error) => {
       console.error("Ошибка при отправке данных на согласование:", error);

@@ -215,6 +215,7 @@ function loadRentalHistory() {
 		});
 }
 
+let managerProposalModal;
 function loadClientLoans() {
 	const myLoans = document.getElementById("myLoans");
 
@@ -234,6 +235,7 @@ function loadClientLoans() {
 			initializeSingleTab("#activeRequestReservations");
 			initializeDropdowns();
 			initializeModals();
+			setupProposalModal();
 		})
 		.catch((error) => {
 			console.error("Failed to load data:", error);
@@ -385,33 +387,62 @@ function activateSettingsTab() {
 	initializeSingleTab("#general-tab");
 }
 
+function setupProposalModal() {
+	managerProposalModal = new Modal(
+		document.getElementById("managerProposalModal")
+	);
+
+	document.querySelector(".table").addEventListener("click", (event) => {
+		if (event.target.classList.contains("view-manager-proposal")) {
+			event.preventDefault();
+			const requestId = event.target.getAttribute("data-id");
+			openManagerProposalModal(requestId);
+		}
+	});
+
+	document
+		.getElementById("confirmManagerProposal")
+		.addEventListener("click", function () {
+			const requestId = this.getAttribute("data-id");
+			confirmApproval(requestId);
+			managerProposalModal.hide();
+		});
+}
+
+function openManagerProposalModal(requestId) {
+	document
+		.getElementById("confirmManagerProposal")
+		.setAttribute("data-id", requestId);
+	managerProposalModal.show(); // используем существующий экземпляр для показа модального окна
+}
 
 function confirmApproval(requestId) {
-  const row = document.querySelector(`tr[data-id="${requestId}"]`);
-  // Здесь можно добавить логику для отправки данных на сервер для согласования
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	// Здесь можно добавить логику для отправки данных на сервер для согласования
 
-  // Пример логики отправки данных на сервер:
-  const approvalData = {
-    id_request: requestId,
-    // Добавьте дополнительные данные, если необходимо
-  };
+	// Пример логики отправки данных на сервер:
+	const approvalData = {
+		id_request: requestId,
+		// Добавьте дополнительные данные, если необходимо
+	};
 
-  apiEquipmentRequest.confirmApproval(approvalData)
-    .then((data) => {
-      alert("Данные успешно подтверждены и отправлены на согласование!");
-      // Обновите статус строки или выполните другие действия
-      updateTableRowStatus(requestId, "treated_manager_user");
-    })
-    .catch((error) => {
-      console.error("Ошибка при отправке данных на согласование:", error);
-      alert("Ошибка при отправке данных на согласование.");
-    });
+	apiEquipmentRequest
+		.confirmApproval(approvalData)
+		.then((data) => {
+			alert("Данные успешно подтверждены и отправлены на согласование!");
+			updateTableRowStatus(requestId, "treated_manager_user");
+		})
+		.catch((error) => {
+			console.error("Ошибка при отправке данных на согласование:", error);
+			alert("Ошибка при отправке данных на согласование.");
+		});
 }
 
 function updateTableRowStatus(requestId, status) {
-  const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
-  if (row) {
-    row.children[6].textContent = status; // Предполагается, что статус находится в 7-м столбце (индекс 6)
-  }
+	if (row) {
+		console.log("row4", row.children[4]);
+		row.children[4].textContent = status;
+	}
 }

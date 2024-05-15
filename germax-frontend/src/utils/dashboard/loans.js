@@ -168,6 +168,23 @@ export function returnClientLoans(rentals = [], requests = []) {
 							</div>
 					</div>
 			</div>
+
+			<!-- Modal для подтверждения предложения менеджера -->
+    <div class="modal fade" id="managerProposalModal" tabindex="-1" aria-labelledby="managerProposalModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="managerProposalModalLabel">Proposition du manager</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Vous êtes sûr de vouloir accepté ces données? Une fois accepté vous ne pourrez plus revenir dessus.</p>
+            <button type="button" class="btn btn-primary" id="confirmManagerProposal">Confirmer</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отправить сообщение менеджеру</button>
+          </div>
+        </div>
+      </div>
+    </div>
 	`;
 }
 
