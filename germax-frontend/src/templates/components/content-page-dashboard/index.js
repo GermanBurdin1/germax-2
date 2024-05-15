@@ -383,3 +383,34 @@ function activateSettingsTab() {
 	setupTabActivation("#general-tab", "#general-tab");
 	initializeSingleTab("#general-tab");
 }
+
+
+function confirmApproval(requestId) {
+  const row = document.querySelector(`tr[data-id="${requestId}"]`);
+  // Здесь можно добавить логику для отправки данных на сервер для согласования
+
+  // Пример логики отправки данных на сервер:
+  const approvalData = {
+    id_request: requestId,
+    // Добавьте дополнительные данные, если необходимо
+  };
+
+  apiEquipmentRequest.confirmApproval(approvalData)
+    .then((data) => {
+      alert("Данные успешно подтверждены и отправлены на согласование!");
+      // Обновите статус строки или выполните другие действия
+      updateTableRowStatus(requestId, "approved");
+    })
+    .catch((error) => {
+      console.error("Ошибка при отправке данных на согласование:", error);
+      alert("Ошибка при отправке данных на согласование.");
+    });
+}
+
+function updateTableRowStatus(requestId, status) {
+  const row = document.querySelector(`tr[data-id="${requestId}"]`);
+
+  if (row) {
+    row.children[6].textContent = status; // Предполагается, что статус находится в 7-м столбце (индекс 6)
+  }
+}

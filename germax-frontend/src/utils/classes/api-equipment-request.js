@@ -98,4 +98,63 @@ export class ApiEquipmentRequest {
         throw error;
       });
   }
+
+	async confirmApproval(approvalData) {
+		const body = JSON.stringify(approvalData);
+		return fetch(`${this._baseUrl}/confirm-approval`, { // Замените URL на соответствующий для подтверждения
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
+				if (data.success) {
+					return data.data; // Возвращаем обновленные данные
+				} else {
+					throw new Error(data.message || "Error confirming approval");
+				}
+			})
+			.catch((error) => {
+				console.error("Error confirming approval:", error);
+				throw error;
+			});
+	}
+
+	async sendUpdatedDataToUser(updatedData) {
+    const body = JSON.stringify(updatedData);
+    return fetch(`${this._baseUrl}/send-updated-data-to-user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: this._apiAuth.getToken(),
+      },
+      body,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((json) => Promise.reject(json));
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          return data.data;
+        } else {
+          throw new Error(data.message || "Error sending data to user");
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending data to user:", error);
+        throw error;
+      });
+  }
+
 }

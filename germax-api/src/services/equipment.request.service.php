@@ -66,4 +66,43 @@ class EquipmentRequestService
 			return ['success' => false, 'message' => 'No rows updated'];
 		}
 	}
+
+	public function sendUpdatedDataToUser($data)
+	{
+		// Логика отправки данных пользователю
+		// Например, обновление записи в базе данных и уведомление пользователя
+		$sql = "UPDATE equipment_request SET treatment_status = 'rental_details_discussion_manager_user' WHERE id_request = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$data['id_request']]);
+
+		if ($stmt->rowCount() > 0) {
+			$sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$data['id_request']]);
+			$updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			return ['success' => true, 'data' => $updatedRequest];
+		} else {
+			return ['success' => false, 'message' => 'No rows updated'];
+		}
+	}
+
+	public function confirmApproval($data)
+	{
+		$sql = "UPDATE equipment_request SET treatment_status = 'treated_manager_user' WHERE id_request = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$data['id_request']]);
+
+		if ($stmt->rowCount() > 0) {
+			$sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$data['id_request']]);
+			$updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			return ['success' => true, 'data' => $updatedRequest];
+		} else {
+			return ['success' => false, 'message' => 'No rows updated'];
+		}
+	}
+
 }

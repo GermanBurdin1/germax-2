@@ -286,7 +286,7 @@ function createTableRow(request, namePermission) {
 		if (request.equipment_status === "equipment_availability_pending") {
 			actionsMarkup = `
 			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
-			<li><a class="dropdown-item" href="#">Confirmer l'approbation</a></li>
+			<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
 			`;
 		} else {
 			actionsMarkup = `
@@ -331,7 +331,6 @@ function createTableRow(request, namePermission) {
 	`;
 }
 
-// затем у stockman надо проверить через запрос есть ли нужное оборудование и если нет предложить другое похожее, если нет ничего похожего то просто статус-нет
 
 //vérifier la disponibilité
 //модальное окно
@@ -370,15 +369,20 @@ setupAvailabilityModal();
 
 // обновление статуса единицы оборудования
 const editModal = new Modal(document.getElementById("editModal"));
+const confirmationModal = new Modal(document.getElementById("confirmationModal"));
 const namePermission = "rental-manager"; // Замените на реальное значение
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
-	if (event.target.classList.contains("edit-request")) {
-		event.preventDefault();
-		const requestId = event.target.getAttribute("data-id");
-		openEditModal(requestId);
-	}
+  if (event.target.classList.contains("edit-request")) {
+    event.preventDefault();
+    const requestId = event.target.getAttribute("data-id");
+    openEditModal(requestId);
+  } else if (event.target.classList.contains("confirm-approval")) {
+    event.preventDefault();
+    const requestId = event.target.getAttribute("data-id");
+    openConfirmationModal(requestId);
+  }
 });
 
 function openEditModal(requestId) {
@@ -445,3 +449,43 @@ function updateTableRow(requestId, updatedData) {
 		row.children[5].textContent = updatedData.comment;
 	}
 }
+
+function openConfirmationModal(requestId) {
+  document.getElementById("confirmApprovalButton").setAttribute("data-id", requestId);
+  confirmationModal.show();
+}
+
+function sendUpdatedDataToUser(requestId) {
+  const row = document.querySelector(`tr[data-id="${requestId}"]`);
+  // Здесь можно добавить логику для отправки данных на сервер для согласования
+
+  // Пример логики отправки данных на сервер:
+  const approvalData = {
+    id_request: requestId,
+    // Добавьте дополнительные данные, если необходимо
+  };
+
+  apiEquipmentRequest.sendUpdatedDataToUser(approvalData)
+    .then((data) => {
+      alert("Данные успешно подтверждены и отправлены на согласование!");
+      // Обновите статус строки или выполните другие действия
+      updateTableRowStatus(requestId, "rental_details_discussion_manager_use");
+    })
+    .catch((error) => {
+      console.error("Ошибка при отправке данных на согласование:", error);
+      alert("Ошибка при отправке данных на согласование.");
+    });
+}
+
+document.getElementById("confirmApprovalButton").addEventListener("click", function() {
+  const requestId = this.getAttribute("data-id");
+  sendUpdatedDataToUser(requestId);
+  confirmationModal.hide();
+});
+
+function updateTableRowStatus(requestId, status) {
+  const row = document.querySelector(`tr[data-id="${requestId}"]`);
+
+  if (row) {
+    row.children[6].textContent = status; // Предполагается, что статус находится в 7-м столбце (индекс 6)
+  }}
