@@ -223,6 +223,7 @@ function loadClientLoans() {
 		apiEquipmentRequest.getAllRequests(),
 	])
 		.then(([rentals, requests]) => {
+			requests = requests.data;
 			console.log("Rentals:", rentals);
 			console.log("Requests:", requests);
 			// Допустим, что функция returnClientLoans теперь может обрабатывать оба типа данных
