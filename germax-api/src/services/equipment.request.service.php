@@ -40,4 +40,30 @@ class EquipmentRequestService
 		$stmt->execute();
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+
+	public function updateRequest($data)
+	{
+		$sql = "UPDATE equipment_request SET equipment_name = ?, quantity = ?, date_start = ?, date_end = ?, comment = ? WHERE id_request = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([
+			$data['equipment_name'],
+			$data['quantity'],
+			$data['date_start'],
+			$data['date_end'],
+			$data['comment'],
+			$data['id_request']
+		]);
+
+		if ($stmt->rowCount() > 0) {
+			// Получаем обновленную запись, чтобы вернуть её клиенту
+			$sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$data['id_request']]);
+			$updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			return ['success' => true, 'data' => $updatedRequest];
+		} else {
+			return ['success' => false, 'message' => 'No rows updated'];
+		}
+	}
 }

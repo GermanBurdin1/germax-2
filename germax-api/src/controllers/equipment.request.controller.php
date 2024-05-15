@@ -33,5 +33,15 @@ class EquipmentRequestController
 		return $this->equipmentRequestService->getAllRequests();
 	}
 
+	public function updateRequest($requestData, $token)
+	{
+		$user = $this->authService->getUserByToken($token);
+		if ($user === null) {
+			return ['success' => false, 'message' => 'Invalid token or user not found'];
+		}
+
+		$response = $this->equipmentRequestService->updateRequest($requestData);
+		return $response;
+	}
 	// Можно добавить другие методы, например, изменение или удаление запроса
 }

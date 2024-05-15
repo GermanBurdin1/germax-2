@@ -257,8 +257,8 @@ function renderEquipmentOrder(userData) {
 // обновление таблицы данными
 
 function updateEquipmentRequestsTable(namePermission) {
-
-	apiEquipmentRequest.getAllRequests()
+	apiEquipmentRequest
+		.getAllRequests()
 		.then((data) => {
 			const tableBody = document.querySelector(".table tbody");
 			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
@@ -285,8 +285,8 @@ function createTableRow(request, namePermission) {
 	if (namePermission === "rental-manager") {
 		if (request.equipment_status === "equipment_availability_pending") {
 			actionsMarkup = `
-				<li><a class="dropdown-item" href="#">Modifier et soumettre pour approbation</a></li>
-				<li><a class="dropdown-item" href="#">Confirmer l'approbation</a></li>
+			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
+			<li><a class="dropdown-item" href="#">Confirmer l'approbation</a></li>
 			`;
 		} else {
 			actionsMarkup = `
@@ -307,11 +307,13 @@ function createTableRow(request, namePermission) {
 	}
 
 	return `
-			<tr>
+			<tr data-id="${request.id_request}">
 					<td>${request.id_request}</td>
 					<td data-equipment-name>${request.equipment_name}</td>
 					<td>${request.quantity}</td>
 					<td>${request.request_date}</td>
+					<td>${request.date_start}</td>
+					<td>${request.date_end}</td>
 					<td>${request.treatment_status}</td>
 					<td>${request.equipment_status}</td>
 					<td>
@@ -335,27 +337,111 @@ function createTableRow(request, namePermission) {
 //модальное окно
 
 function setupAvailabilityModal() {
-	const availabilityModal = new Modal(document.getElementById('availabilityModal'));
+	const availabilityModal = new Modal(
+		document.getElementById("availabilityModal")
+	);
 
-	document.querySelector('.table tbody').addEventListener('click', function(e) {
+	document
+		.querySelector(".table tbody")
+		.addEventListener("click", function (e) {
 			// Проверяем, что клик был по элементу с классом 'check-availability'
-			if (e.target.classList.contains('check-availability')) {
-					e.preventDefault();
-					const equipmentName = e.target.closest('tr').querySelector('td[data-equipment-name]').textContent;
-					document.getElementById('equipmentInput').value = equipmentName;
-					availabilityModal.show();
+			if (e.target.classList.contains("check-availability")) {
+				e.preventDefault();
+				const equipmentName = e.target
+					.closest("tr")
+					.querySelector("td[data-equipment-name]").textContent;
+				document.getElementById("equipmentInput").value = equipmentName;
+				availabilityModal.show();
 			}
-	});
+		});
 
 	// Обработчик событий для формы отправки запроса на проверку доступности
-	document.getElementById('checkAvailabilityForm').addEventListener('submit', function(e) {
+	document
+		.getElementById("checkAvailabilityForm")
+		.addEventListener("submit", function (e) {
 			e.preventDefault();
-			const equipmentName = document.getElementById('equipmentInput').value;
+			const equipmentName = document.getElementById("equipmentInput").value;
 			console.log("Checking availability for:", equipmentName);
 			// Тут код для отправки запроса на сервер и обработки ответа
-	});
+		});
 }
 
 setupAvailabilityModal();
 
 // обновление статуса единицы оборудования
+const editModal = new Modal(document.getElementById("editModal"));
+const namePermission = "rental-manager"; // Замените на реальное значение
+updateEquipmentRequestsTable(namePermission);
+
+document.querySelector(".table").addEventListener("click", (event) => {
+	if (event.target.classList.contains("edit-request")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openEditModal(requestId);
+	}
+});
+
+function openEditModal(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
+	const quantity = row.children[2].textContent;
+	const dateStart = row.children[3].textContent;
+	const dateEnd = row.children[4].textContent;
+	const comment = row.children[5].textContent;
+
+	document.getElementById("editRequestId").value = requestId;
+	document.getElementById("editEquipmentName").value = equipmentName;
+	document.getElementById("editQuantity").value = quantity;
+	document.getElementById("editDateStart").value = dateStart;
+	document.getElementById("editDateEnd").value = dateEnd;
+	document.getElementById("editComment").value = comment;
+
+	editModal.show();
+}
+
+document
+	.getElementById("editForm")
+	.addEventListener("submit", function (event) {
+		event.preventDefault();
+
+		const requestId = document.getElementById("editRequestId").value;
+		const equipmentName = document.getElementById("editEquipmentName").value;
+		const quantity = document.getElementById("editQuantity").value;
+		const dateStart = document.getElementById("editDateStart").value;
+		const dateEnd = document.getElementById("editDateEnd").value;
+		const comment = document.getElementById("editComment").value;
+
+		const updatedData = {
+			id_request: requestId,
+			equipment_name: equipmentName,
+			quantity: quantity,
+			date_start: dateStart,
+			date_end: dateEnd,
+			comment: comment,
+		};
+
+		apiEquipmentRequest
+			.updateEquipmentRequest(updatedData)
+			.then((data) => {
+				updateTableRow(requestId, data);
+				alert("Les données ont bien été renouvelés!")
+				editModal.hide();
+			})
+			.catch((error) => {
+				console.error("Error updating request:", error);
+				alert("Error updating request.");
+			});
+	});
+
+function updateTableRow(requestId, updatedData) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+
+	if (row) {
+		row.querySelector("[data-equipment-name]").textContent =
+			updatedData.equipment_name;
+		row.children[2].textContent = updatedData.quantity;
+		row.children[3].textContent = updatedData.date_start;
+		row.children[4].textContent = updatedData.date_end;
+		row.children[5].textContent = updatedData.comment;
+	}
+}

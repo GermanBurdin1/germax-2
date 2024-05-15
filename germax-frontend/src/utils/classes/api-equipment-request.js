@@ -69,4 +69,33 @@ export class ApiEquipmentRequest {
 				return { success: false, data: [] }; // Возвращаем объект с пустым массивом данных в случае ошибки
 			});
 	}
+
+	async updateEquipmentRequest(updatedData) {
+    const body = JSON.stringify(updatedData);
+    return fetch(`${this._baseUrl}/update-request`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: this._apiAuth.getToken(),
+      },
+      body,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((json) => Promise.reject(json));
+        }
+        return response.json();
+      })
+      .then((data) => {
+				if (data.success) {
+					return data.data; // Возвращаем обновленные данные
+				} else {
+					throw new Error(data.message || "Error updating request");
+				}
+			})
+      .catch((error) => {
+        console.error("Error updating request:", error);
+        throw error;
+      });
+  }
 }
