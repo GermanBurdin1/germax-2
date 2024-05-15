@@ -285,12 +285,19 @@ function createTableRow(request, namePermission) {
 	let actionsMarkup = "";
 
 	if (namePermission === "rental-manager") {
-		actionsMarkup = `
-					<li><a class="dropdown-item" href="#">Confirmer la réception</a></li>
-					<li><a class="dropdown-item" href="#">Annuler la commande</a></li>
-					<li><a class="dropdown-item" href="#">Marquer comme livré</a></li>
-					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal">Voir les détails</a></li>
+		if (request.equipment_status === "equipment_availability_pending") {
+			actionsMarkup = `
+				<li><a class="dropdown-item" href="#">Modifier et soumettre pour approbation</a></li>
+				<li><a class="dropdown-item" href="#">Confirmer l'approbation</a></li>
 			`;
+		} else {
+			actionsMarkup = `
+				<li><a class="dropdown-item" href="#">Confirmer la réception</a></li>
+				<li><a class="dropdown-item" href="#">Annuler la commande</a></li>
+				<li><a class="dropdown-item" href="#">Marquer comme livré</a></li>
+				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal">Voir les détails</a></li>
+			`;
+		}
 	} else if (namePermission === "stockman") {
 		actionsMarkup = `
 					<li><a class="dropdown-item check-availability" href="#">Vérifier la disponibilité</a></li>
