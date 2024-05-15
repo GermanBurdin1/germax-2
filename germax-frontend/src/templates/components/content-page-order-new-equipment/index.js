@@ -481,7 +481,6 @@ function sendUpdatedDataToUser(requestId) {
 		.sendUpdatedDataToUser(approvalData)
 		.then((data) => {
 			alert("Данные успешно подтверждены и отправлены на согласование!");
-			// Обновите статус строки или выполните другие действия
 			updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
 		})
 		.catch((error) => {
@@ -507,15 +506,15 @@ function updateTableRowStatus(requestId, status) {
 }
 
 function openStockmanApprovalModal(requestId) {
-	console.log("Вызов функции openStockmanApprovalModal ")
+	console.log("Вызов функции openStockmanApprovalModal ");
 	document
 		.getElementById("confirmStockmanApprovalButton")
 		.setAttribute("data-id", requestId);
-		stockmanApprovalModal.show();
+	stockmanApprovalModal.show();
 }
 
 function sendToStockman(requestId) {
-	console.log("вызов функции sendToStockman")
+	console.log("вызов функции sendToStockman");
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
 	const quantity = row.children[2].textContent;
@@ -550,7 +549,7 @@ function sendToStockman(requestId) {
 }
 
 document
-	.getElementById("confirmApprovalButton")
+	.getElementById("confirmStockmanApprovalButton")
 	.addEventListener("click", function () {
 		const requestId = this.getAttribute("data-id");
 		sendToStockman(requestId);
