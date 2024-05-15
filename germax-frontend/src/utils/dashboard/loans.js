@@ -1,115 +1,159 @@
-export function returnClientLoans(rentals = []) {
-	const rows = rentals
-		.filter((rental) => rental.accord === false || rental.accord === 0) // Только заявки
-		.map((rental) => {
-			let statusMessage = "";
+export function returnClientLoans(rentals = [], requests = []) {
+	console.log("Received rentals:", rentals);
+	console.log("Received requests:", requests);
 
-			if (rental.id_status === 4) {
-				statusMessage = `requête effectuée le ${formatDate(rental.date_start)}`;
+	// Объединяем обе коллекции в одну для удобства обработки
+	const allEntries = [
+		...rentals.map((rental) => {
+			const processedRental = {
+				...rental,
+				type: "rental",
+				id: rental.id !== undefined ? rental.id : rental.id_request,
+				model_name:
+					rental.model_name !== undefined
+						? rental.model_name
+						: rental.equipment_name,
+				date_start: rental.date_start,
+				date_end: rental.date_end,
+				statusMessage:
+					rental.id_status === 4
+						? `requête effectuée le ${formatDate(rental.date_start)}`
+						: "Status not defined",
+			};
+			console.log("Processed rental entry:", processedRental);
+			return processedRental;
+		}),
+		...requests.map((request) => {
+			const processedRequest = {
+				...request,
+				id: request.id_request !== undefined ? request.id_request : request.id,
+				model_name:
+					request.equipment_name !== undefined
+						? request.equipment_name
+						: request.model_name,
+				date_start: request.date_start || "unknown date",
+				date_end: request.date_end || "unknown date",
+				statusMessage: request.treatment_status,
+				type: "request",
+			};
+			console.log("Processed request entry:", processedRequest);
+			return processedRequest;
+		}),
+	];
+
+	const rows = allEntries
+		.map((entry) => {
+			let statusMessage;
+			if (entry.type === "rental") {
+				statusMessage = entry.statusMessage;
+				if (entry.id_status === 4) {
+					statusMessage = `requête effectuée le ${formatDate(
+						entry.date_start
+					)}`;
+				}
+			} else if (entry.type === "request") {
+				statusMessage = entry.treatment_status || "unknown status";
 			}
 
 			return `
-				<tr data-id="${rental.id}">
-					<td>${rental.id}</td>
-					<td>${rental.model_name}</td>
-					<td>${formatDate(rental.date_start)}</td>
-					<td>${formatDate(rental.date_end)}</td>
+			<tr data-id="${entry.id}">
+					<td>${entry.id || "N/A"}</td>
+					<td>${entry.model_name || "N/A"}</td>
+					<td>${formatDate(entry.date_start) || "N/A"}</td>
+					<td>${formatDate(entry.date_end) || "N/A"}</td>
 					<td>${statusMessage}</td>
-					<td>
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button"
-									id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-								Choisir une action
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
-							</ul>
-						</div>
-					</td>
-				</tr>
-			`;
+									<td>
+											<div class="dropdown">
+													<button class="btn btn-secondary dropdown-toggle" type="button"
+																	id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+															Choisir une action
+													</button>
+													<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+															<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+															<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+													</ul>
+											</div>
+									</td>
+							</tr>
+					`;
 		})
 		.join("");
 
 	return `
-		<div class="nav nav-tabs" id="requestReservationTabs" role="tablist">
-			<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeRequestReservations"
-				role="tab" aria-controls="activeRequestReservations" aria-selected="true">Réservations</a>
-		</div>
-
-		<div class="tab-content" id="requestReservationTabsContent">
-			<div class="tab-pane fade show active" id="activeRequestReservations" role="tabpanel"
-				aria-labelledby="active-request-reservations-tab">
-				<div class="table-responsive">
-					<table class="table" id="reservationsTable">
-						<thead>
-							<tr>
-								<th data-column="id" data-type="number">ID Réservation <button
-												class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-								</th>
-								<th data-column="equipment" data-type="text">Équipement loué</th>
-								<th data-column="startdate" data-type="date">Date de location<button
-												class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-								</th>
-								<th data-column="enddate" data-type="date">Date de retour<button
-												class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-								</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							${rows}
-						</tbody>
-					</table>
-				</div>
+			<div class="nav nav-tabs" id="requestReservationTabs" role="tablist">
+					<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeRequestReservations"
+							role="tab" aria-controls="activeRequestReservations" aria-selected="true">Réservations</a>
 			</div>
-		</div>
 
-		<!-- Модальное окно для связи с менеджером -->
-		<div class="modal fade" id="request--communication-manager-modal" tabindex="-1" aria-labelledby="request--communication-manager-modal-label" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="request--communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form id="communicationForm">
-							<div class="form-group">
-								<label for="communicationMessageText">Message</label>
-								<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
+			<div class="tab-content" id="requestReservationTabsContent">
+					<div class="tab-pane fade show active" id="activeRequestReservations" role="tabpanel"
+							aria-labelledby="active-request-reservations-tab">
+							<div class="table-responsive">
+									<table class="table" id="reservationsTable">
+											<thead>
+													<tr>
+															<th data-column="id" data-type="number">ID Réservation <button
+																							class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+															</th>
+															<th data-column="equipment" data-type="text">Équipement loué</th>
+															<th data-column="startdate" data-type="date">Date de location<button
+																							class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+															</th>
+															<th data-column="enddate" data-type="date">Date de retour<button
+																							class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+															</th>
+															<th>Status</th>
+															<th>Actions</th>
+													</tr>
+											</thead>
+											<tbody>${rows}</tbody>
+									</table>
 							</div>
-							<button type="submit" class="btn btn-primary">Envoyer</button>
-						</form>
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-					</div>
-				</div>
 			</div>
-		</div>
 
+			<!-- Модальное окно для связи с менеджером -->
+			<div class="modal fade" id="request--communication-manager-modal" tabindex="-1" aria-labelledby="request--communication-manager-modal-label" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+									<div class="modal-header">
+											<h5 class="modal-title" id="request--communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+											<form id="communicationForm">
+													<div class="form-group">
+															<label for="communicationMessageText">Message</label>
+															<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
+													</div>
+													<button type="submit" class="btn btn-primary">Envoyer</button>
+											</form>
+									</div>
+									<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+									</div>
+							</div>
+					</div>
+			</div>
 
-		<!-- Modal annulation-->
-    <div class="modal fade" id="request--reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-danger">Annuler la réservation</button>
-                </div>
-            </div>
-        </div>
-    </div>
+			<!-- Modal annulation-->
+			<div class="modal fade" id="request--reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+							<div class="modal-content">
+									<div class="modal-header">
+											<h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+											Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
+									</div>
+									<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+											<button type="button" class="btn btn-danger">Annuler la réservation</button>
+									</div>
+							</div>
+					</div>
+			</div>
 	`;
 }
 

@@ -24,7 +24,7 @@ import {
 	returnClientLoans,
 	returnLoanRequestModal,
 	returnLoanFormModal,
-	returnRentalHistoryLoans
+	returnRentalHistoryLoans,
 } from "../../../utils/dashboard/loans";
 import {
 	loansClientHistory,
@@ -48,10 +48,12 @@ import {
 import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiGoods } from "../../../utils/classes/api-goods";
 import { ApiRental } from "../../../utils/classes/api-rental";
+import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
+const apiEquipmentRequest = new ApiEquipmentRequest();
 
 Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 	([user, goods]) => {
@@ -62,8 +64,12 @@ Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 function initListeners() {
 	// Для navbarDropdownMenuLink
 	initializeDropdown();
-	const notificationsModalPlace = document.getElementById("notificationsModalPlace");
-	const supportModalContainer = document.getElementById("supportModalContainer");
+	const notificationsModalPlace = document.getElementById(
+		"notificationsModalPlace"
+	);
+	const supportModalContainer = document.getElementById(
+		"supportModalContainer"
+	);
 	const modalRequestLoan = document.getElementById("modalRequestLoan");
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
@@ -211,10 +217,17 @@ function loadRentalHistory() {
 
 function loadClientLoans() {
 	const myLoans = document.getElementById("myLoans");
-	apiRental
-		.getClientRentals()
-		.then((rentals) => {
-			myLoans.innerHTML = returnClientLoans(rentals);
+
+	Promise.all([
+		apiRental.getClientRentals(),
+		apiEquipmentRequest.getAllRequests(),
+	])
+		.then(([rentals, requests]) => {
+			console.log("Rentals:", rentals);
+			console.log("Requests:", requests);
+			// Допустим, что функция returnClientLoans теперь может обрабатывать оба типа данных
+			// Объединяем данные о реальных арендах и запросах в один массив
+			myLoans.innerHTML = returnClientLoans(rentals, requests);
 			myLoans.style.display = "block";
 			myLoans.dataset.visible = "true";
 			initializeSingleTab("#activeRequestReservations");
@@ -222,7 +235,8 @@ function loadClientLoans() {
 			initializeModals();
 		})
 		.catch((error) => {
-			console.error("Failed to load client loans:", error);
+			console.error("Failed to load data:", error);
+			myLoans.innerHTML = "<p>Error loading data.</p>";
 		});
 }
 
@@ -253,49 +267,50 @@ function renderDashboard(responseData) {
 
 // Для менеджеров
 function getManagerNotifications() {
-  return [
-    {
-      title: "Annulation de réservation",
-      message: "Un étudiant a annulé sa réservation.",
-      linkText: "Gestion des locations",
-      linkHref: "/page-bookings-management",
-      timestamp: new Date().toLocaleString(),
-    },
-    {
-      title: "Problème de location",
-      message: "Un étudiant a signalé un problème de location.",
-      linkText: "Voir les détails",
-      linkHref: "/page-loans-management",
-      timestamp: new Date().toLocaleString(),
-    },
-  ];
+	return [
+		{
+			title: "Annulation de réservation",
+			message: "Un étudiant a annulé sa réservation.",
+			linkText: "Gestion des locations",
+			linkHref: "/page-bookings-management",
+			timestamp: new Date().toLocaleString(),
+		},
+		{
+			title: "Problème de location",
+			message: "Un étudiant a signalé un problème de location.",
+			linkText: "Voir les détails",
+			linkHref: "/page-loans-management",
+			timestamp: new Date().toLocaleString(),
+		},
+	];
 }
 
 // Для студентов и enseignants
 function getStudentTeacherNotifications() {
-  return [
-    {
-      title: "Fin de la période de location",
-      message: "Votre période de location pour l'équipement XYZ se termine bientôt.",
-      linkText: "Voir les détails",
-      linkHref: "/page-loans-details",
-      timestamp: new Date().toLocaleString(),
-    },
-    {
-      title: "Prolonger la réservation",
-      message: "Vous pouvez prolonger votre réservation pour l'équipement ABC.",
-      linkText: "Prolonger la réservation",
-      linkHref: "/page-extend-loan",
-      timestamp: new Date().toLocaleString(),
-    },
-  ];
+	return [
+		{
+			title: "Fin de la période de location",
+			message:
+				"Votre période de location pour l'équipement XYZ se termine bientôt.",
+			linkText: "Voir les détails",
+			linkHref: "/page-loans-details",
+			timestamp: new Date().toLocaleString(),
+		},
+		{
+			title: "Prolonger la réservation",
+			message: "Vous pouvez prolonger votre réservation pour l'équipement ABC.",
+			linkText: "Prolonger la réservation",
+			linkHref: "/page-extend-loan",
+			timestamp: new Date().toLocaleString(),
+		},
+	];
 }
 
 // Создаем динамические уведомления для модального окна
 function createNotificationsList(notifications) {
-  return notifications
-    .map(
-      (notification) => `
+	return notifications
+		.map(
+			(notification) => `
       <a href="${notification.linkHref}" class="list-group-item list-group-item-action flex-column align-items-start">
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">${notification.title}</h5>
@@ -305,22 +320,21 @@ function createNotificationsList(notifications) {
         <small class="text-muted">${notification.linkText}</small>
       </a>
     `
-    )
-    .join("");
+		)
+		.join("");
 }
 
 function updateNotificationsModal(userType) {
-  let notifications = [];
-  if (userType === "rental-manager") {
-    notifications = getManagerNotifications();
-  } else {
-    notifications = getStudentTeacherNotifications();
-  }
+	let notifications = [];
+	if (userType === "rental-manager") {
+		notifications = getManagerNotifications();
+	} else {
+		notifications = getStudentTeacherNotifications();
+	}
 
-  const notificationsList = document.getElementById("notificationsList");
-  notificationsList.innerHTML = createNotificationsList(notifications);
+	const notificationsList = document.getElementById("notificationsList");
+	notificationsList.innerHTML = createNotificationsList(notifications);
 }
-
 
 function adjustUIBasedOnUserType(userType) {
 	const dynamicMenu = document.getElementById("dynamicMenu");
@@ -359,7 +373,7 @@ function adjustUIBasedOnUserType(userType) {
 	horizontalNavbar.innerHTML = horizontalNav;
 
 	// Обновление содержимого уведомлений в зависимости от типа пользователя
-  // updateNotificationsModal(userType);
+	// updateNotificationsModal(userType);
 }
 
 function activateSettingsTab() {

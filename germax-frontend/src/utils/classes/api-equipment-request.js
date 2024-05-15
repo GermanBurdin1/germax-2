@@ -12,7 +12,7 @@ export class ApiEquipmentRequest {
 		comments,
 		dateStart,
 		dateEnd,
-		quantity
+		quantity,
 	}) {
 		const body = JSON.stringify({
 			formRequestItemInfo: {
@@ -21,8 +21,8 @@ export class ApiEquipmentRequest {
 				comments,
 				dateStart,
 				dateEnd,
-				quantity
-			}
+				quantity,
+			},
 		});
 		console.log("Sending JSON:", body);
 		return fetch(`${this._baseUrl}/create`, {
@@ -45,6 +45,29 @@ export class ApiEquipmentRequest {
 			.catch((error) => {
 				console.error("Error in createRequestRental:", error);
 				throw error;
+			});
+	}
+
+	async getAllRequests() {
+		return fetch(`${this._baseUrl}/all-requests`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${this._apiAuth.getToken()}`,
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				// Убедитесь, что ответ содержит свойство data и оно является массивом
+				if (data.success && Array.isArray(data.data)) {
+					return data.data;
+				} else {
+					throw new Error("Invalid response structure");
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching equipment requests:", error);
+				return []; // Возвращаем пустой массив в случае ошибки
 			});
 	}
 }
