@@ -25,7 +25,7 @@ export class ApiEquipmentRequest {
 			},
 		});
 		console.log("Sending JSON:", body);
-		return fetch(`${this._baseUrl}/create`, {
+		return fetch(`${this._baseUrl}/create-first-request`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -49,7 +49,7 @@ export class ApiEquipmentRequest {
 	}
 
 	async getAllRequests() {
-		return fetch(`${this._baseUrl}/all-requests`, {
+		return fetch(`${this._baseUrl}/get-all-requests`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",

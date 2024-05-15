@@ -254,7 +254,7 @@ function renderEquipmentOrder(userData) {
 // обновление таблицы данными
 
 function updateEquipmentRequestsTable(namePermission) {
-	fetch("http://germax-api/equipment_requests", {
+	fetch("http://germax-api/equipment_requests/get-all-requests", {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
