@@ -43,7 +43,7 @@ class EquipmentRequestService
 
 	public function updateRequest($data)
 	{
-		$sql = "UPDATE equipment_request SET equipment_name = ?, quantity = ?, date_start = ?, date_end = ?, comment = ? WHERE id_request = ?";
+		$sql = "UPDATE equipment_request SET equipment_name = ?, quantity = ?, date_start = ?, date_end = ?, comment = ?, treatment_status = ? WHERE id_request = ?";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([
 			$data['equipment_name'],
@@ -51,6 +51,7 @@ class EquipmentRequestService
 			$data['date_start'],
 			$data['date_end'],
 			$data['comment'],
+			$data['treatment_status'],
 			$data['id_request']
 		]);
 
@@ -66,6 +67,7 @@ class EquipmentRequestService
 			return ['success' => false, 'message' => 'No rows updated'];
 		}
 	}
+
 
 	public function sendUpdatedDataToUser($data)
 	{
@@ -104,5 +106,4 @@ class EquipmentRequestService
 			return ['success' => false, 'message' => 'No rows updated'];
 		}
 	}
-
 }
