@@ -316,7 +316,7 @@
 	</div>
 </div>
 
-<!-- Модальное окно для подтверждения -->
+<!-- Модальное окно для подтверждения с юзером -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -334,3 +334,23 @@
     </div>
   </div>
 </div>
+
+<!-- Модальное окно для отправки на согласование с кладовщиком -->
+<div class="modal fade" id="stockmanApprovalModal" tabindex="-1" aria-labelledby="stockmanApprovalModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="stockmanApprovalModalLabel">Отправка на согласование</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Вы уверены, что хотите отправить данные на согласование с кладовщиком? После подтверждения нельзя будет изменить данные.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" id="confirmStockmanApprovalButton">Отправить</button>
+      </div>
+    </div>
+  </div>
+</div>
+

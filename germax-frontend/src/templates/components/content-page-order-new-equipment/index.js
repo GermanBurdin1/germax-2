@@ -283,17 +283,21 @@ function createTableRow(request, namePermission) {
 	let actionsMarkup = "";
 
 	if (namePermission === "rental-manager") {
-		if (request.equipment_status === "equipment_availability_pending") {
+		if (request.treatment_status === "pending_manager") {
 			actionsMarkup = `
 			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
 			<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
 			`;
-		} else {
+		}
+		else if (request.treatment_status === "treated_manager_user") {
 			actionsMarkup = `
-				<li><a class="dropdown-item" href="#">Confirmer la réception</a></li>
-				<li><a class="dropdown-item" href="#">Annuler la commande</a></li>
-				<li><a class="dropdown-item" href="#">Marquer comme livré</a></li>
-				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal">Voir les détails</a></li>
+			<li><a class="dropdown-item send-to-stockman" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#stockmanApprovalModal">Отправить на согласование с кладовщиком</a></li>
+			`;
+		}
+		else {
+			actionsMarkup = `
+			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
 			`;
 		}
 	} else if (namePermission === "stockman") {
