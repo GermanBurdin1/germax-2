@@ -258,9 +258,11 @@ function renderEquipmentOrder(userData) {
 // обновление таблицы данными
 
 function updateEquipmentRequestsTable(namePermission) {
+	console.log("функция updateEquipmentRequestsTable вызвалась")
 	apiEquipmentRequest
 		.getAllRequests()
 		.then((data) => {
+			console.log(data);
 			const tableBody = document.querySelector(".table tbody");
 			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
 
@@ -452,6 +454,9 @@ document
 		const dateStart = document.getElementById("editDateStart").value;
 		const dateEnd = document.getElementById("editDateEnd").value;
 		const comment = document.getElementById("editComment").value;
+		const treatment_status = "rental_details_discussion_manager_stockman";
+		const equipment_status = "equipment_availability_pending";
+
 
 		const updatedData = {
 			id_request: requestId,
@@ -459,7 +464,9 @@ document
 			quantity: quantity,
 			date_start: dateStart,
 			date_end: dateEnd,
-			comment: comment,
+			comment,
+			treatment_status,
+			equipment_status
 		};
 
 		apiEquipmentRequest
@@ -556,23 +563,6 @@ document.getElementById("confirmApprovalButton").addEventListener("click", funct
 	confirmationModal.hide();
 });
 
-function sendUpdatedDataToUser(responseData) {
-	apiEquipmentRequest.updateEquipmentRequest(responseData)
-			.then((data) => {
-					if (data.success) {
-							updateTableRow(responseData.id_request, data.data);
-							updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
-							alert("Данные успешно подтверждены и отправлены на согласование!");
-					} else {
-							console.error("Error updating request:", data.message);
-							alert("Error updating request.");
-					}
-			})
-			.catch((error) => {
-					console.error("Error updating request:", error);
-					alert("Error updating request.");
-			});
-}
 
 
 function openStockmanApprovalModal(requestId) {
@@ -606,6 +596,7 @@ function sendToStockman(requestId) {
 		date_end: dateEnd,
 		comment: comment,
 		treatment_status: "pending_stockman",
+		equipment_status: "equipment_availability_pending"
 	};
 	console.log(updatedData);
 

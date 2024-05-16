@@ -51,8 +51,8 @@ class EquipmentRequestService
 			$data['date_start'],
 			$data['date_end'],
 			isset($data['comment']) ? $data['comment'] : null,
-			$data['treatment_status'],
-			$data['equipment_status'],
+      isset($data['treatment_status']) ? $data['treatment_status'] : null,
+      isset($data['equipment_status']) ? $data['equipment_status'] : null,
 			$data['id_request'],
 		]);
 
