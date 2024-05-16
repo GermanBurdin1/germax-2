@@ -42,33 +42,35 @@ export function returnClientLoans(rentals = [], requests = []) {
 	];
 
 	const rows = allEntries
-		.map((entry) => {
-			let statusMessage;
-			let actionsMarkup = "";
-			if (entry.type === "rental") {
-				statusMessage = entry.statusMessage;
-				if (entry.id_status === 4) {
-					statusMessage = `requête effectuée le ${formatDate(
-						entry.date_start
-					)}`;
-				}
-				actionsMarkup = `
-          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
-        `;
-			} else if (entry.type === "request") {
-				statusMessage = entry.treatment_status || "unknown status";
-				if (entry.statusMessage === "rental_details_discussion_manager_user") {
-					actionsMarkup = `
-            <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
-          `;
-				} else {
-					actionsMarkup = `
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
-          `;
-				}
-			}
+    .map((entry) => {
+        let statusMessage;
+        let actionsMarkup = "";
+        if (entry.type === "rental") {
+            statusMessage = entry.statusMessage;
+            if (entry.id_status === 4) {
+                statusMessage = `requête effectuée le ${formatDate(entry.date_start)}`;
+            }
+            actionsMarkup = `
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+            `;
+        } else if (entry.type === "request") {
+            statusMessage = entry.treatment_status || "unknown status";
+            if (entry.statusMessage === "rental_details_discussion_manager_user") {
+                actionsMarkup = `
+                    <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
+                `;
+            } else if (entry.statusMessage === "rental_details_discussion_manager_stockman") {
+                actionsMarkup = `
+                    <li><a class="dropdown-item response-before-sending" href="#" data-id="${entry.id}" data-bs-toggle="modal" data-bs-target="#manageResponseModal">gérer la réponse</a></li>
+                `;
+            } else {
+                actionsMarkup = `
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+                `;
+            }
+        }
 
 			return `
 			<tr data-id="${entry.id}">
@@ -186,7 +188,7 @@ export function returnClientLoans(rentals = [], requests = []) {
       </div>
     </div>
 
-		<!-- Modal для подтверждения предложения менеджера перед отправкой-->
+		<!-- Modal для подтверждения предложения менеджера перед отправк-->
 <div class="modal fade" id="manageResponseModal" tabindex="-1" aria-labelledby="manageResponseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

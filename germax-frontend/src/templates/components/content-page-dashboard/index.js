@@ -236,6 +236,7 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
+			setupProposalModalBeforeSendingItem();
 		})
 		.catch((error) => {
 			console.error("Failed to load data:", error);
@@ -447,6 +448,53 @@ function updateTableRowStatus(requestId, status) {
 	}
 }
 
-function confirmApprovalBeforeSending(){
+function setupProposalModalBeforeSendingItem() {
+	managerProposalModal = new Modal(
+		document.getElementById("manageResponseModal")
+	);
 
+	document.querySelector(".table").addEventListener("click", (event) => {
+		if (event.target.classList.contains("response-before-sending")) {
+			event.preventDefault();
+			const requestId = event.target.getAttribute("data-id");
+			openManagerProposalModalBeforeSendingItem(requestId);
+		}
+	});
+
+	document
+		.getElementById("confirmManagerResponse")
+		.addEventListener("click", function () {
+			const requestId = this.getAttribute("data-id");
+			confirmApprovalBeforeSending(requestId);
+			managerProposalModal.hide();
+		});
+}
+
+function openManagerProposalModalBeforeSendingItem(requestId) {
+	document
+		.getElementById("confirmManagerResponse")
+		.setAttribute("data-id", requestId);
+	managerProposalModal.show(); // используем существующий экземпляр для показа модального окна
+}
+
+function confirmApprovalBeforeSending(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const equipment_status = "not_sent";
+	const treatment_status = "treated_manager_user";
+	const approvalData = {
+		id_request: requestId,
+		equipment_status,
+		treatment_status
+	};
+
+	apiEquipmentRequest
+		.confirmApproval(approvalData)
+		.then((data) => {
+			alert("Данные успешно подтверждены и отправлены на согласование!");
+			updateTableRowStatus(requestId, "treated_manager_user");
+		})
+		.catch((error) => {
+			console.error("Ошибка при отправке данных на согласование:", error);
+			alert("Ошибка при отправке данных на согласование.");
+		});
 }
