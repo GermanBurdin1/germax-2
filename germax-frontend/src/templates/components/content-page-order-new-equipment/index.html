@@ -368,14 +368,16 @@
             <input class="form-check-input" type="radio" name="stockmanResponse" id="responseFound" value="found">
             <label class="form-check-label" for="responseFound">Équipement trouvé</label>
           </div>
+					<div class="form-group mt-3" id="rentalDateContainer" style="display: none;">
+            <label for="rentalDateStart">Date de début de location possible</label>
+            <input type="date" class="form-control" id="rentalDateStart">
+            <label for="rentalDateEnd">Date de fin de location possible</label>
+            <input type="date" class="form-control" id="rentalDateEnd">
+          </div>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="stockmanResponse" id="responseNotFound" value="not_found">
-            <label class="form-check-label" for="responseNotFound">Équipement non trouvé, pas de propositions de remplacement</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="stockmanResponse" id="responseReplacement" value="replacement">
-            <label class="form-check-label" for="responseReplacement">Proposition de remplacement</label>
-          </div>
+            <label class="form-check-label" for="responseNotFound">Équipement non trouvé</label>
+					</div>
           <button type="button" class="btn btn-primary mt-3" id="sendStockmanResponseButton">Envoyer</button>
         </form>
       </div>

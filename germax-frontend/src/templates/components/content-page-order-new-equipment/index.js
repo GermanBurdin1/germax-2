@@ -395,9 +395,11 @@ const confirmationModal = new Modal(
 const stockmanApprovalModal = new Modal(
 	document.getElementById("stockmanApprovalModal")
 );
-const stockmanResponseModal = new Modal(document.getElementById("stockmanResponseModal"));
+const stockmanResponseModal = new Modal(
+	document.getElementById("stockmanResponseModal")
+);
 const namePermission = localStorage.getItem("namePermission");
-console.log("namePermission for modals:",namePermission);
+console.log("namePermission for modals:", namePermission);
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
@@ -538,6 +540,13 @@ function openStockmanApprovalModal(requestId) {
 	stockmanApprovalModal.show();
 }
 
+function openStockmanResponseModal(requestId) {
+	document
+		.getElementById("sendStockmanResponseButton")
+		.setAttribute("data-id", requestId);
+	stockmanResponseModal.show();
+}
+
 function sendToStockman(requestId) {
 	console.log("вызов функции sendToStockman");
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
@@ -579,4 +588,73 @@ document
 		const requestId = this.getAttribute("data-id");
 		sendToStockman(requestId);
 		stockmanApprovalModal.hide();
+	});
+
+document
+	.getElementById("stockmanResponseForm")
+	.addEventListener("change", function (event) {
+		const rentalDateContainer = document.getElementById("rentalDateContainer");
+		if (event.target.id === "responseFound" && event.target.checked) {
+			rentalDateContainer.style.display = "block";
+		} else if (event.target.id === "responseNotFound" && event.target.checked) {
+			rentalDateContainer.style.display = "none";
+		}
+	});
+
+document
+	.getElementById("sendStockmanResponseButton")
+	.addEventListener("click", function () {
+		const responseValue = document.querySelector(
+			'input[name="stockmanResponse"]:checked'
+		).value;
+		const rentalDateStart = document.getElementById("rentalDateStart").value;
+		const rentalDateEnd = document.getElementById("rentalDateEnd").value;
+		const requestId = this.getAttribute("data-id");
+
+		const row = document.querySelector(`tr[data-id="${requestId}"]`);
+		const dateStart = row.getAttribute("data-date-start");
+		const dateEnd = row.getAttribute("data-date-end");
+
+		// Валидация дат
+		if (responseValue === "found") {
+			if (new Date(rentalDateStart) < new Date(dateStart)) {
+				alert(
+					"La date de début de location possible ne peut pas être inférieure à la date de début de location dans la demande."
+				);
+				return;
+			}
+			if (new Date(rentalDateEnd) < new Date(rentalDateStart)) {
+				alert(
+					"La date de fin de location possible doit être supérieure à la date de début de location possible."
+				);
+				return;
+			}
+		}
+
+		const responseData = {
+			id_request: requestId,
+			response: responseValue,
+			rental_date_start: responseValue === "found" ? rentalDateStart : null,
+			rental_date_end: responseValue === "found" ? rentalDateEnd : null,
+		};
+
+		// Отправка данных на сервер
+		fetch("http://germax-api/stockman_response", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(responseData),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.success) {
+					alert("Réponse envoyée avec succès!");
+					stockmanResponseModal.hide();
+					updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
+				} else {
+					alert("Erreur lors de l'envoi de la réponse");
+				}
+			})
+			.catch((error) => console.error("Erreur:", error));
 	});
