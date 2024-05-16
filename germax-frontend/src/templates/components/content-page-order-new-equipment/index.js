@@ -396,9 +396,11 @@ const confirmationModal = new Modal(
 const stockmanApprovalModal = new Modal(
 	document.getElementById("stockmanApprovalModal")
 );
-const stockmanResponseModal = new Modal(document.getElementById("stockmanResponseModal"));
+const stockmanResponseModal = new Modal(
+	document.getElementById("stockmanResponseModal")
+);
 const namePermission = localStorage.getItem("namePermission");
-console.log("namePermission for modals:",namePermission);
+console.log("namePermission for modals:", namePermission);
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
@@ -531,6 +533,48 @@ function updateTableRowStatus(requestId, status) {
 	}
 }
 
+document.getElementById("confirmApprovalButton").addEventListener("click", function () {
+	const requestId = this.getAttribute("data-id");
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
+	const quantity = row.children[2].textContent;
+	const dateStart = row.getAttribute("data-date-start");
+	const dateEnd = row.getAttribute("data-date-end");
+	const comment = row.children[5] ? row.children[5].textContent : null;
+	const responseData = {
+			id_request: requestId,
+			equipment_name: equipmentName,
+			quantity: quantity,
+			date_start: dateStart,
+			date_end: dateEnd,
+			comment: comment,
+			treatment_status: "rental_details_discussion_manager_user",
+			equipment_status: "found"
+	};
+
+	sendUpdatedDataToUser(responseData);
+	confirmationModal.hide();
+});
+
+function sendUpdatedDataToUser(responseData) {
+	apiEquipmentRequest.updateEquipmentRequest(responseData)
+			.then((data) => {
+					if (data.success) {
+							updateTableRow(responseData.id_request, data.data);
+							updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
+							alert("Данные успешно подтверждены и отправлены на согласование!");
+					} else {
+							console.error("Error updating request:", data.message);
+							alert("Error updating request.");
+					}
+			})
+			.catch((error) => {
+					console.error("Error updating request:", error);
+					alert("Error updating request.");
+			});
+}
+
+
 function openStockmanApprovalModal(requestId) {
 	console.log("Вызов функции openStockmanApprovalModal ");
 	document
@@ -539,8 +583,14 @@ function openStockmanApprovalModal(requestId) {
 	stockmanApprovalModal.show();
 }
 
+function openStockmanResponseModal(requestId) {
+	document
+		.getElementById("sendStockmanResponseButton")
+		.setAttribute("data-id", requestId);
+	stockmanResponseModal.show();
+}
+
 function sendToStockman(requestId) {
-	console.log("вызов функции sendToStockman");
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
 	const quantity = row.children[2].textContent;
@@ -581,7 +631,6 @@ document
 		sendToStockman(requestId);
 		stockmanApprovalModal.hide();
 	});
-<<<<<<< HEAD
 
 document
 	.getElementById("stockmanResponseForm")
@@ -627,13 +676,25 @@ document
 		}
 
 		if (responseValue === "found") {
-			approveRequest(requestId, rentalDateStart, rentalDateEnd, equipment_name, quantity);
+			approveRequest(
+				requestId,
+				rentalDateStart,
+				rentalDateEnd,
+				equipment_name,
+				quantity
+			);
 		} else {
 			closeRequestByStockman(requestId, "closed_by_stockman");
 		}
 	});
 
-function approveRequest(requestId, rentalDateStart, rentalDateEnd, equipment_name, quantity) {
+function approveRequest(
+	requestId,
+	rentalDateStart,
+	rentalDateEnd,
+	equipment_name,
+	quantity
+) {
 	const responseData = {
 		quantity,
 		equipment_name,
@@ -678,5 +739,3 @@ function closeRequestByStockman(requestId, status) {
 			alert("Error updating request.");
 		});
 }
-=======
->>>>>>> parent of d201637 (stockman-response)
