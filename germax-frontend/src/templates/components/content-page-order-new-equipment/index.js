@@ -634,27 +634,22 @@ document
 		const responseData = {
 			id_request: requestId,
 			response: responseValue,
-			rental_date_start: responseValue === "found" ? rentalDateStart : null,
-			rental_date_end: responseValue === "found" ? rentalDateEnd : null,
+			date_start: responseValue === "found" ? rentalDateStart : null,
+			date_end: responseValue === "found" ? rentalDateEnd : null,
+			treatment_status: "rental_details_discussion_manager_stockman",
+			equipment_status: "found",
 		};
 
 		// Отправка данных на сервер
-		fetch("http://germax-api/stockman_response", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(responseData),
-		})
-			.then((response) => response.json())
+		apiEquipmentRequest
+			.updateEquipmentRequest(responseData)
 			.then((data) => {
-				if (data.success) {
-					alert("Réponse envoyée avec succès!");
-					stockmanResponseModal.hide();
-					updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
-				} else {
-					alert("Erreur lors de l'envoi de la réponse");
-				}
+				updateTableRow(requestId, data);
+				alert("La réponse a été envoyée au manager!");
+				stockmanResponseModal.hide();
 			})
-			.catch((error) => console.error("Erreur:", error));
+			.catch((error) => {
+				console.error("Error updating request:", error);
+				alert("Error updating request.");
+			});
 	});

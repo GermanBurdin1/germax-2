@@ -43,7 +43,7 @@ class EquipmentRequestService
 
 	public function updateRequest($data)
 	{
-		$sql = "UPDATE equipment_request SET equipment_name = ?, quantity = ?, date_start = ?, date_end = ?, comment = ?, treatment_status = ? WHERE id_request = ?";
+		$sql = "UPDATE equipment_request SET equipment_name = ?, quantity = ?, date_start = ?, date_end = ?, comment = ?, treatment_status = ?, equipment_status = ? WHERE id_request = ?";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([
 			$data['equipment_name'],
@@ -52,7 +52,8 @@ class EquipmentRequestService
 			$data['date_end'],
 			$data['comment'],
 			$data['treatment_status'],
-			$data['id_request']
+			$data['id_request'],
+			$data['equipment_status'],
 		]);
 
 		if ($stmt->rowCount() > 0) {
