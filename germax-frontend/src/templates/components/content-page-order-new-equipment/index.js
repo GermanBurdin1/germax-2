@@ -265,8 +265,11 @@ function updateEquipmentRequestsTable(namePermission) {
 
 			if (data.success && Array.isArray(data.data)) {
 				data.data.forEach((request) => {
-					const row = createTableRow(request, namePermission);
-					tableBody.innerHTML += row;
+					// Добавляем проверку статуса для stockman
+					if (namePermission !== "stockman" || isStatusVisibleForStockman(request.treatment_status)) {
+						const row = createTableRow(request, namePermission);
+						tableBody.innerHTML += row;
+					}
 				});
 			} else {
 				console.error("No data found or data is not an array:", data);
@@ -277,6 +280,21 @@ function updateEquipmentRequestsTable(namePermission) {
 			console.error("Failed to fetch equipment requests:", error);
 			alert("Error fetching equipment requests.");
 		});
+}
+
+function isStatusVisibleForStockman(status) {
+	const visibleStatuses = [
+		"pending_stockman",
+		"closed_by_user",
+		"rental_details_discussion_manager_stockman",
+		"treated_manager_stockman",
+		"sent_awaiting",
+		"treated_rental_manager_stockman",
+		"closed_by_stockman",
+		"rental_details_discussion_manager_stockman_queue",
+		"queue_requested"
+	];
+	return visibleStatuses.includes(status);
 }
 
 function createTableRow(request, namePermission) {
