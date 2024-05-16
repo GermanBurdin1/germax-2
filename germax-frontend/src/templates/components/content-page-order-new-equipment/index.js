@@ -12,6 +12,7 @@ const id_user = JSON.parse(localStorage.getItem("id_user"));
 
 document.addEventListener("DOMContentLoaded", function () {
 	const authToken = localStorage.getItem("authToken");
+	const namePermission = localStorage.getItem("namePermission");
 	updateEquipmentRequestsTable(namePermission);
 	console.log("Auth token:", authToken);
 
@@ -328,7 +329,7 @@ function createTableRow(request, namePermission) {
 	}
 
 	return `
-			<tr data-id="${request.id_request}">
+			<tr data-id="${request.id_request}" data-date-start="${request.date_start}" data-date-end="${request.date_end}">
 					<td>${request.id_request}</td>
 					<td data-equipment-name>${request.equipment_name}</td>
 					<td>${request.quantity}</td>
@@ -604,16 +605,18 @@ document
 document
 	.getElementById("sendStockmanResponseButton")
 	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		const responseValue = document.querySelector(
 			'input[name="stockmanResponse"]:checked'
 		).value;
+		const equipment_name = row.querySelector(
+			"[data-equipment-name]"
+		).textContent;
+		const quantity = row.children[2].textContent;
 		const rentalDateStart = document.getElementById("rentalDateStart").value;
 		const rentalDateEnd = document.getElementById("rentalDateEnd").value;
-		const requestId = this.getAttribute("data-id");
-
-		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		const dateStart = row.getAttribute("data-date-start");
-		const dateEnd = row.getAttribute("data-date-end");
 
 		// Валидация дат
 		if (responseValue === "found") {
@@ -631,25 +634,55 @@ document
 			}
 		}
 
-		const responseData = {
-			id_request: requestId,
-			response: responseValue,
-			date_start: responseValue === "found" ? rentalDateStart : null,
-			date_end: responseValue === "found" ? rentalDateEnd : null,
-			treatment_status: "rental_details_discussion_manager_stockman",
-			equipment_status: "found",
-		};
-
-		// Отправка данных на сервер
-		apiEquipmentRequest
-			.updateEquipmentRequest(responseData)
-			.then((data) => {
-				updateTableRow(requestId, data);
-				alert("La réponse a été envoyée au manager!");
-				stockmanResponseModal.hide();
-			})
-			.catch((error) => {
-				console.error("Error updating request:", error);
-				alert("Error updating request.");
-			});
+		if (responseValue === "found") {
+			approveRequest(requestId, rentalDateStart, rentalDateEnd, equipment_name, quantity);
+		} else {
+			closeRequestByStockman(requestId, "closed_by_stockman");
+		}
 	});
+
+function approveRequest(requestId, rentalDateStart, rentalDateEnd, equipment_name, quantity) {
+	const responseData = {
+		quantity,
+		equipment_name,
+		id_request: requestId,
+		date_start: rentalDateStart,
+		date_end: rentalDateEnd,
+		treatment_status: "rental_details_discussion_manager_stockman",
+		equipment_status: "found",
+	};
+
+	// Отправка данных на сервер
+	apiEquipmentRequest
+		.updateEquipmentRequest(responseData)
+		.then((data) => {
+			updateTableRow(requestId, data);
+			alert("La réponse a été envoyée au manager!");
+			stockmanResponseModal.hide();
+		})
+		.catch((error) => {
+			console.error("Error updating request:", error);
+			alert("Error updating request.");
+		});
+}
+
+function closeRequestByStockman(requestId, status) {
+	const responseData = {
+		id_request: requestId,
+		treatment_status: status,
+		equipment_status: "not_found",
+	};
+
+	// Отправка данных на сервер
+	apiEquipmentRequest
+		.updateEquipmentRequest(responseData)
+		.then((data) => {
+			updateTableRow(requestId, data);
+			alert("Le statut de la demande a été mis à jour!");
+			stockmanResponseModal.hide();
+		})
+		.catch((error) => {
+			console.error("Error updating request:", error);
+			alert("Error updating request.");
+		});
+}

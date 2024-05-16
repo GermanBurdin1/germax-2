@@ -50,10 +50,10 @@ class EquipmentRequestService
 			$data['quantity'],
 			$data['date_start'],
 			$data['date_end'],
-			$data['comment'],
+			isset($data['comment']) ? $data['comment'] : null,
 			$data['treatment_status'],
-			$data['id_request'],
 			$data['equipment_status'],
+			$data['id_request'],
 		]);
 
 		if ($stmt->rowCount() > 0) {
