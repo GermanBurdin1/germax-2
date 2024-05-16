@@ -426,7 +426,6 @@ function confirmApproval(requestId) {
 		equipment_status,
 		treatment_status
 	};
-
 	apiEquipmentRequest
 		.confirmApproval(approvalData)
 		.then((data) => {
@@ -449,7 +448,7 @@ function updateTableRowStatus(requestId, status) {
 }
 
 function setupProposalModalBeforeSendingItem() {
-	managerProposalModal = new Modal(
+	const manageResponseModal = new Modal(
 		document.getElementById("manageResponseModal")
 	);
 
@@ -466,7 +465,7 @@ function setupProposalModalBeforeSendingItem() {
 		.addEventListener("click", function () {
 			const requestId = this.getAttribute("data-id");
 			confirmApprovalBeforeSending(requestId);
-			managerProposalModal.hide();
+			manageResponseModal.hide();
 		});
 }
 
@@ -474,7 +473,7 @@ function openManagerProposalModalBeforeSendingItem(requestId) {
 	document
 		.getElementById("confirmManagerResponse")
 		.setAttribute("data-id", requestId);
-	managerProposalModal.show(); // используем существующий экземпляр для показа модального окна
+		manageResponseModal.show(); // используем существующий экземпляр для показа модального окна
 }
 
 function confirmApprovalBeforeSending(requestId) {
@@ -486,7 +485,6 @@ function confirmApprovalBeforeSending(requestId) {
 		equipment_status,
 		treatment_status
 	};
-
 	apiEquipmentRequest
 		.confirmApproval(approvalData)
 		.then((data) => {
