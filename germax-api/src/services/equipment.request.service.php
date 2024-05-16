@@ -92,9 +92,13 @@ class EquipmentRequestService
 
 	public function confirmApproval($data)
 	{
-		$sql = "UPDATE equipment_request SET treatment_status = 'treated_manager_user' WHERE id_request = ?";
+		$sql = "UPDATE equipment_request SET treatment_status = ?, equipment_status = ? WHERE id_request = ?";
 		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute([$data['id_request']]);
+		$stmt->execute([
+			$data['treatment_status'],
+			$data['equipment_status'],
+			$data['id_request']
+		]);
 
 		if ($stmt->rowCount() > 0) {
 			$sql = "SELECT * FROM equipment_request WHERE id_request = ?";

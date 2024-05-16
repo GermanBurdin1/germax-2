@@ -418,12 +418,12 @@ function openManagerProposalModal(requestId) {
 
 function confirmApproval(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-	// Здесь можно добавить логику для отправки данных на сервер для согласования
-
-	// Пример логики отправки данных на сервер:
+	const equipment_status = "equipment_availability_pending";
+	const treatment_status = "treated_manager_user";
 	const approvalData = {
 		id_request: requestId,
-		// Добавьте дополнительные данные, если необходимо
+		equipment_status,
+		treatment_status
 	};
 
 	apiEquipmentRequest
@@ -445,4 +445,8 @@ function updateTableRowStatus(requestId, status) {
 		console.log("row4", row.children[4]);
 		row.children[4].textContent = status;
 	}
+}
+
+function confirmApprovalBeforeSending(){
+
 }
