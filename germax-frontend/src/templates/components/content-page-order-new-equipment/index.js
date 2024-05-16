@@ -11,8 +11,8 @@ const apiEquipmentRequest = new ApiEquipmentRequest();
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 
 document.addEventListener("DOMContentLoaded", function () {
-	updateEquipmentRequestsTable();
 	const authToken = localStorage.getItem("authToken");
+	updateEquipmentRequestsTable(namePermission);
 	console.log("Auth token:", authToken);
 
 	if (authToken) {
@@ -396,7 +396,8 @@ const stockmanApprovalModal = new Modal(
 	document.getElementById("stockmanApprovalModal")
 );
 const stockmanResponseModal = new Modal(document.getElementById("stockmanResponseModal"));
-const namePermission = "rental-manager";
+const namePermission = localStorage.getItem("namePermission");
+console.log("namePermission for modals:",namePermission);
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
