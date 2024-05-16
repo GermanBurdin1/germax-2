@@ -354,3 +354,32 @@
   </div>
 </div>
 
+<!-- Modal for Stockman Response -->
+<div class="modal fade" id="stockmanResponseModal" tabindex="-1" aria-labelledby="stockmanResponseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="stockmanResponseModalLabel">Réponse du Stockman</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="stockmanResponseForm">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="stockmanResponse" id="responseFound" value="found">
+            <label class="form-check-label" for="responseFound">Équipement trouvé</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="stockmanResponse" id="responseNotFound" value="not_found">
+            <label class="form-check-label" for="responseNotFound">Équipement non trouvé, pas de propositions de remplacement</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="stockmanResponse" id="responseReplacement" value="replacement">
+            <label class="form-check-label" for="responseReplacement">Proposition de remplacement</label>
+          </div>
+          <button type="button" class="btn btn-primary mt-3" id="sendStockmanResponseButton">Envoyer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -266,7 +266,10 @@ function updateEquipmentRequestsTable(namePermission) {
 			if (data.success && Array.isArray(data.data)) {
 				data.data.forEach((request) => {
 					// Добавляем проверку статуса для stockman
-					if (namePermission !== "stockman" || isStatusVisibleForStockman(request.treatment_status)) {
+					if (
+						namePermission !== "stockman" ||
+						isStatusVisibleForStockman(request.treatment_status)
+					) {
 						const row = createTableRow(request, namePermission);
 						tableBody.innerHTML += row;
 					}
@@ -292,7 +295,7 @@ function isStatusVisibleForStockman(status) {
 		"treated_rental_manager_stockman",
 		"closed_by_stockman",
 		"rental_details_discussion_manager_stockman_queue",
-		"queue_requested"
+		"queue_requested",
 	];
 	return visibleStatuses.includes(status);
 }
@@ -317,13 +320,11 @@ function createTableRow(request, namePermission) {
 			`;
 		}
 	} else if (namePermission === "stockman") {
-		actionsMarkup = `
-					<li><a class="dropdown-item check-availability" href="#">Vérifier la disponibilité</a></li>
-					<li><a class="dropdown-item" href="#">Programmer l'envoi</a></li>
-					<li><a class="dropdown-item" href="#">Annuler l'envoi</a></li>
-					<li><a class="dropdown-item" href="#">Marquer comme envoyé</a></li>
-					<li><a class="dropdown-item" href="#">Marquer comme délivré</a></li>
+		if (request.treatment_status === "pending_stockman") {
+			actionsMarkup = `
+			<li><a class="dropdown-item stockman-send-response" href="#" data-id="${request.id_request}">Envoyer une réponse</a></li>
 			`;
+		}
 	}
 
 	return `
@@ -394,7 +395,8 @@ const confirmationModal = new Modal(
 const stockmanApprovalModal = new Modal(
 	document.getElementById("stockmanApprovalModal")
 );
-const namePermission = "rental-manager"; // Замените на реальное значение
+const stockmanResponseModal = new Modal(document.getElementById("stockmanResponseModal"));
+const namePermission = "rental-manager";
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
@@ -410,6 +412,10 @@ document.querySelector(".table").addEventListener("click", (event) => {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
 		openStockmanApprovalModal(requestId);
+	} else if (event.target.classList.contains("stockman-send-response")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openStockmanResponseModal(requestId);
 	}
 });
 
