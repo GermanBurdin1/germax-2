@@ -46,6 +46,8 @@ class EquipmentRequestService
     $fieldsToUpdate = [];
     $values = [];
 
+		error_log("Received Data: " . print_r($data, true));
+
     if (isset($data['equipment_name'])) {
         $fieldsToUpdate[] = 'equipment_name = ?';
         $values[] = $data['equipment_name'];
@@ -87,6 +89,9 @@ class EquipmentRequestService
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute($values);
 
+		error_log("SQL Query: $sql");
+    error_log("Values: " . implode(', ', $values));
+
     if ($stmt->rowCount() > 0) {
         // Получаем обновленную запись, чтобы вернуть её клиенту
         $sql = "SELECT * FROM equipment_request WHERE id_request = ?";
@@ -94,6 +99,7 @@ class EquipmentRequestService
         $stmt->execute([$data['id_request']]);
         $updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
 
+				error_log("Updated Request Data: " . print_r($updatedRequest, true));
         return ['success' => true, 'data' => $updatedRequest];
     } else {
         return ['success' => false, 'message' => 'No rows updated'];

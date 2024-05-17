@@ -258,7 +258,6 @@ function renderEquipmentOrder(userData) {
 // обновление таблицы данными
 
 function updateEquipmentRequestsTable(namePermission) {
-	console.log("функция updateEquipmentRequestsTable вызвалась");
 	apiEquipmentRequest
 		.getAllRequests()
 		.then((data) => {
@@ -268,11 +267,19 @@ function updateEquipmentRequestsTable(namePermission) {
 
 			if (data.success && Array.isArray(data.data)) {
 				data.data.forEach((request) => {
-					// Добавляем проверку статуса для stockman
+
+					console.log("Processing request:", request);
 					if (
 						namePermission !== "stockman" ||
 						isStatusVisibleForStockman(request.treatment_status)
 					) {
+						if (namePermission === "stockman" && request.treatment_status === "closed_by_stockman" && request.equipment_status === "received") {
+							request.treatment_status = "demande fermée";
+							request.equipment_status = "délivré";
+						}
+
+						console.log("Modified request for stockman:", request);
+
 						const row = createTableRow(request, namePermission);
 						tableBody.innerHTML += row;
 					}
@@ -298,14 +305,25 @@ function isStatusVisibleForStockman(status) {
 		"treated_rental_manager_stockman",
 		"closed_by_stockman",
 		"rental_details_discussion_manager_stockman_queue",
-		"queue_requested",
 		"treated_manager_user_before_sending",
+		"demande_fermée",
 	];
 	return visibleStatuses.includes(status);
 }
 
 function createTableRow(request, namePermission) {
 	let actionsMarkup = "";
+
+	// Преобразование статусов для кладовщика
+	let treatmentStatus = request.treatment_status;
+	let equipmentStatus = request.equipment_status;
+
+	if (namePermission === "stockman") {
+		if (request.treatment_status === "closed_by_stockman" && request.equipment_status === "received") {
+			treatmentStatus = "demande fermée";
+			equipmentStatus = "délivré";
+		}
+	}
 
 	if (namePermission === "rental-manager") {
 		if (request.treatment_status === "pending_manager") {
@@ -321,7 +339,11 @@ function createTableRow(request, namePermission) {
 			request.treatment_status === "rental_details_discussion_manager_stockman"
 		) {
 			actionsMarkup = `
-			<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi'</a></li>
+			<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi</a></li>
+			`;
+		} else if (request.treatment_status === "treated_rental_manager_stockman") {
+			actionsMarkup = `
+			<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
 			`;
 		} else {
 			actionsMarkup = `
@@ -419,6 +441,9 @@ const confirmSendingModal = new Modal(
 	document.getElementById("confirmSendingModal")
 );
 const sendingItemModal = new Modal(document.getElementById("sendingItemModal"));
+const confirmReceivingModal = new Modal(
+	document.getElementById("confirmReceivingModal")
+);
 const namePermission = localStorage.getItem("namePermission");
 console.log("namePermission for modals:", namePermission);
 updateEquipmentRequestsTable(namePermission);
@@ -448,6 +473,10 @@ document.querySelector(".table").addEventListener("click", (event) => {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
 		openSendingItemModal(requestId);
+	} else if (event.target.classList.contains("confirm-receiving-item")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openReceivingItemModal(requestId);
 	}
 });
 
@@ -559,7 +588,12 @@ document
 
 function updateTableRowStatus(requestId, status, equipmentStatus = null) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-
+	console.log(
+		"проверка данных которые передаются",
+		requestId,
+		status,
+		equipmentStatus
+	);
 	if (row) {
 		row.children[6].textContent = status;
 		if (equipmentStatus !== null) {
@@ -638,6 +672,21 @@ function openSendingItemModal(requestId) {
 		.getElementById("sendingItemButton")
 		.setAttribute("data-id", requestId);
 	sendingItemModal.show();
+}
+
+document
+	.getElementById("confirmReceivingItemButton")
+	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		receivingItem(requestId);
+		confirmReceivingModal.hide();
+	});
+
+function openReceivingItemModal(requestId) {
+	document
+		.getElementById("confirmReceivingItemButton")
+		.setAttribute("data-id", requestId);
+	confirmReceivingModal.show();
 }
 
 function sendToStockman(requestId) {
@@ -816,6 +865,40 @@ function sendingItem(requestId) {
 			alert("Ошибка при обновлении данных.");
 		});
 }
+
+function receivingItem(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const manager_treatment_status = "closed_by_stockman";
+	const manager_equipment_status = "received";
+	const responseData = {
+		id_request: requestId,
+		treatment_status: manager_treatment_status,
+		equipment_status: manager_equipment_status,
+	};
+	console.log("Отправка данных для подтверждения отправки:", responseData);
+	apiEquipmentRequest
+		.updateEquipmentRequest(responseData)
+		.then((data) => {
+			alert(
+				"Désormais, le magasinier peut dormir tranquille, car vous l'avez informé de la réception de l'équipement! N'oubliez pas de rappeler à l'utilisateur de venir chercher le matériel s'il faut!"
+			);
+
+			// Обновляем статусы для страницы менеджера
+			updateTableRowStatus(
+				requestId,
+				manager_treatment_status,
+				manager_equipment_status
+			);
+
+			// Переотрисовка таблицы для обновления данных для кладовщика
+			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
+		})
+		.catch((error) => {
+			console.error("Ошибка при обновлении данных:", error);
+			alert("Ошибка при обновлении данных.");
+		});
+}
+
 
 function closeRequestByStockman(requestId, status) {
 	const responseData = {
