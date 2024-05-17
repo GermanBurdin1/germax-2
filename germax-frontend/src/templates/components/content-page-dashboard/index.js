@@ -479,7 +479,7 @@ function openManagerProposalModalBeforeSendingItem(requestId) {
 function confirmApprovalBeforeSending(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipment_status = "not_sent";
-	const treatment_status = "treated_manager_user";
+	const treatment_status = "treated_manager_user_before_sending";
 	const approvalData = {
 		id_request: requestId,
 		equipment_status,
@@ -489,7 +489,7 @@ function confirmApprovalBeforeSending(requestId) {
 		.confirmApproval(approvalData)
 		.then((data) => {
 			alert("Данные успешно подтверждены и отправлены на согласование!");
-			updateTableRowStatus(requestId, "treated_manager_user");
+			updateTableRowStatus(requestId, "treated_manager_user_before_sending");
 		})
 		.catch((error) => {
 			console.error("Ошибка при отправке данных на согласование:", error);

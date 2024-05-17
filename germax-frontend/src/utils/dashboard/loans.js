@@ -189,22 +189,21 @@ export function returnClientLoans(rentals = [], requests = []) {
     </div>
 
 		<!-- Modal для подтверждения предложения менеджера перед отправк-->
-<div class="modal fade" id="manageResponseModal" tabindex="-1" aria-labelledby="manageResponseModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="manageResponseModalLabel">Gérer la réponse</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Vous êtes sûr de vouloir accepter ces données? Une fois accepté, vous ne pourrez plus revenir dessus.</p>
-        <button type="button" class="btn btn-primary" id="confirmManagerResponse">Confirmer</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отправить сообщение менеджеру</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+		<div class="modal fade" id="manageResponseModal" tabindex="-1" aria-labelledby="manageResponseModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="manageResponseModalLabel">Gérer la réponse</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p>Vous êtes sûr de vouloir accepter ces données? Une fois accepté, vous ne pourrez plus revenir dessus.</p>
+						<button type="button" class="btn btn-primary" id="confirmManagerResponse">Confirmer</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отправить сообщение менеджеру</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	`;
 }
 

@@ -299,7 +299,7 @@ function isStatusVisibleForStockman(status) {
 		"closed_by_stockman",
 		"rental_details_discussion_manager_stockman_queue",
 		"queue_requested",
-		"treated_manager_user"
+		"treated_manager_user_before_sending"
 	];
 	return visibleStatuses.includes(status);
 }
