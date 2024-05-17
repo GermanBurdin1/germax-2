@@ -334,16 +334,13 @@ function createTableRow(request, namePermission) {
 			actionsMarkup = `
 			<li><a class="dropdown-item stockman-send-response" href="#" data-id="${request.id_request}">Envoyer une réponse</a></li>
 			`;
-		} else if (
-			request.treatment_status ===
-				"rental_details_discussion_manager_stockman" ||
-			request.treatment_status === "treated_rental_manager_strockman"
-		) {
-			actionsMarkup = `
-			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>`;
 		} else if (request.treatment_status === "sent_awaiting") {
 			actionsMarkup = `
 			<li><a class="dropdown-item stockman-send-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#sendingItemModal">Envoyer l'équipement</a></li>`;
+		} else {
+			actionsMarkup = `
+			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+			`;
 		}
 	}
 
