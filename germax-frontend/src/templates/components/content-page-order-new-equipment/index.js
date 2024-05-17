@@ -335,10 +335,15 @@ function createTableRow(request, namePermission) {
 			<li><a class="dropdown-item stockman-send-response" href="#" data-id="${request.id_request}">Envoyer une réponse</a></li>
 			`;
 		} else if (
-			request.treatment_status === "rental_details_discussion_manager_stockman"
+			request.treatment_status ===
+				"rental_details_discussion_manager_stockman" ||
+			request.treatment_status === "treated_rental_manager_strockman"
 		) {
 			actionsMarkup = `
 			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>`;
+		} else if (request.treatment_status === "sent_awaiting") {
+			actionsMarkup = `
+			<li><a class="dropdown-item stockman-send-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#sendingItemModal">Envoyer l'équipement</a></li>`;
 		}
 	}
 
@@ -416,6 +421,7 @@ const stockmanResponseModal = new Modal(
 const confirmSendingModal = new Modal(
 	document.getElementById("confirmSendingModal")
 );
+const sendingItemModal = new Modal(document.getElementById("sendingItemModal"));
 const namePermission = localStorage.getItem("namePermission");
 console.log("namePermission for modals:", namePermission);
 updateEquipmentRequestsTable(namePermission);
@@ -441,6 +447,10 @@ document.querySelector(".table").addEventListener("click", (event) => {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
 		openApprovalSendingItemModal(requestId);
+	} else if (event.target.classList.contains("stockman-send-item")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openSendingItemModal(requestId);
 	}
 });
 
@@ -550,11 +560,14 @@ document
 		confirmationModal.hide();
 	});
 
-function updateTableRowStatus(requestId, status) {
+function updateTableRowStatus(requestId, status, equipmentStatus = null) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
 	if (row) {
-		row.children[6].textContent = status; // Предполагается, что статус находится в 7-м столбце (индекс 6)
+		row.children[6].textContent = status;
+		if (equipmentStatus !== null) {
+			row.children[7].textContent = equipmentStatus;
+		}
 	}
 }
 
@@ -604,7 +617,6 @@ document
 	.getElementById("confirmSendingButton")
 	.addEventListener("click", function () {
 		const requestId = this.getAttribute("data-id");
-		console.log("Подтверждение отправки для запроса:", requestId);
 		confirmSending(requestId);
 		confirmSendingModal.hide();
 	});
@@ -613,8 +625,22 @@ function openApprovalSendingItemModal(requestId) {
 	document
 		.getElementById("confirmSendingButton")
 		.setAttribute("data-id", requestId);
-		console.log("установленный requestId:", requestId);
 	confirmSendingModal.show();
+}
+
+document
+	.getElementById("sendingItemButton")
+	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		sendingItem(requestId);
+		sendingItemModal.hide();
+	});
+
+function openSendingItemModal(requestId) {
+	document
+		.getElementById("sendingItemButton")
+		.setAttribute("data-id", requestId);
+	sendingItemModal.show();
 }
 
 function sendToStockman(requestId) {
@@ -756,7 +782,7 @@ function confirmSending(requestId) {
 	const treatment_status = "sent_awaiting";
 	const responseData = {
 		id_request: requestId,
-		treatment_status
+		treatment_status,
 	};
 	console.log("Отправка данных для подтверждения отправки:", responseData);
 	apiEquipmentRequest
@@ -772,7 +798,27 @@ function confirmSending(requestId) {
 		});
 }
 
-
+function sendingItem(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const treatment_status = "treated_rental_manager_stockman";
+	const equipment_status = "sent";
+	const responseData = {
+		id_request: requestId,
+		treatment_status,
+		equipment_status,
+	};
+	console.log("Отправка данных для подтверждения отправки:", responseData);
+	apiEquipmentRequest
+		.updateEquipmentRequest(responseData)
+		.then((data) => {
+			alert("Данные успешно обновлены и отправлены на подтверждение отправки!");
+			updateTableRowStatus(requestId, treatment_status);
+		})
+		.catch((error) => {
+			console.error("Ошибка при обновлении данных:", error);
+			alert("Ошибка при обновлении данных.");
+		});
+}
 
 function closeRequestByStockman(requestId, status) {
 	const responseData = {
