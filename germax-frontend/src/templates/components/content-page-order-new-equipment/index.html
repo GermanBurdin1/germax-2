@@ -283,33 +283,33 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="editModalLabel">Изменить данные</h5>
+				<h5 class="modal-title" id="editModalLabel">Changer les données</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<form id="editForm">
 					<input type="hidden" id="editRequestId">
 					<div class="mb-3">
-						<label for="editEquipmentName" class="form-label">Название оборудования</label>
+						<label for="editEquipmentName" class="form-label">Nom de l'équipement</label>
 						<input type="text" class="form-control" id="editEquipmentName">
 					</div>
 					<div class="mb-3">
-						<label for="editQuantity" class="form-label">Количество</label>
+						<label for="editQuantity" class="form-label">Quantité</label>
 						<input type="number" class="form-control" id="editQuantity">
 					</div>
 					<div class="mb-3">
-						<label for="editDateStart" class="form-label">Дата начала</label>
+						<label for="editDateStart" class="form-label">Date de début</label>
 						<input type="date" class="form-control" id="editDateStart">
 					</div>
 					<div class="mb-3">
-						<label for="editDateEnd" class="form-label">Дата окончания</label>
+						<label for="editDateEnd" class="form-label">Date de fin</label>
 						<input type="date" class="form-control" id="editDateEnd">
 					</div>
 					<div class="mb-3">
-						<label for="editComment" class="form-label">Комментарий</label>
+						<label for="editComment" class="form-label">Commentaire</label>
 						<textarea class="form-control" id="editComment"></textarea>
 					</div>
-					<button type="submit" class="btn btn-primary">Сохранить изменения</button>
+					<button type="submit" class="btn btn-primary">Sauvegarder les changements</button>
 				</form>
 			</div>
 		</div>
@@ -321,15 +321,15 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="confirmationModalLabel">Подтверждение данных</h5>
+        <h5 class="modal-title" id="confirmationModalLabel">Confirmation des données</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Вы уверены в введенных вами данных? После подтверждения нельзя будет изменить данные.</p>
+        <p>En appuyant sur Confirmer les données réctifiées seront envoyées à l'utilisateur</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-primary" id="confirmApprovalButton">Подтвердить</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="confirmApprovalButton">Confirmer</button>
       </div>
     </div>
   </div>
@@ -340,15 +340,15 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="stockmanApprovalModalLabel">Отправка на согласование</h5>
+        <h5 class="modal-title" id="stockmanApprovalModalLabel">Soumission pour approbation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Вы уверены, что хотите отправить данные на согласование с кладовщиком? После подтверждения нельзя будет изменить данные.</p>
+        <p>Après la confirmation, le gestionnaire commencera à chercher votre équipement</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-primary" id="confirmStockmanApprovalButton">Отправить</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="confirmStockmanApprovalButton">Envoyer</button>
       </div>
     </div>
   </div>
@@ -385,3 +385,19 @@
   </div>
 </div>
 
+
+<!-- Modal для подтверждения предложения менеджера перед отправк-->
+<div class="modal fade" id="confirmSendingModal" tabindex="-1" aria-labelledby="confirmSendingModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmSendingModalLabel">Confirmer l'envoi</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant "confirmer" le gestionnaire enverra l'équipement la date prévue.</p>
+				<button type="button" class="btn btn-primary" id="confirmSendingButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
+</div>

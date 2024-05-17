@@ -285,12 +285,11 @@ function submitRentalRequest(good, formInfo) {
 		.createRequestRental(good, formInfo)
 		.then((response) => {
 			console.log("Rental request successful:", response);
-			alert("Votre demande de location a été enregistrée avec succès."); // Французское сообщение
-			newLoanFormModal.hide(); // Закрыть модальное окно
+			alert("Votre demande de location a été enregistrée avec succès.");
+			newLoanFormModal.hide();
 		})
 		.catch((error) => {
 			console.error("Rental request failed:", error);
-			// Показать детальную причину отказа
 			const errorMessage =
 				error.message || "Échec de la demande de location. Veuillez réessayer.";
 			alert(`Échec de la demande de location: ${errorMessage}`); // Сообщение об ошибке на французском
@@ -302,7 +301,7 @@ function submitRentalNotFoundItemRequest(formInfo, requestNotFoundItemsModal) {
 		.createEquipmentRequest(formInfo)
 		.then((response) => {
 			console.log("requestNotFoundItemsModal:",requestNotFoundItemsModal);
-			alert("Votre demande de location a été enregistrée avec succès."); // Французское сообщение
+			alert("Votre demande de location a été enregistrée avec succès et envoyée au manager. Il vous répondra très bientôt"); // Французское сообщение
 			requestNotFoundItemsModal.hide(); // Закрыть модальное окно
 		})
 		.catch((error) => {

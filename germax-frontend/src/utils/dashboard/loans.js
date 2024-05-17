@@ -62,7 +62,7 @@ export function returnClientLoans(rentals = [], requests = []) {
                 `;
             } else if (entry.statusMessage === "rental_details_discussion_manager_stockman") {
                 actionsMarkup = `
-                    <li><a class="dropdown-item response-before-sending" href="#" data-id="${entry.id}" data-bs-toggle="modal" data-bs-target="#manageResponseModal">gérer la réponse</a></li>
+                    <li><a class="dropdown-item response-before-sending" href="#" data-id="${entry.id}" data-bs-toggle="modal" data-bs-target="#manageResponseModal">confirmer la requête</a></li>
                 `;
             } else {
                 actionsMarkup = `
@@ -180,9 +180,9 @@ export function returnClientLoans(rentals = [], requests = []) {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Vous êtes sûr de vouloir accepté ces données? Une fois accepté vous ne pourrez plus revenir dessus.</p>
+            <p>En appuyant sur "confirmer" vous confirmer les réctifications du manager</p>
             <button type="button" class="btn btn-primary" id="confirmManagerProposal">Confirmer</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отправить сообщение менеджеру</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Envoyer le message au manager</button>
           </div>
         </div>
       </div>
@@ -193,13 +193,13 @@ export function returnClientLoans(rentals = [], requests = []) {
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="manageResponseModalLabel">Gérer la réponse</h5>
+						<h5 class="modal-title" id="manageResponseModalLabel">Confirmer la requête</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<p>Vous êtes sûr de vouloir accepter ces données? Une fois accepté, vous ne pourrez plus revenir dessus.</p>
+						<p>En appuyant "confirmer" le gestionnaire commencera à chercher votre équipement.</p>
 						<button type="button" class="btn btn-primary" id="confirmManagerResponse">Confirmer</button>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отправить сообщение менеджеру</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Envoyer le message au manager</button>
 					</div>
 				</div>
 			</div>

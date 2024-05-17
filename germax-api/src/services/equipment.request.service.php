@@ -42,32 +42,64 @@ class EquipmentRequestService
 	}
 
 	public function updateRequest($data)
-	{
-		$sql = "UPDATE equipment_request SET equipment_name = ?, quantity = ?, date_start = ?, date_end = ?, comment = ?, treatment_status = ?, equipment_status = ? WHERE id_request = ?";
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute([
-			$data['equipment_name'],
-			$data['quantity'],
-			$data['date_start'],
-			$data['date_end'],
-			isset($data['comment']) ? $data['comment'] : null,
-      isset($data['treatment_status']) ? $data['treatment_status'] : null,
-      isset($data['equipment_status']) ? $data['equipment_status'] : null,
-			$data['id_request'],
-		]);
+{
+    $fieldsToUpdate = [];
+    $values = [];
 
-		if ($stmt->rowCount() > 0) {
-			// Получаем обновленную запись, чтобы вернуть её клиенту
-			$sql = "SELECT * FROM equipment_request WHERE id_request = ?";
-			$stmt = $this->pdo->prepare($sql);
-			$stmt->execute([$data['id_request']]);
-			$updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (isset($data['equipment_name'])) {
+        $fieldsToUpdate[] = 'equipment_name = ?';
+        $values[] = $data['equipment_name'];
+    }
 
-			return ['success' => true, 'data' => $updatedRequest];
-		} else {
-			return ['success' => false, 'message' => 'No rows updated'];
-		}
-	}
+    if (isset($data['quantity'])) {
+        $fieldsToUpdate[] = 'quantity = ?';
+        $values[] = $data['quantity'];
+    }
+
+    if (isset($data['date_start'])) {
+        $fieldsToUpdate[] = 'date_start = ?';
+        $values[] = $data['date_start'];
+    }
+
+    if (isset($data['date_end'])) {
+        $fieldsToUpdate[] = 'date_end = ?';
+        $values[] = $data['date_end'];
+    }
+
+    if (isset($data['comment'])) {
+        $fieldsToUpdate[] = 'comment = ?';
+        $values[] = $data['comment'];
+    }
+
+    if (isset($data['treatment_status'])) {
+        $fieldsToUpdate[] = 'treatment_status = ?';
+        $values[] = $data['treatment_status'];
+    }
+
+    if (isset($data['equipment_status'])) {
+        $fieldsToUpdate[] = 'equipment_status = ?';
+        $values[] = $data['equipment_status'];
+    }
+
+    $values[] = $data['id_request'];
+
+    $sql = "UPDATE equipment_request SET " . implode(', ', $fieldsToUpdate) . " WHERE id_request = ?";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($values);
+
+    if ($stmt->rowCount() > 0) {
+        // Получаем обновленную запись, чтобы вернуть её клиенту
+        $sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$data['id_request']]);
+        $updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return ['success' => true, 'data' => $updatedRequest];
+    } else {
+        return ['success' => false, 'message' => 'No rows updated'];
+    }
+}
+
 
 
 	public function sendUpdatedDataToUser($data)

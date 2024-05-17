@@ -236,7 +236,7 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
-			setupProposalModalBeforeSendingItem();
+			// setupProposalModalBeforeSendingItem();
 		})
 		.catch((error) => {
 			console.error("Failed to load data:", error);
@@ -429,12 +429,12 @@ function confirmApproval(requestId) {
 	apiEquipmentRequest
 		.confirmApproval(approvalData)
 		.then((data) => {
-			alert("Данные успешно подтверждены и отправлены на согласование!");
+			alert("Le gestionnaire est déjà en train de chercher votre équipement");
 			updateTableRowStatus(requestId, "treated_manager_user");
 		})
 		.catch((error) => {
-			console.error("Ошибка при отправке данных на согласование:", error);
-			alert("Ошибка при отправке данных на согласование.");
+			console.error("Erreur lors de l'envoi des données pour approbation :", error);
+			alert("Erreur lors de l'envoi des données pour approbation.");
 		});
 }
 
@@ -447,52 +447,52 @@ function updateTableRowStatus(requestId, status) {
 	}
 }
 
-function setupProposalModalBeforeSendingItem() {
-	const manageResponseModal = new Modal(
-		document.getElementById("manageResponseModal")
-	);
+// function setupProposalModalBeforeSendingItem() {
+// 	const manageResponseModal = new Modal(
+// 		document.getElementById("manageResponseModal")
+// 	);
 
-	document.querySelector(".table").addEventListener("click", (event) => {
-		if (event.target.classList.contains("response-before-sending")) {
-			event.preventDefault();
-			const requestId = event.target.getAttribute("data-id");
-			openManagerProposalModalBeforeSendingItem(requestId);
-		}
-	});
+// 	document.querySelector(".table").addEventListener("click", (event) => {
+// 		if (event.target.classList.contains("response-before-sending")) {
+// 			event.preventDefault();
+// 			const requestId = event.target.getAttribute("data-id");
+// 			openManagerProposalModalBeforeSendingItem(requestId);
+// 		}
+// 	});
 
-	document
-		.getElementById("confirmManagerResponse")
-		.addEventListener("click", function () {
-			const requestId = this.getAttribute("data-id");
-			confirmApprovalBeforeSending(requestId);
-			manageResponseModal.hide();
-		});
-}
+// 	document
+// 		.getElementById("confirmManagerResponse")
+// 		.addEventListener("click", function () {
+// 			const requestId = this.getAttribute("data-id");
+// 			confirmApprovalBeforeSending(requestId);
+// 			manageResponseModal.hide();
+// 		});
+// }
 
-function openManagerProposalModalBeforeSendingItem(requestId) {
-	document
-		.getElementById("confirmManagerResponse")
-		.setAttribute("data-id", requestId);
-		manageResponseModal.show(); // используем существующий экземпляр для показа модального окна
-}
+// function openManagerProposalModalBeforeSendingItem(requestId) {
+// 	document
+// 		.getElementById("confirmManagerResponse")
+// 		.setAttribute("data-id", requestId);
+// 		manageResponseModal.show(); // используем существующий экземпляр для показа модального окна
+// }
 
-function confirmApprovalBeforeSending(requestId) {
-	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-	const equipment_status = "not_sent";
-	const treatment_status = "treated_manager_user_before_sending";
-	const approvalData = {
-		id_request: requestId,
-		equipment_status,
-		treatment_status
-	};
-	apiEquipmentRequest
-		.confirmApproval(approvalData)
-		.then((data) => {
-			alert("Данные успешно подтверждены и отправлены на согласование!");
-			updateTableRowStatus(requestId, "treated_manager_user_before_sending");
-		})
-		.catch((error) => {
-			console.error("Ошибка при отправке данных на согласование:", error);
-			alert("Ошибка при отправке данных на согласование.");
-		});
-}
+// function confirmApprovalBeforeSending(requestId) {
+// 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+// 	const equipment_status = "not_sent";
+// 	const treatment_status = "treated_manager_user_before_sending";
+// 	const approvalData = {
+// 		id_request: requestId,
+// 		equipment_status,
+// 		treatment_status
+// 	};
+// 	apiEquipmentRequest
+// 		.confirmApproval(approvalData)
+// 		.then((data) => {
+// 			alert("Les données ont été confirmées avec succès et envoyées pour approbation !");
+// 			updateTableRowStatus(requestId, "treated_manager_user_before_sending");
+// 		})
+// 		.catch((error) => {
+// 			console.error("Erreur lors de l'envoi des données pour approbation :", error);
+// 			alert("Erreur lors de l'envoi des données pour approbation.");
+// 		});
+// }
