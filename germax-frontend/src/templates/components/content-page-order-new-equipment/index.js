@@ -267,13 +267,16 @@ function updateEquipmentRequestsTable(namePermission) {
 
 			if (data.success && Array.isArray(data.data)) {
 				data.data.forEach((request) => {
-
 					console.log("Processing request:", request);
 					if (
 						namePermission !== "stockman" ||
 						isStatusVisibleForStockman(request.treatment_status)
 					) {
-						if (namePermission === "stockman" && request.treatment_status === "closed_by_stockman" && request.equipment_status === "received") {
+						if (
+							namePermission === "stockman" &&
+							request.treatment_status === "closed_by_stockman" &&
+							request.equipment_status === "received"
+						) {
 							request.treatment_status = "demande fermée";
 							request.equipment_status = "délivré";
 						}
@@ -319,7 +322,10 @@ function createTableRow(request, namePermission) {
 	let equipmentStatus = request.equipment_status;
 
 	if (namePermission === "stockman") {
-		if (request.treatment_status === "closed_by_stockman" && request.equipment_status === "received") {
+		if (
+			request.treatment_status === "closed_by_stockman" &&
+			request.equipment_status === "received"
+		) {
 			treatmentStatus = "demande fermée";
 			equipmentStatus = "délivré";
 		}
@@ -344,6 +350,10 @@ function createTableRow(request, namePermission) {
 		} else if (request.treatment_status === "treated_rental_manager_stockman") {
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
+			`;
+		} else if (request.treatment_status === "received") {
+			actionsMarkup = `
+			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handedOverModal">confirmer la remise du matériel</a></li>
 			`;
 		} else {
 			actionsMarkup = `
@@ -898,7 +908,6 @@ function receivingItem(requestId) {
 			alert("Ошибка при обновлении данных.");
 		});
 }
-
 
 function closeRequestByStockman(requestId, status) {
 	const responseData = {
