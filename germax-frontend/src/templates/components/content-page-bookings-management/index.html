@@ -56,8 +56,6 @@
 	<div class="nav nav-tabs" id="equipmentTabs" role="tablist">
 		<a class="nav-link active" id="active-booking-tab" data-bs-toggle="tab" href="#requestBookingsManagement" role="tab"
 			aria-controls="requestBookingsManagement" aria-selected="true">Gestion des demandes de réservations </a>
-		<a class="nav-link" id="active-booking-tab" data-bs-toggle="tab" href="#queueForRental" role="tab"
-			aria-controls="queueForRental" aria-selected="true">File d'attente de location</a>
 		<a class="nav-link" id="active-booking-tab" data-bs-toggle="tab" href="#activeEquipment" role="tab"
 			aria-controls="activeEquipment" aria-selected="true">Réservations en cours </a>
 		<a class="nav-link" id="processed-booking-tab" data-bs-toggle="tab" href="#processedEquipmentRequest" role="tab"
@@ -72,114 +70,6 @@
 			<div class="row">
 				<div class="col-12">
 					<table class="table table-hover" id="request-bookings-table">
-						<thead>
-							<tr>
-								<th data-column="id" data-type="number">ID Réservation <button
-										class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
-								</th>
-								<th>ID de l'équipement<button class="btn btn-link p-0 border-0" id="sortById"><i
-											class="fas fa-sort"></i></button>
-								</th>
-								<th>Nom du locataire</th>
-								<th>Modèle à louer<button class="btn btn-link p-0 border-0" id="sortByName"
-										style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
-								<th>Quantité</th>
-								<th>Dates désirées</th>
-								<th>Commentaire laissé</th>
-								<th>Statut de la réservation actuel</th>
-								<th>Etat du matériel <button class="btn btn-link p-0 border-0 sortButton"
-										title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- Предположим, что это оборудование с ID 1 -->
-							<tr data-booking-id="1">
-								<td>1</td>
-								<td>1</td>
-								<td>John Doe</td>
-								<td>Ordinateur portable</td>
-								<td>1</td>
-								<td>Date1</td>
-								<td>Pour les cours, pas pour jouer</td>
-								<td>A traiter</td>
-								<td>Bon état</td>
-								<td>
-									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu1"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="actionMenu1">
-											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
-											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr data-booking-id="2">
-								<td>2</td>
-								<td>2</td>
-								<td>Jane Smith</td>
-								<td>Imprimante 3D</td>
-								<td>2</td>
-								<td>Date2</td>
-								<td>Juste pour une semaine. Il faut vite</td>
-								<td>Refusé</td>
-								<td>Bon état</td>
-								<td>
-									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu2"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="actionMenu2">
-											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
-											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr data-booking-id="3">
-								<td>3</td>
-								<td>3</td>
-								<td>Emily Johnson</td>
-								<td>Scanner de documents</td>
-								<td>1</td>
-								<td>Date3</td>
-								<td>Il faut m'expliquer comment l'utiliser</td>
-								<td>Accepté</td>
-								<td>Bon état</td>
-								<td>
-									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu3"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="actionMenu3">
-											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
-											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-
-		<!-- Вкладка очередь оборудования -->
-		<div class="tab-pane fade" id="queueForRental" role="tabpanel" aria-labelledby="queue-for-rental-tab">
-			<div class="row">
-				<div class="col-12">
-					<table class="table table-hover" id="booking-table">
 						<thead>
 							<tr>
 								<th data-column="id" data-type="number">ID Réservation <button

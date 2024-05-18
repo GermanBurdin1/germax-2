@@ -323,8 +323,10 @@ function createTableRow(request, namePermission) {
 
 	if (namePermission === "stockman") {
 		if (
-			request.treatment_status === "closed_by_stockman" &&
-			request.equipment_status === "received"
+			(request.treatment_status === "closed_by_stockman" &&
+				request.equipment_status === "received") ||
+			(request.treatment_status === "closed_by_stockman" &&
+				request.equipment_status === "handed_over")
 		) {
 			treatmentStatus = "demande fermée";
 			equipmentStatus = "délivré";
@@ -351,9 +353,9 @@ function createTableRow(request, namePermission) {
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
 			`;
-		} else if (request.treatment_status === "received") {
+		} else if (request.treatment_status === "closed_by_stockman") {
 			actionsMarkup = `
-			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handedOverModal">confirmer la remise du matériel</a></li>
+			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
 			`;
 		} else {
 			actionsMarkup = `
@@ -454,6 +456,7 @@ const sendingItemModal = new Modal(document.getElementById("sendingItemModal"));
 const confirmReceivingModal = new Modal(
 	document.getElementById("confirmReceivingModal")
 );
+const handOverModal = new Modal(document.getElementById("handOverModal"));
 const namePermission = localStorage.getItem("namePermission");
 console.log("namePermission for modals:", namePermission);
 updateEquipmentRequestsTable(namePermission);
@@ -487,6 +490,10 @@ document.querySelector(".table").addEventListener("click", (event) => {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
 		openReceivingItemModal(requestId);
+	} else if (event.target.classList.contains("confirm-hand-over")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		openHandOverModal(requestId);
 	}
 });
 
@@ -699,6 +706,21 @@ function openReceivingItemModal(requestId) {
 	confirmReceivingModal.show();
 }
 
+document
+	.getElementById("handOverItemButton")
+	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		handOverItem(requestId);
+		handOverModal.hide();
+	});
+
+function openHandOverModal(requestId) {
+	document
+		.getElementById("handOverItemButton")
+		.setAttribute("data-id", requestId);
+	handOverModal.show();
+}
+
 function sendToStockman(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
@@ -900,6 +922,30 @@ function receivingItem(requestId) {
 				manager_equipment_status
 			);
 
+			// Переотрисовка таблицы для обновления данных для кладовщика
+			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
+		})
+		.catch((error) => {
+			console.error("Ошибка при обновлении данных:", error);
+			alert("Ошибка при обновлении данных.");
+		});
+}
+
+function handOverItem(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const treatment_status = "closed_by_stockman";
+	const equipment_status = "handed_over";
+	const responseData = {
+		id_request: requestId,
+		treatment_status,
+		equipment_status,
+	};
+	console.log("Отправка данных для подтверждения отправки:", responseData);
+	apiEquipmentRequest
+		.updateEquipmentRequest(responseData)
+		.then((data) => {
+			alert("L'utilisateur a récupéré son matériel!");
+			updateTableRowStatus(requestId, treatment_status);
 			// Переотрисовка таблицы для обновления данных для кладовщика
 			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
 		})
