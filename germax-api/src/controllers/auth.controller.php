@@ -24,7 +24,7 @@ class AuthController
 
 
 	public function register(
-		$lastname, $firstname, $phone, $email, $password, $typePermission
+		$lastname, $firstname, $phone, $email, $password, $typePermission, $faculty
 	)
 	{
 		if (empty($email)) return renderErrorAndExit(["email does not exist"], 400);
@@ -34,7 +34,7 @@ class AuthController
 		if (empty($typePermission)) return renderErrorAndExit(["typePermission does not exist"], 400);
 
 		return $this->authService->register(
-			$lastname, $firstname, $phone, $email, $password, $typePermission
+			$lastname, $firstname, $phone, $email, $password, $typePermission, $faculty
 		);
 	}
 

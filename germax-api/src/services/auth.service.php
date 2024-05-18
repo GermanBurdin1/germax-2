@@ -21,6 +21,8 @@ class AuthService {
 	{
 		$foundUser = $this->getUserByEmail($email);
 
+		// var_dump($foundUser, "foundUser");
+
 		if (empty($foundUser)) {
 			return renderErrorAndExit(['There is no user with this email'], 401);
 		}
@@ -29,6 +31,10 @@ class AuthService {
 
 		if (!password_verify($password, $foundUser['password'])) {
 			return renderErrorAndExit(["The password for user $email is incorrect"], 401);
+		}
+
+		if ($foundUser["authorization_permission"] == 0) {
+			return renderErrorAndExit(["No authorization permission from manager"], 401);
 		}
 
 		// Код ниже выполняется, только если пользователь существует и передали правильный пароль
@@ -44,14 +50,15 @@ class AuthService {
 	}
 
 	/**
-	 * Функция для обработки информации о пользователе.
+	 * Функция для обработки информации о пользователе
 	 *
-	 * @param object $user Объект пользователя.
-	 * @property string $user->lastName Фамилия пользователя.
-	 * @property string $user->firstName Имя пользователя.
-	 * @property string $user->phone Телефон пользователя.
-	 * @property string $user->email Email пользователя.
-	 * @property string $user->password Пароль пользователя.
+	 * @param string $lastName Фамилия пользователя
+	 * @param string $firstName Имя пользователя
+	 * @param string $phone Телефон пользователя
+	 * @param string $email Email пользователя
+	 * @param string $password Пароль пользователя
+	 * @param string $typePermission Тип пользователя
+	 * @param string | NULL $faculty Тип пользователя
 	 * @return void
 	 */
 	public function register(
@@ -60,11 +67,12 @@ class AuthService {
 		$phone,
 		$email,
 		$password,
-		$typePermission
+		$typePermission,
+		$faculty
 	) {
 		$foundUser = $this->getUserByEmail($email);
 
-		if (empty($foundUser)) return renderErrorAndExit(
+		if (!empty($foundUser)) return renderErrorAndExit(
 			["Пользователь с email {$email} уже существует"],
 			401
 		);
@@ -75,14 +83,14 @@ class AuthService {
 			$phone,
 			$email,
 			$password,
-			$typePermission
+			$typePermission,
+			$faculty
 		);
 
 		return renderSuccessAndExit(['User registered'], 200, $createdUser);
 	}
 
-	public function me($token)
-	{
+	public function me($token) {
 		$userByToken = $this->getUserByToken($token);
 
 		// если userByToken не существует
@@ -115,7 +123,8 @@ class AuthService {
 		$phone,
 		$email,
 		$password,
-		$namePermission
+		$namePermission,
+		$faculty
 	) {
 		$permission = $this->permissionsService->getByName($namePermission);
 
@@ -125,19 +134,28 @@ class AuthService {
 		);
 
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+		$faculty = $faculty == NULL ? "default" : $faculty;
 
 		// Теперь у нас есть id_permission, и мы можем вставить нового пользователя
-		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission) VALUES (:lastname, :firstname, :phone, :password, :email, :id_permission)");
+		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission, faculty, authorization_permission) VALUES (:lastname, :firstname, :phone, :password, :email, :id_permission, :faculty, :authorization_permission)");
 		$stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
 		$stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
 		$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
 		$stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
-		$stmt->bindParam(':id_permission', $permission['id_permission'], PDO::PARAM_INT);
+		$stmt->bindParam(':id_permission', $permission['id_permission'],PDO::PARAM_INT);
+		$stmt->bindParam(':faculty', $faculty, PDO::PARAM_STR);
+		$stmt->bindValue(':authorization_permission', 0, PDO::PARAM_INT);
 		$stmt->execute();
 
 		$createdUser = $stmt->fetch();
-		$createdUser['name_permission'] = $namePermission;
+		$createdUser = $this->getUserByEmail($email);
+
+		if (empty($createdUser)) {
+			return renderErrorAndExit(['Error with created user'], 401, [
+				"createdUser" => $createdUser
+			]);
+		}
 
 		return renderSuccessAndExit(['User successfully registered'], 200, $createdUser);
 	}
@@ -151,6 +169,9 @@ class AuthService {
 
 		$user = $stmt->fetch();
 		// var_dump($user);
+
+		if (empty($user)) return NULL;
+
 		$permission = $this->permissionsService->getById($user['id_permission']);
 		$user['name_permission'] = $permission['name'];
 

@@ -14,15 +14,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	$_POST = json_decode(file_get_contents("php://input"), true);
 	// Извлекаем переменные из массива
-	$lastname = $_POST['lastname'] ?? null;
-	$firstname = $_POST['firstname'] ?? null;
-	$phone = $_POST['phone'] ?? null;
-	$email = $_POST['email'] ?? null;
-	$password = $_POST['password'] ?? null;
-	$typePermission = $_POST['type-permission'] ?? null;
+	$lastname = $_POST['lastname'] ?? NULL;
+	$firstname = $_POST['firstname'] ?? NULL;
+	$phone = $_POST['phone'] ?? NULL;
+	$email = $_POST['email'] ?? NULL;
+	$password = $_POST['password'] ?? NULL;
+	$typePermission = $_POST['type-permission'] ?? NULL;
+	$faculty = $_POST['faculty'] ?? NULL;
 
 	// Вызываем метод register и передаем ему необходимые параметры
-	$authController->register($lastname, $firstname, $phone, $email, $password, $type);
+	$authController->register($lastname, $firstname, $phone, $email, $password, $typePermission, $faculty);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
