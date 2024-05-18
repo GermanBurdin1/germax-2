@@ -9,7 +9,8 @@ function getAdminNav() {
 <a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
 <a class="nav-link" id="adminReportsLink">Faire un rapport</a>
 <a class="nav-link" id="adminFeedBackLink">Retours et remarques</a>
-<a class="nav-link" id="adminSettingsLink">Réglages globales</a>`;
+<a class="nav-link" id="adminSettingsLink">Réglages globales</a>
+<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>`;
 }
 
 function getRentalManagerNav() {
@@ -19,7 +20,7 @@ function getRentalManagerNav() {
 	<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des réservations</a>
 	<a class="nav-link" id="usersManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
 	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Gestion de l'équipement</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messages des utilisateurs et du gestionnaire d'inventaire</a>`;
+	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>`;
 }
 
 function getStockmanNav() {
@@ -27,8 +28,7 @@ function getStockmanNav() {
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
 	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
 	<a class="nav-link" id="locationsLink" href="/page-stockman-equipment-under-repair">Matériel en maintenance ou sous signalement</a>
-	<a class="nav-link" id="reservations-echeance-link" href="/page-stockman-communication-with-rental-manager"
-		role="tab" data-bs-toggle="pill">Communication avec les gestionnaires de location</a>
+	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>`;
 }
 
@@ -40,9 +40,7 @@ function getStudentNav() {
 	<a role="button" href="/loan-equipment" class="nav-link">
 		Louer un nouveau matériel
 	</a>
-	<a role="button" href="/page-stockman-communication-with-rental-manager/" class="nav-link">
-		Communication avec le manager
-	</a>
+	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>
 `;
 }
@@ -57,6 +55,7 @@ function getTeacherNav() {
 	</a>
 	<a class="nav-link active" id="pageTeacherEquipmentUsageReports" href="/page-teacher-equipment-usage-reports" data-bs-toggle="pill">Rapport sur l'utilisation de l'équipement
 	</a>
+	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>`;
 }
 
@@ -73,7 +72,7 @@ function getAdminHorizontalNav() {
 
 // модалка
 export function returnNotificationsModal() {
-  return `
+	return `
     <div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="notificationsModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -97,7 +96,6 @@ export function returnNotificationsModal() {
     </div>
   `;
 }
-
 
 function getManagerHorizontalNav() {
 	return `<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
