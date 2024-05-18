@@ -9,22 +9,17 @@ function getAdminNav() {
 <a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
 <a class="nav-link" id="adminReportsLink">Faire un rapport</a>
 <a class="nav-link" id="adminFeedBackLink">Retours et remarques</a>
-<a class="nav-link" id="adminSettingsLink">Réglages globales</a>
-<a class="nav-link" id="conflictsLink" href="/page-conflicts">Confilts</a>
-</div>`;
+<a class="nav-link" id="adminSettingsLink">Réglages globales</a>`;
 }
 
 function getRentalManagerNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
 	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Gestion du nouvel équipement</a>
-	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Attribuer un équipement</a>
 	<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des réservations</a>
 	<a class="nav-link" id="usersManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
 	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Gestion de l'équipement</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Communication avec le gestionnaire d'inventaire</a>
-	<a class="nav-link" id="conflictsLink" href="/page-conflicts">Confilts</a>
-	</div>`;
+	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messages des utilisateurs et du gestionnaire d'inventaire</a>`;
 }
 
 function getStockmanNav() {
