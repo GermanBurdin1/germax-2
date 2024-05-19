@@ -17,9 +17,19 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	$statusName = isset($_GET['statusName']) ? $_GET['statusName'] : NULL;
 
 	$goodsController->getAllByParams($modelName, $typeName, $statusName);
-}
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+	// Получение данных из тела запроса
+	$input = json_decode(file_get_contents('php://input'), true);
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+	// Проверка наличия необходимых полей
+	if (!isset($input['modelName']) || !isset($input['statusId']) || !isset($input['serialNumber'])) {
+		renderErrorAndExit(['Missing required fields'], 400);
+	}
+
+	// Вызов метода createGood контроллера
+	$goodsController->createGood($input['modelName'], $input['statusId'], $input['serialNumber']);
+	exit;
+} elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	// Возвращаем успешный статус
 	http_response_code(204);
 	exit;

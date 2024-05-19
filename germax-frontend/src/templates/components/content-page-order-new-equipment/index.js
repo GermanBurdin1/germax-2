@@ -5,8 +5,12 @@ import Dropdown from "bootstrap/js/dist/dropdown";
 import { formDataToObject } from "../../../utils/form-data-to-object";
 import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
+import { ApiRental } from "../../../utils/classes/api-rental";
+import { ApiGoods } from "../../../utils/classes/api-goods";
 
 const apiEquipmentRequest = new ApiEquipmentRequest();
+const apiRental = new ApiRental();
+const apiGoods = new ApiGoods();
 
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 
@@ -267,7 +271,6 @@ function updateEquipmentRequestsTable(namePermission) {
 
 			if (data.success && Array.isArray(data.data)) {
 				data.data.forEach((request) => {
-					console.log("Processing request:", request);
 					if (
 						namePermission !== "stockman" ||
 						isStatusVisibleForStockman(request.treatment_status)
@@ -280,8 +283,6 @@ function updateEquipmentRequestsTable(namePermission) {
 							request.treatment_status = "demande fermée";
 							request.equipment_status = "délivré";
 						}
-
-						console.log("Modified request for stockman:", request);
 
 						const row = createTableRow(request, namePermission);
 						tableBody.innerHTML += row;
@@ -313,6 +314,14 @@ function isStatusVisibleForStockman(status) {
 	];
 	return visibleStatuses.includes(status);
 }
+const categoryByIdType = {
+	1: "ordinateur portable",
+	2: "écran d'ordinateur",
+	3: "smartphone",
+	4: "accessoire",
+	5: "tablette",
+	6: "casque VR"
+};
 
 function createTableRow(request, namePermission) {
 	let actionsMarkup = "";
@@ -382,6 +391,7 @@ function createTableRow(request, namePermission) {
 			<tr data-id="${request.id_request}" data-date-start="${request.date_start}" data-date-end="${request.date_end}">
 					<td>${request.id_request}</td>
 					<td data-equipment-name>${request.equipment_name}</td>
+					<td>${categoryByIdType[request.id_type] || 'N/A'}</td>
 					<td>${request.quantity}</td>
 					<td>${request.request_date}</td>
 					<td>${request.date_start}</td>
@@ -500,17 +510,15 @@ document.querySelector(".table").addEventListener("click", (event) => {
 function openEditModal(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
-	const quantity = row.children[2].textContent;
-	const dateStart = row.children[3].textContent;
-	const dateEnd = row.children[4].textContent;
-	const comment = row.children[5].textContent;
+	const quantity = row.children[3].textContent;
+	const dateStart = row.children[5].textContent;
+	const dateEnd = row.children[6].textContent;
 
 	document.getElementById("editRequestId").value = requestId;
 	document.getElementById("editEquipmentName").value = equipmentName;
 	document.getElementById("editQuantity").value = quantity;
 	document.getElementById("editDateStart").value = dateStart;
 	document.getElementById("editDateEnd").value = dateEnd;
-	document.getElementById("editComment").value = comment;
 
 	editModal.show();
 }
@@ -586,11 +594,11 @@ function sendUpdatedDataToUser(requestId) {
 	apiEquipmentRequest
 		.sendUpdatedDataToUser(approvalData)
 		.then((data) => {
-			alert("Данные успешно подтверждены и отправлены на согласование!");
+			alert("L'utilisateur verra que vous avez vérifié sa requête et n'a plus qu'à la valider!");
 			updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
 		})
 		.catch((error) => {
-			console.error("Ошибка при отправке данных на согласование:", error);
+			console.error("Erreur d'envoi de données:", error);
 			alert("Ошибка при отправке данных на согласование.");
 		});
 }
@@ -634,10 +642,11 @@ document
 		const responseData = {
 			id_request: requestId,
 			equipment_name: equipmentName,
-			quantity: quantity,
+			id_type,
+			quantity,
 			date_start: dateStart,
 			date_end: dateEnd,
-			comment: comment,
+			comment,
 			treatment_status: "rental_details_discussion_manager_user",
 			equipment_status: "found",
 		};
@@ -655,11 +664,53 @@ function openStockmanApprovalModal(requestId) {
 }
 
 function openStockmanResponseModal(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const equipmentName = row.children[1].textContent.trim();
+	console.log("equipmentName:", equipmentName);
+	const quantity = parseInt(row.children[2].textContent.trim(), 10);
+	const dateStart = row.children[4].textContent.trim();
+	const dateEnd = row.children[5].textContent.trim();
+
+	document.getElementById("stockmanResponseEquipmentName").value = equipmentName;
+	document.getElementById("rentalDateStart").value = dateStart;
+	document.getElementById("rentalDateEnd").value = dateEnd;
+
+	// Очистить предыдущие серийные номера
+	const serialNumbersContainer = document.getElementById(
+		"equipmentSerialNumbers"
+	);
+	serialNumbersContainer.innerHTML = "";
+
+	stockmanResponseModal.show();
+
 	document
 		.getElementById("sendStockmanResponseButton")
 		.setAttribute("data-id", requestId);
-	stockmanResponseModal.show();
 }
+
+document
+	.getElementById("responseFound")
+	.addEventListener("change", function () {
+		document.getElementById("equipmentDetailsContainer").style.display =
+			"block";
+	});
+
+document
+	.getElementById("responseNotFound")
+	.addEventListener("change", function () {
+		document.getElementById("equipmentDetailsContainer").style.display = "none";
+	});
+
+document
+	.getElementById("addSerialNumberButton")
+	.addEventListener("click", function () {
+		const container = document.getElementById("equipmentSerialNumbers");
+		const input = document.createElement("input");
+		input.type = "text";
+		input.className = "form-control mt-2";
+		input.placeholder = "Numéro de série";
+		container.appendChild(input);
+	});
 
 document
 	.getElementById("confirmSendingButton")
@@ -781,21 +832,26 @@ document
 
 document
 	.getElementById("sendStockmanResponseButton")
-	.addEventListener("click", function () {
+	.addEventListener("click", async function () {
 		const requestId = this.getAttribute("data-id");
 		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		const responseValue = document.querySelector(
 			'input[name="stockmanResponse"]:checked'
 		).value;
-		const equipment_name = row.querySelector(
-			"[data-equipment-name]"
-		).textContent;
-		const quantity = row.children[2].textContent;
+		const equipmentName = document.getElementById("equipmentName").value;
+		const equipmentType = document.getElementById("equipmentType").value;
+		const equipmentBrand = document.getElementById("equipmentBrand").value;
+		const equipmentDescription = document.getElementById(
+			"equipmentDescription"
+		).value;
+		const equipmentPhoto = document.getElementById("equipmentPhoto").files[0];
 		const rentalDateStart = document.getElementById("rentalDateStart").value;
 		const rentalDateEnd = document.getElementById("rentalDateEnd").value;
+		const serialNumbers = Array.from(
+			document.querySelectorAll("#equipmentSerialNumbers input")
+		).map((input) => input.value);
 		const dateStart = row.getAttribute("data-date-start");
 
-		// Валидация дат
 		if (responseValue === "found") {
 			if (new Date(rentalDateStart) < new Date(dateStart)) {
 				alert(
@@ -809,31 +865,41 @@ document
 				);
 				return;
 			}
-		}
+			if (serialNumbers.length !== parseInt(row.children[2].textContent, 10)) {
+				alert("Le nombre de numéros de série doit correspondre à la quantité.");
+				return;
+			}
 
-		if (responseValue === "found") {
-			approveRequest(
+			await approveRequest(
 				requestId,
 				rentalDateStart,
 				rentalDateEnd,
-				equipment_name,
-				quantity
+				equipmentName,
+				equipmentType,
+				equipmentBrand,
+				equipmentDescription,
+				equipmentPhoto,
+				serialNumbers
 			);
 		} else {
 			closeRequestByStockman(requestId, "closed_by_stockman");
 		}
 	});
 
-function approveRequest(
+async function approveRequest(
 	requestId,
 	rentalDateStart,
 	rentalDateEnd,
-	equipment_name,
-	quantity
+	equipmentName,
+	equipmentType,
+	equipmentBrand,
+	equipmentDescription,
+	equipmentPhoto,
+	serialNumbers
 ) {
 	const responseData = {
-		quantity,
-		equipment_name,
+		quantity: serialNumbers.length,
+		equipment_name: equipmentName,
 		id_request: requestId,
 		date_start: rentalDateStart,
 		date_end: rentalDateEnd,
@@ -841,18 +907,52 @@ function approveRequest(
 		equipment_status: "found",
 	};
 
-	// Отправка данных на сервер
-	apiEquipmentRequest
-		.updateEquipmentRequest(responseData)
-		.then((data) => {
-			updateTableRow(requestId, data);
-			alert("La réponse a été envoyée au manager!");
-			stockmanResponseModal.hide();
-		})
-		.catch((error) => {
-			console.error("Error updating request:", error);
-			alert("Error updating request.");
-		});
+	try {
+		const goodIds = [];
+
+		// Загрузка фото
+		let photoUrl = "";
+		if (equipmentPhoto) {
+			const formData = new FormData();
+			formData.append("file", equipmentPhoto);
+			const uploadResponse = await fetch("/upload-url", {
+				// Замените /upload-url на реальный URL для загрузки
+				method: "POST",
+				body: formData,
+			});
+			const uploadData = await uploadResponse.json();
+			photoUrl = uploadData.url;
+		}
+
+		// Создание новых good в количестве quantity
+		for (let i = 0; i < serialNumbers.length; i++) {
+			const goodData = await apiGoods.createGood({
+				modelName: equipmentName,
+				statusId: 4,
+				serialNumber: serialNumbers[i],
+				description: equipmentDescription,
+				type: equipmentType,
+				brand: equipmentBrand,
+				photo: photoUrl,
+			});
+
+			goodIds.push(goodData.data.id_good);
+		}
+
+		responseData.id_good = goodIds.join(",");
+
+		const updatedData = await apiEquipmentRequest.updateEquipmentRequest(
+			responseData
+		);
+
+		updateTableRow(requestId, updatedData);
+
+		alert("La réponse a été envoyée au manager!");
+		stockmanResponseModal.hide();
+	} catch (error) {
+		console.error("Error during approveRequest:", error);
+		alert("Error during approveRequest.");
+	}
 }
 
 function confirmSending(requestId) {
@@ -948,6 +1048,19 @@ function handOverItem(requestId) {
 			updateTableRowStatus(requestId, treatment_status);
 			// Переотрисовка таблицы для обновления данных для кладовщика
 			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
+
+			// Создаем данные для запроса на apiRental.createRequestRental
+			const rentalData = {
+				quantity: row.children[2].textContent,
+				dateStart: row.children[3].textContent,
+				dateEnd: row.children[4].textContent,
+			};
+
+			const good = {
+				id: requestId, // Идентификатор товара, используйте нужный идентификатор
+			};
+
+			return apiRental.createRequestRental(good, rentalData);
 		})
 		.catch((error) => {
 			console.error("Ошибка при обновлении данных:", error);

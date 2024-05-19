@@ -194,6 +194,16 @@ function openRequestNotFoundItemsModal(authUser) {
 	formSubmitHandler = (event) => {
 			event.preventDefault();
 			const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
+			const categoryMapping = {
+				"laptops": 1,
+				"monitors": 2,
+				"smartphones": 3,
+				"accessories": 4,
+				"tablets": 5,
+				"vr_heads": 6
+			};
+
+			formRequestItemInfo.id_type = categoryMapping[formRequestItemInfo.category];
 			if (formRequestItemInfo.dateStart > formRequestItemInfo.dateEnd) {
 					throw new Error("start date must be less than end date");
 			}

@@ -206,4 +206,58 @@ class GoodsService
 		$stmt = $this->pdo->prepare($sql);
 		return $stmt->execute(['statusId' => $statusId, 'goodId' => $goodId]);
 	}
+
+	public function getOrCreateModel($modelName)
+	{
+		// Проверяем, существует ли модель
+		$sql = "SELECT id_model FROM model WHERE name = :modelName";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(['modelName' => $modelName]);
+		$model = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		if ($model) {
+			return $model['id_model'];
+		}
+
+		// Если модель не существует, создаем новую
+		$sql = "INSERT INTO model (name, description, id_type, id_brand, photo) VALUES (:name, :description, :id_type, :id_brand, :photo)";
+		$stmt = $this->pdo->prepare($sql);
+
+		try {
+			$stmt->execute([
+				'name' => $modelName,
+				'description' => '',
+				'id_type' => 1,
+				'id_brand' => 1,
+				'photo' => ''
+			]);
+			return $this->pdo->lastInsertId();
+		} catch (PDOException $e) {
+			return null;
+		}
+	}
+
+	public function createGood($modelName, $statusId, $serialNumber)
+	{
+		// Создаем или находим модель
+		$modelId = $this->getOrCreateModel($modelName);
+
+		if ($modelId === null) {
+			return renderErrorAndExit('Failed to create or find model', 500);
+		}
+
+		// Создаем товар
+		$sql = "INSERT INTO good (id_model, id_status, serial_number) VALUES (:modelId, :statusId, :serialNumber)";
+		$stmt = $this->pdo->prepare($sql);
+
+		try {
+			$stmt->execute(['modelId' => $modelId, 'statusId' => $statusId, 'serialNumber' => $serialNumber]);
+			return $this->pdo->lastInsertId();
+		} catch (PDOException $e) {
+			return renderErrorAndExit('sql query error', 404, [
+				"error" => $e->getMessage(),
+				"sql" => removeSpecialCharacters($sql)
+			]);
+		}
+	}
 }

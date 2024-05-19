@@ -93,6 +93,7 @@
 					<th>Numéro de Commande <button class="btn btn-link p-0 border-0 sortButton"
 							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
 					<th>Nom de l'Équipement</th>
+					<th>Catégorie</th>
 					<th>Quantité <button class="btn btn-link p-0 border-0 sortButton" title="Trier par Quantité"><i
 								class="fas fa-sort"></i></button></th>
 					<th>Date de la Commande <button class="btn btn-link p-0 border-0 sortButton"
@@ -368,22 +369,51 @@
             <input class="form-check-input" type="radio" name="stockmanResponse" id="responseFound" value="found">
             <label class="form-check-label" for="responseFound">Équipement trouvé</label>
           </div>
-          <div class="form-group mt-3" id="rentalDateContainer" style="display: none;">
-            <label for="rentalDateStart">Date de début de location possible</label>
+          <div class="form-group mt-3" id="equipmentDetailsContainer" style="display: none;">
+            <label for="stockmanResponseEquipmentName">Nom de l'équipement</label>
+            <input type="text" class="form-control" id="stockmanResponseEquipmentName">
+
+            <label for="equipmentType" class="mt-3">Type d'équipement</label>
+            <select class="form-control" id="equipmentType">
+              <option value="laptop">Laptop</option>
+              <option value="computer_monitor">Computer Monitor</option>
+              <option value="smartphone">Smartphone</option>
+              <option value="accessory">Accessory</option>
+              <option value="tablet">Tablet</option>
+              <option value="VR_headset">VR Headset</option>
+            </select>
+
+            <label for="equipmentBrand" class="mt-3">Marque</label>
+            <input type="text" class="form-control" id="equipmentBrand" placeholder="Marque de l'équipement">
+
+            <label for="equipmentDescription" class="mt-3">Description</label>
+            <textarea class="form-control" id="equipmentDescription" rows="3" placeholder="Description de l'équipement"></textarea>
+
+            <label for="equipmentPhoto" class="mt-3">Photo</label>
+            <input type="file" class="form-control" id="equipmentPhoto" accept="image/jpeg, image/png">
+
+            <label for="rentalDateStart" class="mt-3">Date de début de location possible</label>
             <input type="date" class="form-control" id="rentalDateStart">
-            <label for="rentalDateEnd">Date de fin de location possible</label>
+
+            <label for="rentalDateEnd" class="mt-3">Date de fin de location possible</label>
             <input type="date" class="form-control" id="rentalDateEnd">
+
+            <label for="equipmentSerialNumbers" class="mt-3">Numéros de série de l'équipement</label>
+            <div id="equipmentSerialNumbers"></div>
+            <button type="button" class="btn btn-secondary mt-2" id="addSerialNumberButton">Ajouter un numéro de série</button>
           </div>
-					<div class="form-check">
+          <div class="form-check mt-3">
             <input class="form-check-input" type="radio" name="stockmanResponse" id="responseNotFound" value="not_found">
-						<label class="form-check-label" for="responseNotFound">Équipement non trouvé</label>
-					</div>
+            <label class="form-check-label" for="responseNotFound">Équipement non trouvé</label>
+          </div>
           <button type="button" class="btn btn-primary mt-3" id="sendStockmanResponseButton">Envoyer</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+
 
 
 <!-- Modal для подтверждения предложения менеджера перед отправк-->

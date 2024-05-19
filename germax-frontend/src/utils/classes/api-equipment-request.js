@@ -7,21 +7,21 @@ export class ApiEquipmentRequest {
 	constructor() {}
 
 	async createEquipmentRequest({
-		category,
 		modelName,
 		comments,
 		dateStart,
 		dateEnd,
 		quantity,
+		id_type
 	}) {
 		const body = JSON.stringify({
 			formRequestItemInfo: {
-				category,
 				modelName,
 				comments,
 				dateStart,
 				dateEnd,
 				quantity,
+				id_type
 			},
 		});
 		console.log("Sending JSON:", body);

@@ -414,7 +414,7 @@ function openManagerProposalModal(requestId) {
 	document
 		.getElementById("confirmManagerProposal")
 		.setAttribute("data-id", requestId);
-	managerProposalModal.show(); // используем существующий экземпляр для показа модального окна
+	managerProposalModal.show();
 }
 
 function confirmApproval(requestId) {

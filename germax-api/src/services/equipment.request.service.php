@@ -22,7 +22,7 @@ class EquipmentRequestService
 		// Передаем данные из $info, а не напрямую из $data
 		$stmt->execute([
 			$data['id_user'], // id_user из основного массива $data
-			$info['category'], // Теперь это правильно, мы обращаемся к $info
+			$info['id_type'], // Теперь это правильно, мы обращаемся к $info
 			$info['modelName'],
 			$info['quantity'],
 			$info['dateStart'],
@@ -82,6 +82,11 @@ class EquipmentRequestService
         $fieldsToUpdate[] = 'equipment_status = ?';
         $values[] = $data['equipment_status'];
     }
+
+		if (isset($data['id_type'])) {
+			$fieldsToUpdate[] = 'id_type = ?';
+			$values[] = $data['id_type'];
+	}
 
     $values[] = $data['id_request'];
 
