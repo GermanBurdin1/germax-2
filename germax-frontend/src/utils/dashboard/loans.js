@@ -57,6 +57,7 @@ export function returnClientLoans(rentals = [], requests = []) {
         } else if (entry.type === "request") {
             statusMessage = entry.treatment_status || "unknown status";
             if (entry.statusMessage === "rental_details_discussion_manager_user") {
+								statusMessage = "en attente de votre confirmation";
                 actionsMarkup = `
                     <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
                 `;

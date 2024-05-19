@@ -332,10 +332,10 @@ function createTableRow(request, namePermission) {
 
 	if (namePermission === "stockman") {
 		if (
-			(request.treatment_status === "closed_by_stockman" &&
-				request.equipment_status === "received") ||
-			(request.treatment_status === "closed_by_stockman" &&
-				request.equipment_status === "handed_over")
+			(treatmentStatus === "closed_by_stockman" &&
+			equipmentStatus === "received") ||
+			(treatmentStatus === "closed_by_stockman" &&
+			equipmentStatus === "handed_over")
 		) {
 			treatmentStatus = "demande fermée";
 			equipmentStatus = "délivré";
@@ -566,6 +566,7 @@ document
 			updatedTreatmentStatus = "confirmation attendue de l'utilisateur";
 			updatedEquipmentStatus = "disponibilité de l'équipement en attente";
 		}
+
 
 		row.querySelector("[data-equipment-name]").textContent = updatedData.equipment_name;
 		row.children[3].textContent = updatedData.quantity;
