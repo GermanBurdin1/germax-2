@@ -320,7 +320,7 @@ const categoryByIdType = {
 	3: "smartphone",
 	4: "accessoire",
 	5: "tablette",
-	6: "casque VR"
+	6: "casque VR",
 };
 
 function createTableRow(request, namePermission) {
@@ -388,10 +388,12 @@ function createTableRow(request, namePermission) {
 	}
 
 	return `
-			<tr data-id="${request.id_request}" data-date-start="${request.date_start}" data-date-end="${request.date_end}">
+			<tr data-id="${request.id_request}" data-date-start="${
+		request.date_start
+	}" data-date-end="${request.date_end}">
 					<td>${request.id_request}</td>
 					<td data-equipment-name>${request.equipment_name}</td>
-					<td>${categoryByIdType[request.id_type] || 'N/A'}</td>
+					<td>${categoryByIdType[request.id_type] || "N/A"}</td>
 					<td>${request.quantity}</td>
 					<td>${request.request_date}</td>
 					<td>${request.date_start}</td>
@@ -401,10 +403,14 @@ function createTableRow(request, namePermission) {
 					<td>
 							<div class="dropdown">
 									<button class="btn btn-secondary dropdown-toggle" type="button"
-											id="dropdownMenuButton${request.id_request}" data-bs-toggle="dropdown" aria-expanded="false">
+											id="dropdownMenuButton${
+												request.id_request
+											}" data-bs-toggle="dropdown" aria-expanded="false">
 											Choisir une action
 									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${request.id_request}">
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${
+										request.id_request
+									}">
 											${actionsMarkup}
 									</ul>
 							</div>
@@ -530,49 +536,51 @@ document
 
 		const requestId = document.getElementById("editRequestId").value;
 		const equipmentName = document.getElementById("editEquipmentName").value;
-		const quantity = document.getElementById("editQuantity").value;
-		const dateStart = document.getElementById("editDateStart").value;
-		const dateEnd = document.getElementById("editDateEnd").value;
-		const comment = document.getElementById("editComment").value;
-		const treatment_status = "rental_details_discussion_manager_stockman";
-		const equipment_status = "equipment_availability_pending";
+		const quantityValue = document.getElementById("editQuantity").value;
+		const dateStartValue = document.getElementById("editDateStart").value;
+		const dateEndValue = document.getElementById("editDateEnd").value;
+		const commentValue = document.getElementById("editComment").value;
 
 		const updatedData = {
 			id_request: requestId,
 			equipment_name: equipmentName,
-			quantity: quantity,
-			date_start: dateStart,
-			date_end: dateEnd,
-			comment,
-			treatment_status,
-			equipment_status,
+			quantity: quantityValue,
+			date_start: dateStartValue,
+			date_end: dateEndValue,
+			comment: commentValue,
 		};
 
-		apiEquipmentRequest
-			.updateEquipmentRequest(updatedData)
-			.then((data) => {
-				updateTableRow(requestId, data);
-				alert("L'étudiant peut maintant confirmer sa requête!");
-				editModal.hide();
-			})
-			.catch((error) => {
-				console.error("Error updating request:", error);
-				alert("Error updating request.");
-			});
+		updateTableRow(requestId, updatedData);
+		editModal.hide();
 	});
 
-function updateTableRow(requestId, updatedData) {
-	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	function updateTableRow(requestId, updatedData) {
+		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
-	if (row) {
-		row.querySelector("[data-equipment-name]").textContent =
-			updatedData.equipment_name;
-		row.children[2].textContent = updatedData.quantity;
-		row.children[3].textContent = updatedData.date_start;
-		row.children[4].textContent = updatedData.date_end;
-		row.children[5].textContent = updatedData.comment;
+		if (!row) return;
+
+		let updatedTreatmentStatus = updatedData.treatment_status;
+		let updatedEquipmentStatus = updatedData.equipment_status;
+
+		if (updatedTreatmentStatus === "rental_details_discussion_manager_user" && updatedEquipmentStatus === "equipment_availability_pending") {
+			updatedTreatmentStatus = "confirmation attendue de l'utilisateur";
+			updatedEquipmentStatus = "disponibilité de l'équipement en attente";
+		}
+
+		row.querySelector("[data-equipment-name]").textContent = updatedData.equipment_name;
+		row.children[3].textContent = updatedData.quantity;
+		row.children[5].textContent = updatedData.date_start;
+		row.children[6].textContent = updatedData.date_end;
+
+		if (updatedTreatmentStatus !== undefined) {
+			row.children[7].textContent = updatedTreatmentStatus;
+		}
+
+		if (updatedEquipmentStatus !== undefined) {
+			row.children[8].textContent = updatedEquipmentStatus;
+		}
 	}
-}
+
 
 function openConfirmationModal(requestId) {
 	document
@@ -581,35 +589,23 @@ function openConfirmationModal(requestId) {
 	confirmationModal.show();
 }
 
-function sendUpdatedDataToUser(requestId) {
-	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-	// Здесь можно добавить логику для отправки данных на сервер для согласования
-
-	// Пример логики отправки данных на сервер:
-	const approvalData = {
-		id_request: requestId,
-		// Добавьте дополнительные данные, если необходимо
-	};
-
+function sendUpdatedDataToUser(approvalData) {
 	apiEquipmentRequest
-		.sendUpdatedDataToUser(approvalData)
+		.updateEquipmentRequest(approvalData)
 		.then((data) => {
-			alert("L'utilisateur verra que vous avez vérifié sa requête et n'a plus qu'à la valider!");
+			console.log("received data after calling sendUpdateDataToUser", data);
+			alert(
+				"L'utilisateur verra que vous avez vérifié sa requête et n'a plus qu'à la valider!"
+			);
+			const requestId = data.id_request;
 			updateTableRowStatus(requestId, "rental_details_discussion_manager_user");
+			updateTableRow(requestId, data);
 		})
 		.catch((error) => {
 			console.error("Erreur d'envoi de données:", error);
 			alert("Ошибка при отправке данных на согласование.");
 		});
 }
-
-document
-	.getElementById("confirmApprovalButton")
-	.addEventListener("click", function () {
-		const requestId = this.getAttribute("data-id");
-		sendUpdatedDataToUser(requestId);
-		confirmationModal.hide();
-	});
 
 function updateTableRowStatus(requestId, status, equipmentStatus = null) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
@@ -631,14 +627,32 @@ document
 	.getElementById("confirmApprovalButton")
 	.addEventListener("click", function () {
 		const requestId = this.getAttribute("data-id");
+		console.log("requestId",requestId);
 		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		const equipmentName = row.querySelector(
 			"[data-equipment-name]"
 		).textContent;
-		const quantity = row.children[2].textContent;
+		const quantity = row.children[3].textContent;
 		const dateStart = row.getAttribute("data-date-start");
 		const dateEnd = row.getAttribute("data-date-end");
 		const comment = row.children[5] ? row.children[5].textContent : null;
+		const categoryText = row.children[2].textContent;
+		const idTypeMap = {
+			"ordinateur portable": 1,
+			"écran d'ordinateur": 2,
+			"smartphone": 3,
+			"accessoire": 4,
+			"tablette": 5,
+			"casque VR": 6,
+		};
+
+		const id_type = idTypeMap[categoryText];
+
+		if (id_type === undefined) {
+			console.error("Unknown category text:", categoryText);
+			return;
+		}
+
 		const responseData = {
 			id_request: requestId,
 			equipment_name: equipmentName,
@@ -648,7 +662,7 @@ document
 			date_end: dateEnd,
 			comment,
 			treatment_status: "rental_details_discussion_manager_user",
-			equipment_status: "found",
+			equipment_status: "equipment_availability_pending",
 		};
 
 		sendUpdatedDataToUser(responseData);
@@ -671,7 +685,8 @@ function openStockmanResponseModal(requestId) {
 	const dateStart = row.children[4].textContent.trim();
 	const dateEnd = row.children[5].textContent.trim();
 
-	document.getElementById("stockmanResponseEquipmentName").value = equipmentName;
+	document.getElementById("stockmanResponseEquipmentName").value =
+		equipmentName;
 	document.getElementById("rentalDateStart").value = dateStart;
 	document.getElementById("rentalDateEnd").value = dateEnd;
 
