@@ -335,6 +335,12 @@ function createTableRow(request, namePermission) {
 
 	if (namePermission === "stockman") {
 		if (
+			treatmentStatus === "pending_stockman" &&
+			equipmentStatus === "equipment_availability_pending"
+		) {
+			treatmentStatus = "requête du nouvel équipement";
+			equipmentStatus = "disponibilité de l'équipement en attente";
+		} else if (
 			(treatmentStatus === "closed_by_stockman" &&
 				equipmentStatus === "received") ||
 			(treatmentStatus === "closed_by_stockman" &&
@@ -343,17 +349,20 @@ function createTableRow(request, namePermission) {
 			treatmentStatus = "demande fermée";
 			equipmentStatus = "délivré";
 		}
-	}
-
-	else if (namePermission === "rental-manager") {
+	} else if (namePermission === "rental-manager") {
 		if (
 			treatmentStatus === "treated_manager_user" &&
 			equipmentStatus === "equipment_availability_pending"
 		) {
 			treatmentStatus = "en attente d'envoi chez le gestionnaire";
 			equipmentStatus = "disponibilité de l'équipement en attente";
+		} else if (
+			treatmentStatus === "pending_stockman" &&
+			equipmentStatus === "equipment_availability_pending"
+		) {
+			treatmentStatus = "la requête est envoyée au gestionnaire";
+			equipmentStatus = "disponibilité de l'équipement en attente";
 		}
-		else if (treatmentStatus === "pending_stockman" && equipmentStatus === "equipment_availability_pending") {treatmentStatus = "la requête est envoyée au gestionnaire"; equipmentStatus = "disponibilité de l'équipement en attente"}
 	}
 
 	console.log("Transformed Treatment Status:", treatmentStatus);
@@ -700,13 +709,16 @@ function openStockmanApprovalModal(requestId) {
 function openStockmanResponseModal(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.children[1].textContent.trim();
-	console.log("equipmentName:", equipmentName);
+	const brandName = equipmentName.split(" ")[0];
+	console.log("brandName");
 	const quantity = parseInt(row.children[3].textContent.trim(), 10);
 	const dateStart = row.children[5].textContent.trim();
 	const dateEnd = row.children[6].textContent.trim();
 
 	document.getElementById("stockmanResponseEquipmentName").value =
 		equipmentName;
+	document.getElementById("equipmentBrand").value = brandName;
+	document.getElementById("equipmentQuantity").value = quantity;
 	document.getElementById("rentalDateStart").value = dateStart;
 	document.getElementById("rentalDateEnd").value = dateEnd;
 
@@ -740,11 +752,20 @@ document
 	.getElementById("addSerialNumberButton")
 	.addEventListener("click", function () {
 		const container = document.getElementById("equipmentSerialNumbers");
-		const input = document.createElement("input");
-		input.type = "text";
-		input.className = "form-control mt-2";
-		input.placeholder = "Numéro de série";
-		container.appendChild(input);
+		const row = document.querySelector(
+			`tr[data-id="${document
+				.getElementById("sendStockmanResponseButton")
+				.getAttribute("data-id")}"]`
+		);
+		const quantity = parseInt(row.children[3].textContent, 10);
+
+		if (container.children.length < quantity) {
+			const input = document.createElement("input");
+			input.type = "text";
+			input.className = "form-control mt-2";
+			input.placeholder = "Numéro de série";
+			container.appendChild(input);
+		}
 	});
 
 document
@@ -885,6 +906,7 @@ document
 			document.querySelectorAll("#equipmentSerialNumbers input")
 		).map((input) => input.value);
 		const dateStart = row.getAttribute("data-date-start");
+		const quantity = parseInt(row.children[3].textContent, 10);
 
 		if (responseValue === "found") {
 			if (new Date(rentalDateStart) < new Date(dateStart)) {
@@ -899,7 +921,7 @@ document
 				);
 				return;
 			}
-			if (serialNumbers.length !== parseInt(row.children[2].textContent, 10)) {
+			if (serialNumbers.length !== quantity) {
 				alert("Le nombre de numéros de série doit correspondre à la quantité.");
 				return;
 			}
