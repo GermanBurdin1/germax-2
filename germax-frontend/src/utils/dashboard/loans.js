@@ -65,7 +65,10 @@ export function returnClientLoans(rentals = [], requests = []) {
                 actionsMarkup = `
                     <li><a class="dropdown-item response-before-sending" href="#" data-id="${entry.id}" data-bs-toggle="modal" data-bs-target="#manageResponseModal">confirmer la requête</a></li>
                 `;
-            } else {
+            } else if (entry.statusMessage === "treated_manager_user") {
+							statusMessage = "votre matériel est recherché";
+						}
+						else {
                 actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>

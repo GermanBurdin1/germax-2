@@ -330,17 +330,34 @@ function createTableRow(request, namePermission) {
 	let treatmentStatus = request.treatment_status;
 	let equipmentStatus = request.equipment_status;
 
+	console.log("Initial Treatment Status:", treatmentStatus);
+	console.log("Initial Equipment Status:", equipmentStatus);
+
 	if (namePermission === "stockman") {
 		if (
 			(treatmentStatus === "closed_by_stockman" &&
-			equipmentStatus === "received") ||
+				equipmentStatus === "received") ||
 			(treatmentStatus === "closed_by_stockman" &&
-			equipmentStatus === "handed_over")
+				equipmentStatus === "handed_over")
 		) {
 			treatmentStatus = "demande fermée";
 			equipmentStatus = "délivré";
 		}
 	}
+
+	else if (namePermission === "rental-manager") {
+		if (
+			treatmentStatus === "treated_manager_user" &&
+			equipmentStatus === "equipment_availability_pending"
+		) {
+			treatmentStatus = "en attente d'envoi chez le gestionnaire";
+			equipmentStatus = "disponibilité de l'équipement en attente";
+		}
+		else if (treatmentStatus === "pending_stockman" && equipmentStatus === "equipment_availability_pending") {treatmentStatus = "la requête est envoyée au gestionnaire"; equipmentStatus = "disponibilité de l'équipement en attente"}
+	}
+
+	console.log("Transformed Treatment Status:", treatmentStatus);
+	console.log("Transformed Equipment Status:", equipmentStatus);
 
 	if (namePermission === "rental-manager") {
 		if (request.treatment_status === "pending_manager") {
@@ -398,8 +415,8 @@ function createTableRow(request, namePermission) {
 					<td>${request.request_date}</td>
 					<td>${request.date_start}</td>
 					<td>${request.date_end}</td>
-					<td>${request.treatment_status}</td>
-					<td>${request.equipment_status}</td>
+					<td>${treatmentStatus}</td>
+					<td>${equipmentStatus}</td>
 					<td>
 							<div class="dropdown">
 									<button class="btn btn-secondary dropdown-toggle" type="button"
@@ -554,34 +571,36 @@ document
 		editModal.hide();
 	});
 
-	function updateTableRow(requestId, updatedData) {
-		const row = document.querySelector(`tr[data-id="${requestId}"]`);
+function updateTableRow(requestId, updatedData) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
-		if (!row) return;
+	if (!row) return;
 
-		let updatedTreatmentStatus = updatedData.treatment_status;
-		let updatedEquipmentStatus = updatedData.equipment_status;
+	let updatedTreatmentStatus = updatedData.treatment_status;
+	let updatedEquipmentStatus = updatedData.equipment_status;
 
-		if (updatedTreatmentStatus === "rental_details_discussion_manager_user" && updatedEquipmentStatus === "equipment_availability_pending") {
-			updatedTreatmentStatus = "confirmation attendue de l'utilisateur";
-			updatedEquipmentStatus = "disponibilité de l'équipement en attente";
-		}
-
-
-		row.querySelector("[data-equipment-name]").textContent = updatedData.equipment_name;
-		row.children[3].textContent = updatedData.quantity;
-		row.children[5].textContent = updatedData.date_start;
-		row.children[6].textContent = updatedData.date_end;
-
-		if (updatedTreatmentStatus !== undefined) {
-			row.children[7].textContent = updatedTreatmentStatus;
-		}
-
-		if (updatedEquipmentStatus !== undefined) {
-			row.children[8].textContent = updatedEquipmentStatus;
-		}
+	if (
+		updatedTreatmentStatus === "rental_details_discussion_manager_user" &&
+		updatedEquipmentStatus === "equipment_availability_pending"
+	) {
+		updatedTreatmentStatus = "confirmation attendue de l'utilisateur";
+		updatedEquipmentStatus = "disponibilité de l'équipement en attente";
 	}
 
+	row.querySelector("[data-equipment-name]").textContent =
+		updatedData.equipment_name;
+	row.children[3].textContent = updatedData.quantity;
+	row.children[5].textContent = updatedData.date_start;
+	row.children[6].textContent = updatedData.date_end;
+
+	if (updatedTreatmentStatus !== undefined) {
+		row.children[7].textContent = updatedTreatmentStatus;
+	}
+
+	if (updatedEquipmentStatus !== undefined) {
+		row.children[8].textContent = updatedEquipmentStatus;
+	}
+}
 
 function openConfirmationModal(requestId) {
 	document
@@ -617,9 +636,9 @@ function updateTableRowStatus(requestId, status, equipmentStatus = null) {
 		equipmentStatus
 	);
 	if (row) {
-		row.children[6].textContent = status;
+		row.children[7].textContent = status;
 		if (equipmentStatus !== null) {
-			row.children[7].textContent = equipmentStatus;
+			row.children[8].textContent = equipmentStatus;
 		}
 	}
 }
@@ -628,7 +647,7 @@ document
 	.getElementById("confirmApprovalButton")
 	.addEventListener("click", function () {
 		const requestId = this.getAttribute("data-id");
-		console.log("requestId",requestId);
+		console.log("requestId", requestId);
 		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		const equipmentName = row.querySelector(
 			"[data-equipment-name]"
@@ -641,9 +660,9 @@ document
 		const idTypeMap = {
 			"ordinateur portable": 1,
 			"écran d'ordinateur": 2,
-			"smartphone": 3,
-			"accessoire": 4,
-			"tablette": 5,
+			smartphone: 3,
+			accessoire: 4,
+			tablette: 5,
 			"casque VR": 6,
 		};
 
@@ -682,9 +701,9 @@ function openStockmanResponseModal(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.children[1].textContent.trim();
 	console.log("equipmentName:", equipmentName);
-	const quantity = parseInt(row.children[2].textContent.trim(), 10);
-	const dateStart = row.children[4].textContent.trim();
-	const dateEnd = row.children[5].textContent.trim();
+	const quantity = parseInt(row.children[3].textContent.trim(), 10);
+	const dateStart = row.children[5].textContent.trim();
+	const dateEnd = row.children[6].textContent.trim();
 
 	document.getElementById("stockmanResponseEquipmentName").value =
 		equipmentName;
@@ -791,10 +810,9 @@ function openHandOverModal(requestId) {
 function sendToStockman(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.querySelector("[data-equipment-name]").textContent;
-	const quantity = row.children[2].textContent;
-	const dateStart = row.children[3].textContent;
-	const dateEnd = row.children[4].textContent;
-	const comment = row.children[5].textContent;
+	const quantity = row.children[3].textContent;
+	const dateStart = row.children[5].textContent;
+	const dateEnd = row.children[6].textContent;
 
 	const updatedData = {
 		id_request: requestId,
@@ -802,7 +820,6 @@ function sendToStockman(requestId) {
 		quantity: quantity,
 		date_start: dateStart,
 		date_end: dateEnd,
-		comment: comment,
 		treatment_status: "pending_stockman",
 		equipment_status: "equipment_availability_pending",
 	};
@@ -814,7 +831,8 @@ function sendToStockman(requestId) {
 			alert(
 				"Les données ont été envoyées avec succès pour approbation avec le magasinier !"
 			);
-			updateTableRowStatus(requestId, "pending_stockman");
+			// статус который будет видно до обновления
+			updateTableRowStatus(requestId, "la requête est envoyée au gestionnaire");
 		})
 		.catch((error) => {
 			console.error(
