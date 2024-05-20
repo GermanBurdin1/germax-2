@@ -710,29 +710,47 @@ function openStockmanResponseModal(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const equipmentName = row.children[1].textContent.trim();
 	const brandName = equipmentName.split(" ")[0];
-	console.log("brandName");
 	const quantity = parseInt(row.children[3].textContent.trim(), 10);
 	const dateStart = row.children[5].textContent.trim();
 	const dateEnd = row.children[6].textContent.trim();
 
-	document.getElementById("stockmanResponseEquipmentName").value =
-		equipmentName;
+	document.getElementById("stockmanResponseEquipmentName").value = equipmentName;
 	document.getElementById("equipmentBrand").value = brandName;
 	document.getElementById("equipmentQuantity").value = quantity;
 	document.getElementById("rentalDateStart").value = dateStart;
 	document.getElementById("rentalDateEnd").value = dateEnd;
 
 	// Очистить предыдущие серийные номера
-	const serialNumbersContainer = document.getElementById(
-		"equipmentSerialNumbers"
-	);
+	const serialNumbersContainer = document.getElementById("equipmentSerialNumbers");
 	serialNumbersContainer.innerHTML = "";
 
+	for (let i = 0; i < quantity; i++) {
+		const div = document.createElement("div");
+		div.className = "serial-number-block mb-2";
+
+		const input = document.createElement("input");
+		input.type = "text";
+		input.className = "form-control serial-number mb-2";
+		input.placeholder = `Numéro de série ${i + 1}`;
+
+		const rentalDateStartInput = document.createElement("input");
+		rentalDateStartInput.type = "date";
+		rentalDateStartInput.className = "form-control rental-date-start mb-2";
+		rentalDateStartInput.placeholder = "Date de début de location souhaitée";
+
+		const rentalDateEndInput = document.createElement("input");
+		rentalDateEndInput.type = "date";
+		rentalDateEndInput.className = "form-control rental-date-end mb-2";
+		rentalDateEndInput.placeholder = "Date de fin de location souhaitée";
+
+		div.appendChild(input);
+		div.appendChild(rentalDateStartInput);
+		div.appendChild(rentalDateEndInput);
+		serialNumbersContainer.appendChild(div);
+	}
 	stockmanResponseModal.show();
 
-	document
-		.getElementById("sendStockmanResponseButton")
-		.setAttribute("data-id", requestId);
+	document.getElementById("sendStockmanResponseButton").setAttribute("data-id", requestId);
 }
 
 document
@@ -746,26 +764,6 @@ document
 	.getElementById("responseNotFound")
 	.addEventListener("change", function () {
 		document.getElementById("equipmentDetailsContainer").style.display = "none";
-	});
-
-document
-	.getElementById("addSerialNumberButton")
-	.addEventListener("click", function () {
-		const container = document.getElementById("equipmentSerialNumbers");
-		const row = document.querySelector(
-			`tr[data-id="${document
-				.getElementById("sendStockmanResponseButton")
-				.getAttribute("data-id")}"]`
-		);
-		const quantity = parseInt(row.children[3].textContent, 10);
-
-		if (container.children.length < quantity) {
-			const input = document.createElement("input");
-			input.type = "text";
-			input.className = "form-control mt-2";
-			input.placeholder = "Numéro de série";
-			container.appendChild(input);
-		}
 	});
 
 document
@@ -902,11 +900,15 @@ document
 		const equipmentPhoto = document.getElementById("equipmentPhoto").files[0];
 		const rentalDateStart = document.getElementById("rentalDateStart").value;
 		const rentalDateEnd = document.getElementById("rentalDateEnd").value;
-		const serialNumbers = Array.from(
-			document.querySelectorAll("#equipmentSerialNumbers input")
-		).map((input) => input.value);
 		const dateStart = row.getAttribute("data-date-start");
 		const quantity = parseInt(row.children[3].textContent, 10);
+		const serialNumbersData = Array.from(document.querySelectorAll("#equipmentSerialNumbers .serial-number-block")).map(block => {
+			return {
+				serialNumber: block.querySelector("input.serial-number").value,
+				rentalDateStart: block.querySelector("input.rental-date-start").value,
+				rentalDateEnd: block.querySelector("input.rental-date-end").value
+			};
+		});
 
 		if (responseValue === "found") {
 			if (new Date(rentalDateStart) < new Date(dateStart)) {
@@ -921,7 +923,7 @@ document
 				);
 				return;
 			}
-			if (serialNumbers.length !== quantity) {
+			if (serialNumbersData.length !== quantity) {
 				alert("Le nombre de numéros de série doit correspondre à la quantité.");
 				return;
 			}
@@ -935,7 +937,7 @@ document
 				equipmentBrand,
 				equipmentDescription,
 				equipmentPhoto,
-				serialNumbers
+				serialNumbersData
 			);
 		} else {
 			closeRequestByStockman(requestId, "closed_by_stockman");

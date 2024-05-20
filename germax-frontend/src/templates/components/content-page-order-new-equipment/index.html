@@ -318,109 +318,112 @@
 </div>
 
 <!-- Модальное окно для подтверждения с юзером -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmationModalLabel">Confirmation des données</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>En appuyant sur Confirmer les données réctifiées seront envoyées à l'utilisateur</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-primary" id="confirmApprovalButton">Confirmer</button>
-      </div>
-    </div>
-  </div>
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmationModalLabel">Confirmation des données</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant sur Confirmer les données réctifiées seront envoyées à l'utilisateur</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary" id="confirmApprovalButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Модальное окно для отправки на согласование с кладовщиком -->
-<div class="modal fade" id="stockmanApprovalModal" tabindex="-1" aria-labelledby="stockmanApprovalModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="stockmanApprovalModalLabel">Soumission pour approbation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Après la confirmation, le gestionnaire commencera à chercher votre équipement</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-primary" id="confirmStockmanApprovalButton">Envoyer</button>
-      </div>
-    </div>
-  </div>
+<div class="modal fade" id="stockmanApprovalModal" tabindex="-1" aria-labelledby="stockmanApprovalModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="stockmanApprovalModalLabel">Soumission pour approbation</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Après la confirmation, le gestionnaire commencera à chercher votre équipement</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary" id="confirmStockmanApprovalButton">Envoyer</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Modal for Stockman Response -->
-<div class="modal fade" id="stockmanResponseModal" tabindex="-1" aria-labelledby="stockmanResponseModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="stockmanResponseModalLabel">Réponse du Stockman</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="stockmanResponseForm">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="stockmanResponse" id="responseFound" value="found">
-            <label class="form-check-label" for="responseFound">Équipement trouvé</label>
-          </div>
-          <div class="form-group mt-3" id="equipmentDetailsContainer" style="display: none;">
-            <label for="stockmanResponseEquipmentName">Nom de l'équipement</label>
-            <input type="text" class="form-control" id="stockmanResponseEquipmentName">
+<div class="modal fade" id="stockmanResponseModal" tabindex="-1" aria-labelledby="stockmanResponseModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="stockmanResponseModalLabel">Réponse du Stockman</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="stockmanResponseForm">
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="stockmanResponse" id="responseFound" value="found">
+						<label class="form-check-label" for="responseFound">Équipement trouvé</label>
+					</div>
+					<div class="form-group mt-3" id="equipmentDetailsContainer" style="display: none;">
+						<label for="stockmanResponseEquipmentName">Nom de l'équipement</label>
+						<input type="text" class="form-control" id="stockmanResponseEquipmentName">
 
-            <label for="equipmentType" class="mt-3">Type d'équipement</label>
-            <select class="form-control" id="equipmentType">
-              <option value="laptop">Laptop</option>
-              <option value="computer_monitor">Computer Monitor</option>
-              <option value="smartphone">Smartphone</option>
-              <option value="accessory">Accessory</option>
-              <option value="tablet">Tablet</option>
-              <option value="VR_headset">VR Headset</option>
-            </select>
+						<label for="equipmentType" class="mt-3">Type d'équipement</label>
+						<select class="form-control" id="equipmentType">
+							<option value="laptop">Laptop</option>
+							<option value="computer_monitor">Computer Monitor</option>
+							<option value="smartphone">Smartphone</option>
+							<option value="accessory">Accessory</option>
+							<option value="tablet">Tablet</option>
+							<option value="VR_headset">VR Headset</option>
+						</select>
 
-            <label for="equipmentBrand" class="mt-3">Marque</label>
-            <input type="text" class="form-control" id="equipmentBrand" placeholder="Marque de l'équipement">
+						<label for="equipmentBrand" class="mt-3">Marque</label>
+						<input type="text" class="form-control" id="equipmentBrand" placeholder="Marque de l'équipement">
 
 						<label for="equipmentQuantity" class="mt-3">Quantité</label>
             <input type="text" class="form-control" id="equipmentQuantity" placeholder="Quantité disponible de l'équipement">
 
-            <label for="equipmentDescription" class="mt-3">Description</label>
-            <textarea class="form-control" id="equipmentDescription" rows="3" placeholder="Description de l'équipement"></textarea>
+						<label for="equipmentDescription" class="mt-3">Description</label>
+						<textarea class="form-control" id="equipmentDescription" rows="3"
+							placeholder="Description de l'équipement"></textarea>
 
-            <label for="equipmentPhoto" class="mt-3">Photo</label>
-            <input type="file" class="form-control" id="equipmentPhoto" accept="image/jpeg, image/png">
+						<label for="equipmentPhoto" class="mt-3">Photo</label>
+						<input type="file" class="form-control" id="equipmentPhoto" accept="image/jpeg, image/png">
 
-            <label for="rentalDateStart" class="mt-3">Date de début de location possible</label>
-            <input type="date" class="form-control" id="rentalDateStart">
+						<label for="rentalDateStart" class="mt-3">Date de début de location souhaitée</label>
+						<input type="date" class="form-control" id="rentalDateStart" readonly>
 
-            <label for="rentalDateEnd" class="mt-3">Date de fin de location possible</label>
-            <input type="date" class="form-control" id="rentalDateEnd">
+						<label for="rentalDateEnd" class="mt-3">Date de fin de location souhaitée</label>
+						<input type="date" class="form-control" id="rentalDateEnd" readonly>
 
-            <label for="equipmentSerialNumbers" class="mt-3">Numéros de série de l'équipement</label>
-            <div id="equipmentSerialNumbers"></div>
-            <button type="button" class="btn btn-secondary mt-2" id="addSerialNumberButton">Ajouter un numéro de série</button>
-          </div>
-          <div class="form-check mt-3">
-            <input class="form-check-input" type="radio" name="stockmanResponse" id="responseNotFound" value="not_found">
-            <label class="form-check-label" for="responseNotFound">Équipement non trouvé</label>
-          </div>
-          <button type="button" class="btn btn-primary mt-3" id="sendStockmanResponseButton">Envoyer</button>
-        </form>
-      </div>
-    </div>
-  </div>
+						<label for="equipmentSerialNumbers" class="mt-3">Numéros de série de l'équipement</label>
+						<div id="equipmentSerialNumbers"></div>
+					</div>
+					<div class="form-check mt-3">
+						<input class="form-check-input" type="radio" name="stockmanResponse" id="responseNotFound"
+							value="not_found">
+						<label class="form-check-label" for="responseNotFound">Équipement non trouvé</label>
+					</div>
+					<button type="button" class="btn btn-primary mt-3" id="sendStockmanResponseButton">Envoyer</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
 
-
-
 <!-- Modal для подтверждения предложения менеджера перед отправк-->
-<div class="modal fade" id="confirmSendingModal" tabindex="-1" aria-labelledby="confirmSendingModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmSendingModal" tabindex="-1" aria-labelledby="confirmSendingModalLabel"
+	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -452,7 +455,8 @@
 </div>
 
 <!-- Modal для подтверждения отправки оборудования-->
-<div class="modal fade" id="confirmReceivingModal" tabindex="-1" aria-labelledby="confirmReceivingModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmReceivingModal" tabindex="-1" aria-labelledby="confirmReceivingModalLabel"
+	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
