@@ -261,15 +261,14 @@ class GoodsService
 
 	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
 	{
-		error_log("Starting createGoods function");
-    error_log("Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
+    error_log("createGoods__Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
 		$results = [];
 
 		foreach ($serialNumbers as $serialNumber) {
 			$good = $this->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
 			if ($good['success']) {
 				$results[] = $good;
-				error_log("Results: " . print_r($results, true));
+				error_log("createGoods__Successfully created good: " . print_r($good, true));
 			} else {
 				return ['success' => false, 'message' => 'Failed to create some goods', 'results' => $results];
 			}

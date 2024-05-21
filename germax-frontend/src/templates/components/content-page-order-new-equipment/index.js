@@ -720,7 +720,7 @@ function openStockmanResponseModal(requestId) {
 	const categoryText = row.children[2].textContent.trim().toLowerCase().replace(' ', '_'); // Преобразование категории в нижний регистр и замена пробелов на подчеркивания
 	console.log(categoryText);
 	const idTypeMap = {
-		"laptop": "laptop",
+		"ordinateur_portable": "laptop",
 		"computer monitor": "computer_monitor",
 		"smartphone": "smartphone",
 		"accessory": "accessory",
