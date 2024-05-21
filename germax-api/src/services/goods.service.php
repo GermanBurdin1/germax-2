@@ -6,14 +6,20 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/validate.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/sql-requests.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/remove-special-characters.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/model.service.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/brand.service.php');
 
 class GoodsService
 {
 	private $pdo;
+	private $modelService;
+	private $brandService;
 
 	public function __construct()
 	{
 		$this->pdo = (new Database())->connect();
+		$this->modelService = new ModelService();
+		$this->brandService = new BrandService();
 	}
 
 	public function getAllByParams($modelName, $typeName, $statusName)
@@ -207,57 +213,68 @@ class GoodsService
 		return $stmt->execute(['statusId' => $statusId, 'goodId' => $goodId]);
 	}
 
-	public function getOrCreateModel($modelName)
+	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '')
 	{
-		// Проверяем, существует ли модель
-		$sql = "SELECT id_model FROM model WHERE name = :modelName";
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute(['modelName' => $modelName]);
-		$model = $stmt->fetch(PDO::FETCH_ASSOC);
+		// Проверка обязательных параметров
+		if (empty($modelName) || empty($serialNumber) || empty($idType) || empty($brandName)) {
+			return ['success' => false, 'message' => 'Model name, serial number, type, and brand are required'];
+		}
+		// Создаем или находим бренд
+		error_log("Request to get or create brand: " . $brandName);
+		$brandId = $this->brandService->getOrCreateBrand($brandName);
+		error_log("Result from getOrCreateBrand: " . $brandId);
 
-		if ($model) {
-			return $model['id_model'];
+		if ($brandId === null) {
+			return renderErrorAndExit('Failed to create or find brand', 500);
 		}
 
-		// Если модель не существует, создаем новую
-		$sql = "INSERT INTO model (name, description, id_type, id_brand, photo) VALUES (:name, :description, :id_type, :id_brand, :photo)";
-		$stmt = $this->pdo->prepare($sql);
-
-		try {
-			$stmt->execute([
-				'name' => $modelName,
-				'description' => '',
-				'id_type' => 1,
-				'id_brand' => 1,
-				'photo' => ''
-			]);
-			return $this->pdo->lastInsertId();
-		} catch (PDOException $e) {
-			return null;
-		}
-	}
-
-	public function createGood($modelName, $statusId, $serialNumber)
-	{
+		error_log("Brand ID: " . $brandId);
 		// Создаем или находим модель
-		$modelId = $this->getOrCreateModel($modelName);
+		$modelId = $this->modelService->getOrCreateModel($modelName, $idType, $brandId, $description, $photo);
 
 		if ($modelId === null) {
 			return renderErrorAndExit('Failed to create or find model', 500);
 		}
 
+		error_log("Model ID: " . $modelId);
 		// Создаем товар
 		$sql = "INSERT INTO good (id_model, id_status, serial_number) VALUES (:modelId, :statusId, :serialNumber)";
 		$stmt = $this->pdo->prepare($sql);
 
 		try {
 			$stmt->execute(['modelId' => $modelId, 'statusId' => $statusId, 'serialNumber' => $serialNumber]);
-			return $this->pdo->lastInsertId();
+			$id_good = $this->pdo->lastInsertId();
+			return [
+				'success' => true,
+				'id_good' => $id_good,
+				'brandName' => $brandName,
+				'modelName' => $modelName,
+				'id_model' => $modelId,
+			];
 		} catch (PDOException $e) {
 			return renderErrorAndExit('sql query error', 404, [
 				"error" => $e->getMessage(),
 				"sql" => removeSpecialCharacters($sql)
 			]);
 		}
+	}
+
+	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
+	{
+		error_log("Starting createGoods function");
+    error_log("Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
+		$results = [];
+
+		foreach ($serialNumbers as $serialNumber) {
+			$good = $this->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
+			if ($good['success']) {
+				$results[] = $good;
+				error_log("Results: " . print_r($results, true));
+			} else {
+				return ['success' => false, 'message' => 'Failed to create some goods', 'results' => $results];
+			}
+		}
+
+		return ['success' => true, 'goods' => $results];
 	}
 }

@@ -48,6 +48,20 @@ class EquipmentRequestService
 
 		error_log("Received Data: " . print_r($data, true));
 
+    // Добавьте проверку существования записи перед обновлением
+    $sqlCheck = "SELECT * FROM equipment_request WHERE id_request = ?";
+    $stmtCheck = $this->pdo->prepare($sqlCheck);
+    $stmtCheck->execute([$data['id_request']]);
+    $existingData = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+    if (!$existingData) {
+        error_log("No record found with id_request: " . $data['id_request']);
+        return ['success' => false, 'message' => 'Record not found'];
+    }
+
+    error_log("Existing Data: " . print_r($existingData, true));
+
+
     if (isset($data['equipment_name'])) {
         $fieldsToUpdate[] = 'equipment_name = ?';
         $values[] = $data['equipment_name'];
@@ -86,7 +100,12 @@ class EquipmentRequestService
 		if (isset($data['id_type'])) {
 			$fieldsToUpdate[] = 'id_type = ?';
 			$values[] = $data['id_type'];
-	}
+		}
+
+		if (isset($data['id_good'])) {
+			$fieldsToUpdate[] = 'id_good = ?';
+			$values[] = $data['id_good'];
+		}
 
     $values[] = $data['id_request'];
 

@@ -330,9 +330,6 @@ function createTableRow(request, namePermission) {
 	let treatmentStatus = request.treatment_status;
 	let equipmentStatus = request.equipment_status;
 
-	console.log("Initial Treatment Status:", treatmentStatus);
-	console.log("Initial Equipment Status:", equipmentStatus);
-
 	if (namePermission === "stockman") {
 		if (
 			treatmentStatus === "pending_stockman" &&
@@ -364,9 +361,6 @@ function createTableRow(request, namePermission) {
 			equipmentStatus = "disponibilité de l'équipement en attente";
 		}
 	}
-
-	console.log("Transformed Treatment Status:", treatmentStatus);
-	console.log("Transformed Equipment Status:", equipmentStatus);
 
 	if (namePermission === "rental-manager") {
 		if (request.treatment_status === "pending_manager") {
@@ -580,7 +574,17 @@ document
 		editModal.hide();
 	});
 
-function updateTableRow(requestId, updatedData) {
+function updateTableRow(requestId, updatedData, isArray = false) {
+	if (isArray) {
+		updatedData.forEach((data) => {
+			updateSingleRow(requestId, data);
+		});
+	} else {
+		updateSingleRow(requestId, updatedData);
+	}
+}
+
+function updateSingleRow(requestId, updatedData) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
 	if (!row) return;
@@ -713,15 +717,32 @@ function openStockmanResponseModal(requestId) {
 	const quantity = parseInt(row.children[3].textContent.trim(), 10);
 	const dateStart = row.children[5].textContent.trim();
 	const dateEnd = row.children[6].textContent.trim();
+	const categoryText = row.children[2].textContent.trim().toLowerCase().replace(' ', '_'); // Преобразование категории в нижний регистр и замена пробелов на подчеркивания
+	console.log(categoryText);
+	const idTypeMap = {
+		"laptop": "laptop",
+		"computer monitor": "computer_monitor",
+		"smartphone": "smartphone",
+		"accessory": "accessory",
+		"tablet": "tablet",
+		"vr headset": "VR_headset"
+	};
 
-	document.getElementById("stockmanResponseEquipmentName").value = equipmentName;
+	const id_type = idTypeMap[categoryText];
+	console.log(id_type);
+
+	document.getElementById("stockmanResponseEquipmentName").value =
+		equipmentName;
+	document.getElementById("equipmentType").value = id_type;
 	document.getElementById("equipmentBrand").value = brandName;
 	document.getElementById("equipmentQuantity").value = quantity;
 	document.getElementById("rentalDateStart").value = dateStart;
 	document.getElementById("rentalDateEnd").value = dateEnd;
 
 	// Очистить предыдущие серийные номера
-	const serialNumbersContainer = document.getElementById("equipmentSerialNumbers");
+	const serialNumbersContainer = document.getElementById(
+		"equipmentSerialNumbers"
+	);
 	serialNumbersContainer.innerHTML = "";
 
 	for (let i = 0; i < quantity; i++) {
@@ -750,7 +771,9 @@ function openStockmanResponseModal(requestId) {
 	}
 	stockmanResponseModal.show();
 
-	document.getElementById("sendStockmanResponseButton").setAttribute("data-id", requestId);
+	document
+		.getElementById("sendStockmanResponseButton")
+		.setAttribute("data-id", requestId);
 }
 
 document
@@ -875,7 +898,9 @@ document
 document
 	.getElementById("stockmanResponseForm")
 	.addEventListener("change", function (event) {
-		const rentalDateContainer = document.getElementById("rentalDateContainer");
+		const rentalDateContainer = document.getElementById(
+			"equipmentDetailsContainer"
+		);
 		if (event.target.id === "responseFound" && event.target.checked) {
 			rentalDateContainer.style.display = "block";
 		} else if (event.target.id === "responseNotFound" && event.target.checked) {
@@ -891,8 +916,11 @@ document
 		const responseValue = document.querySelector(
 			'input[name="stockmanResponse"]:checked'
 		).value;
-		const equipmentName = document.getElementById("equipmentName").value;
+		const equipmentName = document.getElementById(
+			"stockmanResponseEquipmentName"
+		).value;
 		const equipmentType = document.getElementById("equipmentType").value;
+		console.log("equipmentType", equipmentType);
 		const equipmentBrand = document.getElementById("equipmentBrand").value;
 		const equipmentDescription = document.getElementById(
 			"equipmentDescription"
@@ -902,11 +930,13 @@ document
 		const rentalDateEnd = document.getElementById("rentalDateEnd").value;
 		const dateStart = row.getAttribute("data-date-start");
 		const quantity = parseInt(row.children[3].textContent, 10);
-		const serialNumbersData = Array.from(document.querySelectorAll("#equipmentSerialNumbers .serial-number-block")).map(block => {
+		const serialNumbersData = Array.from(
+			document.querySelectorAll("#equipmentSerialNumbers .serial-number-block")
+		).map((block) => {
 			return {
 				serialNumber: block.querySelector("input.serial-number").value,
 				rentalDateStart: block.querySelector("input.rental-date-start").value,
-				rentalDateEnd: block.querySelector("input.rental-date-end").value
+				rentalDateEnd: block.querySelector("input.rental-date-end").value,
 			};
 		});
 
@@ -928,12 +958,23 @@ document
 				return;
 			}
 
+			const idTypeMap = {
+				laptop: 1,
+				computer_monitor: 2,
+				smartphone: 3,
+				accessory: 4,
+				tablet: 5,
+				VR_headset: 6,
+			};
+
+			const equipmentIdType = idTypeMap[equipmentType];
+			console.log("equipmentIdType", equipmentIdType);
 			await approveRequest(
 				requestId,
 				rentalDateStart,
 				rentalDateEnd,
 				equipmentName,
-				equipmentType,
+				equipmentIdType,
 				equipmentBrand,
 				equipmentDescription,
 				equipmentPhoto,
@@ -949,32 +990,22 @@ async function approveRequest(
 	rentalDateStart,
 	rentalDateEnd,
 	equipmentName,
-	equipmentType,
+	equipmentIdType,
 	equipmentBrand,
 	equipmentDescription,
 	equipmentPhoto,
-	serialNumbers
+	serialNumbersData
 ) {
-	const responseData = {
-		quantity: serialNumbers.length,
-		equipment_name: equipmentName,
-		id_request: requestId,
-		date_start: rentalDateStart,
-		date_end: rentalDateEnd,
-		treatment_status: "rental_details_discussion_manager_stockman",
-		equipment_status: "found",
-	};
-
 	try {
 		const goodIds = [];
+		const responsePromises = [];
 
 		// Загрузка фото
 		let photoUrl = "";
 		if (equipmentPhoto) {
 			const formData = new FormData();
 			formData.append("file", equipmentPhoto);
-			const uploadResponse = await fetch("/upload-url", {
-				// Замените /upload-url на реальный URL для загрузки
+			const uploadResponse = await fetch("http://germax-api/upload", {
 				method: "POST",
 				body: formData,
 			});
@@ -982,29 +1013,53 @@ async function approveRequest(
 			photoUrl = uploadData.url;
 		}
 
-		// Создание новых good в количестве quantity
-		for (let i = 0; i < serialNumbers.length; i++) {
+		const serialNumbers = serialNumbersData.map((data) =>
+			data.serialNumber.trim()
+		);
+
+		// Создание новых good и записей в equipment_request
+		for (const data of serialNumbersData) {
+			console.log("data:", data);
+			console.log("serialNumbersData", serialNumbersData);
+			console.log("serialNumbers", serialNumbers);
 			const goodData = await apiGoods.createGood({
-				modelName: equipmentName,
+				modelName: equipmentName.trim(),
 				statusId: 4,
-				serialNumber: serialNumbers[i],
-				description: equipmentDescription,
-				type: equipmentType,
-				brand: equipmentBrand,
+				serialNumbers,
+				id_type: equipmentIdType,
+				brandName: equipmentBrand.trim(),
+				description: equipmentDescription.trim(),
 				photo: photoUrl,
 			});
 
-			goodIds.push(goodData.data.id_good);
+			if (goodData && goodData.id_good && goodData.id_good.goods && goodData.id_good.goods.length > 0 && goodData.id_good.goods[0].id_good) {
+				const idGood = goodData.id_good.goods[0].id_good;
+				goodIds.push(idGood);
+
+				const responseData = {
+					quantity: 1,
+					equipment_name: equipmentName,
+					id_request: requestId,
+					date_start: rentalDateStart,
+					date_end: rentalDateEnd,
+					treatment_status: "rental_details_discussion_manager_stockman",
+					equipment_status: "found",
+					id_good: idGood,
+				};
+				console.log("responseData", responseData);
+				responsePromises.push(
+					apiEquipmentRequest.updateEquipmentRequest(responseData)
+				);
+			} else {
+				console.error("Invalid response from createGood:", goodData);
+				throw new Error("Invalid response from createGood");
+			}
 		}
 
-		responseData.id_good = goodIds.join(",");
-
-		const updatedData = await apiEquipmentRequest.updateEquipmentRequest(
-			responseData
-		);
-
-		updateTableRow(requestId, updatedData);
-
+		const updatedDataArray = await Promise.all(responsePromises);
+		console.log("Updated request data array:", updatedDataArray);
+		console.log(updatedDataArray);
+		updateTableRow(requestId, updatedDataArray, true);
 		alert("La réponse a été envoyée au manager!");
 		stockmanResponseModal.hide();
 	} catch (error) {

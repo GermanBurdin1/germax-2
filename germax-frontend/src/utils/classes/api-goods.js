@@ -28,11 +28,23 @@ export class ApiGoods {
 			.then((data) => data.data);
 	}
 
-	async createGood({ modelName, statusId = 4, serialNumber }) {
+	async createGood({
+		modelName,
+		statusId = 4,
+		serialNumbers,
+		id_type,
+		brandName,
+		description = "",
+		photo = "",
+	}) {
 		const body = JSON.stringify({
 			modelName,
 			statusId,
-			serialNumber,
+			serialNumbers,
+			id_type,
+			brandName,
+			description,
+			photo,
 		});
 		console.log("Sending data to server:", body);
 
@@ -46,7 +58,7 @@ export class ApiGoods {
 		})
 			.then((response) => {
 				return response.text().then((text) => {
-					console.log("Received response from server:", text); // Логирование ответа
+					console.log("Received response from server:", text);
 					if (!response.ok) {
 						return Promise.reject(text);
 					}

@@ -18,20 +18,28 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
 	$goodsController->getAllByParams($modelName, $typeName, $statusName);
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
-	// Получение данных из тела запроса
 	$input = json_decode(file_get_contents('php://input'), true);
-
-	// Проверка наличия необходимых полей
-	if (!isset($input['modelName']) || !isset($input['statusId']) || !isset($input['serialNumber'])) {
-		renderErrorAndExit(['Missing required fields'], 400);
+	$modelName = $input['modelName'] ?? null;
+	$statusId = $input['statusId'] ?? 4;
+	$serialNumbers = $input['serialNumbers'] ?? null;
+	$idType = $input['id_type'] ?? null;
+	$brandName = $input['brandName'] ?? null;
+	$description = $input['description'] ?? '';
+	$photo = $input['photo'] ?? '';
+	error_log("Received data: " . print_r($input, true));
+	if ($modelName && $serialNumbers && $idType && $brandName) {
+		$goodId = $goodsController->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
+		echo json_encode(['success' => true, 'id_good' => $goodId]);
+	} else {
+		echo json_encode(['success' => false, 'message' => 'Model name, serial number, type, and brand are required']);
 	}
-
-	// Вызов метода createGood контроллера
-	$goodsController->createGood($input['modelName'], $input['statusId'], $input['serialNumber']);
 	exit;
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	// Возвращаем успешный статус
 	http_response_code(204);
+	exit;
+} else {
+	echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 	exit;
 }
 

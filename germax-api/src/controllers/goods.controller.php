@@ -24,13 +24,13 @@ class GoodsController
 		return renderSuccessAndExit(['Goods found'], 200, $goods);
 	}
 
-	public function createGood($modelName, $statusId, $serialNumber)
+	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '')
 	{
-		$result = $this->goodsService->createGood($modelName, $statusId, $serialNumber);
-		if ($result) {
-			echo json_encode(['success' => true, 'data' => $result]);
-		} else {
-			renderErrorAndExit(['Error creating good'], 500);
-		}
+		return $this->goodsService->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
+	}
+
+	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
+	{
+		return $this->goodsService->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
 	}
 }
