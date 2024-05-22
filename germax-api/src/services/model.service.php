@@ -10,12 +10,11 @@ class ModelService
 		$this->brandService = new BrandService();
 	}
 
-	public function getOrCreateModel($modelName, $id_type, $id_brand, $brandName, $description = '', $photo = '')
+	public function getOrCreateModel($modelName, $id_type, $id_brand, $description = '', $photo = '')
 	{
-		error_log("getOrCreateModel called with modelName: " . $modelName . ", brandName: " . $brandName);
+		error_log("getOrCreateModel called with modelName: " . $modelName . ", id_type: " . $id_type . ", id_brand: " . $id_brand . ", description: " . $description . ", photo: " . $photo);
 
 		$modelName = trim($modelName);
-		$brandName = trim($brandName);
 		$description = trim($description);
 		$photo = trim($photo);
 
