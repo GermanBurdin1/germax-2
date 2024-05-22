@@ -34,12 +34,35 @@ class EquipmentRequestService
 
 
 	public function getAllRequests()
-	{
-		$sql = "SELECT * FROM Equipment_request";
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute();
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
-	}
+{
+    $sql = "
+        SELECT
+            er.id_request,
+            er.request_date,
+            er.date_start,
+            er.date_end,
+            er.equipment_name,
+            er.quantity,
+            er.treatment_status,
+            er.response_date,
+            er.comment,
+            er.id_type,
+            er.id_user,
+            er.equipment_status,
+            er.id_good,
+            m.photo
+        FROM
+            equipment_request er
+        LEFT JOIN
+            good g ON er.id_good = g.id_good
+        LEFT JOIN
+            model m ON g.id_model = m.id_model
+    ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 	public function updateRequest($data)
 	{

@@ -1,44 +1,49 @@
 <?php
-
 class UploadService
 {
-	private $uploadDir;
+    private $uploadDir;
 
-	public function __construct()
-	{
-		$this->uploadDir = __DIR__ . '/../files/images/';
-	}
+    public function __construct()
+    {
+        $this->uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/files/images/';
 
-	public function uploadFile($file)
-	{
-		if ($file['error'] === UPLOAD_ERR_OK) {
-			$fileTmpPath = $file['tmp_name'];
-			$fileName = $file['name'];
-			$fileSize = $file['size'];
-			$fileType = $file['type'];
-			$fileNameCmps = explode(".", $fileName);
-			$fileExtension = strtolower(end($fileNameCmps));
+        if (!is_dir($this->uploadDir)) {
+            mkdir($this->uploadDir, 0777, true);
+        }
+    }
 
-			// Сгенерируйте уникальное имя для файла
-			$newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+    public function uploadFile($file)
+    {
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $file['tmp_name'];
+            $fileName = $file['name'];
+            $fileSize = $file['size'];
+            $fileType = $file['type'];
+            $fileNameCmps = explode(".", $fileName);
+            $fileExtension = strtolower(end($fileNameCmps));
 
-			// Укажите допустимые расширения файлов
-			$allowedfileExtensions = array('jpg', 'jpeg', 'png');
+            // Сгенерируйте уникальное имя для файла
+            $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
-			if (in_array($fileExtension, $allowedfileExtensions)) {
-				// Путь для сохранения файла
-				$dest_path = $this->uploadDir . $newFileName;
+            // Укажите допустимые расширения файлов
+            $allowedfileExtensions = array('jpg', 'jpeg', 'png');
 
-				if (move_uploaded_file($fileTmpPath, $dest_path)) {
-					return ['success' => true, 'url' => $dest_path];
-				} else {
-					return ['success' => false, 'message' => 'File could not be uploaded.'];
-				}
-			} else {
-				return ['success' => false, 'message' => 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions)];
-			}
-		} else {
-			return ['success' => false, 'message' => 'There was some error in the file upload.'];
-		}
-	}
+            if (in_array($fileExtension, $allowedfileExtensions)) {
+                // Путь для сохранения файла
+                $dest_path = $this->uploadDir . $newFileName;
+
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    // Генерируем URL для файла
+                    $publicUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/src/files/images/' . $newFileName;
+                    return ['success' => true, 'url' => $publicUrl];
+                } else {
+                    return ['success' => false, 'message' => 'File could not be uploaded.'];
+                }
+            } else {
+                return ['success' => false, 'message' => 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions)];
+            }
+        } else {
+            return ['success' => false, 'message' => 'There was some error in the file upload.'];
+        }
+    }
 }

@@ -587,7 +587,8 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 	const createElementFromHTML = (htmlString) => {
 		const div = document.createElement("div");
 		div.innerHTML = htmlString.trim();
-		return div.firstChild;
+		const element = div.firstElementChild;
+		return element;
 	};
 
 	if (isArray) {
@@ -600,7 +601,16 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 		// Вставка новых строк
 		updatedData.forEach((data, index) => {
 			const newRowHtml = createTableRow(data);
+			console.log("Generated HTML for new row:", newRowHtml);
 			const newRow = createElementFromHTML(newRowHtml);
+			console.log("Generated newrow:",newRow);
+
+			if (!newRow) {
+				console.error("Failed to create new row element from HTML:", newRowHtml);
+				return; // Прекратить выполнение, если элемент не создан
+			}
+
+			newRow.classList.add("highlight");
 			if (index === 0) {
 				// Первая запись (обновление)
 				tableBody.insertBefore(newRow, tableBody.firstChild);
@@ -617,6 +627,7 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 		} else {
 			const newRowHtml = createTableRow(updatedData);
 			const newRow = createElementFromHTML(newRowHtml);
+			newRow.classList.add("highlight");
 			tableBody.insertBefore(newRow, tableBody.firstChild);
 		}
 	}
@@ -1053,7 +1064,11 @@ async function approveRequest(
 				body: formData,
 			});
 			const uploadData = await uploadResponse.json();
-			photoUrl = uploadData.url;
+			if (uploadData.success) {
+				photoUrl = uploadData.url;
+			} else {
+				throw new Error(uploadData.message);
+			}
 		}
 
 		const serialNumbers = serialNumbersData.map((data) =>
@@ -1068,6 +1083,15 @@ async function approveRequest(
 		// Создание новых good и записей в equipment_request
 		for (const [index, data] of serialNumbersData.entries()) {
 			console.log("data:", data);
+			console.log("Sending data to createGood:", {
+				modelName: equipmentName.trim(),
+				statusId: 4,
+				serialNumbers: [data.serialNumber.trim()],
+				id_type: equipmentIdType,
+				brandName: equipmentBrand.trim(),
+				description: equipmentDescription.trim(),
+				photo: photoUrl, // Передаем фото
+			});
 			const goodData = await apiGoods.createGood({
 				modelName: equipmentName.trim(),
 				statusId: 4,
@@ -1099,7 +1123,7 @@ async function approveRequest(
 					id_user,
 					id_type: equipmentIdType,
 					id_good: idGood,
-					request_date: requestDate
+					request_date: requestDate,
 				};
 
 				if (index === 0) {

@@ -13,6 +13,11 @@ class UploadController
 
     public function uploadFile()
     {
+        if (!isset($_FILES['file'])) {
+            echo json_encode(['success' => false, 'message' => 'No file uploaded']);
+            return;
+        }
+
         $result = $this->uploadService->uploadFile($_FILES['file']);
         echo json_encode($result);
     }

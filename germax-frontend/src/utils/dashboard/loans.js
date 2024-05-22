@@ -35,6 +35,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				date_end: request.date_end || "unknown date",
 				statusMessage: request.treatment_status,
 				type: "request",
+				photo: request.photo
 			};
 			console.log("Processed request entry:", processedRequest);
 			return processedRequest;
@@ -44,6 +45,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 	const rows = allEntries
     .map((entry) => {
         let statusMessage;
+				let photoHtml = "";
         let actionsMarkup = "";
         if (entry.type === "rental") {
             statusMessage = entry.statusMessage;
@@ -65,6 +67,9 @@ export function returnClientLoans(rentals = [], requests = []) {
                 actionsMarkup = `
                     <li><a class="dropdown-item response-before-sending" href="#" data-id="${entry.id}" data-bs-toggle="modal" data-bs-target="#manageResponseModal">confirmer la requête</a></li>
                 `;
+								if (entry.photo) {
+									photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
+								}
             } else if (entry.statusMessage === "treated_manager_user") {
 							statusMessage = "votre matériel est recherché";
 						}
@@ -95,6 +100,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 											</div>
 									</td>
 							</tr>
+							${photoHtml}
 					`;
 		})
 		.join("");
