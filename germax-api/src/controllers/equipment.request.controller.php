@@ -65,5 +65,20 @@ class EquipmentRequestController
 		$response = $this->equipmentRequestService->sendUpdatedDataToUser($requestData);
 		return $response;
 	}
-	// Можно добавить другие методы, например, изменение или удаление запроса
+
+	public function createRequest($data, $token)
+	{
+		$user = $this->authService->getUserByToken($token);
+		if ($user === null) {
+			return ['success' => false, 'message' => 'Invalid token or user not found'];
+		}
+
+		$result = $this->equipmentRequestService->createRequest($data);
+		echo json_encode($result);
+	}
+
+	public function getRequestById($id)
+	{
+		return $this->equipmentRequestService->getRequestById($id);
+	}
 }

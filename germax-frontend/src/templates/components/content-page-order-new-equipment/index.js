@@ -345,6 +345,12 @@ function createTableRow(request, namePermission) {
 		) {
 			treatmentStatus = "demande fermée";
 			equipmentStatus = "délivré";
+		} else if (
+			treatmentStatus === "rental_details_discussion_manager_stockman" &&
+			equipmentStatus === "found"
+		) {
+			treatmentStatus = "réponse envoyée au manager";
+			equipmentStatus = "trouvé";
 		}
 	} else if (namePermission === "rental-manager") {
 		if (
@@ -575,12 +581,44 @@ document
 	});
 
 function updateTableRow(requestId, updatedData, isArray = false) {
+	const tableBody = document.querySelector(".table tbody");
+
+	// Функция для создания элемента DOM из строки HTML
+	const createElementFromHTML = (htmlString) => {
+		const div = document.createElement("div");
+		div.innerHTML = htmlString.trim();
+		return div.firstChild;
+	};
+
 	if (isArray) {
-		updatedData.forEach((data) => {
-			updateSingleRow(requestId, data);
+		// Удаление старой строки для requestId
+		const existingRow = document.querySelector(`tr[data-id="${requestId}"]`);
+		if (existingRow) {
+			tableBody.removeChild(existingRow);
+		}
+
+		// Вставка новых строк
+		updatedData.forEach((data, index) => {
+			const newRowHtml = createTableRow(data);
+			const newRow = createElementFromHTML(newRowHtml);
+			if (index === 0) {
+				// Первая запись (обновление)
+				tableBody.insertBefore(newRow, tableBody.firstChild);
+			} else {
+				// Новые записи
+				const referenceNode = tableBody.firstChild.nextSibling;
+				tableBody.insertBefore(newRow, referenceNode);
+			}
 		});
 	} else {
-		updateSingleRow(requestId, updatedData);
+		const row = document.querySelector(`tr[data-id="${requestId}"]`);
+		if (row) {
+			updateSingleRow(requestId, updatedData);
+		} else {
+			const newRowHtml = createTableRow(updatedData);
+			const newRow = createElementFromHTML(newRowHtml);
+			tableBody.insertBefore(newRow, tableBody.firstChild);
+		}
 	}
 }
 
@@ -717,15 +755,18 @@ function openStockmanResponseModal(requestId) {
 	const quantity = parseInt(row.children[3].textContent.trim(), 10);
 	const dateStart = row.children[5].textContent.trim();
 	const dateEnd = row.children[6].textContent.trim();
-	const categoryText = row.children[2].textContent.trim().toLowerCase().replace(' ', '_'); // Преобразование категории в нижний регистр и замена пробелов на подчеркивания
+	const categoryText = row.children[2].textContent
+		.trim()
+		.toLowerCase()
+		.replace(" ", "_"); // Преобразование категории в нижний регистр и замена пробелов на подчеркивания
 	console.log(categoryText);
 	const idTypeMap = {
-		"ordinateur_portable": "laptop",
+		ordinateur_portable: "laptop",
 		"computer monitor": "computer_monitor",
-		"smartphone": "smartphone",
-		"accessory": "accessory",
-		"tablet": "tablet",
-		"vr headset": "VR_headset"
+		smartphone: "smartphone",
+		accessory: "accessory",
+		tablet: "tablet",
+		"vr headset": "VR_headset",
 	};
 
 	const id_type = idTypeMap[categoryText];
@@ -997,8 +1038,10 @@ async function approveRequest(
 	serialNumbersData
 ) {
 	try {
+		const id_user = localStorage.getItem("id_user");
 		const goodIds = [];
 		const responsePromises = [];
+		let newRequestId = requestId;
 
 		// Загрузка фото
 		let photoUrl = "";
@@ -1017,22 +1060,31 @@ async function approveRequest(
 			data.serialNumber.trim()
 		);
 
+		// Получение request_date из существующей записи
+		const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
+		const requestDate = existingRequest.request_date;
+		const updatedDataArray = [];
+
 		// Создание новых good и записей в equipment_request
-		for (const data of serialNumbersData) {
+		for (const [index, data] of serialNumbersData.entries()) {
 			console.log("data:", data);
-			console.log("serialNumbersData", serialNumbersData);
-			console.log("serialNumbers", serialNumbers);
 			const goodData = await apiGoods.createGood({
 				modelName: equipmentName.trim(),
 				statusId: 4,
-				serialNumbers,
+				serialNumbers: [data.serialNumber.trim()],
 				id_type: equipmentIdType,
 				brandName: equipmentBrand.trim(),
 				description: equipmentDescription.trim(),
 				photo: photoUrl,
 			});
 
-			if (goodData && goodData.id_good && goodData.id_good.goods && goodData.id_good.goods.length > 0 && goodData.id_good.goods[0].id_good) {
+			if (
+				goodData &&
+				goodData.id_good &&
+				goodData.id_good.goods &&
+				goodData.id_good.goods.length > 0 &&
+				goodData.id_good.goods[0].id_good
+			) {
 				const idGood = goodData.id_good.goods[0].id_good;
 				goodIds.push(idGood);
 
@@ -1044,21 +1096,39 @@ async function approveRequest(
 					date_end: rentalDateEnd,
 					treatment_status: "rental_details_discussion_manager_stockman",
 					equipment_status: "found",
+					id_user,
+					id_type: equipmentIdType,
 					id_good: idGood,
+					request_date: requestDate
 				};
-				console.log("responseData", responseData);
-				responsePromises.push(
-					apiEquipmentRequest.updateEquipmentRequest(responseData)
-				);
+
+				if (index === 0) {
+					// Обновление существующей записи для первой единицы оборудования
+					console.log(
+						"Updating existing record with responseData",
+						responseData
+					);
+					responsePromises.push(
+						apiEquipmentRequest.updateEquipmentRequest(responseData)
+					);
+				} else {
+					// Создание новых записей для последующих единиц оборудования
+					newRequestId = parseInt(newRequestId) + 1;
+					responseData.id_request = newRequestId;
+					console.log("Creating new record with responseData", responseData);
+					responsePromises.push(
+						apiEquipmentRequest.createRequest(responseData)
+					);
+					updatedDataArray.push(responseData);
+				}
 			} else {
 				console.error("Invalid response from createGood:", goodData);
 				throw new Error("Invalid response from createGood");
 			}
 		}
 
-		const updatedDataArray = await Promise.all(responsePromises);
+		await Promise.all(responsePromises);
 		console.log("Updated request data array:", updatedDataArray);
-		console.log(updatedDataArray);
 		updateTableRow(requestId, updatedDataArray, true);
 		alert("La réponse a été envoyée au manager!");
 		stockmanResponseModal.hide();

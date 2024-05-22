@@ -42,60 +42,65 @@ class EquipmentRequestService
 	}
 
 	public function updateRequest($data)
-{
-    $fieldsToUpdate = [];
-    $values = [];
+	{
+		$fieldsToUpdate = [];
+		$values = [];
 
-    // Добавьте проверку существования записи перед обновлением
-    $sqlCheck = "SELECT * FROM equipment_request WHERE id_request = ?";
-    $stmtCheck = $this->pdo->prepare($sqlCheck);
-    $stmtCheck->execute([$data['id_request']]);
-    $existingData = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+		// Добавьте проверку существования записи перед обновлением
+		$sqlCheck = "SELECT * FROM equipment_request WHERE id_request = ?";
+		$stmtCheck = $this->pdo->prepare($sqlCheck);
+		$stmtCheck->execute([$data['id_request']]);
+		$existingData = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-    if (!$existingData) {
-        error_log("No record found with id_request: " . $data['id_request']);
-        return ['success' => false, 'message' => 'Record not found'];
-    }
+		if (!$existingData) {
+			error_log("No record found with id_request: " . $data['id_request']);
+			return ['success' => false, 'message' => 'Record not found'];
+		}
 
 
-    if (isset($data['equipment_name'])) {
-        $fieldsToUpdate[] = 'equipment_name = ?';
-        $values[] = $data['equipment_name'];
-    }
+		if (isset($data['equipment_name'])) {
+			$fieldsToUpdate[] = 'equipment_name = ?';
+			$values[] = $data['equipment_name'];
+		}
 
-    if (isset($data['quantity'])) {
-        $fieldsToUpdate[] = 'quantity = ?';
-        $values[] = $data['quantity'];
-    }
+		if (isset($data['quantity'])) {
+			$fieldsToUpdate[] = 'quantity = ?';
+			$values[] = $data['quantity'];
+		}
 
-    if (isset($data['date_start'])) {
-        $fieldsToUpdate[] = 'date_start = ?';
-        $values[] = $data['date_start'];
-    }
+		if (isset($data['date_start'])) {
+			$fieldsToUpdate[] = 'date_start = ?';
+			$values[] = $data['date_start'];
+		}
 
-    if (isset($data['date_end'])) {
-        $fieldsToUpdate[] = 'date_end = ?';
-        $values[] = $data['date_end'];
-    }
+		if (isset($data['date_end'])) {
+			$fieldsToUpdate[] = 'date_end = ?';
+			$values[] = $data['date_end'];
+		}
 
-    if (isset($data['comment'])) {
-        $fieldsToUpdate[] = 'comment = ?';
-        $values[] = $data['comment'];
-    }
+		if (isset($data['comment'])) {
+			$fieldsToUpdate[] = 'comment = ?';
+			$values[] = $data['comment'];
+		}
 
-    if (isset($data['treatment_status'])) {
-        $fieldsToUpdate[] = 'treatment_status = ?';
-        $values[] = $data['treatment_status'];
-    }
+		if (isset($data['treatment_status'])) {
+			$fieldsToUpdate[] = 'treatment_status = ?';
+			$values[] = $data['treatment_status'];
+		}
 
-    if (isset($data['equipment_status'])) {
-        $fieldsToUpdate[] = 'equipment_status = ?';
-        $values[] = $data['equipment_status'];
-    }
+		if (isset($data['equipment_status'])) {
+			$fieldsToUpdate[] = 'equipment_status = ?';
+			$values[] = $data['equipment_status'];
+		}
 
 		if (isset($data['id_type'])) {
 			$fieldsToUpdate[] = 'id_type = ?';
 			$values[] = $data['id_type'];
+		}
+
+		if (isset($data['id_user'])) {
+			$fieldsToUpdate[] = 'id_user = ?';
+			$values[] = $data['id_user'];
 		}
 
 		if (isset($data['id_good'])) {
@@ -103,26 +108,26 @@ class EquipmentRequestService
 			$values[] = $data['id_good'];
 		}
 
-    $values[] = $data['id_request'];
+		$values[] = $data['id_request'];
 
-    $sql = "UPDATE equipment_request SET " . implode(', ', $fieldsToUpdate) . " WHERE id_request = ?";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($values);
+		$sql = "UPDATE equipment_request SET " . implode(', ', $fieldsToUpdate) . " WHERE id_request = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($values);
 
 		error_log("SQL Query: $sql");
-    error_log("Values: " . implode(', ', $values));
+		error_log("Values: " . implode(', ', $values));
 
-    if ($stmt->rowCount() > 0) {
-        // Получаем обновленную запись, чтобы вернуть её клиенту
-        $sql = "SELECT * FROM equipment_request WHERE id_request = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$data['id_request']]);
-        $updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ['success' => true, 'data' => $updatedRequest];
-    } else {
-        return ['success' => false, 'message' => 'No rows updated'];
-    }
-}
+		if ($stmt->rowCount() > 0) {
+			// Получаем обновленную запись, чтобы вернуть её клиенту
+			$sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$data['id_request']]);
+			$updatedRequest = $stmt->fetch(PDO::FETCH_ASSOC);
+			return ['success' => true, 'data' => $updatedRequest];
+		} else {
+			return ['success' => false, 'message' => 'No rows updated'];
+		}
+	}
 
 
 
@@ -167,4 +172,62 @@ class EquipmentRequestService
 			return ['success' => false, 'message' => 'No rows updated'];
 		}
 	}
+
+	public function createRequest($data)
+	{
+		if (
+			!isset($data['id_request']) ||
+			!isset($data['equipment_name']) ||
+			!isset($data['quantity']) ||
+			!isset($data['date_start']) ||
+			!isset($data['date_end']) ||
+			!isset($data['treatment_status']) ||
+			!isset($data['equipment_status']) ||
+			!isset($data['id_type']) ||
+			!isset($data['id_good']) ||
+			!isset($data['request_date'])
+		) {
+			return ['success' => false, 'message' => 'Missing required fields'];
+		}
+		error_log('dataInCreateRequest: ' . print_r($data, true));
+		$sql = "INSERT INTO equipment_request
+            (id_request, equipment_name, quantity, date_start, date_end, treatment_status, equipment_status, id_type, id_user, id_good, request_date)
+            VALUES (:id_request, :equipment_name, :quantity, :date_start, :date_end, :treatment_status, :equipment_status, :id_type, :id_user, :id_good, :request_date)";
+		$stmt = $this->pdo->prepare($sql);
+
+		try {
+			$stmt->execute([
+				'id_request' => $data['id_request'],
+				'equipment_name' => $data['equipment_name'],
+				'quantity' => $data['quantity'],
+				'date_start' => $data['date_start'],
+				'date_end' => $data['date_end'],
+				'treatment_status' => $data['treatment_status'],
+				'equipment_status' => $data['equipment_status'],
+				'id_user' => $data['id_user'],
+				'id_type' => $data['id_type'],
+				'id_good' => $data['id_good'],
+				'request_date' => $data['request_date']
+			]);
+			error_log('Executed query: ' . $sql);
+			error_log('Executed with parameters: ' . print_r($data, true));
+			return ['success' => true, 'id_request' => $this->pdo->lastInsertId()];
+		} catch (PDOException $e) {
+			return ['success' => false, 'message' => 'SQL query error', 'error' => $e->getMessage()];
+		}
+	}
+
+	public function getRequestById($id) {
+    $sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([$id]);
+    $request = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($request) {
+        return ['success' => true, 'data' => $request];
+    } else {
+        return ['success' => false, 'message' => 'Request not found'];
+    }
+}
+
 }

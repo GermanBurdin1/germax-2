@@ -12,7 +12,7 @@ export class ApiEquipmentRequest {
 		dateStart,
 		dateEnd,
 		quantity,
-		id_type
+		id_type,
 	}) {
 		const body = JSON.stringify({
 			formRequestItemInfo: {
@@ -21,7 +21,7 @@ export class ApiEquipmentRequest {
 				dateStart,
 				dateEnd,
 				quantity,
-				id_type
+				id_type,
 			},
 		});
 		console.log("Sending JSON:", body);
@@ -71,37 +71,38 @@ export class ApiEquipmentRequest {
 	}
 
 	async updateEquipmentRequest(updatedData) {
-    const body = JSON.stringify(updatedData);
-    return fetch(`${this._baseUrl}/update-request`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        token: this._apiAuth.getToken(),
-      },
-      body,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((json) => Promise.reject(json));
-        }
-        return response.json();
-      })
-      .then((data) => {
+		const body = JSON.stringify(updatedData);
+		return fetch(`${this._baseUrl}/update-request`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
 				if (data.success) {
 					return data.data; // Возвращаем обновленные данные
 				} else {
 					throw new Error(data.message || "Error updating request");
 				}
 			})
-      .catch((error) => {
-        console.error("Error updating request:", error);
-        throw error;
-      });
-  }
+			.catch((error) => {
+				console.error("Error updating request:", error);
+				throw error;
+			});
+	}
 
 	async confirmApproval(approvalData) {
 		const body = JSON.stringify(approvalData);
-		return fetch(`${this._baseUrl}/confirm-approval`, { // Замените URL на соответствующий для подтверждения
+		return fetch(`${this._baseUrl}/confirm-approval`, {
+			// Замените URL на соответствующий для подтверждения
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -129,32 +130,72 @@ export class ApiEquipmentRequest {
 	}
 
 	async sendUpdatedDataToUser(updatedData) {
-    const body = JSON.stringify(updatedData);
-    return fetch(`${this._baseUrl}/send-updated-data-to-user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token: this._apiAuth.getToken(),
-      },
-      body,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((json) => Promise.reject(json));
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.success) {
-          return data.data;
-        } else {
-          throw new Error(data.message || "Error sending data to user");
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending data to user:", error);
-        throw error;
-      });
-  }
+		const body = JSON.stringify(updatedData);
+		return fetch(`${this._baseUrl}/send-updated-data-to-user`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
+				if (data.success) {
+					return data.data;
+				} else {
+					throw new Error(data.message || "Error sending data to user");
+				}
+			})
+			.catch((error) => {
+				console.error("Error sending data to user:", error);
+				throw error;
+			});
+	}
 
+	async createRequest(data) {
+		const body = JSON.stringify(data);
+		const token = this._apiAuth.getToken();
+
+		return fetch(`${this._baseUrl}/create-request`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: token,
+			},
+			body,
+		})
+			.then((response) => response.json())
+			.catch((error) => {
+				console.error("Error in createRequest:", error);
+				throw error;
+			});
+	}
+
+	async getRequestById(requestId) {
+		return fetch(`${this._baseUrl}/get-request-by-id?id=${requestId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${this._apiAuth.getToken()}`,
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.success) {
+					return data.data;
+				} else {
+					throw new Error(data.message || "Error fetching request");
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching request by ID:", error);
+				throw error;
+			});
+	}
 }
