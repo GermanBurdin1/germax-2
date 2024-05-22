@@ -430,7 +430,7 @@ function confirmApproval(requestId) {
 		.confirmApproval(approvalData)
 		.then((data) => {
 			alert("Le gestionnaire est déjà en train de chercher votre équipement");
-			updateTableRowStatus(requestId, "treated_manager_user");
+			updateTableRowStatus(requestId, "votre matériel est recherché");
 		})
 		.catch((error) => {
 			console.error("Erreur lors de l'envoi des données pour approbation :", error);

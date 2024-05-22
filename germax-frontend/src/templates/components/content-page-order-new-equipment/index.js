@@ -365,6 +365,12 @@ function createTableRow(request, namePermission) {
 		) {
 			treatmentStatus = "la requête est envoyée au gestionnaire";
 			equipmentStatus = "disponibilité de l'équipement en attente";
+		} else if (
+			treatmentStatus === "rental_details_discussion_manager_user" &&
+			equipmentStatus === "equipment_availability_pending"
+		) {
+			treatmentStatus = "confirmation attendue de l'utilisateur";
+			equipmentStatus = "disponibilité de l'équipement en attente";
 		}
 	}
 
@@ -381,8 +387,17 @@ function createTableRow(request, namePermission) {
 		} else if (
 			request.treatment_status === "rental_details_discussion_manager_stockman"
 		) {
+			treatmentStatus = "confirmer l'envoi";
+			equipmentStatus = "trouvé";
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi</a></li>
+			`;
+		} else if (request.treatment_status === "sent_awaiting") {
+			treatmentStatus = "en attente d'envoi";
+			equipmentStatus = "trouvé";
+			actionsMarkup = `
+			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
 			`;
 		} else if (request.treatment_status === "treated_rental_manager_stockman") {
 			actionsMarkup = `
@@ -603,10 +618,13 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 			const newRowHtml = createTableRow(data);
 			console.log("Generated HTML for new row:", newRowHtml);
 			const newRow = createElementFromHTML(newRowHtml);
-			console.log("Generated newrow:",newRow);
+			console.log("Generated newrow:", newRow);
 
 			if (!newRow) {
-				console.error("Failed to create new row element from HTML:", newRowHtml);
+				console.error(
+					"Failed to create new row element from HTML:",
+					newRowHtml
+				);
 				return; // Прекратить выполнение, если элемент не создан
 			}
 
@@ -647,6 +665,12 @@ function updateSingleRow(requestId, updatedData) {
 	) {
 		updatedTreatmentStatus = "confirmation attendue de l'utilisateur";
 		updatedEquipmentStatus = "disponibilité de l'équipement en attente";
+	} else if (
+		updatedTreatmentStatus === "sent_awaiting" &&
+		updatedEquipmentStatus === "found"
+	) {
+		updatedTreatmentStatus = "en attente d'envoi";
+		updatedEquipmentStatus = "trouvé";
 	}
 
 	row.querySelector("[data-equipment-name]").textContent =
@@ -1174,7 +1198,9 @@ function confirmSending(requestId) {
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
 			console.log("Ответ сервера:", data);
-			alert("Данные успешно обновлены и отправлены на подтверждение отправки!");
+			alert(
+				"Le gestionnaire est maintenant au courant et enverra le matériel à la date prévue!"
+			);
 			updateTableRowStatus(requestId, treatment_status);
 		})
 		.catch((error) => {
