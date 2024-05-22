@@ -40,6 +40,42 @@ export class ApiRental {
             });
     }
 
+		async createNewItemRental(good, { dateStart, dateEnd, accord, id_user, loanStatus }) {
+			const body = JSON.stringify({
+					formInfo: {
+							dateStart,
+							dateEnd,
+							accord,
+							id_user,
+							loanStatus,
+					},
+					idGood: good.id
+			});
+			console.log("createNewItemRental вызывается с телом,", body)
+
+			return fetch(`${this._baseUrl}/new-item-rental`, {
+					method: "POST",
+					headers: {
+							"Content-Type": "application/json",
+							"token": this._apiAuth.getToken()
+					},
+					body
+			})
+					.then((response) => {
+							if (!response.ok) {
+									return response.json().then((json) => Promise.reject(json));
+							}
+							return response.json();
+					})
+					.then((data) => {
+							return data;
+					})
+					.catch((error) => {
+							console.error("Error in createRequestRental:", error);
+							throw error;
+					});
+	}
+
     async getClientRentals() {
         return fetch(`${this._baseUrl}/get-client-rentals`, {
             method: "GET",

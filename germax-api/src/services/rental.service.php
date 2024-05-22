@@ -153,4 +153,36 @@ class RentalService
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
+
+	public function addNewItemRental($data, $userId)
+	{
+		if (!$data['formInfo']['dateStart'] || !$data['formInfo']['dateEnd'] || !$data['idGood'] || !$userId) {
+			return ['success' => false, 'message' => 'All fields including good ID, rental dates, and user ID are required'];
+		}
+
+		$this->pdo->beginTransaction();
+
+		try {
+			$loanData = [
+				'date_start' => $data['formInfo']['dateStart'],
+				'date_end' => $data['formInfo']['dateEnd'],
+				'id_user' => $userId,
+				'id_good' => $data['idGood'],
+				'loan_status' => isset($data['formInfo']['loanStatus']) ? $data['formInfo']['loanStatus'] : 'loaned',
+				'comment' => isset($data['formInfo']['comment']) ? $data['formInfo']['comment'] : ''
+			];
+
+			// Вставка данных в таблицу `loan`
+			$sql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, loan_status, comment) VALUES (CURDATE(),:date_start, :date_end, :id_user, :id_good, 1, :loan_status, :comment)";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute($loanData);
+
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Rental requested and loan recorded successfully'];
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Error during loan request: " . $e->getMessage(), 3, "../debug.php");
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
 }

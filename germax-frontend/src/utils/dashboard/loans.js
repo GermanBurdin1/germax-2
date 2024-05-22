@@ -35,7 +35,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				date_end: request.date_end || "unknown date",
 				statusMessage: request.treatment_status,
 				type: "request",
-				photo: request.photo,
+				photo: request.photo
 			};
 			console.log("Processed request entry:", processedRequest);
 			return processedRequest;
@@ -43,47 +43,57 @@ export function returnClientLoans(rentals = [], requests = []) {
 	];
 
 	const rows = allEntries
-		.map((entry) => {
-			let statusMessage;
-			let photoHtml = "";
-			let actionsMarkup = "";
-			if (entry.type === "rental") {
-				statusMessage = entry.statusMessage;
-				if (entry.id_status === 4) {
-					statusMessage = `requête effectuée le ${formatDate(
-						entry.date_start
-					)}`;
-				}
-				actionsMarkup = `
+    .map((entry) => {
+        let statusMessage;
+				let photoHtml = "";
+        let actionsMarkup = "";
+        if (entry.type === "rental") {
+            statusMessage = entry.statusMessage;
+            if (entry.id_status === 4) {
+                statusMessage = `requête effectuée le ${formatDate(entry.date_start)}`;
+            }
+            actionsMarkup = `
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
             `;
-			} else if (entry.type === "request") {
-				statusMessage = entry.treatment_status || "unknown status";
-				if (entry.statusMessage === "rental_details_discussion_manager_user") {
-					statusMessage = "en attente de votre confirmation";
-					actionsMarkup = `
+        } else if (entry.type === "request") {
+            statusMessage = entry.treatment_status || "unknown status";
+            if (entry.statusMessage === "rental_details_discussion_manager_user") {
+								statusMessage = "en attente de votre confirmation";
+                actionsMarkup = `
                     <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
                 `;
-				} else if (
-					entry.statusMessage === "treated_manager_user" ||
-					entry.statusMessage === "rental_details_discussion_manager_stockman"
-				) {
-					statusMessage = "votre matériel est recherché";
-					actionsMarkup = `
+            }
+
+            else if (entry.statusMessage === "treated_manager_user" || entry.statusMessage === "rental_details_discussion_manager_stockman") {
+							statusMessage = "votre matériel est recherché";
+							actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
-					if (entry.photo) {
-						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
-					}
-				} else {
-					actionsMarkup = `
+								if (entry.photo) {
+									photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
+								}
+
+						}
+						else if (entry.statusMessage === "closed_by_stockman") {
+							statusMessage = "vous pouvez récupérer le matériel";
+							actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
-				}
-			}
+								if (entry.photo) {
+									photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
+								}
+
+						}
+						else {
+                actionsMarkup = `
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+                `;
+            }
+        }
 
 			return `
 			<tr data-id="${entry.id}">

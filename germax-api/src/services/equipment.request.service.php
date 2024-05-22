@@ -80,6 +80,9 @@ class EquipmentRequestService
 			return ['success' => false, 'message' => 'Record not found'];
 		}
 
+		error_log("Existing data: " . json_encode($existingData));
+    error_log("Update data: " . json_encode($data));
+
 
 		if (isset($data['equipment_name'])) {
 			$fieldsToUpdate[] = 'equipment_name = ?';

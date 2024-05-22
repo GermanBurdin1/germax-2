@@ -351,6 +351,18 @@ function createTableRow(request, namePermission) {
 		) {
 			treatmentStatus = "réponse envoyée au manager";
 			equipmentStatus = "trouvé";
+		} else if (
+			treatmentStatus === "sent_awaiting" &&
+			equipmentStatus === "found"
+		) {
+			treatmentStatus = "en attente d'envoi";
+			equipmentStatus = "trouvé";
+		} else if (
+			treatmentStatus === "treated_rental_manager_stockman" &&
+			equipmentStatus === "sent"
+		) {
+			treatmentStatus = "traité avec le manager";
+			equipmentStatus = "envoyé";
 		}
 	} else if (namePermission === "rental-manager") {
 		if (
@@ -371,6 +383,12 @@ function createTableRow(request, namePermission) {
 		) {
 			treatmentStatus = "confirmation attendue de l'utilisateur";
 			equipmentStatus = "disponibilité de l'équipement en attente";
+		} else if (
+			treatmentStatus === "closed_by_stockman" &&
+			equipmentStatus === "received"
+		) {
+			treatmentStatus = "demande traitée avec le gestionnaire";
+			equipmentStatus = "matériel reçu";
 		}
 	}
 
@@ -400,10 +418,12 @@ function createTableRow(request, namePermission) {
 			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
 			`;
 		} else if (request.treatment_status === "treated_rental_manager_stockman") {
+			treatmentStatus = "envoyé";
+			equipmentStatus = "trouvé";
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
 			`;
-		} else if (request.treatment_status === "closed_by_stockman") {
+		} else if (request.treatment_status === "closed_by_stockman" && request.equipment_status === "received") {
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
 			`;
@@ -1222,8 +1242,8 @@ function sendingItem(requestId) {
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
-			alert("Данные успешно обновлены и отправлены на подтверждение отправки!");
-			updateTableRowStatus(requestId, treatment_status);
+			alert("Hourra! Le matériel est bel et bien envoyé");
+			updateTableRowStatus(requestId, "matériel reçu","demande traitée avec le gestionnaire");
 		})
 		.catch((error) => {
 			console.error("Ошибка при обновлении данных:", error);
@@ -1264,36 +1284,42 @@ function receivingItem(requestId) {
 		});
 }
 
-function handOverItem(requestId) {
+async function handOverItem(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 	const treatment_status = "closed_by_stockman";
 	const equipment_status = "handed_over";
+
 	const responseData = {
 		id_request: requestId,
 		treatment_status,
 		equipment_status,
 	};
 	console.log("Отправка данных для подтверждения отправки:", responseData);
+	const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
+	const requestIdgood = existingRequest.id_good;
+	console.log("получение id_good", requestIdgood);
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
 			alert("L'utilisateur a récupéré son matériel!");
-			updateTableRowStatus(requestId, treatment_status);
+			updateTableRowStatus(requestId, "en attente de retour", "matériel récupéré");
 			// Переотрисовка таблицы для обновления данных для кладовщика
 			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
-
+			const idRentalUser = localStorage.getItem("id_user");
+			const loanStatus = "loaned";
 			// Создаем данные для запроса на apiRental.createRequestRental
 			const rentalData = {
-				quantity: row.children[2].textContent,
-				dateStart: row.children[3].textContent,
-				dateEnd: row.children[4].textContent,
+				dateStart: row.children[4].textContent,
+				dateEnd: row.children[5].textContent,
+				id_user: idRentalUser,
+				loanStatus,
 			};
 
 			const good = {
-				id: requestId, // Идентификатор товара, используйте нужный идентификатор
+				id: requestIdgood, // Идентификатор товара, используйте нужный идентификатор
 			};
-
-			return apiRental.createRequestRental(good, rentalData);
+			console.log("Данные для создания новой аренды:", good, rentalData);
+			return apiRental.createNewItemRental(good, rentalData);
 		})
 		.catch((error) => {
 			console.error("Ошибка при обновлении данных:", error);
