@@ -7,10 +7,12 @@ import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiGoods } from "../../../utils/classes/api-goods";
+import { CategoryAPI } from "../../../utils/classes/api-category";
 
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiRental = new ApiRental();
 const apiGoods = new ApiGoods();
+const categoryApi = new CategoryAPI();
 
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 
@@ -41,44 +43,33 @@ document.addEventListener("DOMContentLoaded", function () {
 			addEquipmentModal.hide();
 		});
 	}
-
-	if (addCategoryButton) {
-		const addCategoryModalElement = document.getElementById("addCategoryModal");
-		const addCategoryModal = new Modal(addCategoryModalElement);
-
-		addCategoryButton.addEventListener("click", function () {
-			alert("Catégorie ajoutée avec succès!");
-			addCategoryModal.hide();
-		});
-	}
 });
 
-function saveCategory() {
-	const name = document.getElementById("categoryName").value;
+const addCategoryModalElement = document.getElementById("addCategoryModal");
+const addCategoryModal = new Modal(addCategoryModalElement);
+async function saveCategory() {
+	console.log(addCategoryModal)
+	const name = document.getElementById("newCategoryName").value;
 
-	fetch("http://germax-api/src/controllers/add-category.php", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		body: `name=${encodeURIComponent(name)}`,
-	})
-		.then((response) => response.json())
-		.then((data) => {
-			if (data.success) {
-				alert(data.message);
-				addCategoryModal.hide();
-				document.getElementById("categoryName").value = "";
-			} else {
-				alert(data.message);
-			}
-		})
-		.catch((error) => console.error("Ошибка:", error));
+	try {
+		const data = await categoryApi.addCategory({ categoryName: name });
+		if (data.success) {
+			alert(data.message);
+			document.getElementById("newCategoryName").value = "";
+			addCategoryModal.hide();
+		} else {
+			alert(data.message);
+		}
+	} catch (error) {
+		console.error("Ошибка:", error);
+	}
 }
-// Добавление слушателя событий для кнопки сохранения категории оборудования
+
 document
 	.getElementById("saveCategoryBtn")
 	.addEventListener("click", saveCategory);
+
+// Добавление слушателя событий для кнопки сохранения категории оборудования
 
 function saveEquipment() {
 	const name = document.getElementById("equipmentName").value;
@@ -423,7 +414,10 @@ function createTableRow(request, namePermission) {
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
 			`;
-		} else if (request.treatment_status === "closed_by_stockman" && request.equipment_status === "received") {
+		} else if (
+			request.treatment_status === "closed_by_stockman" &&
+			request.equipment_status === "received"
+		) {
 			actionsMarkup = `
 			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
 			`;
@@ -1243,7 +1237,11 @@ function sendingItem(requestId) {
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
 			alert("Hourra! Le matériel est bel et bien envoyé");
-			updateTableRowStatus(requestId, "matériel reçu","demande traitée avec le gestionnaire");
+			updateTableRowStatus(
+				requestId,
+				"matériel reçu",
+				"demande traitée avec le gestionnaire"
+			);
 		})
 		.catch((error) => {
 			console.error("Ошибка при обновлении данных:", error);
@@ -1302,7 +1300,11 @@ async function handOverItem(requestId) {
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
 			alert("L'utilisateur a récupéré son matériel!");
-			updateTableRowStatus(requestId, "en attente de retour", "matériel récupéré");
+			updateTableRowStatus(
+				requestId,
+				"en attente de retour",
+				"matériel récupéré"
+			);
 			// Переотрисовка таблицы для обновления данных для кладовщика
 			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
 			const idRentalUser = localStorage.getItem("id_user");
