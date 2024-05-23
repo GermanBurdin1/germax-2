@@ -26,133 +26,133 @@ if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
 }
 
-const addCategoryModalElement = document.getElementById("addCategoryModal");
-const addCategoryModal = new Modal(addCategoryModalElement);
-async function saveCategory() {
-	console.log(addCategoryModal);
-	const name = document.getElementById("newCategoryName").value;
+// const addCategoryModalElement = document.getElementById("addCategoryModal");
+// const addCategoryModal = new Modal(addCategoryModalElement);
+// async function saveCategory() {
+// 	console.log(addCategoryModal);
+// 	const name = document.getElementById("newCategoryName").value;
 
-	try {
-		const data = await categoryApi.addCategory({ categoryName: name });
-		if (data.success) {
-			alert(data.message);
-			document.getElementById("newCategoryName").value = "";
-			addCategoryModal.hide();
-		} else {
-			alert(data.message);
-		}
-	} catch (error) {
-		console.error("Ошибка:", error);
-	}
-}
+// 	try {
+// 		const data = await categoryApi.addCategory({ categoryName: name });
+// 		if (data.success) {
+// 			alert(data.message);
+// 			document.getElementById("newCategoryName").value = "";
+// 			addCategoryModal.hide();
+// 		} else {
+// 			alert(data.message);
+// 		}
+// 	} catch (error) {
+// 		console.error("Ошибка:", error);
+// 	}
+// }
 
-document
-	.getElementById("saveCategoryBtn")
-	.addEventListener("click", saveCategory);
+// document
+// 	.getElementById("saveCategoryBtn")
+// 	.addEventListener("click", saveCategory);
 
-// adding new equipment
-const addEquipmentModalElement = document.getElementById("addEquipmentModal");
-const addEquipmentModal = new Modal(addEquipmentModalElement);
-document
-	.getElementById("saveEquipmentBtn")
-	.addEventListener("click", saveEquipment);
-document.getElementById("brandName").addEventListener("input", searchBrands);
-document
-	.getElementById("brandName")
-	.addEventListener("change", autoFillModelName);
+// // adding new equipment
+// const addEquipmentModalElement = document.getElementById("addEquipmentModal");
+// const addEquipmentModal = new Modal(addEquipmentModalElement);
+// document
+// 	.getElementById("saveEquipmentBtn")
+// 	.addEventListener("click", saveEquipment);
+// document.getElementById("brandName").addEventListener("input", searchBrands);
+// document
+// 	.getElementById("brandName")
+// 	.addEventListener("change", autoFillModelName);
 
-async function searchBrands() {
-	const brandInput = document.getElementById("brandName");
-	const query = brandInput.value;
-	const response = await brandApi.searchBrands(query);
+// async function searchBrands() {
+// 	const brandInput = document.getElementById("brandName");
+// 	const query = brandInput.value;
+// 	const response = await brandApi.searchBrands(query);
 
-	const suggestions = document.getElementById("brandSuggestions");
-	suggestions.innerHTML = "";
+// 	const suggestions = document.getElementById("brandSuggestions");
+// 	suggestions.innerHTML = "";
 
-	response.forEach((brand) => {
-		const suggestion = document.createElement("a");
-		suggestion.href = "#";
-		suggestion.classList.add("list-group-item", "list-group-item-action");
-		suggestion.textContent = brand.name;
-		suggestion.onclick = () => {
-			brandInput.value = brand.name;
-			suggestions.innerHTML = "";
-			autoFillModelName();
-		};
-		suggestions.appendChild(suggestion);
-	});
-}
+// 	response.forEach((brand) => {
+// 		const suggestion = document.createElement("a");
+// 		suggestion.href = "#";
+// 		suggestion.classList.add("list-group-item", "list-group-item-action");
+// 		suggestion.textContent = brand.name;
+// 		suggestion.onclick = () => {
+// 			brandInput.value = brand.name;
+// 			suggestions.innerHTML = "";
+// 			autoFillModelName();
+// 		};
+// 		suggestions.appendChild(suggestion);
+// 	});
+// }
 
-async function saveEquipment() {
-	const form = document.getElementById("addEquipmentForm");
-	if (form.checkValidity() === false) {
-			form.reportValidity();
-			return;
-	}
+// async function saveEquipment() {
+// 	const form = document.getElementById("addEquipmentForm");
+// 	if (form.checkValidity() === false) {
+// 			form.reportValidity();
+// 			return;
+// 	}
 
-	const modelName = document.getElementById("equipmentName").value;
-	const id_type = document.getElementById("categoryName").value;
-	const brandName = document.getElementById("brandName").value;
-	const description = document.getElementById("equipmentDescription").value;
-	const serial_number = document.getElementById("serialNumber").value;
-	const photoFile = document.getElementById("equipmentPhoto").files[0];
+// 	const modelName = document.getElementById("equipmentName").value;
+// 	const id_type = document.getElementById("categoryName").value;
+// 	const brandName = document.getElementById("brandName").value;
+// 	const description = document.getElementById("equipmentDescription").value;
+// 	const serial_number = document.getElementById("serialNumber").value;
+// 	const photoFile = document.getElementById("equipmentPhoto").files[0];
 
-	let brandId = await fetchBrandIdByName(brandName);
-	if (!brandId) {
-			brandId = await addNewBrand(brandName);
-	}
+// 	let brandId = await fetchBrandIdByName(brandName);
+// 	if (!brandId) {
+// 			brandId = await addNewBrand(brandName);
+// 	}
 
-	let photoUrl = "";
-	if (photoFile) {
-			const uploadData = await uploadApi.uploadPhoto(photoFile);
-			if (uploadData.success) {
-					photoUrl = uploadData.url;
-			} else {
-					throw new Error(uploadData.message);
-			}
-	}
+// 	let photoUrl = "";
+// 	if (photoFile) {
+// 			const uploadData = await uploadApi.uploadPhoto(photoFile);
+// 			if (uploadData.success) {
+// 					photoUrl = uploadData.url;
+// 			} else {
+// 					throw new Error(uploadData.message);
+// 			}
+// 	}
 
-	try {
-			const data = await apiGoods.createGood({
-					modelName,
-					statusId: 4,
-					serialNumbers: [serial_number], // Wrapping in an array to use createGood
-					id_type,
-					brandName,
-					description,
-					photo: photoUrl,
-			});
+// 	try {
+// 			const data = await apiGoods.createGood({
+// 					modelName,
+// 					statusId: 4,
+// 					serialNumbers: [serial_number], // Wrapping in an array to use createGood
+// 					id_type,
+// 					brandName,
+// 					description,
+// 					photo: photoUrl,
+// 			});
 
-			if (data.success) {
-					alert("Équipement ajouté avec succès!");
-					form.reset();
-					addEquipmentModal.hide();
-			} else {
-					alert("Erreur: " + data.message);
-			}
-	} catch (error) {
-			console.error("Erreur:", error);
-			alert("Erreur lors de l'ajout de l'équipement.");
-	}
-}
+// 			if (data.success) {
+// 					alert("Équipement ajouté avec succès!");
+// 					form.reset();
+// 					addEquipmentModal.hide();
+// 			} else {
+// 					alert("Erreur: " + data.message);
+// 			}
+// 	} catch (error) {
+// 			console.error("Erreur:", error);
+// 			alert("Erreur lors de l'ajout de l'équipement.");
+// 	}
+// }
 
-async function fetchBrandIdByName(brandName) {
-	const brand = await brandApi.searchBrands(brandName);
-	return brand.id || null;
-}
+// async function fetchBrandIdByName(brandName) {
+// 	const brand = await brandApi.searchBrands(brandName);
+// 	return brand.id || null;
+// }
 
-async function addNewBrand(brandName) {
-	const data = await brandApi.getOrCreateBrand({ name: brandName });
-	return data.id;
-}
+// async function addNewBrand(brandName) {
+// 	const data = await brandApi.getOrCreateBrand({ name: brandName });
+// 	return data.id;
+// }
 
-function autoFillModelName() {
-	const brandName = document.getElementById("brandName").value;
-	const modelNameInput = document.getElementById("equipmentName");
-	if (!modelNameInput.value) {
-		modelNameInput.value = brandName;
-	}
-}
+// function autoFillModelName() {
+// 	const brandName = document.getElementById("brandName").value;
+// 	const modelNameInput = document.getElementById("equipmentName");
+// 	if (!modelNameInput.value) {
+// 		modelNameInput.value = brandName;
+// 	}
+// }
 
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
@@ -211,15 +211,7 @@ function renderEquipmentOrder(userData) {
 	listOrdersTitle.innerHTML = ``;
 
 	if (userData.name_permission === "stockman") {
-		const titleAddingOrdersMarkup = `<h2>Ajout du nouvel équipement</h2>`;
-		const markup = `
-					<div class="mb-4">
-							<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Ajouter un équipement</button>
-							<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Ajouter une catégorie</button>
-					</div>
-			`;
 		const titleOrdersRequestMarkup = `<h2>Requêtes du nouvel équipement</h2>`;
-		titleAddingOrders.innerHTML = titleAddingOrdersMarkup;
 		addingEquipmentContainer.innerHTML = markup;
 		titleOrdersRequest.innerHTML = titleOrdersRequestMarkup;
 	} else if (userData.name_permission === "rental-manager") {

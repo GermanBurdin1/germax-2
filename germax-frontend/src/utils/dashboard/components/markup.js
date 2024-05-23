@@ -26,7 +26,8 @@ function getRentalManagerNav() {
 function getStockmanNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
-	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
+	<a class="nav-link" id="orderNewEquipment" href="/page-orders">Commander un nouvel équipement</a>
+	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Nouvelles commandes</a>
 	<a class="nav-link" id="locationsLink" href="/page-stockman-equipment-under-repair">Matériel en maintenance ou sous signalement</a>
 	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>`;

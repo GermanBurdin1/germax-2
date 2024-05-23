@@ -12,6 +12,7 @@ export class ApiGoods {
 		modelName = null,
 		statusName = "available",
 	} = {}) {
+		console.log("getAllGoods вызывается")
 		const paramsStr = stringifyParams({ typeName, modelName, statusName });
 
 		return fetch(`${this._baseUrl}?${paramsStr}`, {

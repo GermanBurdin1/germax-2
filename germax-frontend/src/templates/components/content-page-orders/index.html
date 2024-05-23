@@ -1,0 +1,186 @@
+<div class="tab-pane fade show active" id="commandes-equipement" role="tabpanel"
+	aria-labelledby="commandes-equipement-link">
+
+	<!-- Заголовок Добавления оборудования для менеджера -->
+	<div id="titleAddingOrders"></div>
+	<div id="equipmentAddingContainer"></div>
+	<div id="titleOrdersRequest"></div>
+
+	<!-- Заголовок Заказов для менеджера -->
+	<div id="titleOrders"></div>
+	<!-- Новая форма для заказа для менеджера -->
+	<div id="orderForm"></div>
+	<!-- Заголовок список заказов для менеджера -->
+	<div id="listOrdersTitle"></div>
+
+	<!-- Modal for Adding Equipment -->
+	<div class="modal fade" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addEquipmentModalLabel">Ajouter un nouvel équipement</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="addEquipmentForm">
+						<div class="form-group">
+							<label for="equipmentName">Nom</label>
+							<input type="text" class="form-control" id="equipmentName" required>
+						</div>
+						<div class="form-group">
+							<label for="categoryName">Catégorie</label>
+							<select class="form-control" id="categoryName" required>
+								<option value="1">Laptop</option>
+								<option value="2">Computer Monitor</option>
+								<option value="3">Smartphone</option>
+								<option value="4">Accessory</option>
+								<option value="5">Tablet</option>
+								<option value="6">VR Headset</option>
+								<!-- нужно добавить чтобы категории динамически обновлялись -->
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="brandName">Marque</label>
+							<input type="text" class="form-control" id="brandName" required>
+							<div id="brandSuggestions" class="list-group"></div>
+						</div>
+						<div class="form-group">
+							<label for="equipmentDescription">Description</label>
+							<textarea class="form-control" id="equipmentDescription" rows="3" required></textarea>
+						</div>
+						<div class="form-group">
+							<label for="serialNumber">Numéro de série</label>
+							<input type="text" class="form-control" id="serialNumber" required>
+						</div>
+						<div class="form-group">
+							<label for="equipmentPhoto">Photo</label>
+							<input type="file" class="form-control-file" id="equipmentPhoto" accept="image/*" required>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" id="saveEquipmentBtn" class="btn btn-primary">Sauvegarder</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Modal for Adding Category -->
+	<div class="modal fade show active" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addCategoryModalLabel">Ajouter une nouvelle catégorie</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="newCategoryName">Nom de la catégorie</label>
+							<input type="text" class="form-control" id="newCategoryName">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary
+" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" id="saveCategoryBtn" class="btn btn-primary">Sauvegarder la catégorie</button>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table" id="goodsTable">
+			<thead>
+				<tr>
+					<th>Numéro de Commande <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+					<th>Nom de l'Équipement</th>
+					<th>Catégorie</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1001</td>
+					<td>Ordinateur Portable Avancé</td>
+					<td>10</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item confirm-delivrance" href="#">Confirmer la réception</a></li>
+								<li>
+									<a class="dropdown-item annulate-booking-action" href="#">Annuler la commande</a>
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme livré</a>
+								</li>
+								<li>
+									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails</a>
+								</li>
+								<!-- поля для stockman -->
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Programmer l'envoi</a>
+									<!-- для статуса disponible -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Annuler l'envoi</a>
+									<!-- для статуса programmé -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-send-action" href="#">Marquer comme envoyé</a>
+									<!-- для статуса en attente -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme délivré</a>
+									<!-- Подстраховочно, если сбои у менеджера, для статуса envoyé -->
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal for Checking Availability -->
+	<div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="availabilityModalLabel">Vérifier la disponibilité</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="checkAvailabilityForm">
+						<div class="mb-3">
+							<label for="equipmentInput" class="form-label">Nom de l'équipement</label>
+							<input type="text" class="form-control" id="equipmentInput">
+						</div>
+						<button type="submit" class="btn btn-primary">Vérifier</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
