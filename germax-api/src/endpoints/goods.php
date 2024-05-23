@@ -28,8 +28,15 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	$photo = $input['photo'] ?? '';
 	error_log("Received data: " . print_r($input, true));
 	if ($modelName && $serialNumbers && $idType && $brandName) {
-		$goodId = $goodsController->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
-		echo json_encode(['success' => true, 'id_good' => $goodId]);
+		if (is_array($serialNumbers)) {
+			// Multiple serial numbers provided, call createGoods
+			$goodId = $goodsController->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
+			echo json_encode(['success' => true, 'id_good' => $goodId]);
+		} else {
+			// Single serial number provided, call createGood
+			$good = $goodsController->createGood($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
+			echo json_encode($good);
+		}
 	} else {
 		echo json_encode(['success' => false, 'message' => 'Model name, serial number, type, and brand are required']);
 	}

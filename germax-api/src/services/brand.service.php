@@ -1,4 +1,6 @@
 <?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php';
 class BrandService
 {
 	private $pdo;
@@ -38,5 +40,13 @@ class BrandService
 			error_log("Error creating brand: " . $e->getMessage());
 			return null;
 		}
+	}
+
+	public function searchBrands($query)
+	{
+		$sql = "SELECT id_brand, name FROM brand WHERE name LIKE :query";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(['query' => '%' . $query . '%']);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 }
