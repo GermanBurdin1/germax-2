@@ -63,12 +63,23 @@ async function getNotifications(userId) {
 		if (notifications.length === 0) {
 			console.log("No notifications found.");
 		}
+		updateNotificationCount(notifications.length);
 		displayNotifications(notifications);
 	} catch (error) {
 		console.error("Ошибка при получении уведомлений:", error);
 		console.log(
 			"Ошибка при получении уведомлений. Проверьте консоль для подробностей."
 		);
+	}
+}
+
+function updateNotificationCount(count) {
+	const notificationCountElement = document.getElementById("notificationCount");
+	if (count > 0) {
+		notificationCountElement.textContent = count;
+		notificationCountElement.style.display = "inline-block";
+	} else {
+		notificationCountElement.style.display = "none";
 	}
 }
 
@@ -101,6 +112,15 @@ function displayNotifications(notifications) {
 			`;
 		notificationsList.appendChild(notificationItem);
 	});
+}
+
+async function markNotificationsAsRead(userId) {
+	try {
+		await apiNotification.markNotificationsAsRead(userId);
+		updateNotificationCount(0);
+	} catch (error) {
+		console.error("Ошибка при отметке уведомлений как прочитанных:", error);
+	}
 }
 
 Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
@@ -317,6 +337,12 @@ function renderDashboard(responseData) {
 	updateNotificationsModal(responseData.name_permission);
 	const userId = JSON.parse(localStorage.getItem("id_user"));
 	getNotifications(userId);
+	const notificationsModal = document.getElementById('notificationsModal');
+	if (notificationsModal) {
+		notificationsModal.addEventListener('show.bs.modal', async function() {
+			await markNotificationsAsRead(userId);
+		});
+	}
 }
 
 // Для менеджеров

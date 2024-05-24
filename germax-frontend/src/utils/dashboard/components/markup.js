@@ -103,10 +103,11 @@ function getManagerHorizontalNav() {
 	<ul class="navbar-nav align-items-center">
 		<li class="nav-item">
 			<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
-				<i class="fa fa-bell">Notifications</i>
-				<span class="badge badge-danger">3</span>
+					<i class="fa fa-bell">Notifications</i>
+					<span id="notificationCount" class="badge badge-danger" style="display:none;">0</span>
 			</a>
 		</li>
+
 		<li class="nav-item">
 			<a class="nav-link" href="#settings" id="settings-link">
 				<i class="fa fa-cog" aria-hidden="true"></i>

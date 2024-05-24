@@ -25,4 +25,25 @@ export class ApiNotification {
 					throw error;
 			});
 	}
+
+	async markNotificationsAsRead(userId) {
+		return fetch(`${this._baseUrl}/mark-notifications-as-read.endpoint`, {
+				method: "POST",
+				headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${this._apiAuth.getToken()}`,
+				},
+				body: JSON.stringify({ userId }),
+		})
+		.then((response) => response.json())
+		.then((data) => {
+				if (!data.success) {
+						throw new Error(data.message || "Error marking notifications as read");
+				}
+		})
+		.catch((error) => {
+				console.error("Error marking notifications as read:", error);
+				throw error;
+		});
+}
 }
