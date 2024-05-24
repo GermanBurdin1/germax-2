@@ -16,6 +16,9 @@ class NotificationService
 
 	public function createNotification($userId, $title, $message)
 	{
+		if (empty($userId)) {
+			throw new Exception("User ID is required");
+		}
 		$sql = "INSERT INTO notification (title, message, date_notification) VALUES (:title, :message, NOW())";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(['title' => $title, 'message' => $message]);
@@ -26,6 +29,9 @@ class NotificationService
 
 	public function linkNotificationToUser($userId, $notificationId)
 	{
+		if (empty($userId) || empty($notificationId)) {
+			throw new Exception("User ID and Notification ID are required");
+		}
 		$sql = "INSERT INTO user_notification (id_user, id_notification, is_read) VALUES (:userId, :notificationId, 0)";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(['userId' => $userId, 'notificationId' => $notificationId]);

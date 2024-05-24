@@ -20,21 +20,21 @@ class CategoryService
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(['name' => $categoryName]);
 
-		$notificationId = $this->notificationService->createNotification(
-			null,
-			'New Category Added',
-			'A new category has been added: ' . $categoryName
-		);
-
+		$title = 'New Category Added';
+		$message = 'A new category has been added: ' . $categoryName;
 		$managers = $this->getManagers();
 		foreach ($managers as $manager) {
-			$this->notificationService->linkNotificationToUser($manager['id_user'], $notificationId);
+			try {
+				$this->notificationService->createNotification($manager['id_user'], $title, $message);
+			} catch (Exception $e) {
+				error_log("CategoryService::addCategory - Failed to create notification for user {$manager['id_user']}: " . $e->getMessage());
+			}
 		}
 	}
 
 	private function getManagers()
 	{
-		$sql = "SELECT id_user FROM _user WHERE id_permission = (SELECT id_permission FROM permission WHERE name = 'rental-manager')";
+		$sql = "SELECT id_user FROM user WHERE id_permission = (SELECT id_permission FROM permission WHERE name = 'rental-manager')";
 		$stmt = $this->pdo->query($sql);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}

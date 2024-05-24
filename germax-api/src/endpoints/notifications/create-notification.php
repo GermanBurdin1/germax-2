@@ -7,6 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/notification.service.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/user.service.php';
 
 $authService = new AuthService();
 $notificationService = new NotificationService();
@@ -16,15 +17,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$token = $headers['token'] ?? null;
 
 	if ($token === null) {
+		error_log("create-notification.endpoint.php - Token is missing");
 		echo json_encode(['success' => false, 'message' => 'Token is missing']);
 		exit;
 	}
 
 	$user = $authService->getUserByToken($token);
-    if ($user === null) {
-        echo json_encode(['success' => false, 'message' => 'Invalid token or user not found']);
-        exit;
-    }
+	if ($user === null) {
+		error_log("create-notification.endpoint.php - Invalid token or user not found");
+		echo json_encode(['success' => false, 'message' => 'Invalid token or user not found']);
+		exit;
+	}
 
 	$data = json_decode(file_get_contents('php://input'), true);
 	$userId = $data['userId'] ?? null;
