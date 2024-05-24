@@ -6,11 +6,15 @@ import "./index.css";
 import { formDataToObject } from "../../../utils/form-data-to-object";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
+import { ApiNotification } from "../../../utils/classes/api-notification";
+import { ApiUsers } from "../../../utils/classes/api-users";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
 const apiEquipmentRequest = new ApiEquipmentRequest();
+const apiNotification = new ApiNotification();
+const apiUsers = new ApiUsers();
 const categoryItemNodes = Array.from(
 	document.getElementsByClassName("list-group-item")
 );
@@ -154,60 +158,83 @@ function openReservationModal(event, good, authUser) {
 	modalTitle.textContent = `Demande de location pour ${good.model.name}`;
 	newLoanFormModal.show();
 
-	newLoanFormNode.addEventListener("submit", (event) => {
+	newLoanFormNode.addEventListener("submit", async (event) => {
 		event.preventDefault();
 		const formInfo = formDataToObject(newLoanFormNode);
 
 		if (formInfo.dateStart > formInfo.dateEnd)
 			throw new Error("start date must be less than end date");
-		submitRentalRequest(good, formInfo);
+		try {
+			await submitRentalRequest(good, formInfo);
+
+			// Создание уведомления для менеджера
+			const managerMessage = `Un nouvel étudiant a fait une demande de location pour ${good.model.name}.`;
+			const managers = await apiUsers.getUsersByPermission("rental-manager");
+
+			for (const manager of managers) {
+				await apiNotification.createNotification({
+					userId: manager.id_user,
+					title: "Nouvelle demande de location",
+					message: managerMessage,
+				});
+			}
+		} catch (error) {
+			console.error("Error submitting rental request:", error);
+		}
 	});
 }
 
-let formSubmitHandler = null;  // Сохраняем ссылку на обработчик
+let formSubmitHandler = null; // Сохраняем ссылку на обработчик
 
 function openRequestNotFoundItemsModal(authUser) {
 	if (!authUser || !authUser.name_permission) {
-			console.error("authUser is not defined or missing 'name_permission'");
-			return;
+		console.error("authUser is not defined or missing 'name_permission'");
+		return;
 	}
 
 	const userPermissions = getUserPermissions(authUser);
 
-	requestNotFoundItemsModalNode = document.getElementById("requestNotFoundItemsModal");
+	requestNotFoundItemsModalNode = document.getElementById(
+		"requestNotFoundItemsModal"
+	);
 	if (requestNotFoundItemsModalNode === null) {
-			throw new Error("#requestNotFoundItemsModal not defined");
+		throw new Error("#requestNotFoundItemsModal not defined");
 	}
 
 	requestNotFoundItemsModal = new Modal(requestNotFoundItemsModalNode);
 	requestNotFoundItemsModal.show();
-	const quantityInputNode = requestNotFoundItemsModalNode.querySelector("#quantity");
+	const quantityInputNode =
+		requestNotFoundItemsModalNode.querySelector("#quantity");
 	quantityInputNode.min = userPermissions.min;
 	quantityInputNode.max = userPermissions.max;
 
-	const newLoanRequestFormNode = requestNotFoundItemsModalNode.querySelector("form");
+	const newLoanRequestFormNode =
+		requestNotFoundItemsModalNode.querySelector("form");
 	// Удаляем предыдущий обработчик, если он был установлен
 	if (formSubmitHandler) {
-			newLoanRequestFormNode.removeEventListener("submit", formSubmitHandler);
+		newLoanRequestFormNode.removeEventListener("submit", formSubmitHandler);
 	}
 	// Создаём новый обработчик
 	formSubmitHandler = (event) => {
-			event.preventDefault();
-			const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
-			const categoryMapping = {
-				"laptops": 1,
-				"monitors": 2,
-				"smartphones": 3,
-				"accessories": 4,
-				"tablets": 5,
-				"vr_heads": 6
-			};
+		event.preventDefault();
+		const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
+		const categoryMapping = {
+			laptops: 1,
+			monitors: 2,
+			smartphones: 3,
+			accessories: 4,
+			tablets: 5,
+			vr_heads: 6,
+		};
 
-			formRequestItemInfo.id_type = categoryMapping[formRequestItemInfo.category];
-			if (formRequestItemInfo.dateStart > formRequestItemInfo.dateEnd) {
-					throw new Error("start date must be less than end date");
-			}
-			submitRentalNotFoundItemRequest(formRequestItemInfo, requestNotFoundItemsModal);
+		formRequestItemInfo.id_type = categoryMapping[formRequestItemInfo.category];
+		if (formRequestItemInfo.dateStart > formRequestItemInfo.dateEnd) {
+			throw new Error("start date must be less than end date");
+		}
+		submitRentalNotFoundItemRequest(
+			formRequestItemInfo,
+			requestNotFoundItemsModal
+		);
 	};
 	// Устанавливаем новый обработчик
 	newLoanRequestFormNode.addEventListener("submit", formSubmitHandler);
@@ -310,8 +337,10 @@ function submitRentalNotFoundItemRequest(formInfo, requestNotFoundItemsModal) {
 	apiEquipmentRequest
 		.createEquipmentRequest(formInfo)
 		.then((response) => {
-			console.log("requestNotFoundItemsModal:",requestNotFoundItemsModal);
-			alert("Votre demande de location a été enregistrée avec succès et envoyée au manager. Il vous répondra très bientôt"); // Французское сообщение
+			console.log("requestNotFoundItemsModal:", requestNotFoundItemsModal);
+			alert(
+				"Votre demande de location a été enregistrée avec succès et envoyée au manager. Il vous répondra très bientôt"
+			); // Французское сообщение
 			requestNotFoundItemsModal.hide(); // Закрыть модальное окно
 		})
 		.catch((error) => {
