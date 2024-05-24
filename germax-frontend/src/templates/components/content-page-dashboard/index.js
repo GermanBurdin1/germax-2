@@ -49,11 +49,59 @@ import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiGoods } from "../../../utils/classes/api-goods";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
+import { ApiNotification } from "../../../utils/classes/api-notification";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
 const apiEquipmentRequest = new ApiEquipmentRequest();
+const apiNotification = new ApiNotification();
+
+async function getNotifications(userId) {
+	try {
+		const notifications = await apiNotification.getNotifications(userId);
+		if (notifications.length === 0) {
+			console.log("No notifications found.");
+		}
+		displayNotifications(notifications);
+	} catch (error) {
+		console.error("Ошибка при получении уведомлений:", error);
+		console.log(
+			"Ошибка при получении уведомлений. Проверьте консоль для подробностей."
+		);
+	}
+}
+
+function displayNotifications(notifications) {
+	const notificationsList = document.getElementById("notificationsList");
+	notificationsList.innerHTML = "";
+
+	if (notifications.length === 0) {
+		const noNotificationsItem = document.createElement("div");
+		noNotificationsItem.className = "list-group-item";
+		noNotificationsItem.textContent = "No notifications available.";
+		notificationsList.appendChild(noNotificationsItem);
+		return;
+	}
+
+	notifications.forEach((notification) => {
+		const notificationItem = document.createElement("a");
+		notificationItem.href = "#";
+		notificationItem.className =
+			"list-group-item list-group-item-action flex-column align-items-start";
+		notificationItem.innerHTML = `
+					<div class="d-flex w-100 justify-content-between">
+							<h5 class="mb-1">${notification.title}</h5>
+							<small class="text-muted">${new Date(
+								notification.date_notification
+							).toLocaleString()}</small>
+					</div>
+					<p class="mb-1">${notification.message}</p>
+					<small class="text-muted">Notification</small>
+			`;
+		notificationsList.appendChild(notificationItem);
+	});
+}
 
 Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 	([user, goods]) => {
@@ -267,6 +315,8 @@ function renderDashboard(responseData) {
 	setupModelSearchEventListener();
 	setupBrandFilterEventListener();
 	updateNotificationsModal(responseData.name_permission);
+	const userId = JSON.parse(localStorage.getItem("id_user"));
+	getNotifications(userId);
 }
 
 // Для менеджеров
@@ -424,7 +474,7 @@ function confirmApproval(requestId) {
 	const approvalData = {
 		id_request: requestId,
 		equipment_status,
-		treatment_status
+		treatment_status,
 	};
 	apiEquipmentRequest
 		.confirmApproval(approvalData)
@@ -433,7 +483,10 @@ function confirmApproval(requestId) {
 			updateTableRowStatus(requestId, "votre matériel est recherché");
 		})
 		.catch((error) => {
-			console.error("Erreur lors de l'envoi des données pour approbation :", error);
+			console.error(
+				"Erreur lors de l'envoi des données pour approbation :",
+				error
+			);
 			alert("Erreur lors de l'envoi des données pour approbation.");
 		});
 }
