@@ -53,7 +53,7 @@ export function returnClientLoans(rentals = [], requests = []) {
                 statusMessage = `requête effectuée le ${formatDate(entry.date_start)}`;
             }
             actionsMarkup = `
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
             `;
         } else if (entry.type === "request") {
@@ -158,6 +158,30 @@ export function returnClientLoans(rentals = [], requests = []) {
 							<div class="modal-content">
 									<div class="modal-header">
 											<h5 class="modal-title" id="request--communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+											<form id="communicationForm">
+													<div class="form-group">
+															<label for="communicationMessageText">Message</label>
+															<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
+													</div>
+													<button type="submit" class="btn btn-primary">Envoyer</button>
+											</form>
+									</div>
+									<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+									</div>
+							</div>
+					</div>
+			</div>
+
+			<!-- Модальное окно для связи с менеджером -->
+			<div class="modal fade" id="student-communication-manager-modal" tabindex="-1" aria-labelledby="student-communication-manager-modal-label" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+									<div class="modal-header">
+											<h5 class="modal-title" id="student-communication-manager-modal-label">Pour la moindre question ou problème écrivez votre message au manager</h5>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">

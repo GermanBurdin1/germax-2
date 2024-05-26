@@ -526,52 +526,28 @@ function updateTableRowStatus(requestId, status) {
 	}
 }
 
-// function setupProposalModalBeforeSendingItem() {
-// 	const manageResponseModal = new Modal(
-// 		document.getElementById("manageResponseModal")
-// 	);
+//в разработке
+document.getElementById('communicationForm').addEventListener('submit', async (event) => {
+	event.preventDefault();
 
-// 	document.querySelector(".table").addEventListener("click", (event) => {
-// 		if (event.target.classList.contains("response-before-sending")) {
-// 			event.preventDefault();
-// 			const requestId = event.target.getAttribute("data-id");
-// 			openManagerProposalModalBeforeSendingItem(requestId);
-// 		}
-// 	});
+	const message = document.getElementById('communicationMessageText').value;
 
-// 	document
-// 		.getElementById("confirmManagerResponse")
-// 		.addEventListener("click", function () {
-// 			const requestId = this.getAttribute("data-id");
-// 			confirmApprovalBeforeSending(requestId);
-// 			manageResponseModal.hide();
-// 		});
-// }
+	if (!message.trim()) {
+			alert('Please enter a message.');
+			return;
+	}
 
-// function openManagerProposalModalBeforeSendingItem(requestId) {
-// 	document
-// 		.getElementById("confirmManagerResponse")
-// 		.setAttribute("data-id", requestId);
-// 		manageResponseModal.show(); // используем существующий экземпляр для показа модального окна
-// }
+	try {
+			const data = await apiCommunications.sendMessage(message);
 
-// function confirmApprovalBeforeSending(requestId) {
-// 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-// 	const equipment_status = "not_sent";
-// 	const treatment_status = "treated_manager_user_before_sending";
-// 	const approvalData = {
-// 		id_request: requestId,
-// 		equipment_status,
-// 		treatment_status
-// 	};
-// 	apiEquipmentRequest
-// 		.confirmApproval(approvalData)
-// 		.then((data) => {
-// 			alert("Les données ont été confirmées avec succès et envoyées pour approbation !");
-// 			updateTableRowStatus(requestId, "treated_manager_user_before_sending");
-// 		})
-// 		.catch((error) => {
-// 			console.error("Erreur lors de l'envoi des données pour approbation :", error);
-// 			alert("Erreur lors de l'envoi des données pour approbation.");
-// 		});
-// }
+			if (data.success) {
+					alert('Message sent successfully.');
+					document.getElementById('communicationForm').reset();
+			} else {
+					alert('Failed to send message: ' + data.message);
+			}
+	} catch (error) {
+			console.error('Error sending message:', error);
+			alert('An error occurred while sending the message.');
+	}
+});
