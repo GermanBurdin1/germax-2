@@ -277,6 +277,7 @@ function loadRentalHistory() {
 			clientLoansHistory.dataset.visible = "true";
 			initializeDropdowns();
 			initializeModals();
+			setupCancelLoansModal();
 		})
 		.catch((error) => {
 			console.error("Failed to load rental history:", error);
@@ -344,6 +345,7 @@ function renderDashboard(responseData) {
 			await markNotificationsAsRead(userId);
 		});
 	}
+	setupCancelLoansModal();
 }
 
 // Для менеджеров
@@ -487,6 +489,46 @@ function setupProposalModal() {
 		});
 }
 
+function openManagerProposalModal(requestId) {
+	document
+		.getElementById("confirmManagerProposal")
+		.setAttribute("data-id", requestId);
+	managerProposalModal.show();
+}
+
+function confirmApproval(requestId) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const equipment_status = "equipment_availability_pending";
+	const treatment_status = "treated_manager_user";
+	const approvalData = {
+		id_request: requestId,
+		equipment_status,
+		treatment_status,
+	};
+	apiEquipmentRequest
+		.confirmApproval(approvalData)
+		.then((data) => {
+			alert("Le gestionnaire est déjà en train de chercher votre équipement");
+			updateTableRowStatus(requestId, "votre matériel est recherché");
+		})
+		.catch((error) => {
+			console.error(
+				"Erreur lors de l'envoi des données pour approbation :",
+				error
+			);
+			alert("Erreur lors de l'envoi des données pour approbation.");
+		});
+}
+
+function updateTableRowStatus(requestId, status) {
+	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+
+	if (row) {
+		console.log("row4", row.children[4]);
+		row.children[4].textContent = status;
+	}
+}
+
 function setupCancelReservationModal() {
 	const cancelReservationModal = new Modal(document.getElementById("request--reverse-loan-modal"));
 
@@ -532,45 +574,51 @@ function setupCancelReservationModal() {
 		});
 }
 
-function openManagerProposalModal(requestId) {
-	document
-		.getElementById("confirmManagerProposal")
-		.setAttribute("data-id", requestId);
-	managerProposalModal.show();
-}
+function setupCancelLoansModal() {
+	const cancelLoansModal = new Modal(document.getElementById("reverse-loan-modal"));
 
-function confirmApproval(requestId) {
-	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-	const equipment_status = "equipment_availability_pending";
-	const treatment_status = "treated_manager_user";
-	const approvalData = {
-		id_request: requestId,
-		equipment_status,
-		treatment_status,
-	};
-	apiEquipmentRequest
-		.confirmApproval(approvalData)
-		.then((data) => {
-			alert("Le gestionnaire est déjà en train de chercher votre équipement");
-			updateTableRowStatus(requestId, "votre matériel est recherché");
-		})
-		.catch((error) => {
-			console.error(
-				"Erreur lors de l'envoi des données pour approbation :",
-				error
-			);
-			alert("Erreur lors de l'envoi des données pour approbation.");
-		});
-}
+	document.querySelector(".table").addEventListener("click", (event) => {
+			if (event.target.dataset.bsTarget === "#reverse-loan-modal") {
+					event.preventDefault();
+					const requestId = event.target.closest("tr").getAttribute("data-id");
+					const modal = document.getElementById("reverse-loan-modal");
+					modal.setAttribute("data-id", requestId);
+					cancelLoansModal.show();
+			}
+	});
 
-function updateTableRowStatus(requestId, status) {
-	const row = document.querySelector(`tr[data-id="${requestId}"]`);
+	const cancelLoanButton = document.getElementById("cancelLoanButton");
+	if (cancelLoanButton) {
+			cancelLoanButton.addEventListener("click", async function () {
+					const requestId = document.getElementById("reverse-loan-modal").getAttribute("data-id");
 
-	if (row) {
-		console.log("row4", row.children[4]);
-		row.children[4].textContent = status;
+					if (!requestId) {
+							alert("Не удалось получить ID запроса.");
+							return;
+					}
+
+					try {
+							const response = await apiRental.cancelRental(requestId);
+
+							if (response.success) {
+									alert("Reservation cancelled successfully.");
+									// Обновляем UI, чтобы отразить отмену
+									updateTableRowStatus(requestId, "annulé");
+									// Закрываем модальное окно
+									cancelLoansModal.hide();
+							} else {
+									alert("Failed to cancel reservation: " + response.message);
+							}
+					} catch (error) {
+							console.error("Error cancelling reservation:", error);
+							alert("An error occurred while cancelling the reservation.");
+					}
+			});
+	} else {
+			console.error("cancelLoanButton element not found");
 	}
 }
+
 
 //в разработке
 // document

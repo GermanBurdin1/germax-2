@@ -72,7 +72,7 @@ class RentalController
 
 	public function cancelRental($data)
 	{
-		$response = $this->rentalService->updateRentalStatus($data['loanId'], 1, 3);
+		$response = $this->rentalService->cancelRental($data['loanId']);
 		echo json_encode($response);
 	}
 }

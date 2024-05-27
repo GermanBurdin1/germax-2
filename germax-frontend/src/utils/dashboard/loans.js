@@ -353,7 +353,7 @@ export function returnRentalHistoryLoans(rentals = []) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-danger">Annuler la réservation</button>
+                    <button type="button" class="btn btn-danger" id="cancelLoanButton">Annuler la réservation</button>
                 </div>
             </div>
         </div>

@@ -185,4 +185,48 @@ class RentalService
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
+
+	public function cancelRental($loanId)
+	{
+		$this->pdo->beginTransaction();
+		try {
+			// Get the good ID associated with this loan
+			$sql = "SELECT id_good FROM loan WHERE id_loan = :loanId";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['loanId' => $loanId]);
+			$idGood = $stmt->fetchColumn();
+
+			if (!$idGood) {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'Loan not found'];
+			}
+
+			// Update the good's status to available (assuming 1 is the available status)
+			$sql = "UPDATE good SET id_status = 1 WHERE id_good = :idGood";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['idGood' => $idGood]);
+
+			if ($stmt->rowCount() == 0) {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'Failed to update good status'];
+			}
+
+			// Update the loan status to 'cancelled'
+			$sql = "UPDATE loan SET loan_status = 'cancelled' WHERE id_loan = :loanId";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['loanId' => $loanId]);
+
+			if ($stmt->rowCount() > 0) {
+				$this->pdo->commit();
+				return ['success' => true, 'message' => 'Loan cancelled successfully'];
+			} else {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'Failed to cancel loan'];
+			}
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Error during loan cancellation: " . $e->getMessage(), 3, "../debug.php");
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
 }
