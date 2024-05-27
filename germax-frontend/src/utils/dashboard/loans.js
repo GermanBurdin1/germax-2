@@ -35,7 +35,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				date_end: request.date_end || "unknown date",
 				statusMessage: request.treatment_status,
 				type: "request",
-				photo: request.photo
+				photo: request.photo,
 			};
 			console.log("Processed request entry:", processedRequest);
 			return processedRequest;
@@ -43,57 +43,56 @@ export function returnClientLoans(rentals = [], requests = []) {
 	];
 
 	const rows = allEntries
-    .map((entry) => {
-        let statusMessage;
-				let photoHtml = "";
-        let actionsMarkup = "";
-        if (entry.type === "rental") {
-            statusMessage = entry.statusMessage;
-            if (entry.id_status === 4) {
-                statusMessage = `requête effectuée le ${formatDate(entry.date_start)}`;
-            }
-            actionsMarkup = `
+		.map((entry) => {
+			let statusMessage;
+			let photoHtml = "";
+			let actionsMarkup = "";
+			if (entry.type === "rental") {
+				statusMessage = entry.statusMessage;
+				if (entry.id_status === 4) {
+					statusMessage = `requête effectuée le ${formatDate(
+						entry.date_start
+					)}`;
+				}
+				actionsMarkup = `
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
             `;
-        } else if (entry.type === "request") {
-            statusMessage = entry.treatment_status || "unknown status";
-            if (entry.statusMessage === "rental_details_discussion_manager_user") {
-								statusMessage = "en attente de votre confirmation";
-                actionsMarkup = `
+			} else if (entry.type === "request") {
+				statusMessage = entry.treatment_status || "unknown status";
+				if (entry.statusMessage === "rental_details_discussion_manager_user") {
+					statusMessage = "en attente de votre confirmation";
+					actionsMarkup = `
                     <li><a class="dropdown-item view-manager-proposal" href="#" data-id="${entry.id}">Voir la proposition du manager</a></li>
                 `;
-            }
-
-            else if (entry.statusMessage === "treated_manager_user" || entry.statusMessage === "rental_details_discussion_manager_stockman") {
-							statusMessage = "votre matériel est recherché";
-							actionsMarkup = `
+				} else if (
+					entry.statusMessage === "treated_manager_user" ||
+					entry.statusMessage === "rental_details_discussion_manager_stockman"
+				) {
+					statusMessage = "votre matériel est recherché";
+					actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
-								if (entry.photo) {
-									photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
-								}
-
-						}
-						else if (entry.statusMessage === "closed_by_stockman") {
-							statusMessage = "vous pouvez récupérer le matériel";
-							actionsMarkup = `
+					if (entry.photo) {
+						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
+					}
+				} else if (entry.statusMessage === "closed_by_stockman") {
+					statusMessage = "vous pouvez récupérer le matériel";
+					actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
-								if (entry.photo) {
-									photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
-								}
-
-						}
-						else {
-                actionsMarkup = `
+					if (entry.photo) {
+						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
+					}
+				} else {
+					actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
-            }
-        }
+				}
+			}
 
 			return `
 			<tr data-id="${entry.id}">
@@ -154,70 +153,68 @@ export function returnClientLoans(rentals = [], requests = []) {
 
 			<!-- Модальное окно для связи с менеджером -->
 			<div class="modal fade" id="request--communication-manager-modal" tabindex="-1" aria-labelledby="request--communication-manager-modal-label" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-									<div class="modal-header">
-											<h5 class="modal-title" id="request--communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
-											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-											<form id="communicationForm">
-													<div class="form-group">
-															<label for="communicationMessageText">Message</label>
-															<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
-													</div>
-													<button type="submit" class="btn btn-primary">Envoyer</button>
-											</form>
-									</div>
-									<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-									</div>
-							</div>
-					</div>
-			</div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="request--communication-manager-modal-label">Pour la moindre question ou problème écrivez votre message au manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-info">
+                    <p><strong>Téléphone:</strong> +33 1 23 45 67 89</p>
+                    <p><strong>Heures de travail:</strong> Lundi - Vendredi, 9:00 - 18:00</p>
+                    <p><strong>Email:</strong> <a href="mailto:manager@exemple.com">manager@exemple.com</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 			<!-- Модальное окно для связи с менеджером -->
-			<div class="modal fade" id="student-communication-manager-modal" tabindex="-1" aria-labelledby="student-communication-manager-modal-label" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-									<div class="modal-header">
-											<h5 class="modal-title" id="student-communication-manager-modal-label">Pour la moindre question ou problème écrivez votre message au manager</h5>
-											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-											<form id="communicationForm">
-													<div class="form-group">
-															<label for="communicationMessageText">Message</label>
-															<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
-													</div>
-													<button type="submit" class="btn btn-primary">Envoyer</button>
-											</form>
-									</div>
-									<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-									</div>
-							</div>
-					</div>
-			</div>
+<div class="modal fade" id="student-communication-manager-modal" tabindex="-1" aria-labelledby="student-communication-manager-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="student-communication-manager-modal-label">Pour la moindre question ou problème écrivez votre message au manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-info">
+                    <p><strong>Téléphone:</strong> +33 1 23 45 67 89</p>
+                    <p><strong>Heures de travail:</strong> Lundi - Vendredi, 9:00 - 18:00</p>
+                    <p><strong>Email:</strong> <a href="mailto:manager@exemple.com">manager@exemple.com</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-			<!-- Modal annulation-->
-			<div class="modal fade" id="request--reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-					<div class="modal-dialog">
-							<div class="modal-content">
-									<div class="modal-header">
-											<h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
-											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-											Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
-									</div>
-									<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-											<button type="button" class="btn btn-danger">Annuler la réservation</button>
-									</div>
-							</div>
-					</div>
-			</div>
+
+<!-- Modal annulation-->
+<div class="modal fade" id="request--reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-danger" id="cancelReservationButton">Annuler la réservation</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 			<!-- Modal для подтверждения предложения менеджера -->
     <div class="modal fade" id="managerProposalModal" tabindex="-1" aria-labelledby="managerProposalModalLabel" aria-hidden="true">

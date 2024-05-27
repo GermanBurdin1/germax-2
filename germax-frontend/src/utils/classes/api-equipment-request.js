@@ -198,4 +198,27 @@ export class ApiEquipmentRequest {
 				throw error;
 			});
 	}
+
+	async cancelRequest(requestId) {
+		const body = JSON.stringify({ id_request: requestId });
+		return fetch(`${this._baseUrl}/cancel-request`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.success) {
+					throw new Error(data.message || "Failed to cancel request");
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error cancelling request:", error);
+				throw error;
+			});
+	}
 }

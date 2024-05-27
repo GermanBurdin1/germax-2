@@ -304,6 +304,7 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
+			setupCancelReservationModal();
 			// setupProposalModalBeforeSendingItem();
 		})
 		.catch((error) => {
@@ -337,9 +338,9 @@ function renderDashboard(responseData) {
 	updateNotificationsModal(responseData.name_permission);
 	const userId = JSON.parse(localStorage.getItem("id_user"));
 	getNotifications(userId);
-	const notificationsModal = document.getElementById('notificationsModal');
+	const notificationsModal = document.getElementById("notificationsModal");
 	if (notificationsModal) {
-		notificationsModal.addEventListener('show.bs.modal', async function() {
+		notificationsModal.addEventListener("show.bs.modal", async function () {
 			await markNotificationsAsRead(userId);
 		});
 	}
@@ -486,6 +487,51 @@ function setupProposalModal() {
 		});
 }
 
+function setupCancelReservationModal() {
+	const cancelReservationModal = new Modal(document.getElementById("request--reverse-loan-modal"));
+
+	document.querySelector(".table").addEventListener("click", (event) => {
+		if (event.target.dataset.bsTarget === "#request--reverse-loan-modal") {
+			event.preventDefault();
+			const requestId = event.target.closest("tr").getAttribute("data-id");
+			document
+				.getElementById("request--reverse-loan-modal")
+				.setAttribute("data-id", requestId);
+			cancelReservationModal.show();
+		}
+	});
+
+	document
+		.getElementById("cancelReservationButton")
+		.addEventListener("click", async function () {
+			const requestId = document
+				.getElementById("request--reverse-loan-modal")
+				.getAttribute("data-id");
+
+			if (!requestId) {
+				alert("Не удалось получить ID запроса.");
+				return;
+			}
+
+			try {
+				const response = await apiEquipmentRequest.cancelRequest(requestId);
+
+				if (response.success) {
+					alert("Reservation cancelled successfully.");
+					// Обновляем UI, чтобы отразить отмену
+					updateTableRowStatus(requestId, "annulé");
+					// Закрываем модальное окно
+					cancelReservationModal.hide();
+				} else {
+					alert("Failed to cancel reservation: " + response.message);
+				}
+			} catch (error) {
+				console.error("Error cancelling reservation:", error);
+				alert("An error occurred while cancelling the reservation.");
+			}
+		});
+}
+
 function openManagerProposalModal(requestId) {
 	document
 		.getElementById("confirmManagerProposal")
@@ -527,27 +573,29 @@ function updateTableRowStatus(requestId, status) {
 }
 
 //в разработке
-document.getElementById('communicationForm').addEventListener('submit', async (event) => {
-	event.preventDefault();
+// document
+// 	.getElementById("communicationForm")
+// 	.addEventListener("submit", async (event) => {
+// 		event.preventDefault();
 
-	const message = document.getElementById('communicationMessageText').value;
+// 		const message = document.getElementById("communicationMessageText").value;
 
-	if (!message.trim()) {
-			alert('Please enter a message.');
-			return;
-	}
+// 		if (!message.trim()) {
+// 			alert("Please enter a message.");
+// 			return;
+// 		}
 
-	try {
-			const data = await apiCommunications.sendMessage(message);
+// 		try {
+// 			const data = await apiCommunications.sendMessage(message);
 
-			if (data.success) {
-					alert('Message sent successfully.');
-					document.getElementById('communicationForm').reset();
-			} else {
-					alert('Failed to send message: ' + data.message);
-			}
-	} catch (error) {
-			console.error('Error sending message:', error);
-			alert('An error occurred while sending the message.');
-	}
-});
+// 			if (data.success) {
+// 				alert("Message sent successfully.");
+// 				document.getElementById("communicationForm").reset();
+// 			} else {
+// 				alert("Failed to send message: " + data.message);
+// 			}
+// 		} catch (error) {
+// 			console.error("Error sending message:", error);
+// 			alert("An error occurred while sending the message.");
+// 		}
+// 	});

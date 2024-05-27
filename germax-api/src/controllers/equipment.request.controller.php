@@ -81,4 +81,13 @@ class EquipmentRequestController
 	{
 		return $this->equipmentRequestService->getRequestById($id);
 	}
+
+	public function cancelRequest($data)
+	{
+		if (!isset($data['id_request'])) {
+			return ['success' => false, 'message' => 'Missing required fields'];
+		}
+
+		return $this->equipmentRequestService->cancelRequest($data['id_request']);
+	}
 }

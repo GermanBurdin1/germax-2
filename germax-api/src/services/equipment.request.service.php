@@ -34,8 +34,8 @@ class EquipmentRequestService
 
 
 	public function getAllRequests()
-{
-    $sql = "
+	{
+		$sql = "
         SELECT
             er.id_request,
             er.request_date,
@@ -58,10 +58,10 @@ class EquipmentRequestService
         LEFT JOIN
             model m ON g.id_model = m.id_model
     ";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute();
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 
 
 	public function updateRequest($data)
@@ -81,7 +81,7 @@ class EquipmentRequestService
 		}
 
 		error_log("Existing data: " . json_encode($existingData));
-    error_log("Update data: " . json_encode($data));
+		error_log("Update data: " . json_encode($data));
 
 
 		if (isset($data['equipment_name'])) {
@@ -243,17 +243,30 @@ class EquipmentRequestService
 		}
 	}
 
-	public function getRequestById($id) {
-    $sql = "SELECT * FROM equipment_request WHERE id_request = ?";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$id]);
-    $request = $stmt->fetch(PDO::FETCH_ASSOC);
+	public function getRequestById($id)
+	{
+		$sql = "SELECT * FROM equipment_request WHERE id_request = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$id]);
+		$request = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($request) {
-        return ['success' => true, 'data' => $request];
-    } else {
-        return ['success' => false, 'message' => 'Request not found'];
-    }
-}
+		if ($request) {
+			return ['success' => true, 'data' => $request];
+		} else {
+			return ['success' => false, 'message' => 'Request not found'];
+		}
+	}
 
+	public function cancelRequest($id_request)
+	{
+		$sql = "UPDATE equipment_request SET treatment_status = 'closed_by_user', equipment_status = 'canceled' WHERE id_request = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute([$id_request]);
+
+		if ($stmt->rowCount() > 0) {
+			return ['success' => true];
+		} else {
+			return ['success' => false, 'message' => 'No rows updated'];
+		}
+	}
 }

@@ -192,17 +192,18 @@ function fetchAuthUser(url) {
 // отрисовка заказа оборудования только для stockman
 
 function renderEquipmentOrder(userData) {
-	const titleAddingOrders = document.getElementById("titleAddingOrders");
+	// const titleAddingOrders = document.getElementById("titleAddingOrders");
 	const addingEquipmentContainer = document.getElementById(
 		"equipmentAddingContainer"
 	);
 	const titleOrdersRequest = document.getElementById("titleOrdersRequest");
+	console.log("titleOrdersRequest", titleOrdersRequest);
 	const orderEquipmentContainer = document.getElementById("orderForm");
 	const titleOrders = document.getElementById("titleOrders");
 	const listOrdersTitle = document.getElementById("listOrdersTitle");
 
 	//stockman
-	titleAddingOrders.innerHTML = "";
+	// titleAddingOrders.innerHTML = "";
 	addingEquipmentContainer.innerHTML = "";
 	titleOrdersRequest.innerHTML = "";
 	//manager
