@@ -256,7 +256,9 @@ export function returnRentalHistoryLoans(rentals = []) {
 	const rows = rentals
 		.filter((rental) => rental.accord === true || rental.accord === 1) // Только подтвержденные аренды
 		.map((rental) => {
-			let statusMessage = `loué le ${formatDate(rental.date_accord)}`;
+			let statusMessage = rental.loan_status === "cancelled"
+				? "annulé"
+				: `loué le ${formatDate(rental.date_accord)}`;
 
 			return `
 				<tr data-id="${rental.id}">

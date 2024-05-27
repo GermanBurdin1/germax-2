@@ -114,6 +114,7 @@ class RentalService
                 l.date_end,
                 l.accord,
                 l.date_accord,
+								l.loan_status,
                 g.serial_number,
                 m.name AS model_name,
                 s.name AS status_name,
