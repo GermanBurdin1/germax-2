@@ -102,28 +102,28 @@ export class ApiRental {
 			});
 	}
 
-	async approveRental(loanId) {
-		const body = JSON.stringify({ loanId });
-
-		return fetch(`${this._baseUrl}/approve.php`, {
-			method: "PATCH",
+	async getRentals() {
+		console.log("функция getRentals вызывается ")
+		return fetch(`${this._baseUrl}/`, {
+			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 				token: this._apiAuth.getToken(),
 			},
-			body,
 		})
 			.then((response) => {
+				console.log("response", response)
 				if (!response.ok) {
 					return response.json().then((json) => Promise.reject(json));
 				}
 				return response.json();
 			})
 			.then((data) => {
-				return data;
+				console.log("data",data)
+				return data.data;
 			})
 			.catch((error) => {
-				console.error("Error in approveRental:", error);
+				console.error("Error in getClientRentals:", error);
 				throw error;
 			});
 	}
@@ -146,6 +146,35 @@ export class ApiRental {
 				return response.json();
 			})
 			.then((data) => {
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in cancelLoan:", error);
+				throw error;
+			});
+	}
+
+	async approveRental(loanId) {
+		const body = JSON.stringify({ loanId });
+		console.log("body",body)
+
+		return fetch(`${this._baseUrl}/approve`, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				console.log("response", response)
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
+				console.log("data", data)
 				return data;
 			})
 			.catch((error) => {

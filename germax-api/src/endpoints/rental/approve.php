@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
 		exit;
 	}
 
-	$rentalController->approveRental($data, $headerToken);
+	$rentalController->approveExistingRental($data, $headerToken);
 } else {
 	echo json_encode(['success' => false, 'message' => 'This route does not support this HTTP method'], 405);
 }

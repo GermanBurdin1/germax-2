@@ -84,7 +84,7 @@ class RentalService
 
 	private function requestLoan($data)
 	{
-		$insertLoanSql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, comment) VALUES (CURDATE(), ?, ?, ?, ?, false, ?);";
+		$insertLoanSql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, comment, loan_status) VALUES (CURDATE(), ?, ?, ?, ?, false, ?, 'loan_request');";
 		$stmtLoan = $this->pdo->prepare($insertLoanSql);
 		$stmtLoan->execute([$data['dateStart'], $data['dateEnd'], $data['id_user'], $data['goodId'], $data['comments']]);
 		return $stmtLoan->rowCount() > 0;
@@ -100,10 +100,24 @@ class RentalService
 
 	public function fetchRentals()
 	{
-		$stmt = $this->pdo->prepare("SELECT g.id_good, g.id_status, g.serial_number, u.lastname AS user_name, u.firstname AS user_surname, l.date_start, l.date_end, l.comment, m.name AS model_name FROM loan l JOIN good g ON l.id_good = g.id_good JOIN model m ON g.id_model = m.id_model JOIN user u ON l.id_user = u.id_user WHERE g.id_status = 4;");
-		$stmt->execute();
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		try {
+			$stmt = $this->pdo->prepare("SELECT g.id_good, g.id_status, g.serial_number, u.lastname AS user_name, u.firstname AS user_surname, l.id_loan, l.date_start, l.date_end, l.comment, l.loan_status, m.name AS model_name FROM loan l JOIN good g ON l.id_good = g.id_good JOIN model m ON g.id_model = m.id_model JOIN user u ON l.id_user = u.id_user WHERE g.id_status = 3;");
+			$stmt->execute();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if (!$result) {
+				error_log("fetchRentals query returned empty result.");
+			} else {
+				error_log("fetchRentals query result: " . print_r($result, true));
+			}
+
+			return $result;
+		} catch (PDOException $e) {
+			error_log("Error in fetchRentals: " . $e->getMessage());
+			return [];
+		}
 	}
+
 
 	public function fetchRentalsByUser($userId)
 	{
@@ -183,6 +197,52 @@ class RentalService
 		} catch (PDOException $e) {
 			$this->pdo->rollBack();
 			error_log("Error during loan request: " . $e->getMessage(), 3, "../debug.php");
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
+
+	public function approveRental($loanId)
+	{
+		$this->pdo->beginTransaction();
+		try {
+			// Get the good ID associated with this loan
+			$sql = "SELECT id_good FROM loan WHERE id_loan = :loanId";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['loanId' => $loanId]);
+			$idGood = $stmt->fetchColumn();
+			error_log("Loan not found query result: " . print_r($stmt->fetchAll(), true));
+
+			if (!$idGood) {
+				$this->pdo->rollBack();
+				error_log("Loan not found for Loan ID: " . $loanId);
+				error_log("Loan not found query result: " . print_r($stmt->fetchAll(), true));
+				return ['success' => false, 'message' => 'Loan not found'];
+			}
+			// Update the good's status to loaned (assuming 3 is the loaned status)
+			$sql = "UPDATE good SET id_status = 3 WHERE id_good = :idGood";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['idGood' => $idGood]);
+
+			if ($stmt->rowCount() == 0) {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'Failed to update good status'];
+			}
+
+			// Update the loan status to 'approved'
+			$sql = "UPDATE loan SET loan_status = 'loaned' WHERE id_loan = :loanId";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['loanId' => $loanId]);
+
+			if ($stmt->rowCount() > 0) {
+				$this->pdo->commit();
+				return ['success' => true, 'message' => 'Loan approved successfully'];
+			} else {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'Failed to approve loan'];
+			}
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Error during loan approval: " . $e->getMessage(), 3, "../debug.php");
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}

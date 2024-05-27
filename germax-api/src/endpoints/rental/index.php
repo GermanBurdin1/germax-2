@@ -6,8 +6,12 @@ header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, X-Requested-
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/rental-controller.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/rental.service.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
 
-// $rentalController = new RentalController();
+$rentalService = new RentalService();
+$authService = new AuthService();
+$rentalController = new RentalController($rentalService, $authService);
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	// Возвращаем статус 204 No Content
@@ -15,12 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	exit;
 }
 
+$headers = getallheaders();
+$token = $headers['token'] ?? null;
+
+if ($token === null) {
+    echo json_encode(['success' => false, 'message' => 'Token is missing']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	// Обработка GET запроса для получения текущих аренд
+	error_log("GET request received.");
 	$rentalController->fetchRentals();
+} else {
+	error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
+	echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
-
-renderErrorAndExit(['This route does not support this HTTP method'], 405);
-
 ?>

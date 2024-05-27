@@ -1,25 +1,22 @@
 import { Dropdown } from "bootstrap";
 import { Modal } from "bootstrap";
 import "./index.css";
+import { ApiRental } from "../../../utils/classes/api-rental";
 
+const apiRental = new ApiRental();
 // получить данные которые были отправлены на странице
-function refreshRentals() {
-	fetch("http://germax-api/rental", {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-		.then((response) => response.json())
-		.then((data) => {
-			if (data.success) {
-				console.log(data.data);
-				updateBookingsTable(data.data);
-			} else {
-				console.error("Failed to fetch data");
-			}
-		})
-		.catch((error) => console.error("Error:", error));
+async function refreshRentals() {
+	try {
+		const data = await apiRental.getRentals();
+		if (data) {
+			console.log(data);
+			updateBookingsTable(data);
+		} else {
+			console.error("Failed to fetch data");
+		}
+	} catch (error) {
+		console.error("Error:", error);
+	}
 }
 
 function updateBookingsTable(rentals) {
@@ -29,13 +26,14 @@ function updateBookingsTable(rentals) {
 	tbody.innerHTML = ""; // Очистить текущие строки таблицы
 	rentals.forEach((rental) => {
 		const row = tbody.insertRow();
-		row.innerHTML = `<td>${rental.id_good}</td>
+		row.innerHTML = `
+			<td>${rental.id_loan}</td>
 			<td>${rental.user_name} ${rental.user_surname}</td>
-			<td>${rental.model_name}</td>
-			<td>1</td>
+			<td>${rental.model_name} (${rental.serial_number})</td>
 			<td>${rental.date_start}-${rental.date_end}</td>
-			<td>${rental.comment}</td>
-			<td>${getStatusName(rental.id_status)}</td>
+			<td>${rental.comment || "aucun commentaire"} </td>
+			<td>${rental.loan_status}</td>
+			<td>bon état</td>
 			<td>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu${
@@ -56,14 +54,18 @@ function updateBookingsTable(rentals) {
 		const manageLinks = row.querySelectorAll(".manage-rental"); // Уточняем селектор, чтобы выбрать только нужную ссылку
 		manageLinks.forEach((link) => {
 			link.addEventListener("click", function (event) {
-				console.log("вызов функции")
+				console.log("вызов функции");
 				event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
 				const modal = new Modal(
 					document.getElementById("rentalManagementModal"),
 					{}
 				);
-				document.getElementById("approveRentalButton").setAttribute("data-id", rental.id_good);
-        document.getElementById("cancelRentalButton").setAttribute("data-id", rental.id_good);
+				document
+					.getElementById("approveRentalButton")
+					.setAttribute("data-id", rental.id_loan);
+				document
+					.getElementById("cancelRentalButton")
+					.setAttribute("data-id", rental.id_loan);
 				modal.show();
 			});
 		});
@@ -72,106 +74,107 @@ function updateBookingsTable(rentals) {
 
 function getStatusName(statusId) {
 	switch (statusId) {
+		case 1:
+			return "disponible";
+		case 2:
+			return "indisponible";
+		case 3:
+			return "réservé";
 		case 4:
-			return "Pending";
+			return "demande de réservation";
+		case 5:
+			return "annulé";
 		default:
 			return "Unknown";
 	}
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-	refreshRentals();
-});
+refreshRentals();
 
-document.getElementById("approveRentalButton").addEventListener("click", function() {
-	const rentalId = this.getAttribute("data-id");
-	approveRental(rentalId);
-});
+document
+	.getElementById("approveRentalButton")
+	.addEventListener("click", function () {
+		const rentalId = this.getAttribute("data-id");
+		console.log("rentalId",rentalId)
+		approveRental(rentalId);
+	});
 
-document.getElementById("cancelRentalButton").addEventListener("click", function() {
-	const rentalId = this.getAttribute("data-id");
-	cancelRental(rentalId);
-});
+document
+	.getElementById("cancelRentalButton")
+	.addEventListener("click", function () {
+		const rentalId = this.getAttribute("data-id");
+		cancelRental(rentalId);
+	});
 
 function approveRental(loanId) {
-  const url = "http://germax-api/rental";  // URL, который обрабатывает подтверждение аренды
-  const data = {
-		action: "approve",
-    loanId: loanId,
-  };
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      console.log("Rental approved successfully.");
-      // Обновите интерфейс или уведомите пользователя об успешном одобрении
-    } else {
-      console.error("Failed to approve rental.");
-      // Обработка ошибок сервера или сообщения об ошибке
-    }
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
+	console.log("сработала approveRental",loanId)
+	apiRental
+		.approveRental(loanId)
+		.then((data) => {
+			console.log("data какая пришла", data)
+			if (data.success) {
+				// Обновите интерфейс или уведомите пользователя об успешном одобрении
+			} else {
+				console.error("Failed to approve rental.");
+				// Обработка ошибок сервера или сообщения об ошибке
+			}
+		})
+		.catch((error) => {
+			console.error("Error in approveRental:", error);
+		});
 }
 
 function cancelRental(loanId) {
-  const url = "http://germax-api/rental";  // URL, который обрабатывает отмену аренды
-  const data = {
+	const url = "http://germax-api/rental"; // URL, который обрабатывает отмену аренды
+	const data = {
 		action: "cancel",
-    loanId: loanId,
-  };
+		loanId: loanId,
+	};
 
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      console.log("Rental canceled successfully.");
-      // Обновите интерфейс или уведомите пользователя об успешной отмене
-    } else {
-      console.error("Failed to cancel rental.");
-      // Обработка ошибок сервера или сообщения об ошибке
-    }
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
+	fetch(url, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
+	})
+		.then((response) => response.json())
+		.then((data) => {
+			if (data.success) {
+				console.log("Rental canceled successfully.");
+				// Обновите интерфейс или уведомите пользователя об успешной отмене
+			} else {
+				console.error("Failed to cancel rental.");
+				// Обработка ошибок сервера или сообщения об ошибке
+			}
+		})
+		.catch((error) => {
+			console.error("Error:", error);
+		});
 }
 
-
 // Обработчик отправки сообщения об аннулировании аренды
-document.getElementById("communicationForm").addEventListener("submit", function (event) {
-  event.preventDefault();
+document
+	.getElementById("communicationForm")
+	.addEventListener("submit", function (event) {
+		event.preventDefault();
 
-  const topic = document.getElementById("communicationTopicSelect").value;
-  const message = document.getElementById("communicationMessageText").value;
+		const topic = document.getElementById("communicationTopicSelect").value;
+		const message = document.getElementById("communicationMessageText").value;
 
-  const notification = createNotification({
-    title: `Annulation de réservation`,
-    message: `Sujet: ${topic}, Message: ${message}`,
-    linkText: "Gestion des locations",
-    linkHref: "/page-bookings-management",
-  });
+		const notification = createNotification({
+			title: `Annulation de réservation`,
+			message: `Sujet: ${topic}, Message: ${message}`,
+			linkText: "Gestion des locations",
+			linkHref: "/page-bookings-management",
+		});
 
-  appendNotification(notification);
-  showNotificationModal();
-});
+		appendNotification(notification);
+		showNotificationModal();
+	});
 
 function createNotification({ title, message, linkText, linkHref }) {
-  return `
+	return `
     <a href="${linkHref}" class="list-group-item list-group-item-action flex-column align-items-start">
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1">${title}</h5>
@@ -183,18 +186,29 @@ function createNotification({ title, message, linkText, linkHref }) {
 }
 
 function appendNotification(notification) {
-  const notificationsList = document.getElementById("notificationsList");
-  notificationsList.innerHTML += notification;
+	const notificationsList = document.getElementById("notificationsList");
+	notificationsList.innerHTML += notification;
 }
 
 function showNotificationModal() {
-  const notificationsModal = new Modal(document.getElementById("notificationsModal"), {});
-  notificationsModal.show();
+	const notificationsModal = new Modal(
+		document.getElementById("notificationsModal"),
+		{}
+	);
+	notificationsModal.show();
 }
 
-function updateBookingTable({ id, name, equipment, quantity, dates, comment, status }) {
-  const bookingTableBody = document.querySelector("#booking-table tbody");
-  bookingTableBody.innerHTML += `
+function updateBookingTable({
+	id,
+	name,
+	equipment,
+	quantity,
+	dates,
+	comment,
+	status,
+}) {
+	const bookingTableBody = document.querySelector("#booking-table tbody");
+	bookingTableBody.innerHTML += `
     <tr data-booking-id="${id}">
       <td>${id}</td>
       <td>${name}</td>
@@ -221,23 +235,23 @@ function updateBookingTable({ id, name, equipment, quantity, dates, comment, sta
 }
 
 document.addEventListener("click", function (event) {
-  const target = event.target.closest("a");
-  if (!target) return;
+	const target = event.target.closest("a");
+	if (!target) return;
 
-  const targetId = target.id;
-  const bookingLink = document.getElementById("bookingsLink");
+	const targetId = target.id;
+	const bookingLink = document.getElementById("bookingsLink");
 
-  if (targetId === "cancelRentalButton") {
-    event.preventDefault();
+	if (targetId === "cancelRentalButton") {
+		event.preventDefault();
 
-    updateBookingTable({
-      id: "4",
-      name: "Test User",
-      equipment: "Ordinateur portable",
-      quantity: 1,
-      dates: "Date1",
-      comment: "Annulation de la réservation",
-      status: "Annulé",
-    });
-  }
+		updateBookingTable({
+			id: "4",
+			name: "Test User",
+			equipment: "Ordinateur portable",
+			quantity: 1,
+			dates: "Date1",
+			comment: "Annulation de la réservation",
+			status: "Annulé",
+		});
+	}
 });
