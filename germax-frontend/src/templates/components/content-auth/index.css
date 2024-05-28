@@ -257,3 +257,26 @@ svg {
 .face2 {
 	cursor: pointer;
 }
+
+#registration-container {
+	margin-top: -90px; /* Поднял контейнер регистрации выше */
+}
+
+#registration-container .inputbox {
+	width: 50%; /* Уменьшил ширину полей */
+	margin: 5px 0; /* Уменьшил вертикальные отступы */
+}
+
+#registration-container .form-label {
+	font-size: 14px; /* Уменьшил размер текста меток */
+	margin-bottom: 5px;
+	display: block;
+	position: absolute;
+	left: 0;
+}
+
+#registration-container .form-control {
+	font-size: 14px; /* Уменьшил размер текста в полях ввода */
+	padding: 10px; /* Уменьшил внутренние отступы полей ввода */
+}
+

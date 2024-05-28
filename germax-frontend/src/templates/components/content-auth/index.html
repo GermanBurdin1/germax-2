@@ -1,0 +1,137 @@
+<!-- <div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title text-center">Registration</h5>
+					<form method="POST" action="../../../../../germax-api/src/endpoints/register.php" id="registrationForm">
+						<div class="mb-3">
+							<label for="inputLastname" class="form-label">Nom</label>
+							<input type="text" class="form-control" id="inputLastname" name="lastname"
+								placeholder="Enter your lastname">
+						</div>
+						<div class="mb-3">
+							<label for="inputFirstname" class="form-label">Prénom</label>
+							<input type="text" class="form-control" id="inputFirstname" name="firstname"
+								placeholder="Enter your firstname">
+						</div>
+						<div class="mb-3">
+							<label for="inputPhone" class="form-label">Téléphone</label>
+							<input type="tel" class="form-control" id="inputPhone" name="phone" placeholder="Enter your phone number">
+						</div>
+						<div class="mb-3">
+							<label for="inputEmail" class="form-label">Adresse mail</label>
+							<input type="email" class="form-control" id="inputEmail" name="email" placeholder="Enter your best email">
+						</div>
+						<div class="mb-3">
+							<label for="inputPassword" class="form-label">Mot de passe</label>
+							<input type="password" class="form-control" id="inputPassword" name="password"
+								placeholder="Invent your Password">
+						</div>
+						<div class="mb-3">
+							<label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+							<input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+								placeholder="Confirm Password">
+						</div>
+						<div class="mb-3">
+							<label for="type-permission" class="form-label">Type d'utilisateur</label>
+							<select class="form-control" name="type-permission">
+								<option value="admin">Admin</option>
+								<option value="rental-manager">Manager</option>
+								<option value="stockman">Gestionnaire de stocks</option>
+								<option value="teacher">Enseignant</option>
+								<option value="student">Etudiant</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-primary btn-block">Register</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div> -->
+
+<section>
+	<div class="head-block">
+		<div class="left-block">
+			<div class="link">
+				<a class="link_1" href="#">Se connecter</a>
+				<a class="link_2" href="#">S'inscrire</a>
+			</div>
+			<div id="login-container">
+				<form id="loginForm" method="post">
+					<h2>Connectez-vous pour continuer</h2>
+					<div class="inputbox">
+						<label for="loginEmail" class="form-label">Email</label>
+						<input type="email" class="form-control" id="loginEmail" name="email" placeholder="Enter your email"
+							value="manager@laposte.net">
+					</div>
+					<div class="inputbox">
+						<label for="loginPassword" class="form-label">Mot de passe</label>
+						<input type="password" class="form-control" id="loginPassword" name="password"
+							placeholder="Enter your Password" value="manager">
+					</div>
+					<div class="forget">
+						<label for="checkbox">Se souvenir de moi
+							<span>
+								<input type="checkbox" name="remember">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								</svg>
+							</span>
+						</label>
+					</div>
+					<button class="btn" type="submit">Connexion</button>
+				</form>
+			</div>
+			<div id="registration-container" style="display: none;">
+				<form method="POST" action="http://germax-api/src/endpoints/register.php" id="registrationForm">
+					<div class="inputbox">
+						<label for="inputLastname" class="form-label">Nom</label>
+						<input type="text" class="form-control" id="inputLastname" name="lastname"
+							placeholder="Enter your lastname">
+					</div>
+					<div class="inputbox">
+						<label for="inputFirstname" class="form-label">Prénom</label>
+						<input type="text" class="form-control" id="inputFirstname" name="firstname"
+							placeholder="Enter your firstname">
+					</div>
+					<div class="inputbox">
+						<label for="inputPhone" class="form-label">Téléphone</label>
+						<input type="tel" class="form-control" id="inputPhone" name="phone" placeholder="Enter your phone number">
+					</div>
+					<div class="inputbox">
+						<label for="inputEmail" class="form-label">Adresse mail</label>
+						<input type="email" class="form-control" id="inputEmail" name="email" placeholder="Enter your best email">
+					</div>
+					<div class="inputbox">
+						<label for="inputPassword" class="form-label">Mot de passe</label>
+						<input type="password" class="form-control" id="inputPassword" name="password"
+							placeholder="Invent your Password">
+					</div>
+					<div class="inputbox">
+						<label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+						<input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+							placeholder="Confirm Password">
+					</div>
+					<div class="inputbox userType">
+						<label for="type-permission" class="form-label"></label>
+						<select class="form-control form-select" name="type-permission">
+							<option value="" disabled selected>Choisissez un type</option>
+							<option value="admin">Admin</option>
+							<option value="rental-manager">Manager</option>
+							<option value="stockman">Gestionnaire de stocks</option>
+							<option value="teacher">Enseignant</option>
+							<option value="student">Etudiant</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">Register</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="right-block">
+		<!-- Content for right block goes here -->
+	</div>
+</section>
