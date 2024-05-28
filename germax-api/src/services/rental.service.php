@@ -210,6 +210,7 @@ class RentalService
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute(['loanId' => $loanId]);
 			$idGood = $stmt->fetchColumn();
+
 			error_log("Loan not found query result: " . print_r($stmt->fetchAll(), true));
 
 			if (!$idGood) {
@@ -218,6 +219,7 @@ class RentalService
 				error_log("Loan not found query result: " . print_r($stmt->fetchAll(), true));
 				return ['success' => false, 'message' => 'Loan not found'];
 			}
+
 			// Update the good's status to loaned (assuming 3 is the loaned status)
 			$sql = "UPDATE good SET id_status = 3 WHERE id_good = :idGood";
 			$stmt = $this->pdo->prepare($sql);
@@ -228,24 +230,35 @@ class RentalService
 				return ['success' => false, 'message' => 'Failed to update good status'];
 			}
 
-			// Update the loan status to 'approved'
-			$sql = "UPDATE loan SET loan_status = 'loaned' WHERE id_loan = :loanId";
+			// Update the loan status to 'loan_request'
+			$sql = "UPDATE loan SET loan_status = 'loan_request' WHERE id_loan = :loanId";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute(['loanId' => $loanId]);
 
-			if ($stmt->rowCount() > 0) {
-				$this->pdo->commit();
-				return ['success' => true, 'message' => 'Loan approved successfully'];
-			} else {
+			if ($stmt->rowCount() == 0) {
 				$this->pdo->rollBack();
 				return ['success' => false, 'message' => 'Failed to approve loan'];
 			}
+
+			// Update the equipment_request table
+			$sql = "UPDATE equipment_request SET treatment_status = 'treated_manager_user', equipment_status = 'not_sent' WHERE id_request = :loanId";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(['loanId' => $loanId]);
+
+			if ($stmt->rowCount() == 0) {
+				$this->pdo->rollBack();
+				return ['success' => false, 'message' => 'Failed to update equipment request status'];
+			}
+
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Loan approved and equipment request updated successfully'];
 		} catch (PDOException $e) {
 			$this->pdo->rollBack();
 			error_log("Error during loan approval: " . $e->getMessage(), 3, "../debug.php");
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
+
 
 	public function cancelRental($loanId)
 	{
