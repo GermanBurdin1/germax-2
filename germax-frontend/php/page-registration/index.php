@@ -13,8 +13,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
     <title>Document</title>
 </head>
 <body>
-    <?php serveHtmlFile('dist/header.html'); ?>
     <?php serveHtmlFile('dist/content-page-registration.html'); ?>
-    <?php serveHtmlFile('dist/footer.html'); ?>
 </body>
 </html>
