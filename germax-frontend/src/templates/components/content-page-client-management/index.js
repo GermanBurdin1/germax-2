@@ -1,21 +1,22 @@
-import './index.css';
+import "./index.css";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Modal from "bootstrap/js/dist/modal";
 import Tab from "bootstrap/js/dist/tab";
-import { ApiAuth } from '../../../utils/classes/api-auth';
+import { ApiAuth } from "../../../utils/classes/api-auth";
 
 async function fetchPendingUsers(apiAuth) {
 	try {
 		const pendingUsers = await apiAuth.getPendingUsers();
+		console.log("Pending Users:", pendingUsers); // Debugging output
 		return pendingUsers;
 	} catch (error) {
-		console.error('Error fetching pending users:', error);
+		console.error("Error fetching pending users:", error);
 		throw error;
 	}
 }
 
 function createRow(user) {
-	const row = document.createElement('tr');
+	const row = document.createElement("tr");
 	row.innerHTML = `
 		<td>${user.lastname} ${user.firstname}</td>
 		<td>${user.email}</td>
@@ -26,50 +27,64 @@ function createRow(user) {
 		<td>—</td> <!-- État du matériel rendu -->
 		<td>${user.connexion_permission}</td>
 		<td>
-			<button class="btn btn-success validate-user" data-id="${user.id_user}">Gérer l'inscription</button>
-			<button class="btn btn-danger decline-user" data-id="${user.id_user}">Refuser</button>
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+					Choisir une action
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+					<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#detailsClientModal" data-user-id="${user.id_user}">Voir les détails du client</a></li>
+					<li><a class="dropdown-item manage-response" href="#" data-bs-toggle="modal" data-bs-target="#responseModal" data-user-id="${user.id_user}">Gérer la réponse</a></li>
+				</ul>
+			</div>
 		</td>
 	`;
+	console.log("Created row HTML:", row.innerHTML); // Debugging output
 	return row;
 }
 
 function populateTables(pendingUsers, studentTables, teacherTable) {
-	pendingUsers.forEach(user => {
+	pendingUsers.forEach((user) => {
 		const row = createRow(user);
-		if (user.id_permission === 'teacher') {
+		console.log("Adding row for user:", user); // Debugging output
+		if (user.id_permission === "teacher") {
+			console.log("Adding to teacher table");
 			teacherTable.appendChild(row);
 		} else {
 			const faculty = user.faculty;
+			console.log("Faculty:", faculty); // Debugging output
 			if (studentTables[faculty]) {
+				console.log("Adding to student table for faculty:", faculty);
 				studentTables[faculty].appendChild(row);
+			} else {
+				console.warn("No table found for faculty:", faculty);
 			}
 		}
 	});
 }
 
 function attachEventHandlers(apiAuth) {
-	document.querySelectorAll('.validate-user').forEach(button => {
-		button.addEventListener('click', async function () {
-			const userId = this.getAttribute('data-id');
+	document.querySelectorAll(".validate-user").forEach((button) => {
+		button.addEventListener("click", async function () {
+			const userId = this.getAttribute("data-id");
 			try {
-				await apiAuth.updateUserStatus(userId, 'authorized');
-				alert('User status updated successfully.');
+				await apiAuth.updateUserStatus(userId, "authorized");
+				alert("User status updated successfully.");
 				location.reload(); // Перезагрузить страницу для обновления данных
 			} catch (error) {
-				alert('Error updating user status: ' + error);
+				alert("Error updating user status: " + error);
 			}
 		});
 	});
 
-	document.querySelectorAll('.decline-user').forEach(button => {
-		button.addEventListener('click', async function () {
-			const userId = this.getAttribute('data-id');
+	document.querySelectorAll(".decline-user").forEach((button) => {
+		button.addEventListener("click", async function () {
+			const userId = this.getAttribute("data-id");
 			try {
-				await apiAuth.updateUserStatus(userId, 'declined');
-				alert('User status updated successfully.');
+				await apiAuth.updateUserStatus(userId, "declined");
+				alert("User status updated successfully.");
 				location.reload(); // Перезагрузить страницу для обновления данных
 			} catch (error) {
-				alert('Error updating user status: ' + error);
+				alert("Error updating user status: " + error);
 			}
 		});
 	});
@@ -78,24 +93,40 @@ function attachEventHandlers(apiAuth) {
 async function init() {
 	const apiAuth = ApiAuth.getInstance();
 
-	const studentTables = {
-		'Développement informatique': document.querySelector("#devInfoTable tbody"),
-		'Systèmes, réseaux et cybersécurité': document.querySelector("#sysReseauTable tbody"),
-		'Commerce et Marketing digital': document.querySelector("#comMarketingTable tbody")
+	try {
+		await apiAuth.fetchMeAuthUser();
+		const pendingUsers = await fetchPendingUsers(apiAuth);
+
+		const studentTables = {
+			'development': document.querySelector("#devInfoTable tbody"),
+			'cybersecurity': document.querySelector("#sysReseauTable tbody"),
+			'marketing': document.querySelector("#comMarketingTable tbody")
 	};
 
-	const teacherTable = document.querySelector("#teachersTable tbody");
+		const teacherTable = document.querySelector("#teachersTable tbody");
 
-	// Очищаем существующие строки в таблицах
-	Object.values(studentTables).forEach(table => table.innerHTML = '');
-	teacherTable.innerHTML = '';
+		// Проверка наличия таблиц
+		console.log("Student Tables:", studentTables);
+		console.log("Teacher Table:", teacherTable);
 
-	try {
-		const pendingUsers = await fetchPendingUsers(apiAuth);
+		// Очищаем существующие строки в таблицах
+		Object.values(studentTables).forEach((table) => {
+			if (table) {
+				table.innerHTML = "";
+			} else {
+				console.warn("Table not found");
+			}
+		});
+		if (teacherTable) {
+			teacherTable.innerHTML = "";
+		} else {
+			console.warn("Teacher table not found");
+		}
+
 		populateTables(pendingUsers, studentTables, teacherTable);
 		attachEventHandlers(apiAuth);
 	} catch (error) {
-		console.error('Initialization error:', error);
+		console.error("Initialization error:", error);
 	}
 }
 
@@ -114,12 +145,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Обработка кликов по ссылкам для просмотра деталей
 	document.querySelectorAll(".view-details").forEach((link) => {
-			link.addEventListener("click", function (event) {
-					event.preventDefault();
+		link.addEventListener("click", function (event) {
+			event.preventDefault();
 
-					// Заполнение модального окна данными
-					const modalBody = document.querySelector("#detailsClientModal .modal-body");
-					modalBody.innerHTML = `
+			// Заполнение модального окна данными
+			const modalBody = document.querySelector(
+				"#detailsClientModal .modal-body"
+			);
+			modalBody.innerHTML = `
 							<div class="container pt-5">
 									<div class="row justify-content-center">
 											<div class="col-md-8">
@@ -156,8 +189,8 @@ document.addEventListener("DOMContentLoaded", function () {
 							</div>
 					`;
 
-					// Показываем модальное окно
-					detailsModal.show();
-			});
+			// Показываем модальное окно
+			detailsModal.show();
+		});
 	});
 });

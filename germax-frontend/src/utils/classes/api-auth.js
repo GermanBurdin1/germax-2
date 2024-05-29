@@ -40,7 +40,7 @@ export class ApiAuth {
 				// console.log("Data received:", json);
 				return json;
 			})
-			.then(data => {
+			.then((data) => {
 				this._authUser = data.data;
 			})
 			.catch((error) => {
@@ -58,25 +58,48 @@ export class ApiAuth {
 	async updateUserStatus(userId, status) {
 		const token = this.getToken();
 
-		return fetch('http://germax-api/auth/update_user_status', {
-			method: 'POST',
+		return fetch("http://germax-api/auth/update_user_status", {
+			method: "POST",
 			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${token}`,
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
 			},
 			body: JSON.stringify({ user_id: userId, connexion_permission: status }),
 		})
-		.then(response => response.json())
-		.then(data => {
-			if (data.status !== 'success') {
-				return Promise.reject(data.message);
-			}
-			return data;
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.status !== "success") {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error updating user status:", error);
+				throw error;
+			});
+	}
+
+	async getPendingUsers() {
+		const token = this.getToken();
+
+		return fetch("http://germax-api/auth/register", {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
 		})
-		.catch(error => {
-			console.error('Error updating user status:', error);
-			throw error;
-		});
+			.then((response) => response.json())
+			.then((data) => {
+				console.log("API Response:", data)
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data.data; // Assuming the endpoint returns a list of users in `data.users`
+			})
+			.catch((error) => {
+				console.error("Error fetching pending users:", error);
+				throw error;
+			});
 	}
 
 	static getInstance() {
@@ -85,5 +108,4 @@ export class ApiAuth {
 		}
 		return ApiAuth._instance;
 	}
-
 }
