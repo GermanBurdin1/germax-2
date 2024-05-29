@@ -12,24 +12,16 @@ $authController = new AuthController();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-	// Извлекаем переменные из массива $_POST
-	$lastname = $_POST['lastname'] ?? NULL;
-	$firstname = $_POST['firstname'] ?? NULL;
-	$phone = $_POST['phone'] ?? NULL;
-	$email = $_POST['email'] ?? NULL;
-	$password = $_POST['password'] ?? NULL;
-	$typePermission = $_POST['type-permission'] ?? NULL;
-	$faculty = $_POST['faculty'] ?? NULL;
+	$_POST = json_decode(file_get_contents("php://input"), true);
+	// Извлекаем переменные из массива
+	$user_id = $_POST['user_id'] ?? NULL;
+	$status = $_POST['connexion_permission'] ?? NULL;
 
-	// Логируем email для отладки
-	error_log("Received email: " . $email);
+	if (empty($user_id) || empty($status)) {
+		renderErrorAndExit(['Missing required fields'], 400);
+	}
 
-	// Вызываем метод register и передаем ему необходимые параметры
-	$authController->register($lastname, $firstname, $phone, $email, $password, $typePermission, $faculty);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
-	$authController->get_pending_users();
+	$authController->update_user_status($user_id, $status);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -38,8 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	exit;
 }
 
-
 renderErrorAndExit(['This route does not support this HTTP method'], 405);
 
 ?>
-

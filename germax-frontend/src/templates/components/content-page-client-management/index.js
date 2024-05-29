@@ -1,6 +1,105 @@
 import './index.css';
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Modal from "bootstrap/js/dist/modal";
+import Tab from "bootstrap/js/dist/tab";
+import { ApiAuth } from '../../../utils/classes/api-auth';
+
+async function fetchPendingUsers(apiAuth) {
+	try {
+		const pendingUsers = await apiAuth.getPendingUsers();
+		return pendingUsers;
+	} catch (error) {
+		console.error('Error fetching pending users:', error);
+		throw error;
+	}
+}
+
+function createRow(user) {
+	const row = document.createElement('tr');
+	row.innerHTML = `
+		<td>${user.lastname} ${user.firstname}</td>
+		<td>${user.email}</td>
+		<td>${user.phone}</td>
+		<td>—</td> <!-- Dernier équipement loué -->
+		<td>—</td> <!-- Date de prise -->
+		<td>—</td> <!-- Date de restitution -->
+		<td>—</td> <!-- État du matériel rendu -->
+		<td>${user.connexion_permission}</td>
+		<td>
+			<button class="btn btn-success validate-user" data-id="${user.id_user}">Gérer l'inscription</button>
+			<button class="btn btn-danger decline-user" data-id="${user.id_user}">Refuser</button>
+		</td>
+	`;
+	return row;
+}
+
+function populateTables(pendingUsers, studentTables, teacherTable) {
+	pendingUsers.forEach(user => {
+		const row = createRow(user);
+		if (user.id_permission === 'teacher') {
+			teacherTable.appendChild(row);
+		} else {
+			const faculty = user.faculty;
+			if (studentTables[faculty]) {
+				studentTables[faculty].appendChild(row);
+			}
+		}
+	});
+}
+
+function attachEventHandlers(apiAuth) {
+	document.querySelectorAll('.validate-user').forEach(button => {
+		button.addEventListener('click', async function () {
+			const userId = this.getAttribute('data-id');
+			try {
+				await apiAuth.updateUserStatus(userId, 'authorized');
+				alert('User status updated successfully.');
+				location.reload(); // Перезагрузить страницу для обновления данных
+			} catch (error) {
+				alert('Error updating user status: ' + error);
+			}
+		});
+	});
+
+	document.querySelectorAll('.decline-user').forEach(button => {
+		button.addEventListener('click', async function () {
+			const userId = this.getAttribute('data-id');
+			try {
+				await apiAuth.updateUserStatus(userId, 'declined');
+				alert('User status updated successfully.');
+				location.reload(); // Перезагрузить страницу для обновления данных
+			} catch (error) {
+				alert('Error updating user status: ' + error);
+			}
+		});
+	});
+}
+
+async function init() {
+	const apiAuth = ApiAuth.getInstance();
+
+	const studentTables = {
+		'Développement informatique': document.querySelector("#devInfoTable tbody"),
+		'Systèmes, réseaux et cybersécurité': document.querySelector("#sysReseauTable tbody"),
+		'Commerce et Marketing digital': document.querySelector("#comMarketingTable tbody")
+	};
+
+	const teacherTable = document.querySelector("#teachersTable tbody");
+
+	// Очищаем существующие строки в таблицах
+	Object.values(studentTables).forEach(table => table.innerHTML = '');
+	teacherTable.innerHTML = '';
+
+	try {
+		const pendingUsers = await fetchPendingUsers(apiAuth);
+		populateTables(pendingUsers, studentTables, teacherTable);
+		attachEventHandlers(apiAuth);
+	} catch (error) {
+		console.error('Initialization error:', error);
+	}
+}
+
+init();
 
 const dropdownElementList = [].slice.call(
 	document.querySelectorAll(".dropdown-toggle")

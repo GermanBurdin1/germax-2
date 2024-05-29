@@ -55,6 +55,30 @@ export class ApiAuth {
 		return this._authUser;
 	}
 
+	async updateUserStatus(userId, status) {
+		const token = this.getToken();
+
+		return fetch('http://germax-api/auth/update_user_status', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${token}`,
+			},
+			body: JSON.stringify({ user_id: userId, connexion_permission: status }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.status !== 'success') {
+				return Promise.reject(data.message);
+			}
+			return data;
+		})
+		.catch(error => {
+			console.error('Error updating user status:', error);
+			throw error;
+		});
+	}
+
 	static getInstance() {
 		if (ApiAuth._instance === null) {
 			ApiAuth._instance = new ApiAuth();

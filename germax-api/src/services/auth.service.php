@@ -137,7 +137,7 @@ class AuthService {
 		$faculty = $faculty == NULL ? "default" : $faculty;
 
 		// Теперь у нас есть id_permission, и мы можем вставить нового пользователя
-		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission, faculty, authorization_permission) VALUES (:lastname, :firstname, :phone, :password, :email, :id_permission, :faculty, :authorization_permission)");
+		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission, faculty, authorization_permission, connexion_permission) VALUES (:lastname, :firstname, :phone, :password, :email, :id_permission, :faculty, :authorization_permission, :connexion_permission)");
 		$stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
 		$stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
 		$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
@@ -146,6 +146,7 @@ class AuthService {
 		$stmt->bindParam(':id_permission', $permission['id_permission'],PDO::PARAM_INT);
 		$stmt->bindParam(':faculty', $faculty, PDO::PARAM_STR);
 		$stmt->bindValue(':authorization_permission', 0, PDO::PARAM_INT);
+		$stmt->bindValue(':connexion_permission', 'pending', PDO::PARAM_STR);
 		$stmt->execute();
 
 		$createdUser = $stmt->fetch();
@@ -176,5 +177,30 @@ class AuthService {
 		$user['name_permission'] = $permission['name'];
 
 		return $user;
+	}
+
+	public function get_pending_users() {
+		$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission = 'pending'");
+		$stmt->execute();
+
+		$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		if (empty($users)) {
+			return renderErrorAndExit(['No pending users found'], 404);
+		}
+
+		return renderSuccessAndExit(['Pending users found'], 200, $users);
+	}
+
+	public function update_user_status($user_id, $status) {
+		$stmt = $this->pdo->prepare("UPDATE user SET connexion_permission = :status WHERE id_user = :user_id");
+		$stmt->bindParam(':status', $status, PDO::PARAM_STR);
+		$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+		$stmt->execute();
+
+		if ($stmt->rowCount() == 0) {
+			return renderErrorAndExit(['User not found or status not changed'], 404);
+		}
+
+		return renderSuccessAndExit(['User status updated'], 200);
 	}
 }

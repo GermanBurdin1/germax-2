@@ -75,7 +75,7 @@
 		<!-- Teachers Tab Pane -->
 		<div class="tab-pane fade" id="teachers" role="tabpanel" aria-labelledby="teachers-tab">
 			<!-- Content for Teachers -->
-			<p>Contenu pour les enseignants ici.</p>
+			<p>La liste des enseignants</p>
 		</div>
 	</div>
 </div>
@@ -83,30 +83,27 @@
 <div class="card-body">
 	<div class="table-responsive">
 		<table class="table align-middle">
-			<thead>
-				<tr>
+				<thead>
+					<tr>
 					<th>Client <button class="btn btn-link p-0 border-0 sortButton" title="Sort by Client"><i
 								class="fas fa-sort"></i></button></th>
-					<th> <button class="btn btn-link p-0 border-0 sortButton" title="Sort by Date"><i
-								class="fas fa-sort"></i></button>Date de première connexion</th>
-					<th>Email</th>
-					<th>Téléphone</th>
-					<th>Dernier équipement loué</th>
-					<th>Date de prise</th>
-					<th>Date de restitution</th>
-					<th>État du matériel rendu</th>
-					<th>Statut du client</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
+						<th>Email</th>
+						<th>Téléphone</th>
+						<th>Dernier équipement loué</th>
+						<th>Date de prise</th>
+						<th>Date de restitution</th>
+						<th>État du matériel rendu</th>
+						<th>Statut du client</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
 				<tr>
 					<td>
 						<div class="d-flex align-items-center">
 							<p class="m-0">Alex Dupont</p>
 						</div>
 					</td>
-					<td>Il y a 1 jour</td>
 					<td>alex.dupont@example.com</td>
 					<td>(123) 456-7890</td>
 					<td>Ordinateur portable</td>
@@ -141,7 +138,6 @@
 							<p class="m-0">Béatrice Émond</p>
 						</div>
 					</td>
-					<td>Il y a 3 jours</td>
 					<td>beatrice.emond@example.com</td>
 					<td>(321) 654-9870</td>
 					<td>Scanner 3D</td>
@@ -174,7 +170,6 @@
 							<p class="m-0">Claude Mercier</p>
 						</div>
 					</td>
-					<td>Il y a 5 jours</td>
 					<td>claude.mercier@example.com</td>
 					<td>(987) 654-3210</td>
 					<td>Drones de surveillance</td>
@@ -201,10 +196,10 @@
 						</div>
 					</td>
 				</tr>
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
 
 
 <!-- Modal -->
@@ -220,4 +215,23 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Modal for user details -->
+<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="detailsClientModalLabel">Détails du client</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<!-- User details will be dynamically populated here -->
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-danger" id="declineUser">Refuser</button>
+							<button type="button" class="btn btn-success" id="approveUser">Gérer l'inscription</button>
+					</div>
+			</div>
+	</div>
 </div>

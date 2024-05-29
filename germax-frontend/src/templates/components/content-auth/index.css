@@ -280,3 +280,23 @@ svg {
 	padding: 10px; /* Уменьшил внутренние отступы полей ввода */
 }
 
+#userTypeContainer {
+	display: flex;
+	align-items: center;
+}
+
+#facultyContainer {
+	display: flex;
+	flex-direction: column; /* Flex для вертикального выравнивания */
+	align-items: flex-start; /* Выравнивание по верхнему краю */
+	margin-left: 15px; /* Отступ слева для создания пространства */
+}
+
+#facultyContainer .inputbox {
+	width: auto; /* Сброс ширины для корректного отображения */
+	margin-left: 15px; /* Расстояние между полями */
+}
+
+#facultyContainer .form-select {
+	width: 240px; /* Устанавливаем нужную ширину для селекта факультетов */
+}

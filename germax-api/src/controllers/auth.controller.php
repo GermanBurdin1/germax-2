@@ -43,4 +43,12 @@ class AuthController
 
 		return $this->authService->me($token);
 	}
+
+	public function get_pending_users() {
+		return $this->authService->get_pending_users();
+	}
+
+	public function update_user_status($user_id, $status) {
+		return $this->authService->update_user_status($user_id, $status);
+	}
 }

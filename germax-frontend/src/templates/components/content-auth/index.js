@@ -3,14 +3,12 @@ import { getFormData } from "../../../utils/dom-utils";
 
 document.querySelector('.link_2').addEventListener('click', function(event) {
 	event.preventDefault();
-	document.getElementById('login-container').style.display = 'none';
-	document.getElementById('registration-container').style.display = 'block';
+	switchToRegistration();
 });
 
 document.querySelector('.link_1').addEventListener('click', function(event) {
 	event.preventDefault();
-	document.getElementById('login-container').style.display = 'block';
-	document.getElementById('registration-container').style.display = 'none';
+	switchToLogin();
 });
 
 const loginFormNode = document.getElementById("loginForm");
@@ -50,12 +48,40 @@ function loginLogic(responseData) {
 }
 
 //registration
+const typePermissionSelect = document.querySelector('select[name="type-permission"]');
+
+typePermissionSelect.addEventListener('change', function() {
+	const facultyContainer = document.getElementById('facultyContainer');
+	if (this.value === 'student') {
+		if (!facultyContainer.hasChildNodes()) {
+			const newField = document.createElement('div');
+			newField.className = 'inputbox';
+			newField.id = 'facultyField';
+			newField.innerHTML = `
+			<label for="faculty" class="form-label"></label>
+			<select class="form-control form-select" name="faculty" id="faculty">
+					<option value="" disabled selected>Choisissez votre faculté</option>
+					<option value="development">Développement informatique</option>
+					<option value="cyber-security">Systèmes, réseaux et cybersécurité</option>
+					<option value="digital-marketing">Commerce et Marketing digital</option>
+			</select>
+			`;
+			facultyContainer.appendChild(newField);
+		}
+	} else {
+		facultyContainer.innerHTML = '';
+	}
+});
 
 document.getElementById('registrationForm').addEventListener('submit', function(event) {
 	event.preventDefault(); // Предотвратить стандартную отправку формы
 
-	const formData = new FormData(this); // Собрать данные формы
-	const url = 'http://germax-api/src/endpoints/register.php'; // URL PHP скрипта
+	const formData = new FormData(this);
+	for (const [key, value] of formData.entries()) {
+		console.log(`${key}: ${value}`);
+	}
+
+	const url = 'http://germax-api/auth/register';
 
 	fetch(url, {
 			method: 'POST', // Использовать метод POST
@@ -64,9 +90,9 @@ document.getElementById('registrationForm').addEventListener('submit', function(
 	.then(response => response.json()) // Преобразовать ответ в JSON
 	.then(data => {
 			console.log('Success:', data); // Вывести данные ответа в консоль
-			if (data.status === 'success') {
+			if (data.success) {
 				// Переход на страницу логина
-				window.location.href = '/auth/';
+				switchToLogin();
 		}
 	})
 	.catch((error) => {
@@ -74,25 +100,17 @@ document.getElementById('registrationForm').addEventListener('submit', function(
 	});
 });
 
-document.getElementById('registrationForm').addEventListener('submit', function(event) {
-	event.preventDefault(); // Предотвратить стандартную отправку формы
+function switchToLogin() {
+	console.log("вызвалась функция");
+	document.getElementById('login-container').style.display = 'block';
+	document.getElementById('registration-container').style.display = 'none';
+	document.querySelector('.link_1').classList.add('active');
+	document.querySelector('.link_2').classList.remove('active');
+}
 
-	const formData = new FormData(this); // Собрать данные формы
-	const url = 'http://germax-api/src/endpoints/register.php'; // URL PHP скрипта
-
-	fetch(url, {
-			method: 'POST', // Использовать метод POST
-			body: formData  // Отправить данные формы
-	})
-	.then(response => response.json()) // Преобразовать ответ в JSON
-	.then(data => {
-			console.log('Success:', data); // Вывести данные ответа в консоль
-			if (data.status === 'success') {
-				// Переход на страницу логина
-				window.location.href = '/auth/';
-		}
-	})
-	.catch((error) => {
-			console.error('Error:', error); // Вывести ошибку в консоль, если она произошла
-	});
-});
+function switchToRegistration() {
+	document.getElementById('login-container').style.display = 'none';
+	document.getElementById('registration-container').style.display = 'block';
+	document.querySelector('.link_1').classList.remove('active');
+	document.querySelector('.link_2').classList.add('active');
+}
