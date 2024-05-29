@@ -7,7 +7,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/render-success.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/utils/token.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/src/services/permissions.service.php');
 
-class AuthService {
+class AuthService
+{
 	private $pdo;
 	private $permissionsService;
 
@@ -70,10 +71,34 @@ class AuthService {
 		$typePermission,
 		$faculty
 	) {
+		if (empty($lastname) || empty($firstname) || empty($phone) || empty($email) || empty($password) || empty($typePermission)) {
+			return renderErrorAndExit(['Tous les champs sont obligatoires'], 400);
+		}
+
+		if (!preg_match('/^[a-zA-Z-]+$/', $lastname)) {
+			return renderErrorAndExit(['Le nom de famille ne peut contenir que des lettres et des tirets'], 400);
+		}
+
+		if (!preg_match('/^[a-zA-Z-]+$/', $firstname)) {
+			return renderErrorAndExit(['Le prénom ne peut contenir que des lettres et des tirets'], 400);
+		}
+
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			return renderErrorAndExit(['Adresse e-mail invalide'], 400);
+		}
+
+		if (!preg_match('/^\d{10}$/', $phone)) {
+			return renderErrorAndExit(['Le numéro de téléphone doit contenir 10 chiffres'], 400);
+		}
+
+		if ($typePermission === 'student' && empty($faculty)) {
+			return renderErrorAndExit(['La faculté est obligatoire pour les étudiants'], 400);
+		}
+
 		$foundUser = $this->getUserByEmail($email);
 
 		if (!empty($foundUser)) return renderErrorAndExit(
-			["Пользователь с email {$email} уже существует"],
+			["Un utilisateur avec cet email {$email} existe déjà"],
 			401
 		);
 
@@ -90,7 +115,8 @@ class AuthService {
 		return renderSuccessAndExit(['User registered'], 200, $createdUser);
 	}
 
-	public function me($token) {
+	public function me($token)
+	{
 		$userByToken = $this->getUserByToken($token);
 
 		// если userByToken не существует
@@ -101,7 +127,8 @@ class AuthService {
 		return renderSuccessAndExit(['User found'], 200, $userByToken);
 	}
 
-	public function getUserByToken($token) {
+	public function getUserByToken($token)
+	{
 		// Декодируем токен
 		$decodedToken = decrypt_token($token);  // Используем функцию для декодирования токена
 
@@ -143,7 +170,7 @@ class AuthService {
 		$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
 		$stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
 		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
-		$stmt->bindParam(':id_permission', $permission['id_permission'],PDO::PARAM_INT);
+		$stmt->bindParam(':id_permission', $permission['id_permission'], PDO::PARAM_INT);
 		$stmt->bindParam(':faculty', $faculty, PDO::PARAM_STR);
 		$stmt->bindValue(':authorization_permission', 0, PDO::PARAM_INT);
 		$stmt->bindValue(':connexion_permission', 'pending', PDO::PARAM_STR);
@@ -179,7 +206,8 @@ class AuthService {
 		return $user;
 	}
 
-	public function get_pending_users() {
+	public function get_pending_users()
+	{
 		$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission = 'pending'");
 		$stmt->execute();
 
@@ -191,7 +219,8 @@ class AuthService {
 		return renderSuccessAndExit(['Pending users found'], 200, $users);
 	}
 
-	public function update_user_status($user_id, $status) {
+	public function update_user_status($user_id, $status)
+	{
 		$stmt = $this->pdo->prepare("UPDATE user SET connexion_permission = :status WHERE id_user = :user_id");
 		$stmt->bindParam(':status', $status, PDO::PARAM_STR);
 		$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);

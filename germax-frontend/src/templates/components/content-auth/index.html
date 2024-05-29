@@ -37,33 +37,39 @@
 						<label for="inputLastname" class="form-label">Nom</label>
 						<input type="text" class="form-control" id="inputLastname" name="lastname"
 							placeholder="Enter your lastname">
+						<div class="error-container" id="errorInputLastname"></div>
 					</div>
 					<div class="inputbox">
 						<label for="inputFirstname" class="form-label">Prénom</label>
 						<input type="text" class="form-control" id="inputFirstname" name="firstname"
 							placeholder="Enter your firstname">
+						<div class="error-container" id="errorInputFirstname"></div>
 					</div>
 					<div class="inputbox">
 						<label for="inputPhone" class="form-label">Téléphone</label>
 						<input type="tel" class="form-control" id="inputPhone" name="phone" placeholder="Enter your phone number">
+						<div class="error-container" id="errorInputPhone"></div>
 					</div>
 					<div class="inputbox">
 						<label for="inputEmail" class="form-label">Adresse mail</label>
 						<input type="email" class="form-control" id="inputEmail" name="email" placeholder="Enter your best email">
+						<div class="error-container" id="errorInputEmail"></div>
 					</div>
 					<div class="inputbox">
 						<label for="inputPassword" class="form-label">Mot de passe</label>
 						<input type="password" class="form-control" id="inputPassword" name="password"
 							placeholder="Invent your Password">
+						<div class="error-container" id="errorInputPassword"></div>
 					</div>
 					<div class="inputbox">
 						<label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
 						<input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
 							placeholder="Confirm Password">
+						<div class="error-container" id="errorConfirmPassword"></div>
 					</div>
 					<div class="inputbox userType" id="userTypeContainer">
 						<label for="type-permission" class="form-label"></label>
-						<select class="form-control form-select" name="type-permission">
+						<select class="form-control form-select" id="type-permission" name="type-permission">
 							<option value="" disabled selected>Choisissez un type</option>
 							<option value="admin">Admin</option>
 							<option value="rental-manager">Manager</option>
@@ -71,6 +77,7 @@
 							<option value="teacher">Enseignant</option>
 							<option value="student">Etudiant</option>
 						</select>
+						<div class="error-container" id="errorTypePermission"></div>
 						<div id="facultyContainer" class="inputbox"></div>
 					</div>
 					<button type="submit" class="btn btn-primary btn-block">S'inscrire</button>
