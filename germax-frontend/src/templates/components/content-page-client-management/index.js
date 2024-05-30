@@ -111,22 +111,28 @@ function attachEventHandlers(apiAuth) {
 				try {
 					const rentals = await apiRental.getClientRentalsByUserId(userId);
 					console.log("Rentals:", rentals);
-					const rentalDetails = rentals.length > 0 ? rentals[0] : null;
-					if (rentalDetails) {
-						document.getElementById("equipementLoué").textContent =
-							rentalDetails.model_name || "N/A";
-						document.getElementById("dateDePrise").textContent =
-							rentalDetails.date_start || "N/A";
-						document.getElementById("dateDeRestitution").textContent =
-							rentalDetails.date_end || "N/A";
-						document.getElementById("etatDuMaterielRendu").textContent =
-							rentalDetails.status_name || "N/A";
+
+					const modalBody = document.querySelector("#detailsClientModal .modal-body");
+					modalBody.innerHTML = ''; // Очищаем содержимое модального окна
+
+					if (rentals && rentals.length > 0) {
+						rentals.forEach(rental => {
+							const rentalCard = document.createElement('div');
+							rentalCard.className = 'card mb-3';
+							rentalCard.innerHTML = `
+								<div class="card-body">
+									<h5 class="card-title">Équipement: ${rental.model_name || "N/A"}</h5>
+									<p class="card-text"><strong>Date de prise:</strong> ${rental.date_start || "N/A"}</p>
+									<p class="card-text"><strong>Date de restitution:</strong> ${rental.date_end || "N/A"}</p>
+									<p class="card-text"><strong>État du matériel rendu:</strong> ${rental.status_name || "N/A"}</p>
+								</div>
+							`;
+							modalBody.appendChild(rentalCard);
+						});
 					} else {
-						document.getElementById("equipementLoué").textContent = "N/A";
-						document.getElementById("dateDePrise").textContent = "N/A";
-						document.getElementById("dateDeRestitution").textContent = "N/A";
-						document.getElementById("etatDuMaterielRendu").textContent = "N/A";
+						modalBody.innerHTML = '<p class="text-muted">Aucune donnée de location disponible.</p>';
 					}
+
 					detailsClientModal.show();
 				} catch (error) {
 					console.error("Error fetching user rentals:", error);
@@ -177,6 +183,7 @@ function attachEventHandlers(apiAuth) {
 			}
 		});
 }
+
 
 async function init() {
 	const apiAuth = ApiAuth.getInstance();
