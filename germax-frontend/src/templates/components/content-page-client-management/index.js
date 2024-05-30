@@ -3,8 +3,10 @@ import Dropdown from "bootstrap/js/dist/dropdown";
 import Modal from "bootstrap/js/dist/modal";
 import Tab from "bootstrap/js/dist/tab";
 import { ApiAuth } from "../../../utils/classes/api-auth";
+import { ApiRental } from "../../../utils/classes/api-rental";
 
 const apiAuth = ApiAuth.getInstance();
+const apiRental = new ApiRental();
 
 async function fetchPendingUsers(apiAuth) {
 	try {
@@ -17,16 +19,39 @@ async function fetchPendingUsers(apiAuth) {
 	}
 }
 
+async function fetchProcessedUsers(apiAuth) {
+	try {
+		const processedUsers = await apiAuth.getProcessedUsers();
+		console.log("Processed Users:", processedUsers); // Debugging output
+		return processedUsers;
+	} catch (error) {
+		console.error("Error fetching processed users:", error);
+		throw error;
+	}
+}
+
 function createRow(user) {
 	const row = document.createElement("tr");
+	let dropdownMenuContent;
+
+	if (user.connexion_permission === "pending") {
+		dropdownMenuContent = `
+			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#authorizationClientModal" data-user-id="${user.id_user}">Gérer la réponse</a></li>
+		`;
+	} else if (user.connexion_permission === "authorized") {
+		dropdownMenuContent = `
+			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#detailsClientModal" data-user-id="${user.id_user}">Voir les détails</a></li>
+		`;
+	} else if (user.connexion_permission === "declined") {
+		dropdownMenuContent = `
+			<li><span class="dropdown-item-text text-muted">Utilisateur refusé</span></li>
+		`;
+	}
+
 	row.innerHTML = `
 		<td>${user.lastname} ${user.firstname}</td>
 		<td>${user.email}</td>
 		<td>${user.phone}</td>
-		<td>—</td> <!-- Dernier équipement loué -->
-		<td>—</td> <!-- Date de prise -->
-		<td>—</td> <!-- Date de restitution -->
-		<td>—</td> <!-- État du matériel rendu -->
 		<td>${user.connexion_permission}</td>
 		<td>
 			<div class="dropdown">
@@ -34,8 +59,7 @@ function createRow(user) {
 					Choisir une action
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-					<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#authorizationClientModal" data-user-id="${user.id_user}">Gérer la réponse</a></li>
-					<li><a class="dropdown-item manage-response" href="#" data-bs-toggle="modal" data-bs-target="#responseModal" data-user-id="${user.id_user}">Voir les détails</a></li>
+					${dropdownMenuContent}
 				</ul>
 			</div>
 		</td>
@@ -65,19 +89,50 @@ function attachEventHandlers(apiAuth) {
 		document.getElementById("authorizationClientModal")
 	);
 
+	const detailsClientModal = new Modal(
+		document.getElementById("detailsClientModal")
+	);
+
 	document.querySelectorAll(".view-details").forEach((link) => {
-		link.addEventListener("click", function (event) {
+		link.addEventListener("click", async function (event) {
 			event.preventDefault();
 			const userId = this.getAttribute("data-user-id");
+			const targetModal = this.getAttribute("data-bs-target");
 
-			document
-				.getElementById("approveUser")
-				.setAttribute("data-user-id", userId);
-			document
-				.getElementById("declineUser")
-				.setAttribute("data-user-id", userId);
-
-			authorizationClientModal.show();
+			if (targetModal === "#authorizationClientModal") {
+				document
+					.getElementById("approveUser")
+					.setAttribute("data-user-id", userId);
+				document
+					.getElementById("declineUser")
+					.setAttribute("data-user-id", userId);
+				authorizationClientModal.show();
+			} else if (targetModal === "#detailsClientModal") {
+				try {
+					const rentals = await apiRental.getClientRentalsByUserId(userId);
+					console.log("Rentals:", rentals);
+					const rentalDetails = rentals.length > 0 ? rentals[0] : null;
+					if (rentalDetails) {
+						document.getElementById("equipementLoué").textContent =
+							rentalDetails.model_name || "N/A";
+						document.getElementById("dateDePrise").textContent =
+							rentalDetails.date_start || "N/A";
+						document.getElementById("dateDeRestitution").textContent =
+							rentalDetails.date_end || "N/A";
+						document.getElementById("etatDuMaterielRendu").textContent =
+							rentalDetails.status_name || "N/A";
+					} else {
+						document.getElementById("equipementLoué").textContent = "N/A";
+						document.getElementById("dateDePrise").textContent = "N/A";
+						document.getElementById("dateDeRestitution").textContent = "N/A";
+						document.getElementById("etatDuMaterielRendu").textContent = "N/A";
+					}
+					detailsClientModal.show();
+				} catch (error) {
+					console.error("Error fetching user rentals:", error);
+					alert("Error fetching user rentals: " + error.message);
+				}
+			}
 		});
 	});
 
@@ -127,48 +182,55 @@ async function init() {
 	const apiAuth = ApiAuth.getInstance();
 
 	try {
-			await apiAuth.fetchMeAuthUser();
-			const pendingUsers = await fetchPendingUsers(apiAuth);
+		await apiAuth.fetchMeAuthUser();
+		const pendingUsers = await fetchPendingUsers(apiAuth);
+		const processedUsers = await fetchProcessedUsers(apiAuth); // Получение обработанных пользователей
 
-			const studentTables = {
-					development: document.querySelector("#devInfoTable tbody"),
-					cybersecurity: document.querySelector("#sysReseauTable tbody"),
-					marketing: document.querySelector("#comMarketingTable tbody"),
-			};
+		const studentTables = {
+			development: document.querySelector("#devInfoTable tbody"),
+			cybersecurity: document.querySelector("#sysReseauTable tbody"),
+			marketing: document.querySelector("#comMarketingTable tbody"),
+		};
 
-			const teacherTable = document.querySelector("#teachersTable tbody");
+		const teacherTable = document.querySelector("#teachersTable tbody");
 
-			// Проверка наличия таблиц
-			console.log("Student Tables:", studentTables);
-			console.log("Teacher Table:", teacherTable);
+		// Проверка наличия таблиц
+		console.log("Student Tables:", studentTables);
+		console.log("Teacher Table:", teacherTable);
 
-			// Очищаем существующие строки в таблицах
-			Object.values(studentTables).forEach((table) => {
-					if (table) {
-							table.innerHTML = "";
-					} else {
-							console.warn("Table not found");
-					}
-			});
-			if (teacherTable) {
-					teacherTable.innerHTML = "";
+		// Очищаем существующие строки в таблицах
+		Object.values(studentTables).forEach((table) => {
+			if (table) {
+				table.innerHTML = "";
 			} else {
-					console.warn("Teacher table not found");
+				console.warn("Table not found");
 			}
+		});
+		if (teacherTable) {
+			teacherTable.innerHTML = "";
+		} else {
+			console.warn("Teacher table not found");
+		}
 
-			if (pendingUsers && pendingUsers.length > 0) {
-					console.log("Pending Users:", pendingUsers);
-					populateTables(pendingUsers, studentTables, teacherTable);
-			} else {
-					console.log("No pending users found.");
-			}
+		if (pendingUsers && pendingUsers.length > 0) {
+			console.log("Pending Users:", pendingUsers);
+			populateTables(pendingUsers, studentTables, teacherTable);
+		} else {
+			console.log("No pending users found.");
+		}
 
-			attachEventHandlers(apiAuth);
+		if (processedUsers && processedUsers.length > 0) {
+			console.log("Processed Users:", processedUsers);
+			populateTables(processedUsers, studentTables, teacherTable);
+		} else {
+			console.log("No processed users found.");
+		}
+
+		attachEventHandlers(apiAuth);
 	} catch (error) {
-			console.error("Initialization error:", error);
+		console.error("Initialization error:", error);
 	}
 }
-
 
 init();
 
@@ -179,58 +241,3 @@ const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
 	return new Dropdown(dropdownToggleEl);
 });
 
-// document.addEventListener("DOMContentLoaded", function () {
-// 	// Инициализация модального окна
-// 	const detailsModal = new Modal(document.getElementById("detailsClientModal"));
-
-// 	// Обработка кликов по ссылкам для просмотра деталей
-// 	document.querySelectorAll(".view-details").forEach((link) => {
-// 		link.addEventListener("click", function (event) {
-// 			event.preventDefault();
-
-// 			// Заполнение модального окна данными
-// 			const modalBody = document.querySelector(
-// 				"#detailsClientModal .modal-body"
-// 			);
-// 			modalBody.innerHTML = `
-// 							<div class="container pt-5">
-// 									<div class="row justify-content-center">
-// 											<div class="col-md-8">
-// 													<div class="card mb-5">
-// 															<div class="card-body p-5">
-// 																	<div class="row">
-// 																			<div class="col-md-8">
-// 																					<h2 class="card-title mb-4">Informations du client</h2>
-// 																					<p class="text-muted">Coordonnées: +33 1 23 45 67 89</p>
-// 																					<p class="text-muted">Email: jean.dupont@example.com</p>
-// 																					<p class="text-muted">Adresse: 123, rue de la République, Paris</p>
-// 																					<a href="./modifyInfoClient.html" class="btn btn-primary mt-3">Mettre à jour</a>
-// 																					<hr class="my-4">
-// 																					<h4 class="mb-3">Détails de la location:</h4>
-// 																					<p class="mb-2">Équipement loué: Appareil photo professionnel</p>
-// 																					<p class="mb-2">Modèle: Canon EOS R5</p>
-// 																					<p class="mb-2">Début de location: 01/07/2024</p>
-// 																					<p class="mb-2">Fin de location: 31/07/2024</p>
-// 																					<p class="mb-2">Temps restant: <strong>3 jours</strong></p>
-// 																					<p class="mb-2">Statut de la location: <span class="badge badge-success">Active</span></p>
-// 																					<button type="button" class="btn btn-warning mt-3">Prolonger la location</button>
-// 																					<button type="button" class="btn btn-warning mt-3">Arrêter la location</button>
-// 																			</div>
-// 																			<div class="col-md-4 d-flex align-items-center justify-content-center">
-// 																					<div class="client-photo bg-primary">
-// 																							<i class="far fa-user"></i>
-// 																					</div>
-// 																			</div>
-// 																	</div>
-// 															</div>
-// 													</div>
-// 											</div>
-// 									</div>
-// 							</div>
-// 					`;
-
-// 			// Показываем модальное окно
-// 			detailsModal.show();
-// 		});
-// 	});
-// });

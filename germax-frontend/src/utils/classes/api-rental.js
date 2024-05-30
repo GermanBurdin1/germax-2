@@ -103,7 +103,7 @@ export class ApiRental {
 	}
 
 	async getRentals() {
-		console.log("функция getRentals вызывается ")
+		console.log("функция getRentals вызывается ");
 		return fetch(`${this._baseUrl}/`, {
 			method: "GET",
 			headers: {
@@ -112,18 +112,45 @@ export class ApiRental {
 			},
 		})
 			.then((response) => {
-				console.log("response", response)
+				console.log("response", response);
 				if (!response.ok) {
 					return response.json().then((json) => Promise.reject(json));
 				}
 				return response.json();
 			})
 			.then((data) => {
-				console.log("data",data)
+				console.log("data", data);
 				return data.data;
 			})
 			.catch((error) => {
 				console.error("Error in getClientRentals:", error);
+				throw error;
+			});
+	}
+
+	async getClientRentalsByUserId(userId) {
+		const token = this._apiAuth.getToken();
+
+		return await fetch(`${this._baseUrl}/get-client-rentals-by-userid`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: token,
+			},
+			body: JSON.stringify({ user_id: userId }),
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
+				console.log("data", data);
+				return data.data;
+			})
+			.catch((error) => {
+				console.error("Error in getClientRentalsByUserId:", error);
 				throw error;
 			});
 	}
@@ -156,7 +183,7 @@ export class ApiRental {
 
 	async approveRental(loanId) {
 		const body = JSON.stringify({ loanId });
-		console.log("body",body)
+		console.log("body", body);
 
 		return fetch(`${this._baseUrl}/approve`, {
 			method: "PATCH",
@@ -167,14 +194,14 @@ export class ApiRental {
 			body,
 		})
 			.then((response) => {
-				console.log("response", response)
+				console.log("response", response);
 				if (!response.ok) {
 					return response.json().then((json) => Promise.reject(json));
 				}
 				return response.json();
 			})
 			.then((data) => {
-				console.log("data", data)
+				console.log("data", data);
 				return data;
 			})
 			.catch((error) => {

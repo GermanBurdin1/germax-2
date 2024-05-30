@@ -70,6 +70,18 @@ class RentalController
 		echo json_encode(['success' => true, 'data' => $rentals]);
 	}
 
+	public function fetchRentalsByUserId($userId)
+	{
+		if ($userId === null) {
+			echo json_encode(['success' => false, 'message' => 'User ID is missing']);
+			return;
+		}
+
+		$rentals = $this->rentalService->fetchRentalsByUser($userId);
+		echo json_encode(['success' => true, 'data' => $rentals]);
+	}
+
+
 	public function approveRental($data, $token)
 	{
 		$response = $this->rentalService->updateRentalStatus($data['loanId'], 3, 2);

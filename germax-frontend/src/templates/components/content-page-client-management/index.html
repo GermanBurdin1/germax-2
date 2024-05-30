@@ -68,10 +68,6 @@
 									<th>Client</th>
 									<th>Email</th>
 									<th>Téléphone</th>
-									<th>Dernier équipement loué</th>
-									<th>Date de prise</th>
-									<th>Date de restitution</th>
-									<th>État du matériel rendu</th>
 									<th>Statut du client</th>
 									<th>Action</th>
 								</tr>
@@ -90,10 +86,6 @@
 									<th>Client</th>
 									<th>Email</th>
 									<th>Téléphone</th>
-									<th>Dernier équipement loué</th>
-									<th>Date de prise</th>
-									<th>Date de restitution</th>
-									<th>État du matériel rendu</th>
 									<th>Statut du client</th>
 									<th>Action</th>
 								</tr>
@@ -112,10 +104,6 @@
 									<th>Client</th>
 									<th>Email</th>
 									<th>Téléphone</th>
-									<th>Dernier équipement loué</th>
-									<th>Date de prise</th>
-									<th>Date de restitution</th>
-									<th>État du matériel rendu</th>
 									<th>Statut du client</th>
 									<th>Action</th>
 								</tr>
@@ -138,10 +126,6 @@
 							<th>Client</th>
 							<th>Email</th>
 							<th>Téléphone</th>
-							<th>Dernier équipement loué</th>
-							<th>Date de prise</th>
-							<th>Date de restitution</th>
-							<th>État du matériel rendu</th>
 							<th>Statut du client</th>
 							<th>Action</th>
 						</tr>
@@ -155,126 +139,26 @@
 	</div>
 </div>
 
-<!-- <div class="card-body">
-	<div class="table-responsive">
-		<table class="table align-middle">
-				<thead>
-					<tr>
-					<th>Client <button class="btn btn-link p-0 border-0 sortButton" title="Sort by Client"><i
-								class="fas fa-sort"></i></button></th>
-						<th>Email</th>
-						<th>Téléphone</th>
-						<th>Dernier équipement loué</th>
-						<th>Date de prise</th>
-						<th>Date de restitution</th>
-						<th>État du matériel rendu</th>
-						<th>Statut du client</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-				<tr>
-					<td>
-						<div class="d-flex align-items-center">
-							<p class="m-0">Alex Dupont</p>
-						</div>
-					</td>
-					<td>alex.dupont@example.com</td>
-					<td>(123) 456-7890</td>
-					<td>Ordinateur portable</td>
-					<td>15/04/2024</td>
-					<td>22/04/2024</td>
-					<td>
-						<span class="badge bg-warning text-dark">En bon état</span>
-					</td>
-					<td>Autorisé</td>
-					<td>
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-								data-bs-toggle="dropdown" aria-expanded="false">
-								Choisir une action
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
-								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-										data-bs-target="#detailsClientModal">Voir les détails du client</a></li>
-								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
-										data-bs-target="#communication-client">Contacter le client</a></li>
-								<li><a class="dropdown-item delete-client" href="#">Bloquer</a></li>
-								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
-							</ul>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="d-flex align-items-center">
-							<p class="m-0">Béatrice Émond</p>
-						</div>
-					</td>
-					<td>beatrice.emond@example.com</td>
-					<td>(321) 654-9870</td>
-					<td>Scanner 3D</td>
-					<td>10/04/2024</td>
-					<td>20/04/2024</td>
-					<td>
-						<span class="badge bg-danger">Endommagé</span>
-					</td>
-					<td>Accès suspendu</td>
-					<td>
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-								data-bs-toggle="dropdown" aria-expanded="false">
-								Choisir une action
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
-								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
-										data-bs-target="#communication-client">Contacter le client</a></li>
-								<li><a class="dropdown-item delete-client" href="#">Bloquer</a></li>
-								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
-							</ul>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="d-flex align-items-center">
-							<p class="m-0">Claude Mercier</p>
-						</div>
-					</td>
-					<td>claude.mercier@example.com</td>
-					<td>(987) 654-3210</td>
-					<td>Drones de surveillance</td>
-					<td>05/04/2024</td>
-					<td>15/04/2024</td>
-					<td>
-						<span class="badge bg-success">Comme neuf</span>
-					</td>
-					<td>Bloqué</td>
-					<td>
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-								data-bs-toggle="dropdown" aria-expanded="false">
-								Choisir une action
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-										data-bs-target="#detailsModal">Voir les détails des locations</a></li>
-								<li><a class="dropdown-item write-to-manager-action" href="#" data-bs-toggle="modal"
-										data-bs-target="#communication-client">Contacter le client</a></li>
-								<li><a class="dropdown-item delete-client" href="#">Bloquer</a></li>
-								<li><a class="dropdown-item edit-client" href="#">Modifier/ajouter les informations du client</a></li>
-							</ul>
-						</div>
-					</td>
-				</tr>
-				</tbody>
-			</table>
+<!-- Details Modal -->
+<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detailsClientModalLabel">Détails de la location</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Équipement loué: <span id="equipementLoué"></span></p>
+				<p>Date de prise: <span id="dateDePrise"></span></p>
+				<p>Date de restitution: <span id="dateDeRestitution"></span></p>
+				<p>État du matériel rendu: <span id="etatDuMaterielRendu"></span></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
 		</div>
-	</div> -->
+	</div>
+</div>
 
 
 <!-- Modal for user details -->

@@ -48,6 +48,10 @@ class AuthController
 		return $this->authService->get_pending_users();
 	}
 
+	public function get_processed_users() {
+		return $this->authService->get_processed_users();
+	}
+
 	public function update_user_status($user_id, $status, $authorization) {
 		return $this->authService->update_user_status($user_id, $status, $authorization);
 	}

@@ -64,13 +64,19 @@ export class ApiAuth {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify({ user_id: userId, connexion_permission: status, authorization_permission: authorization }),
+			body: JSON.stringify({
+				user_id: userId,
+				connexion_permission: status,
+				authorization_permission: authorization,
+			}),
 		})
 			.then((response) => response.json())
 			.then((data) => {
 				if (data.success !== true) {
 					console.log("Response data:", data);
-					return Promise.reject(data.messages ? data.messages.join(", ") : "Unknown error");
+					return Promise.reject(
+						data.messages ? data.messages.join(", ") : "Unknown error"
+					);
 				}
 				return data;
 			})
@@ -91,14 +97,41 @@ export class ApiAuth {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log("API Response:", data)
+				console.log("API Response:", data);
 				if (!data.success) {
-					return Promise.reject(data.messages ? data.messages.join(", ") : "Unknown error");
+					return Promise.reject(
+						data.messages ? data.messages.join(", ") : "Unknown error"
+					);
 				}
 				return data.data; // Assuming the endpoint returns a list of users in `data.users`
 			})
 			.catch((error) => {
 				console.error("Error fetching pending users:", error);
+				throw error;
+			});
+	}
+
+	async getProcessedUsers() {
+		const token = this.getToken();
+
+		return fetch("http://germax-api/auth/processed_users", {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log("API Response:", data);
+				if (!data.success) {
+					return Promise.reject(
+						data.messages ? data.messages.join(", ") : "Unknown error"
+					);
+				}
+				return data.data; // Assuming the endpoint returns a list of users in `data.users`
+			})
+			.catch((error) => {
+				console.error("Error fetching processed users:", error);
 				throw error;
 			});
 	}

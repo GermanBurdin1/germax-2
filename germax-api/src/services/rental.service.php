@@ -121,6 +121,7 @@ class RentalService
 
 	public function fetchRentalsByUser($userId)
 	{
+		error_log("fetchRentalsByUser called with userId: " . $userId);
 		$sql = "
             SELECT
                 l.id_loan AS id,

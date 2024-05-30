@@ -221,6 +221,20 @@ class AuthService
 		}
 	}
 
+	public function get_processed_users() {
+		try {
+			$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission IN ('authorized', 'declined')");
+			$stmt->execute();
+
+			$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			return renderSuccessAndExit(['Processed users found'], 200, $users);
+		} catch (PDOException $e) {
+			return renderErrorAndExit(['Database error: ' . $e->getMessage()], 500);
+		} catch (Exception $e) {
+			return renderErrorAndExit(['Unexpected error: ' . $e->getMessage()], 500);
+		}
+	}
+
 
 	public function update_user_status($user_id, $status, $authorization)
 	{
