@@ -55,7 +55,7 @@ export class ApiAuth {
 		return this._authUser;
 	}
 
-	async updateUserStatus(userId, status) {
+	async updateUserStatus(userId, status, authorization) {
 		const token = this.getToken();
 
 		return fetch("http://germax-api/auth/update_user_status", {
@@ -64,12 +64,13 @@ export class ApiAuth {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify({ user_id: userId, connexion_permission: status }),
+			body: JSON.stringify({ user_id: userId, connexion_permission: status, authorization_permission: authorization }),
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				if (data.status !== "success") {
-					return Promise.reject(data.message);
+				if (data.success !== true) {
+					console.log("Response data:", data);
+					return Promise.reject(data.messages ? data.messages.join(", ") : "Unknown error");
 				}
 				return data;
 			})
@@ -92,7 +93,7 @@ export class ApiAuth {
 			.then((data) => {
 				console.log("API Response:", data)
 				if (!data.success) {
-					return Promise.reject(data.message);
+					return Promise.reject(data.messages ? data.messages.join(", ") : "Unknown error");
 				}
 				return data.data; // Assuming the endpoint returns a list of users in `data.users`
 			})

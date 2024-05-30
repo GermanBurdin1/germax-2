@@ -16,12 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// Извлекаем переменные из массива
 	$user_id = $_POST['user_id'] ?? NULL;
 	$status = $_POST['connexion_permission'] ?? NULL;
+	$authorization = $_POST['authorization_permission'] ?? NULL;
 
-	if (empty($user_id) || empty($status)) {
+	if (empty($user_id) || empty($status) || empty($authorization)) {
 		renderErrorAndExit(['Missing required fields'], 400);
 	}
 
-	$authController->update_user_status($user_id, $status);
+	$authController->update_user_status($user_id, $status, $authorization);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

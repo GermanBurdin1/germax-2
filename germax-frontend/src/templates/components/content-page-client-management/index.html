@@ -15,8 +15,8 @@
 						aria-controls="students" aria-selected="true">Élèves</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" id="teachers-tab" data-bs-toggle="tab" href="#teachers" role="tab" aria-controls="teachers"
-						aria-selected="false">Enseignants</a>
+					<a class="nav-link" id="teachers-tab" data-bs-toggle="tab" href="#teachers" role="tab"
+						aria-controls="teachers" aria-selected="false">Enseignants</a>
 				</li>
 			</ul>
 		</div>
@@ -277,36 +277,15 @@
 	</div> -->
 
 
-<!-- Modal -->
-<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detailsClientModalLabel">Détails du client</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <!-- Сюда будет загружено содержимое -->
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Modal for user details -->
-<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel" aria-hidden="true">
+<div class="modal fade" id="authorizationClientModal" tabindex="-1" aria-labelledby="authorizationClientModalLabel"
+	aria-hidden="true">
 	<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header">
-							<h5 class="modal-title" id="detailsClientModalLabel">Détails du client</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-							<!-- User details will be dynamically populated here -->
-					</div>
-					<div class="modal-footer">
-							<button type="button" class="btn btn-danger" id="declineUser">Refuser</button>
-							<button type="button" class="btn btn-success" id="approveUser">Gérer l'inscription</button>
-					</div>
+		<div class="modal-content">
+			<div class="modal-body">
+				<button type="button" class="btn btn-success" id="approveUser">Accepter l'inscription</button>
+				<button type="button" class="btn btn-danger" id="declineUser">Refuser</button>
 			</div>
+		</div>
 	</div>
 </div>

@@ -208,21 +208,25 @@ class AuthService
 
 	public function get_pending_users()
 	{
-		$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission = 'pending'");
-		$stmt->execute();
+		try {
+			$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission = 'pending'");
+			$stmt->execute();
 
-		$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		if (empty($users)) {
-			return renderErrorAndExit(['No pending users found'], 404);
+			$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			return renderSuccessAndExit(['Pending users found'], 200, $users);
+		} catch (PDOException $e) {
+			return renderErrorAndExit(['Database error: ' . $e->getMessage()], 500);
+		} catch (Exception $e) {
+			return renderErrorAndExit(['Unexpected error: ' . $e->getMessage()], 500);
 		}
-
-		return renderSuccessAndExit(['Pending users found'], 200, $users);
 	}
 
-	public function update_user_status($user_id, $status)
+
+	public function update_user_status($user_id, $status, $authorization)
 	{
-		$stmt = $this->pdo->prepare("UPDATE user SET connexion_permission = :status WHERE id_user = :user_id");
+		$stmt = $this->pdo->prepare("UPDATE user SET connexion_permission = :status, authorization_permission = :authorization WHERE id_user = :user_id");
 		$stmt->bindParam(':status', $status, PDO::PARAM_STR);
+		$stmt->bindParam(':authorization', $authorization, PDO::PARAM_INT);
 		$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 		$stmt->execute();
 
@@ -230,6 +234,6 @@ class AuthService
 			return renderErrorAndExit(['User not found or status not changed'], 404);
 		}
 
-		return renderSuccessAndExit(['User status updated'], 200);
+		return renderSuccessAndExit(['User status and authorization updated'], 200);
 	}
 }
