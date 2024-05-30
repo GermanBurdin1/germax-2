@@ -127,6 +127,7 @@ class RentalService
                 l.id_loan AS id,
                 l.date_start,
                 l.date_end,
+								l.return_date,
                 l.accord,
                 l.date_accord,
 								l.loan_status,

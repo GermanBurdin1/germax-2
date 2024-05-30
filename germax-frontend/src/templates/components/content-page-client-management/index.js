@@ -93,6 +93,63 @@ function attachEventHandlers(apiAuth) {
 		document.getElementById("detailsClientModal")
 	);
 
+	let currentPage = 1;
+	const itemsPerPage = 3;
+	let rentals = [];
+
+	function renderPage(page) {
+		const modalBody = document.querySelector("#detailsClientModal .modal-body");
+		modalBody.innerHTML = ''; // Очищаем содержимое модального окна
+
+		const startIndex = (page - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		const pageItems = rentals.slice(startIndex, endIndex);
+
+		pageItems.forEach(rental => {
+			const rentalCard = document.createElement('div');
+			rentalCard.className = 'card mb-3';
+			rentalCard.innerHTML = `
+				<div class="card-body">
+					<h5 class="card-title">Équipement: ${rental.model_name || "N/A"}</h5>
+					<p class="card-text"><strong>Date de prise:</strong> ${rental.date_start || "N/A"}</p>
+					<p class="card-text"><strong>Date de restitution:</strong> ${rental.date_end || "N/A"}</p>
+					<p class="card-text"><strong>Date de retour du matériel:</strong> ${rental.return_date || "inconnue à ce jour"}</p>
+					<p class="card-text"><strong>État du matériel rendu:</strong> ${rental.status_name || "N/A"}</p>
+				</div>
+			`;
+			modalBody.appendChild(rentalCard);
+		});
+
+		const pagination = document.createElement('div');
+		pagination.className = 'd-flex justify-content-between mt-3';
+
+		const prevButton = document.createElement('button');
+		prevButton.className = 'btn btn-secondary';
+		prevButton.textContent = 'Previous';
+		prevButton.disabled = currentPage === 1;
+		prevButton.addEventListener('click', () => {
+			if (currentPage > 1) {
+				currentPage--;
+				renderPage(currentPage);
+			}
+		});
+
+		const nextButton = document.createElement('button');
+		nextButton.className = 'btn btn-secondary';
+		nextButton.textContent = 'Next';
+		nextButton.disabled = endIndex >= rentals.length;
+		nextButton.addEventListener('click', () => {
+			if (endIndex < rentals.length) {
+				currentPage++;
+				renderPage(currentPage);
+			}
+		});
+
+		pagination.appendChild(prevButton);
+		pagination.appendChild(nextButton);
+		modalBody.appendChild(pagination);
+	}
+
 	document.querySelectorAll(".view-details").forEach((link) => {
 		link.addEventListener("click", async function (event) {
 			event.preventDefault();
@@ -109,27 +166,14 @@ function attachEventHandlers(apiAuth) {
 				authorizationClientModal.show();
 			} else if (targetModal === "#detailsClientModal") {
 				try {
-					const rentals = await apiRental.getClientRentalsByUserId(userId);
+					rentals = await apiRental.getClientRentalsByUserId(userId);
 					console.log("Rentals:", rentals);
 
-					const modalBody = document.querySelector("#detailsClientModal .modal-body");
-					modalBody.innerHTML = ''; // Очищаем содержимое модального окна
-
-					if (rentals && rentals.length > 0) {
-						rentals.forEach(rental => {
-							const rentalCard = document.createElement('div');
-							rentalCard.className = 'card mb-3';
-							rentalCard.innerHTML = `
-								<div class="card-body">
-									<h5 class="card-title">Équipement: ${rental.model_name || "N/A"}</h5>
-									<p class="card-text"><strong>Date de prise:</strong> ${rental.date_start || "N/A"}</p>
-									<p class="card-text"><strong>Date de restitution:</strong> ${rental.date_end || "N/A"}</p>
-									<p class="card-text"><strong>État du matériel rendu:</strong> ${rental.status_name || "N/A"}</p>
-								</div>
-							`;
-							modalBody.appendChild(rentalCard);
-						});
+					if (rentals.length > 0) {
+						currentPage = 1;
+						renderPage(currentPage);
 					} else {
+						const modalBody = document.querySelector("#detailsClientModal .modal-body");
 						modalBody.innerHTML = '<p class="text-muted">Aucune donnée de location disponible.</p>';
 					}
 
@@ -183,6 +227,7 @@ function attachEventHandlers(apiAuth) {
 			}
 		});
 }
+
 
 
 async function init() {
