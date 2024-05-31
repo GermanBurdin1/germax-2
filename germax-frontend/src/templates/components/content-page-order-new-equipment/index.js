@@ -244,7 +244,7 @@ function renderEquipmentOrder(userData) {
             <label for="equipmentDescription">Commentaire</label>
             <textarea class="form-control" id="equipmentDescription" rows="3"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary form-control mt-3" id="equipmentRequestForm">Faire une requête</button>
+        <button type="submit" class="btn btn-primary form-control mt-3" id="equipmentRequestButton">Faire une requête</button>
     </form>
 </div>
 
@@ -256,7 +256,7 @@ function renderEquipmentOrder(userData) {
 		listOrdersTitle.innerHTML = listOrdersTitleMarkup;
 		// отправка на equipment_requests
 		document
-			.getElementById("equipmentRequestForm")
+			.getElementById("equipmentRequestButton")
 			.addEventListener("submit", function (event) {
 				event.preventDefault(); // Предотвратить стандартное поведение формы
 

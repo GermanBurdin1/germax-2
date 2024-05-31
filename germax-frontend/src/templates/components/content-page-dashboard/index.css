@@ -18,3 +18,261 @@
 	color: #fff;
 	background-color: #dc3545;
 }
+
+/* Основные цвета */
+:root {
+	--primary-color: #E7717D;
+	--secondary-color: #C2CAD0;
+	--tertiary-color: #C2B9B0;
+	--quaternary-color: #7E685A;
+	--accent-color: #AFD275;
+}
+
+body, html {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+	padding-top: 70px; /* Высота вашего хедера */
+}
+
+/* Стили для хедера */
+header {
+	background-color: var(--color-primary);
+	color: white;
+	padding: 1rem;
+}
+
+footer {
+	background-color: var(--quaternary-color);
+	color: white;
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	height: 110px; /* Установить фиксированную высоту */
+	overflow: hidden; /* Скрыть верхнюю и нижнюю части */
+	display: flex;
+	align-items: center; /* Вертикальное центрирование текста */
+	justify-content: center; /* Горизонтальное центрирование текста */
+}
+
+/* Общие стили для контейнера */
+.container {
+	padding-top: 60px; /* Отступ сверху для фиксированного хедера */
+	padding-bottom: 20px;
+}
+
+/* Стили для навигации */
+/* .navbar {
+	background-color: var(--quaternary-color);
+} */
+
+.navbar-brand {
+	color: var(--primary-color);
+}
+
+.navbar .nav-link {
+	color: var(--secondary-color);
+}
+
+.navbar .nav-link:hover {
+	color: var(--primary-color);
+}
+
+.navbar .btn-auth {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.navbar .btn-auth:hover {
+	background-color: var(--accent-color);
+}
+
+/* Вертикальная навигация */
+.nav-pills .nav-link {
+	color: var(--quaternary-color);
+	background-color: var(--secondary-color);
+	margin-bottom: 5px;
+}
+
+.nav-pills .nav-link.active {
+	color: white;
+	background-color: var(--primary-color);
+}
+
+/* Стили для навигации */
+/* .navbar {
+	background-color: var(--quaternary-color);
+} */
+
+/* .navbar-light {
+	background-color: var(--quaternary-color);
+} */
+
+/* Удалить белый фон вокруг элементов */
+/* .navbar-light .navbar-nav .nav-link,
+.navbar-light .navbar-nav .dropdown-menu,
+.navbar-light .navbar-nav .btn-auth {
+	background-color: var(--quaternary-color);
+} */
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .dropdown-menu:hover,
+.navbar-light .navbar-nav .btn-auth:hover {
+	background-color: var(--accent-color);
+}
+
+/* Таблицы */
+.table {
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+	background-color: var(--secondary-color);
+	color: var(--quaternary-color);
+}
+
+.table td {
+	color: var(--quaternary-color);
+}
+
+/* Модальные окна */
+.modal-content {
+	background-color: var(--secondary-color);
+	border-radius: 10px;
+}
+
+.modal-header, .modal-footer {
+	border: none;
+}
+
+.modal-title {
+	color: var(--quaternary-color);
+}
+
+.modal-body {
+	color: var(--quaternary-color);
+}
+
+.modal-footer .btn-secondary {
+	background-color: var(--tertiary-color);
+	color: white;
+}
+
+.modal-footer .btn-primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.modal-footer .btn-secondary:hover, .modal-footer .btn-primary:hover {
+	background-color: var(--accent-color);
+}
+
+
+/* réglages */
+
+/* Стили для вкладок настроек */
+.settings-nav .nav-link {
+	color: var(--quaternary-color);
+	background-color: var(--secondary-color);
+	border: 1px solid var(--tertiary-color);
+	border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.settings-nav .nav-link.active {
+	color: white;
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+}
+
+.settings-nav .nav-link:hover {
+	color: white;
+	background-color: var(--accent-color);
+	border-color: var(--primary-color);
+}
+
+/* Стили для содержимого вкладок настроек */
+.settings-tab-content .settings-tab-pane {
+	background-color: var(--secondary-color);
+	border: 1px solid var(--tertiary-color);
+	border-top: none;
+	border-radius: 0 0 0.375rem 0.375rem;
+	padding: 20px;
+}
+
+/* Стили для карточек настроек */
+.settings-card {
+	background-color: var(--secondary-color);
+	border: none;
+	border-radius: 10px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.settings-card .card-body {
+	color: var(--quaternary-color);
+}
+
+/* Стили для форм настроек */
+.settings-card .form-label {
+	color: var(--quaternary-color);
+}
+
+.settings-card .form-control {
+	background-color: white;
+	border: 1px solid var(--tertiary-color);
+	color: var(--quaternary-color);
+}
+
+.settings-card .form-control:focus {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 5px rgba(231, 113, 125, 0.5);
+}
+
+/* Стили для кнопок настроек */
+.settings-card .btn-primary {
+	background-color: var(--primary-color);
+	color: white;
+	border: none;
+}
+
+.settings-card .btn-primary:hover {
+	background-color: var(--accent-color);
+}
+
+.settings-card .btn-secondary {
+	background-color: var(--tertiary-color);
+	color: white;
+	border: none;
+}
+
+.settings-card .btn-secondary:hover {
+	background-color: var(--accent-color);
+}
+
+/* Стили для текста настроек */
+.settings-card h1, .settings-card h2, .settings-card h3, .settings-card h4, .settings-card h5, .settings-card h6 {
+	color: var(--quaternary-color);
+}
+
+.settings-card p, .settings-card span {
+	color: var(--quaternary-color);
+}
+
+/* Дополнительные стили для улучшения пользовательского интерфейса */
+.settings-card .mb-2, .settings-card .mb-3, .settings-card .mb-4, .settings-card .mt-3, .settings-card .mt-4 {
+	margin-bottom: 1rem !important;
+	margin-top: 1rem !important;
+}
+
+.settings-card .shadow-sm {
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}

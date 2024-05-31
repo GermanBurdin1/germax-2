@@ -107,21 +107,10 @@ function getManagerHorizontalNav() {
 					<span id="notificationCount" class="badge badge-danger" style="display:none;">0</span>
 			</a>
 		</li>
-
 		<li class="nav-item">
 			<a class="nav-link" href="#settings" id="settings-link">
 				<i class="fa fa-cog" aria-hidden="true"></i>
 			</a>
-		</li>
-		<li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<i class="fa fa-user"></i>
-			</a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				<a class="dropdown-item" href="./">Profil</a>
-				<a class="dropdown-item" href="#" id="settings-dropdown-link">Paramètres</a>
-				<a class="dropdown-item" href="login.html">Déconnexion</a>
-			</div>
 		</li>
 	</ul>
 </div>`;
@@ -234,7 +223,74 @@ function returnSettingsTab() {
 
 		</div>
 		<!-- Ajoutez le contenu d'autres onglets ici si nécessaire -->
-	</div>`;
+		<ul class="nav nav-tabs settings-nav" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link settings-nav-link" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">Général</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link settings-nav-link" id="settings-tab" data-bs-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Paramètres</a>
+    </li>
+    <!-- Ajoutez d'autres onglets ici -->
+</ul>
+<div class="tab-content settings-tab-content" id="myTabContent">
+    <div class="tab-pane fade settings-tab-pane" id="general" role="tabpanel" aria-labelledby="general-tab">
+        <div class="card shadow-sm mt-3 settings-card">
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Nom complet</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Entrez le nom complet">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactNumber" class="form-label">Contact</label>
+                        <input type="text" class="form-control" id="contactNumber" placeholder="Entrez le numéro de contact">
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailId" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="emailId" placeholder="Entrez l'email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="birthDay" class="form-label">Date de naissance</label>
+                        <input type="text" class="form-control" id="birthDay" placeholder="JJ/MM/AAAA">
+                    </div>
+                    <div class="mb-3">
+                        <label for="about" class="form-label">À propos de vous</label>
+                        <textarea class="form-control" id="about" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade settings-tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+        <div class="card shadow-sm mt-3 settings-card">
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="fullName">Nom complet</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Entrez votre nom complet">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Numéro de contact</label>
+                        <input type="tel" class="form-control" id="contactNumber" placeholder="Entrez votre numéro de contact">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailAddress">Adresse Email</label>
+                        <input type="email" class="form-control" id="emailAddress" placeholder="Entrez votre email">
+                    </div>
+                    <div class="form-group">
+                        <label for="birthDate">Date de naissance</label>
+                        <input type="date" class="form-control" id="birthDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="aboutYou">À propos de vous</label>
+                        <textarea class="form-control" id="aboutYou" rows="3" placeholder="Parlez un peu de vous"></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+`;
 }
 
 function returnSupportModal() {

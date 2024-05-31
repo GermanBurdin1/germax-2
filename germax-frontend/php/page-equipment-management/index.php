@@ -15,7 +15,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '\php-utils\serve-html-file.php');
 </head>
 <body>
 	<?php serveHtmlFile('dist/header.html'); ?>
-	<?php serveHtmlFile('dist/content-page-equipment-management.html'); ?>
+	<main>
+		<?php serveHtmlFile('dist/content-page-equipment-management.html'); ?>
+	</main>
 	<?php serveHtmlFile('dist/footer.html'); ?>
 </body>
 </html>

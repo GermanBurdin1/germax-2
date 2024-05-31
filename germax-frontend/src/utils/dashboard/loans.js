@@ -474,7 +474,7 @@ function returnLoanRequestModal() {
 }
 
 export function returnLoanFormModal() {
-	return `<div class="modal fade show" id="loanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
+	return `<div class="modal fade" id="loanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-lg">
 	<div class="modal-content">
 		<div class="modal-header">

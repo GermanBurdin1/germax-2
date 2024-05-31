@@ -11,3 +11,251 @@
 	margin-bottom: 10px; /* Отступ между группами строк */
 	border-radius: 5px; /* Скругление углов */
 }
+
+/* Основные цвета */
+:root {
+	--primary-color: #E7717D;
+	--secondary-color: #C2CAD0;
+	--tertiary-color: #C2B9B0;
+	--quaternary-color: #7E685A;
+	--accent-color: #AFD275;
+}
+
+body, html {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+	padding-top: 70px; /* Высота вашего хедера */
+}
+
+/* Стили для хедера */
+header {
+	background-color: var(--primary-color);
+	color: white;
+	padding: 1rem;
+}
+
+footer {
+	background-color: var(--quaternary-color);
+	color: white;
+	padding: 0.25rem 0; /* Уменьшить padding */
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	height: 120px; /* Установить фиксированную высоту */
+	overflow: hidden; /* Скрыть верхнюю и нижнюю части */
+	display: flex;
+	align-items: center; /* Вертикальное центрирование текста */
+	justify-content: center; /* Горизонтальное центрирование текста */
+}
+
+/* Общие стили для контейнера */
+.container {
+	padding-top: 60px; /* Отступ сверху для фиксированного хедера */
+	padding-bottom: 20px;
+}
+
+/* Стили для навигации */
+.navbar-brand {
+	color: var(--primary-color);
+}
+
+.navbar .nav-link {
+	color: var(--secondary-color);
+}
+
+.navbar .nav-link:hover {
+	color: var(--primary-color);
+}
+
+.navbar .btn-auth {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.navbar .btn-auth:hover {
+	background-color: var(--accent-color);
+}
+
+/* Вертикальная навигация */
+.nav-pills .nav-link {
+	color: var(--quaternary-color);
+	background-color: var(--secondary-color);
+	margin-bottom: 5px;
+}
+
+.nav-pills .nav-link.active {
+	color: white;
+	background-color: var(--primary-color);
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .dropdown-menu:hover,
+.navbar-light .navbar-nav .btn-auth:hover {
+	background-color: var(--accent-color);
+}
+
+/* Таблицы */
+.table {
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+	background-color: var(--secondary-color);
+	color: var(--quaternary-color);
+}
+
+.table td {
+	color: var(--quaternary-color);
+}
+
+/* Модальные окна */
+.modal-content {
+	background-color: var(--secondary-color);
+	border-radius: 10px;
+}
+
+.modal-header, .modal-footer {
+	border: none;
+}
+
+.modal-title {
+	color: var(--quaternary-color);
+}
+
+.modal-body {
+	color: var(--quaternary-color);
+}
+
+.modal-footer .btn-secondary {
+	background-color: var(--tertiary-color);
+	color: white;
+}
+
+.modal-footer .btn-primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.modal-footer .btn-secondary:hover, .modal-footer .btn-primary:hover {
+	background-color: var(--accent-color);
+}
+
+/* Дополнительные стили для форм и таблиц на странице заказов */
+#titleAddingOrders, #titleOrders, #listOrdersTitle, #titleOrdersRequest {
+	color: var(--quaternary-color);
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+#orderForm, #equipmentAddingContainer {
+	background-color: var(--secondary-color);
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+}
+
+.table-responsive {
+	margin-top: 20px;
+}
+
+/* Стили для кнопок действий в таблице */
+.dropdown-item {
+	color: var(--quaternary-color);
+}
+
+.dropdown-item:hover {
+	background-color: var(--accent-color);
+	color: white;
+}
+
+.btn-secondary.dropdown-toggle {
+	background-color: var(--tertiary-color);
+	color: white;
+}
+
+.btn-secondary.dropdown-toggle:hover {
+	background-color: var(--accent-color);
+	color: white;
+}
+
+/* Модальные окна */
+.modal-content {
+	background-color: var(--secondary-color);
+	border-radius: 10px;
+}
+
+.modal-header, .modal-footer {
+	border: none;
+}
+
+.modal-title {
+	color: var(--quaternary-color);
+}
+
+.modal-body {
+	color: var(--quaternary-color);
+}
+
+.modal-footer .btn-secondary {
+	background-color: var(--tertiary-color);
+	color: white;
+}
+
+.modal-footer .btn-primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.modal-footer .btn-secondary:hover, .modal-footer .btn-primary:hover {
+	background-color: var(--accent-color);
+}
+
+/* Стили для формы в модальных окнах */
+.form-label {
+	color: var(--quaternary-color);
+}
+
+.form-control {
+	background-color: white;
+	border: 1px solid var(--tertiary-color);
+	color: var(--quaternary-color);
+}
+
+.form-control:focus {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 5px rgba(231, 113, 125, 0.5);
+}
+
+#equipmentRequestButton {
+	background-color: var(--primary-color); /* Цвет кнопки */
+	color: white;
+	border: none;
+	transition: background-color 0.3s ease;
+}
+
+#equipmentRequestButton:hover {
+	background-color: var(--accent-color); /* Цвет кнопки при наведении */
+	color: white;
+}
+
+.btn-back {
+	color: #7E685A !important;
+	margin-top: 75px;
+	font-size: 1.5rem;
+	display: block;
+	position: absolute;
+	left: 15px;
+	top: 90px;
+}

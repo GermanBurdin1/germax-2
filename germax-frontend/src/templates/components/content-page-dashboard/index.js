@@ -131,7 +131,7 @@ Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 
 function initListeners() {
 	// Для navbarDropdownMenuLink
-	initializeDropdown();
+	// initializeDropdown();
 	const notificationsModalPlace = document.getElementById(
 		"notificationsModalPlace"
 	);
@@ -144,6 +144,7 @@ function initListeners() {
 
 	// Контейнер модалки для админа
 	notificationsModalPlace.innerHTML = returnNotificationsModal();
+	console.log(notificationsModalPlace.innerHTML);
 	supportModalContainer.innerHTML = returnSupportModal();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
@@ -152,6 +153,7 @@ function initListeners() {
 	const otherLoansFormModalElement = document.getElementById("loanFormModal");
 	const clientLoansHistoryModal = document.getElementById("clientLoansModal");
 	const supportModalElement = document.getElementById("supportModal");
+
 	const supportModal = new Modal(supportModalElement);
 
 	let otherLoansFormModal, clientsHistoryModal;
@@ -339,12 +341,29 @@ function renderDashboard(responseData) {
 	updateNotificationsModal(responseData.name_permission);
 	const userId = JSON.parse(localStorage.getItem("id_user"));
 	getNotifications(userId);
-	const notificationsModal = document.getElementById("notificationsModal");
-	if (notificationsModal) {
-		notificationsModal.addEventListener("show.bs.modal", async function () {
-			await markNotificationsAsRead(userId);
+	// Инициализация notificationsModal перенесена сюда
+	const notificationsModalElement =
+		document.getElementById("notificationsModal");
+	if (notificationsModalElement) {
+		const notificationsModal = new Modal(notificationsModalElement);
+
+		notificationsModalElement.addEventListener(
+			"show.bs.modal",
+			async function () {
+				await markNotificationsAsRead(userId);
+			}
+		);
+
+		notificationsModalElement.addEventListener("shown.bs.modal", function () {
+			const backdrop = document.querySelector(".modal-backdrop");
+			if (backdrop) {
+				backdrop.remove();
+			}
 		});
+	} else {
+		console.error("notificationsModalElement not found");
 	}
+
 	setupCancelLoansModal();
 }
 
@@ -530,7 +549,9 @@ function updateTableRowStatus(requestId, status) {
 }
 
 function setupCancelReservationModal() {
-	const cancelReservationModal = new Modal(document.getElementById("request--reverse-loan-modal"));
+	const cancelReservationModal = new Modal(
+		document.getElementById("request--reverse-loan-modal")
+	);
 
 	document.querySelector(".table").addEventListener("click", (event) => {
 		if (event.target.dataset.bsTarget === "#request--reverse-loan-modal") {
@@ -575,50 +596,52 @@ function setupCancelReservationModal() {
 }
 
 function setupCancelLoansModal() {
-	const cancelLoansModal = new Modal(document.getElementById("reverse-loan-modal"));
+	const reverseLoanModalElement = document.getElementById("reverse-loan-modal");
+	const cancelLoansModal = new Modal(reverseLoanModalElement);
 
 	document.querySelector(".table").addEventListener("click", (event) => {
-			if (event.target.dataset.bsTarget === "#reverse-loan-modal") {
-					event.preventDefault();
-					const requestId = event.target.closest("tr").getAttribute("data-id");
-					const modal = document.getElementById("reverse-loan-modal");
-					modal.setAttribute("data-id", requestId);
-					cancelLoansModal.show();
-			}
+		if (event.target.dataset.bsTarget === "#reverse-loan-modal") {
+			event.preventDefault();
+			const requestId = event.target.closest("tr").getAttribute("data-id");
+			const modal = document.getElementById("reverse-loan-modal");
+			modal.setAttribute("data-id", requestId);
+			cancelLoansModal.show();
+		}
 	});
 
 	const cancelLoanButton = document.getElementById("cancelLoanButton");
 	if (cancelLoanButton) {
-			cancelLoanButton.addEventListener("click", async function () {
-					const requestId = document.getElementById("reverse-loan-modal").getAttribute("data-id");
+		cancelLoanButton.addEventListener("click", async function () {
+			const requestId = document
+				.getElementById("reverse-loan-modal")
+				.getAttribute("data-id");
 
-					if (!requestId) {
-							alert("Не удалось получить ID запроса.");
-							return;
-					}
+			if (!requestId) {
+				alert("Не удалось получить ID запроса.");
+				return;
+			}
 
-					try {
-							const response = await apiRental.cancelRental(requestId);
+			try {
+				const response = await apiRental.cancelRental(requestId);
 
-							if (response.success) {
-									alert("Reservation cancelled successfully.");
-									// Обновляем UI, чтобы отразить отмену
-									updateTableRowStatus(requestId, "annulé");
-									// Закрываем модальное окно
-									cancelLoansModal.hide();
-							} else {
-									alert("Failed to cancel reservation: " + response.message);
-							}
-					} catch (error) {
-							console.error("Error cancelling reservation:", error);
-							alert("An error occurred while cancelling the reservation.");
-					}
-			});
+				if (response.success) {
+					alert("Reservation cancelled successfully.");
+					// Обновляем UI, чтобы отразить отмену
+					updateTableRowStatus(requestId, "annulé");
+					// Закрываем модальное окно
+					cancelLoansModal.hide();
+				} else {
+					alert("Failed to cancel reservation: " + response.message);
+				}
+			} catch (error) {
+				console.error("Error cancelling reservation:", error);
+				alert("An error occurred while cancelling the reservation.");
+			}
+		});
 	} else {
-			console.error("cancelLoanButton element not found");
+		console.error("cancelLoanButton element not found");
 	}
 }
-
 
 //в разработке
 // document
