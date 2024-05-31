@@ -748,6 +748,26 @@ function loadUserNotifications(userType) {
 		.join("");
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+	const logoutButton = document.getElementById("logoutButton");
+
+	if (logoutButton) {
+		logoutButton.addEventListener("click", function(event) {
+			event.preventDefault();
+			logout();
+		});
+	}
+
+	function logout() {
+		// Удаляем данные аутентификации из localStorage
+		localStorage.removeItem("authToken");
+		localStorage.removeItem("id_user");
+
+		// Перенаправляем пользователя на корневую страницу сайта
+		window.location.href = "/"; // Перенаправить на корневую страницу
+	}
+});
+
 //в разработке
 // document
 // 	.getElementById("communicationForm")
