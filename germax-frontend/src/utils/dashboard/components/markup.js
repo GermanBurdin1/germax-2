@@ -10,7 +10,7 @@ function getAdminNav() {
 <a class="nav-link" id="adminReportsLink">Faire un rapport</a>
 <a class="nav-link" id="adminFeedBackLink">Retours et remarques</a>
 <a class="nav-link" id="adminSettingsLink">Réglages globales</a>
-<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>`;
+`;
 }
 
 function getRentalManagerNav() {
@@ -20,7 +20,8 @@ function getRentalManagerNav() {
 	<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des réservations</a>
 	<a class="nav-link" id="usersManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
 	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Gestion de l'équipement</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>`;
+	</div>
+`;
 }
 
 function getStockmanNav() {
@@ -29,7 +30,6 @@ function getStockmanNav() {
 	<a class="nav-link" id="orderNewEquipment" href="/page-orders">Commander un nouvel équipement</a>
 	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Nouvelles commandes</a>
 	<a class="nav-link" id="locationsLink" href="/page-stockman-equipment-under-repair">Matériel en maintenance ou sous signalement</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>`;
 }
 
@@ -41,7 +41,6 @@ function getStudentNav() {
 	<a role="button" href="/loan-equipment" class="nav-link">
 		Louer un nouveau matériel
 	</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>
 `;
 }
@@ -49,14 +48,11 @@ function getStudentNav() {
 function getTeacherNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
-	<a class="nav-link" id="myLocations" href="page-info-user">Mes
-		locations. Сделать таблицу!!!</a>
-		<a role="button" href="/loan-equipment" class="nav-link">
+	<a class="nav-link" id="loansRequests" href="#" data-bs-toggle="tab" data-bs-target="#activeRequestReservations">Mes demandes de locations</a>
+	<a class="nav-link" id="loansRealized" href="#" data-bs-toggle="tab" data-bs-target="#rentalHistoryLink">Mes locations</a>
+	<a role="button" href="/loan-equipment" class="nav-link">
 		Louer un nouveau matériel
 	</a>
-	<a class="nav-link active" id="pageTeacherEquipmentUsageReports" href="/page-teacher-equipment-usage-reports" data-bs-toggle="pill">Rapport sur l'utilisation de l'équipement
-	</a>
-	<a class="nav-link" id="indicateursLink" href="/page-loans-contact-manager">Messagerie</a>
 </div>`;
 }
 

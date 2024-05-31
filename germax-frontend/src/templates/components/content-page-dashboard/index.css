@@ -276,3 +276,120 @@ footer {
 .settings-card .shadow-sm {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
+
+
+/* Личный кабинет */
+
+/* Стили для секции профиля */
+#profileSection {
+	padding: 20px;
+	background-color: var(--secondary-color);
+	border-radius: 10px;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#profileGreeting {
+	font-size: 1.5em;
+	color: var(--quaternary-color);
+	margin-bottom: 10px;
+}
+
+#profileAvatarContainer {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	margin: 20px auto; /* Центрирование контейнера и отступы */
+	border-radius: 50%;
+	border: 2px solid var(--accent-color); /* Зеленая рамка */
+	background-color: var(--secondary-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1; /* Высокий z-index для контейнера аватарки */
+}
+
+#profileAvatarContainer img {
+	display: none; /* Скрыть изображение по умолчанию */
+}
+
+#profileAvatarContainer img.show {
+	display: block; /* Показать изображение если есть аватар */
+	width: 100%; /* Убедиться, что изображение заполняет контейнер */
+	height: 100%;
+	border-radius: 50%; /* Круглая форма */
+	object-fit: cover; /* Обеспечить правильное отображение внутри круга */
+}
+
+#avatarPlaceholder.show {
+	display: block; /* Показать текст если нет аватара */
+}
+
+#profileAvatar {
+	border-radius: 50%;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: none; /* Скрыто по умолчанию */
+}
+
+#avatarPlaceholder {
+	color: var(--quaternary-color); /* Dark color for the text */
+	text-align: center;
+	font-size: 14px;
+	display: none; /* Hide the text by default */
+}
+
+#divider {
+	width: calc(100% - 300px); /* Adjust the width to ensure it does not overlap with the sidebar */
+	height: 4px;
+	background-color: var(--accent-color);
+	position: relative;
+	top: -102px; /* Move it up by half the avatar height and half the divider height */
+	left: 50%; /* Center it horizontally */
+	transform: translateX(-50%); /* Center it horizontally */
+	z-index: 0; /* Lower z-index for the divider */
+	border-radius: 2px;
+	transition: background-color 0.3s ease;
+}
+
+#divider:hover {
+	background-color: var(--primary-color);
+}
+
+/* Стили для уведомлений */
+#userNotifications {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	background-color: var(--secondary-color);
+	border-radius: 10px;
+	padding: 20px;
+}
+
+.user-notification {
+	width: 100%;
+	max-width: 500px;
+	margin-bottom: 10px;
+	padding: 15px;
+	background-color: var(--primary-color);
+	color: white;
+	font-size: 1.2em;
+	border-radius: 5px;
+	text-align: center;
+	transition: background-color 0.3s ease;
+}
+
+.user-notification:hover {
+	background-color: var(--accent-color);
+}
+
+.user-notification a {
+	color: white;
+	text-decoration: none;
+}
+
+.user-notification a:hover {
+	text-decoration: underline;
+}

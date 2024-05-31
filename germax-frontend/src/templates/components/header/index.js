@@ -20,7 +20,7 @@ function addDashboardNavItems() {
 			</div>
 			<div id="notificationsModalPlace" class="ms-3"></div>
 			<div id="supportModalContainer" class="ms-3"></div>
-			<button class="btn btn-auth ms-3" onclick="location.href='auth.html'">Déconnexion/Inscription</button>
+			<button class="btn btn-auth ms-3" onclick="location.href='auth.html'">Déconnexion</button>
 		</div>
 	`;
 

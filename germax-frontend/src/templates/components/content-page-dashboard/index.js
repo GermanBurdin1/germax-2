@@ -192,7 +192,7 @@ function initListeners() {
 				myLoans.style.display = "none";
 				clientLoansHistory.style.display = "none";
 				settingsTabContent.style.display = "none";
-				// Другие действия для загрузки профиля
+				document.getElementById("profileSection").style.display = "block";
 				break;
 			case "adminReportsLink":
 				event.preventDefault();
@@ -342,6 +342,8 @@ function renderDashboard(responseData) {
 	const userId = JSON.parse(localStorage.getItem("id_user"));
 	getNotifications(userId);
 	// Инициализация notificationsModal перенесена сюда
+	loadUserProfile(responseData);
+	loadUserNotifications(responseData.name_permission);
 	const notificationsModalElement =
 		document.getElementById("notificationsModal");
 	if (notificationsModalElement) {
@@ -641,6 +643,91 @@ function setupCancelLoansModal() {
 	} else {
 		console.error("cancelLoanButton element not found");
 	}
+}
+
+//личный кабинет
+function loadUserProfile(user) {
+	const profileSection = document.getElementById("profileSection");
+	const profileGreeting = document.getElementById("profileGreeting");
+	const profileAvatar = document.getElementById("profileAvatar");
+	const avatarPlaceholder = document.getElementById("avatarPlaceholder");
+
+	profileGreeting.innerHTML = `Bonjour, ${user.first_name} ${user.last_name}!`;
+
+	if (user.avatar_url) {
+		profileAvatar.src = user.avatar_url;
+		profileAvatar.classList.add("show");
+		avatarPlaceholder.classList.remove("show");
+	} else {
+		profileAvatar.classList.remove("show");
+		avatarPlaceholder.classList.add("show");
+	}
+
+	profileSection.style.display = "block";
+}
+
+function getManagerDashboardNotifications() {
+	return [
+		{
+			message: "nouvelles demandes de location d'équipement +2",
+			linkText: "Voir les demandes",
+			linkHref: "/page-bookings-management",
+		},
+		{
+			message: "nouveaux utilisateurs potentiels +3",
+			linkText: "Voir les utilisateurs",
+			linkHref: "/page-client-management",
+		},
+	];
+}
+
+function getStockmanDashboardNotifications() {
+	return [
+		{
+			message: "+1 nouvelle demande de location d'équipement",
+			linkText: "Voir les demandes",
+			linkHref: "/page-bookings-management",
+		},
+		{
+			message: "+1 nouveau équipement disponible",
+			linkText: "Voir l'équipement",
+			linkHref: "/page-equipment-management",
+		},
+	];
+}
+
+function getStudentTeacherDashboardNotifications() {
+	return [
+		{
+			message: "Votre dernière location: Équipement XYZ",
+			linkText: "Voir les détails",
+			linkHref: "/page-loans-details",
+		},
+	];
+}
+
+function createNotificationElement(notification) {
+	return `
+			<a href="${notification.linkHref}" class="list-group-item list-group-item-action">
+					${notification.message}
+			</a>
+	`;
+}
+
+function loadUserNotifications(userType) {
+	let notifications = [];
+	if (userType === "rental-manager") {
+		notifications = getManagerDashboardNotifications();
+	} else if (userType === "stockman") {
+		notifications = getStockmanDashboardNotifications();
+	} else if (userType === "student" || userType === "teacher") {
+		notifications = getStudentTeacherDashboardNotifications();
+	}
+
+	const notificationsContainer = document.getElementById("userNotifications");
+	notificationsContainer.innerHTML = notifications
+		.map(createNotificationElement)
+		.join("");
 }
 
 //в разработке
