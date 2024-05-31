@@ -29,11 +29,11 @@ body, html {
 body {
 	display: flex;
 	flex-direction: column;
+	min-height: 100vh; /* Устанавливаем минимальную высоту */
 }
 
 main {
-	flex: 1;
-	padding-top: 70px; /* Высота вашего хедера */
+	flex: 1; /* Раздвигаем основной контент */
 }
 
 /* Стили для хедера */
@@ -41,20 +41,6 @@ header {
 	background-color: var(--primary-color);
 	color: white;
 	padding: 1rem;
-}
-
-footer {
-	background-color: var(--quaternary-color);
-	color: white;
-	padding: 0.25rem 0; /* Уменьшить padding */
-	position: fixed;
-	width: 100%;
-	bottom: 0;
-	height: 120px; /* Установить фиксированную высоту */
-	overflow: hidden; /* Скрыть верхнюю и нижнюю части */
-	display: flex;
-	align-items: center; /* Вертикальное центрирование текста */
-	justify-content: center; /* Горизонтальное центрирование текста */
 }
 
 /* Общие стили для контейнера */

@@ -231,7 +231,9 @@ function initializeRegistrationForm() {
 					console.log("Success:", data); // Вывести данные ответа в консоль
 					if (data.success) {
 						// Переход на страницу логина
-						switchToLogin();
+						// switchToLogin();
+						alert("Le manager reviendra vers vous dans les meilleurs délais!");
+						window.location.href = "/page-dashboard";
 					}
 				})
 				.catch((error) => {

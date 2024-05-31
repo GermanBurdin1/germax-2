@@ -50,19 +50,6 @@ header {
 	padding: 1rem;
 }
 
-footer {
-	background-color: var(--quaternary-color);
-	color: white;
-	position: fixed;
-	width: 100%;
-	bottom: 0;
-	height: 110px; /* Установить фиксированную высоту */
-	overflow: hidden; /* Скрыть верхнюю и нижнюю части */
-	display: flex;
-	align-items: center; /* Вертикальное центрирование текста */
-	justify-content: center; /* Горизонтальное центрирование текста */
-}
-
 /* Общие стили для контейнера */
 .container {
 	padding-top: 60px; /* Отступ сверху для фиксированного хедера */

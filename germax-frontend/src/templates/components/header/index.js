@@ -1,3 +1,4 @@
+
 function addDashboardNavItems() {
 	const navbar = document.querySelector(".navbar-collapse");
 
