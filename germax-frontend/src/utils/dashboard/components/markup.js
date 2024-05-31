@@ -126,21 +126,6 @@ function getStockmanStudentTeacherHorizontalNav() {
 				<i class="fa fa-cog" aria-hidden="true"></i>
 			</a>
 		</li>
-		<li class="nav-item">
-				<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#supportModal">
-					<i class="fa fa-question-circle">Support</i>
-				</a>
-		</li>
-		<li class="nav-item dropdown" id="nav-item-dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" aria-haspopup="true" aria-expanded="false">
-				<i class="fa fa-user"></i>
-			</a>
-			<div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
-				<a class="dropdown-item" href="./">Profil</a>
-				<a class="dropdown-item" href="#" id="settings-dropdown-link">Paramètres</a>
-				<a class="dropdown-item" href="login.html">Déconnexion</a>
-			</div>
-		</li>
 	</ul>
 </div>`;
 }

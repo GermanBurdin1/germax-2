@@ -184,15 +184,14 @@ function initListeners() {
 		const adminSettingsContainter = document.getElementById(
 			"adminContainerSettingsModal"
 		);
+		const profileSection = document.getElementById("profileSection");
 
 		switch (targetId) {
 			case "accountLink": // Добавить обработку клика на "Profil"
 				event.preventDefault();
 				// Повторная загрузка текущего контента при переходе на "Profil"
-				myLoans.style.display = "none";
-				clientLoansHistory.style.display = "none";
-				settingsTabContent.style.display = "none";
-				document.getElementById("profileSection").style.display = "block";
+				hideActiveTabs(profileSection);
+				profileSection.style.display = "block";
 				break;
 			case "adminReportsLink":
 				event.preventDefault();
@@ -248,7 +247,6 @@ function initListeners() {
 				}
 				break;
 			case "settings-link":
-			case "settings-dropdown-link":
 				event.preventDefault();
 				if (settingsTabContent.dataset.visible === "true") {
 					settingsTabContent.style.display = "none";
@@ -322,6 +320,7 @@ function hideActiveTabs(except) {
 		document.getElementById("clientLoansHistory"),
 		document.getElementById("tabPlace"),
 		document.getElementById("loanFormModal"),
+		document.getElementById("profileSection")
 	];
 
 	activeTabs.forEach((tab) => {
