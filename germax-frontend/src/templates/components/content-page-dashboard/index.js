@@ -186,6 +186,25 @@ function initListeners() {
 		);
 		const profileSection = document.getElementById("profileSection");
 
+		// Логика для отображения профиля по умолчанию
+		function showProfile() {
+			profileSection.style.display = "block";
+			settingsTabContent.style.display = "none";
+		}
+
+		function showSettings() {
+			profileSection.style.display = "none";
+			settingsTabContent.style.display = "block";
+		}
+
+		// Определяем, какая вкладка должна быть активна
+		const activeTab = localStorage.getItem("activeTab");
+
+		if (activeTab === "settings") {
+			showSettings();
+		} else {
+			showProfile();
+		}
 		switch (targetId) {
 			case "accountLink": // Добавить обработку клика на "Profil"
 				event.preventDefault();
@@ -320,7 +339,7 @@ function hideActiveTabs(except) {
 		document.getElementById("clientLoansHistory"),
 		document.getElementById("tabPlace"),
 		document.getElementById("loanFormModal"),
-		document.getElementById("profileSection")
+		document.getElementById("profileSection"),
 	];
 
 	activeTabs.forEach((tab) => {
