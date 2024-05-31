@@ -270,7 +270,7 @@ header {
 /* Стили для секции профиля */
 #profileSection {
 	padding: 20px;
-	background-color: var(--secondary-color);
+	background: linear-gradient(45deg, #E7717D, #C2CAD0, #C2B9B0, #7E685A, #AFD275);
 	border-radius: 10px;
 	text-align: center;
 	margin-bottom: 20px;
