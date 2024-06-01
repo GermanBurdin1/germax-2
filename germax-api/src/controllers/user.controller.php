@@ -1,14 +1,17 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/utils/database.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/user.service.php';
 
 class UserController
 {
 	private $pdo;
+	private $userService;
 
 	public function __construct()
 	{
 		$this->pdo = (new Database())->connect();
+		$this->userService = new UserService();
 	}
 
 	public function getUsersByPermission($permissionName)
@@ -59,4 +62,9 @@ class UserController
 		$stmt = $this->pdo->prepare($sql);
 		return $stmt->execute($params);
 	}
+
+	public function getUserById($userId)
+    {
+        return $this->userService->getUserById($userId);
+    }
 }

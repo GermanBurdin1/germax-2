@@ -711,55 +711,61 @@ function setupCancelLoansModal() {
 }
 
 //личный кабинет
-function loadUserProfile(user) {
-	const profileSection = document.getElementById("profileSection");
-	const profileGreeting = document.getElementById("profileGreeting");
-	const profileAvatar = document.getElementById("profileAvatar");
-	const avatarPlaceholder = document.getElementById("avatarPlaceholder");
+async function loadUserProfile() {
+	try {
+			const user = await apiUsers.getUser();
+			const profileSection = document.getElementById("profileSection");
+			const profileGreeting = document.getElementById("profileGreeting");
+			const profileAvatar = document.getElementById("profileAvatar");
+			const avatarPlaceholder = document.getElementById("avatarPlaceholder");
 
-	profileGreeting.innerHTML = `Bonjour, ${user.first_name} ${user.last_name}!`;
+			profileGreeting.innerHTML = `Bonjour, ${user.firstname} ${user.lastname}!`;
 
-	if (user.avatar_url) {
-			profileAvatar.src = user.avatar_url;
-			profileAvatar.classList.add("show");
-			avatarPlaceholder.classList.remove("show");
-	} else {
-			profileAvatar.classList.remove("show");
-			avatarPlaceholder.classList.add("show");
-	}
+			if (user.picture) {
+					profileAvatar.src = user.picture;
+					profileAvatar.classList.add("show");
+					avatarPlaceholder.classList.remove("show");
+			} else {
+					profileAvatar.classList.remove("show");
+					avatarPlaceholder.classList.add("show");
+			}
 
-	profileSection.style.display = "block";
+			profileSection.style.display = "block";
 
-	avatarPlaceholder.addEventListener('click', () => {
-			const fileInput = document.createElement('input');
-			fileInput.type = 'file';
-			fileInput.accept = 'image/*';
-			fileInput.onchange = async (event) => {
-					const file = event.target.files[0];
-					if (file) {
-							try {
-									const response = await uploadApi.uploadPhoto(file);
-									if (response.success) {
-											const pictureUrl = response.url;
+			avatarPlaceholder.addEventListener('click', () => {
+					const fileInput = document.createElement('input');
+					fileInput.type = 'file';
+					fileInput.accept = 'image/*';
+					fileInput.onchange = async (event) => {
+							const file = event.target.files[0];
+							if (file) {
+									try {
+											const response = await uploadApi.uploadPhoto(file);
+											if (response.success) {
+													const pictureUrl = response.url;
 
-											// Обновление пользователя с новым URL картинки
-											await apiUsers.updateUser({ picture: pictureUrl });
+													// Обновление пользователя с новым URL картинки
+													await apiUsers.updateUser({ picture: pictureUrl });
 
-											profileAvatar.src = pictureUrl;
-											profileAvatar.classList.add("show");
-											avatarPlaceholder.classList.remove("show");
-									} else {
-											alert('Failed to upload avatar');
+													profileAvatar.src = pictureUrl;
+													profileAvatar.classList.add("show");
+													avatarPlaceholder.classList.remove("show");
+											} else {
+													alert('Failed to upload avatar');
+											}
+									} catch (error) {
+											console.error("Error uploading avatar:", error);
+											alert("Failed to upload avatar");
 									}
-							} catch (error) {
-									console.error("Error uploading avatar:", error);
-									alert("Failed to upload avatar");
 							}
-					}
-			};
-			fileInput.click();
-	});
+					};
+					fileInput.click();
+			});
+	} catch (error) {
+			console.error("Error loading user profile:", error);
+	}
 }
+
 
 function getManagerDashboardNotifications() {
 	return [

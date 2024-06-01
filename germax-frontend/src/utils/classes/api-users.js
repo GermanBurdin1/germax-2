@@ -52,4 +52,27 @@ export class ApiUsers {
 					throw error;
 			});
 	}
+
+	async getUser() {
+		const token = this._apiAuth.getToken();
+		return fetch(`${this._baseUrl}/get-user.endpoint`, {
+				method: "GET",
+				headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${token}`,
+				},
+		})
+		.then(response => response.json())
+		.then(data => {
+				if (data.success) {
+						return data.data;
+				} else {
+						throw new Error(data.message || "Error fetching user data");
+				}
+		})
+		.catch(error => {
+				console.error("Error fetching user data:", error);
+				throw error;
+		});
+}
 }

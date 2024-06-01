@@ -44,4 +44,16 @@ class UserService
     ]);
 }
 
+public function getUserById($userId)
+    {
+        $sql = "
+            SELECT firstname, lastname, picture
+            FROM user
+            WHERE id_user = :id_user
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id_user' => $userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 }
