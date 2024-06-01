@@ -28,7 +28,7 @@ class UserService
 {
     $sql = "
         UPDATE user
-        SET lastname = :lastname, firstname = :firstname, phone = :phone, email = :email, date_birth = :date_birth
+        SET lastname = :lastname, firstname = :firstname, phone = :phone, email = :email, date_birth = :date_birth, picture = :picture
         WHERE id_user = :id_user
     ";
 
@@ -39,6 +39,7 @@ class UserService
         'phone' => $data['phone'],
         'email' => $data['email'],
         'date_birth' => $data['date_birth'],
+				'picture' => $data['picture'],
         'id_user' => $userId
     ]);
 }

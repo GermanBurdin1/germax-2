@@ -45,6 +45,10 @@ class UserController
 			$fields[] = 'useful_information = :useful_information';
 			$params['useful_information'] = $data['useful_information'];
 		}
+		if (isset($data['picture'])) {
+			$fields[] = 'picture = :picture';
+			$params['picture'] = $data['picture'];
+		}
 
 		if (empty($fields)) {
 			return false;

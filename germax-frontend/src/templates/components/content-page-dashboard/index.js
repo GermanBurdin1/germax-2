@@ -51,6 +51,7 @@ import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiNotification } from "../../../utils/classes/api-notification";
 import { ApiUsers } from "../../../utils/classes/api-users";
+import { UploadAPI } from "../../../utils/classes/api-upload";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
@@ -58,6 +59,7 @@ const apiRental = new ApiRental();
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiNotification = new ApiNotification();
 const apiUsers = new ApiUsers();
+const uploadApi = new UploadAPI();
 
 async function getNotifications(userId) {
 	try {
@@ -718,15 +720,45 @@ function loadUserProfile(user) {
 	profileGreeting.innerHTML = `Bonjour, ${user.first_name} ${user.last_name}!`;
 
 	if (user.avatar_url) {
-		profileAvatar.src = user.avatar_url;
-		profileAvatar.classList.add("show");
-		avatarPlaceholder.classList.remove("show");
+			profileAvatar.src = user.avatar_url;
+			profileAvatar.classList.add("show");
+			avatarPlaceholder.classList.remove("show");
 	} else {
-		profileAvatar.classList.remove("show");
-		avatarPlaceholder.classList.add("show");
+			profileAvatar.classList.remove("show");
+			avatarPlaceholder.classList.add("show");
 	}
 
 	profileSection.style.display = "block";
+
+	avatarPlaceholder.addEventListener('click', () => {
+			const fileInput = document.createElement('input');
+			fileInput.type = 'file';
+			fileInput.accept = 'image/*';
+			fileInput.onchange = async (event) => {
+					const file = event.target.files[0];
+					if (file) {
+							try {
+									const response = await uploadApi.uploadPhoto(file);
+									if (response.success) {
+											const pictureUrl = response.url;
+
+											// Обновление пользователя с новым URL картинки
+											await apiUsers.updateUser({ picture: pictureUrl });
+
+											profileAvatar.src = pictureUrl;
+											profileAvatar.classList.add("show");
+											avatarPlaceholder.classList.remove("show");
+									} else {
+											alert('Failed to upload avatar');
+									}
+							} catch (error) {
+									console.error("Error uploading avatar:", error);
+									alert("Failed to upload avatar");
+							}
+					}
+			};
+			fileInput.click();
+	});
 }
 
 function getManagerDashboardNotifications() {

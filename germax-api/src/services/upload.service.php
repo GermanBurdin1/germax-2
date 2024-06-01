@@ -26,7 +26,7 @@ class UploadService
             $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
             // Укажите допустимые расширения файлов
-            $allowedfileExtensions = array('jpg', 'jpeg', 'png');
+            $allowedfileExtensions = array('jpg', 'jpeg', 'png', 'webp');
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
                 // Путь для сохранения файла
