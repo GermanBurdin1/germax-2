@@ -28,5 +28,28 @@ export class ApiUsers {
         });
     }
 
-    // Добавьте другие методы, если необходимо
+    async updateUser(data) {
+			const token = this._apiAuth.getToken(); // Убедитесь, что токен правильно извлекается
+			console.log("Token being sent:", token); // Логируем токен для отладки
+			return fetch(`${this._baseUrl}/update-user.endpoint`, {
+					method: "POST",
+					headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`, // Убедитесь, что заголовок устанавливается правильно
+					},
+					body: JSON.stringify(data),
+			})
+			.then(response => response.json())
+			.then(data => {
+					if (data.success) {
+							return data;
+					} else {
+							throw new Error(data.message || "Error updating user");
+					}
+			})
+			.catch(error => {
+					console.error("Error updating user:", error);
+					throw error;
+			});
+	}
 }

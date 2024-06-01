@@ -130,7 +130,24 @@ function getStockmanStudentTeacherHorizontalNav() {
 </div>`;
 }
 
-function returnSettingsTab() {
+function returnSettingsTab(userType) {
+	let aboutPlaceholder = '';
+
+	switch (userType) {
+		case 'rental-manager':
+			aboutPlaceholder = 'Entrez les informations utiles pour le géstionnaire des stocks';
+			break;
+		case 'student':
+		case 'teacher':
+			aboutPlaceholder = 'Entrez les informations utiles pour le gestionnaire';
+			break;
+		case 'stockman':
+			aboutPlaceholder = 'Entrez les informations utiles pour le gestionnaire ou le client';
+			break;
+		default:
+			aboutPlaceholder = 'Entrez des informations utiles';
+	}
+
 	return `
 	<ul class="nav nav-tabs" id="myTab" role="tablist">
 		<li class="nav-item">
@@ -144,27 +161,23 @@ function returnSettingsTab() {
 				<div class="card-body">
 					<form id="settingsForm">
 						<div class="mb-3">
-							<label for="fullName" class="form-label">Nom complet</label>
-							<input type="text" class="form-control" id="fullName" placeholder="Entrez le nom complet">
-						</div>
-						<div class="mb-3">
 							<label for="contactNumber" class="form-label">Contact</label>
 							<input type="text" class="form-control" id="contactNumber" placeholder="Entrez le numéro de contact">
 						</div>
 						<div class="mb-3">
 							<label for="emailId" class="form-label">Email</label>
-							<input type="email" class="form-control" id="emailId" placeholder="Entrez l'email">
+							<input type="email" class="form-control" id="emailId" placeholder="Entrez votre email">
 						</div>
 						<div class="mb-3">
 							<label for="birthDay" class="form-label">Date de naissance</label>
 							<input type="text" class="form-control" id="birthDay" placeholder="JJ/MM/AAAA">
 						</div>
 						<div class="mb-3">
-							<label for="about" class="form-label">À propos de vous</label>
-							<textarea class="form-control" id="about" rows="3"></textarea>
+							<label for="about" class="form-label">Informations utiles</label>
+							<textarea class="form-control" id="about" rows="3" placeholder="${aboutPlaceholder}"></textarea>
 						</div>
 						<button type="button" id="saveChanges" class="btn btn-primary">Sauvegarder les modifications</button>
-						<button type="button" id="resetChanges" class="btn btn-secondary">Réinitializer les modifications</button>
+						<button type="button" id="resetChanges" class="btn btn-secondary">Réinitialiser les modifications</button>
 					</form>
 				</div>
 			</div>
@@ -172,6 +185,8 @@ function returnSettingsTab() {
 	</div>
 	`;
 }
+
+
 
 
 

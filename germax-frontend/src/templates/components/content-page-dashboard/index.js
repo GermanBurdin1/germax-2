@@ -50,12 +50,14 @@ import { ApiGoods } from "../../../utils/classes/api-goods";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiNotification } from "../../../utils/classes/api-notification";
+import { ApiUsers } from "../../../utils/classes/api-users";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiNotification = new ApiNotification();
+const apiUsers = new ApiUsers();
 
 async function getNotifications(userId) {
 	try {
@@ -129,6 +131,7 @@ Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 	}
 );
 
+let formChanged = false;
 function initListeners() {
 	// Для navbarDropdownMenuLink
 	// initializeDropdown();
@@ -168,8 +171,6 @@ function initListeners() {
 	} else {
 		console.error("loanFormModal element not found");
 	}
-
-	let formChanged = false;
 
 	document.addEventListener("click", function (event) {
 		const target = event.target.closest("a, button");
@@ -218,6 +219,7 @@ function initListeners() {
 			case "saveChanges":
 				event.preventDefault();
 				formChanged = false;
+				saveUserSettings(showProfile);
 				alert("Вы удачно сохранили изменения");
 				showProfile();
 				localStorage.setItem("activeTab", "profile");
@@ -541,7 +543,8 @@ function adjustUIBasedOnUserType(userType) {
 }
 
 function activateSettingsTab() {
-	tabPlace.innerHTML = returnSettingsTab();
+	const userType = localStorage.getItem("namePermission");
+	tabPlace.innerHTML = returnSettingsTab(userType);
 	initializeTabsWithoutShow("#myTab .nav-link");
 	setupTabActivation("#settings-tab", "#settings-tab");
 	setupTabActivation("#general-tab", "#general-tab");
@@ -790,25 +793,51 @@ function loadUserNotifications(userType) {
 		.join("");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-	const logoutButton = document.getElementById("logoutButton");
+async function saveUserSettings(showProfile) {
+	const settingsForm = document.getElementById("settingsForm");
+	const data = {};
 
-	if (logoutButton) {
-		logoutButton.addEventListener("click", function (event) {
-			event.preventDefault();
-			logout();
-		});
+	if (settingsForm.contactNumber.value)
+		data.phone = settingsForm.contactNumber.value;
+	if (settingsForm.emailId.value) data.email = settingsForm.emailId.value;
+	if (settingsForm.birthDay.value)
+		data.date_birth = settingsForm.birthDay.value;
+	if (settingsForm.about.value)
+		data.useful_information = settingsForm.about.value;
+
+	try {
+		const response = await apiUsers.updateUser(data);
+		if (response.success) {
+			alert(response.message);
+			formChanged = false;
+			showProfile();
+			localStorage.setItem("activeTab", "profile");
+		} else {
+			throw new Error(response.message);
+		}
+	} catch (error) {
+		console.error("Error saving user settings:", error);
+		alert("Failed to save settings");
 	}
+}
 
-	function logout() {
-		// Удаляем данные аутентификации из localStorage
-		localStorage.removeItem("authToken");
-		localStorage.removeItem("id_user");
+const logoutButton = document.getElementById("logoutButton");
 
-		// Перенаправляем пользователя на корневую страницу сайта
-		window.location.href = "/"; // Перенаправить на корневую страницу
-	}
-});
+if (logoutButton) {
+	logoutButton.addEventListener("click", function (event) {
+		event.preventDefault();
+		logout();
+	});
+}
+
+function logout() {
+	// Удаляем данные аутентификации из localStorage
+	localStorage.removeItem("authToken");
+	localStorage.removeItem("id_user");
+
+	// Перенаправляем пользователя на корневую страницу сайта
+	window.location.href = "/"; // Перенаправить на корневую страницу
+}
 
 //в разработке
 // document
