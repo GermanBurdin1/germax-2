@@ -144,7 +144,6 @@ function initListeners() {
 
 	// Контейнер модалки для админа
 	notificationsModalPlace.innerHTML = returnNotificationsModal();
-	console.log(notificationsModalPlace.innerHTML);
 	supportModalContainer.innerHTML = returnSupportModal();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
 	modalLoanForm.innerHTML = returnLoanFormModal();
@@ -170,8 +169,10 @@ function initListeners() {
 		console.error("loanFormModal element not found");
 	}
 
+	let formChanged = false;
+
 	document.addEventListener("click", function (event) {
-		const target = event.target.closest("a");
+		const target = event.target.closest("a, button");
 		const targetId = target ? target.id : "";
 		const myLoans = document.getElementById("myLoans");
 		const clientLoansHistory = document.getElementById("clientLoansHistory");
@@ -185,6 +186,7 @@ function initListeners() {
 			"adminContainerSettingsModal"
 		);
 		const profileSection = document.getElementById("profileSection");
+		const settingsForm = document.getElementById("settingsForm");
 
 		// Логика для отображения профиля по умолчанию
 		function showProfile() {
@@ -205,12 +207,37 @@ function initListeners() {
 		} else {
 			showProfile();
 		}
+
+		if (settingsForm) {
+			settingsForm.addEventListener("input", () => {
+				formChanged = true;
+			});
+		}
+
 		switch (targetId) {
+			case "saveChanges":
+				event.preventDefault();
+				formChanged = false;
+				alert("Вы удачно сохранили изменения");
+				showProfile();
+				localStorage.setItem("activeTab", "profile");
+				break;
+			case "resetChanges":
+				event.preventDefault();
+				settingsForm.reset();
+				formChanged = false;
+				break;
 			case "accountLink": // Добавить обработку клика на "Profil"
 				event.preventDefault();
-				// Повторная загрузка текущего контента при переходе на "Profil"
-				hideActiveTabs(profileSection);
-				profileSection.style.display = "block";
+				if (formChanged) {
+					if (confirm("Вы уверены, что не хотите сохранить изменения?")) {
+						formChanged = false;
+						showProfile();
+					}
+				} else {
+					showProfile();
+				}
+				localStorage.setItem("activeTab", "profile");
 				break;
 			case "adminReportsLink":
 				event.preventDefault();
@@ -267,20 +294,35 @@ function initListeners() {
 				break;
 			case "settings-link":
 				event.preventDefault();
-				if (settingsTabContent.dataset.visible === "true") {
-					settingsTabContent.style.display = "none";
-					settingsTabContent.dataset.visible = "false";
+				if (settingsTabContent.style.display === "block") {
+					if (!formChanged) {
+						showProfile();
+						localStorage.setItem("activeTab", "profile");
+					} else {
+						settingsTabContent.style.display = "none";
+						settingsTabContent.dataset.visible = "false";
+					}
 				} else {
 					hideActiveTabs(settingsTabContent);
 					settingsTabContent.style.display = "block";
 					settingsTabContent.dataset.visible = "true";
 					activateSettingsTab();
+					localStorage.setItem("activeTab", "settings");
 				}
 				break;
 			case "navbarDropdownMenuLink":
 				break;
 			default:
 				console.log(`No case for targetId: ${targetId}`);
+				const settingsTab = document.getElementById("tabPlace");
+				if (
+					!formChanged &&
+					activeTab === "settings" &&
+					!settingsTab.contains(event.target)
+				) {
+					showProfile();
+					localStorage.setItem("activeTab", "profile");
+				}
 				break;
 		}
 	});
@@ -748,11 +790,11 @@ function loadUserNotifications(userType) {
 		.join("");
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 	const logoutButton = document.getElementById("logoutButton");
 
 	if (logoutButton) {
-		logoutButton.addEventListener("click", function(event) {
+		logoutButton.addEventListener("click", function (event) {
 			event.preventDefault();
 			logout();
 		});

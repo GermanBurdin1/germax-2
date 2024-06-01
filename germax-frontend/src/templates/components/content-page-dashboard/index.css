@@ -380,3 +380,41 @@ header {
 .user-notification a:hover {
 	text-decoration: underline;
 }
+
+/* Стили для вкладки настроек */
+#settingsForm {
+	background-color: var(--secondary-color);
+	padding: 20px;
+	border-radius: 10px;
+}
+
+#settingsForm .form-label {
+	color: var(--quaternary-color);
+}
+
+#settingsForm .form-control {
+	border: 1px solid var(--quaternary-color);
+	border-radius: 5px;
+}
+
+#saveChanges {
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+	transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#saveChanges:hover {
+	background-color: var(--accent-color);
+	border-color: var(--accent-color);
+}
+
+#resetChanges {
+	background-color: var(--tertiary-color);
+	border-color: var(--tertiary-color);
+	transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#resetChanges:hover {
+	background-color: var(--secondary-color);
+	border-color: var(--secondary-color);
+}
