@@ -103,4 +103,9 @@ class RentalController
 		$response = $this->rentalService->cancelRental($data['loanId']);
 		echo json_encode($response);
 	}
+
+	public function fetchLoanRequests()
+    {
+        return $this->rentalService->fetchLoanRequests();
+    }
 }

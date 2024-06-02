@@ -250,4 +250,20 @@ class AuthService
 
 		return renderSuccessAndExit(['User status and authorization updated'], 200);
 	}
+
+	public function getUserPermission($userId) {
+		try {
+				$stmt = $this->pdo->prepare("
+						SELECT u.*, p.name as name_permission
+						FROM user u
+						JOIN permission p ON u.id_permission = p.id_permission
+						WHERE u.id_user = :userId
+				");
+				$stmt->execute(['userId' => $userId]);
+				return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch (PDOException $e) {
+				error_log("Error fetching user permission: " . $e->getMessage());
+				return false;
+		}
+}
 }

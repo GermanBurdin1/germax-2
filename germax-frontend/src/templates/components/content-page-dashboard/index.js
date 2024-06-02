@@ -52,6 +52,7 @@ import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-reques
 import { ApiNotification } from "../../../utils/classes/api-notification";
 import { ApiUsers } from "../../../utils/classes/api-users";
 import { UploadAPI } from "../../../utils/classes/api-upload";
+import { ApiStatistics } from "../../../utils/classes/api-statistics";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
@@ -60,6 +61,33 @@ const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiNotification = new ApiNotification();
 const apiUsers = new ApiUsers();
 const uploadApi = new UploadAPI();
+const apiStatistics = new ApiStatistics();
+
+async function getUserPermission() {
+	try {
+		const response = await apiAuth.getUserPermission();
+		console.log("response", response);
+		return response;
+	} catch (error) {
+		console.error("Error fetching user permission:", error);
+		return null;
+	}
+}
+
+async function initializeDashboard() {
+	const userPermission = await getUserPermission();
+	console.log("userPermission,", userPermission);
+	if (userPermission) {
+		const { name_permission } = userPermission;
+		localStorage.setItem("name_permission", name_permission);
+		displayStatistics(name_permission);
+	} else {
+		console.error("Failed to fetch user permission data.");
+	}
+}
+
+// Инициализация дашборда
+initializeDashboard();
 
 async function getNotifications(userId) {
 	try {
@@ -713,122 +741,76 @@ function setupCancelLoansModal() {
 //личный кабинет
 async function loadUserProfile() {
 	try {
-			const user = await apiUsers.getUser();
-			const profileSection = document.getElementById("profileSection");
-			const profileGreeting = document.getElementById("profileGreeting");
-			const profileAvatar = document.getElementById("profileAvatar");
-			const avatarPlaceholder = document.getElementById("avatarPlaceholder");
+		const user = await apiUsers.getUser();
+		const profileSection = document.getElementById("profileSection");
+		const profileGreeting = document.getElementById("profileGreeting");
+		const profileAvatar = document.getElementById("profileAvatar");
+		const avatarPlaceholder = document.getElementById("avatarPlaceholder");
 
-			profileGreeting.innerHTML = `Bonjour, ${user.firstname} ${user.lastname}!`;
+		const greetingText = `Bonjour, ${user.firstname} ${user.lastname}!`;
 
-			if (user.picture) {
-					profileAvatar.src = user.picture;
-					profileAvatar.classList.add("show");
-					avatarPlaceholder.classList.remove("show");
-			} else {
-					profileAvatar.classList.remove("show");
-					avatarPlaceholder.classList.add("show");
+		// Очищаем элемент перед началом печати
+		profileGreeting.textContent = "";
+
+		function type() {
+			let index = 0;
+			function typeChar() {
+				if (index < greetingText.length) {
+					profileGreeting.textContent += greetingText.charAt(index);
+					index++;
+					setTimeout(typeChar, 150);
+				} else {
+					profileGreeting.classList.remove("typewriter");
+				}
 			}
+			typeChar();
+		}
 
-			profileSection.style.display = "block";
+		type();
 
-			avatarPlaceholder.addEventListener('click', () => {
-					const fileInput = document.createElement('input');
-					fileInput.type = 'file';
-					fileInput.accept = 'image/*';
-					fileInput.onchange = async (event) => {
-							const file = event.target.files[0];
-							if (file) {
-									try {
-											const response = await uploadApi.uploadPhoto(file);
-											if (response.success) {
-													const pictureUrl = response.url;
+		if (user.picture) {
+			profileAvatar.src = user.picture;
+			profileAvatar.classList.add("show");
+			avatarPlaceholder.classList.remove("show");
+		} else {
+			profileAvatar.classList.remove("show");
+			avatarPlaceholder.classList.add("show");
+		}
 
-													// Обновление пользователя с новым URL картинки
-													await apiUsers.updateUser({ picture: pictureUrl });
+		profileSection.style.display = "block";
 
-													profileAvatar.src = pictureUrl;
-													profileAvatar.classList.add("show");
-													avatarPlaceholder.classList.remove("show");
-											} else {
-													alert('Failed to upload avatar');
-											}
-									} catch (error) {
-											console.error("Error uploading avatar:", error);
-											alert("Failed to upload avatar");
-									}
-							}
-					};
-					fileInput.click();
-			});
+		avatarPlaceholder.addEventListener("click", () => {
+			const fileInput = document.createElement("input");
+			fileInput.type = "file";
+			fileInput.accept = "image/*";
+			fileInput.onchange = async (event) => {
+				const file = event.target.files[0];
+				if (file) {
+					try {
+						const response = await uploadApi.uploadPhoto(file);
+						if (response.success) {
+							const pictureUrl = response.url;
+
+							// Обновление пользователя с новым URL картинки
+							await apiUsers.updateUser({ picture: pictureUrl });
+
+							profileAvatar.src = pictureUrl;
+							profileAvatar.classList.add("show");
+							avatarPlaceholder.classList.remove("show");
+						} else {
+							alert("Failed to upload avatar");
+						}
+					} catch (error) {
+						console.error("Error uploading avatar:", error);
+						alert("Failed to upload avatar");
+					}
+				}
+			};
+			fileInput.click();
+		});
 	} catch (error) {
-			console.error("Error loading user profile:", error);
+		console.error("Error loading user profile:", error);
 	}
-}
-
-
-function getManagerDashboardNotifications() {
-	return [
-		{
-			message: "nouvelles demandes de location d'équipement +2",
-			linkText: "Voir les demandes",
-			linkHref: "/page-bookings-management",
-		},
-		{
-			message: "nouveaux utilisateurs potentiels +3",
-			linkText: "Voir les utilisateurs",
-			linkHref: "/page-client-management",
-		},
-	];
-}
-
-function getStockmanDashboardNotifications() {
-	return [
-		{
-			message: "+1 nouvelle demande de location d'équipement",
-			linkText: "Voir les demandes",
-			linkHref: "/page-bookings-management",
-		},
-		{
-			message: "+1 nouveau équipement disponible",
-			linkText: "Voir l'équipement",
-			linkHref: "/page-equipment-management",
-		},
-	];
-}
-
-function getStudentTeacherDashboardNotifications() {
-	return [
-		{
-			message: "Votre dernière location: Équipement XYZ",
-			linkText: "Voir les détails",
-			linkHref: "/page-loans-details",
-		},
-	];
-}
-
-function createNotificationElement(notification) {
-	return `
-			<a href="${notification.linkHref}" class="list-group-item list-group-item-action">
-					${notification.message}
-			</a>
-	`;
-}
-
-function loadUserNotifications(userType) {
-	let notifications = [];
-	if (userType === "rental-manager") {
-		notifications = getManagerDashboardNotifications();
-	} else if (userType === "stockman") {
-		notifications = getStockmanDashboardNotifications();
-	} else if (userType === "student" || userType === "teacher") {
-		notifications = getStudentTeacherDashboardNotifications();
-	}
-
-	const notificationsContainer = document.getElementById("userNotifications");
-	notificationsContainer.innerHTML = notifications
-		.map(createNotificationElement)
-		.join("");
 }
 
 async function saveUserSettings(showProfile) {
@@ -857,6 +839,137 @@ async function saveUserSettings(showProfile) {
 		console.error("Error saving user settings:", error);
 		alert("Failed to save settings");
 	}
+}
+
+async function getManagerDashboardStatistics() {
+	try {
+		const statistics = await apiStatistics.getManagerStatistics();
+		return statistics;
+	} catch (error) {
+		console.error("Error fetching statistics:", error);
+		return { newUsers: 0, newLoanRequests: 0 };
+	}
+}
+
+async function getStockmanDashboardStatistics() {
+	try {
+		const statistics = await apiStatistics.getStockmanStatistics();
+		return statistics;
+	} catch (error) {
+		console.error("Error fetching statistics:", error);
+		return { newLoanRequests: 0, newEquipment: 0 };
+	}
+}
+
+function createNotificationElement(message, linkText, linkHref) {
+	const notificationElement = document.createElement("div");
+	notificationElement.classList.add("user-notification");
+	const linkElement = document.createElement("a");
+	linkElement.href = linkHref;
+	linkElement.textContent = linkText;
+	notificationElement.innerHTML = `${message} `;
+	notificationElement.appendChild(linkElement);
+	return notificationElement;
+}
+
+async function displayStatistics(userType) {
+	let statistics;
+	const userNotificationsElement = document.getElementById("userNotifications");
+
+	if (userType === "rental-manager") {
+		statistics = await getManagerDashboardStatistics();
+		const newUsersCount = statistics.newUsers;
+		const newLoanRequestsCount = statistics.newLoanRequests;
+		userNotificationsElement.innerHTML = "";
+
+		if (newUsersCount > 0) {
+			const userMessage = `Il y a ${newUsersCount} ${
+				newUsersCount === 1 ? "nouveau" : "nouveaux"
+			} ${newUsersCount === 1 ? "utilisateur" : "utilisateurs"} ce mois-ci.`;
+			userNotificationsElement.appendChild(
+				createNotificationElement(
+					userMessage,
+					"Voir les utilisateurs",
+					"http://germax-frontend/page-client-management/"
+				)
+			);
+		} else {
+			userNotificationsElement.innerHTML +=
+				"<div class='user-notification'>Il n'y a pas de nouveaux utilisateurs ce mois-ci.</div>";
+		}
+
+		if (newLoanRequestsCount > 0) {
+			const loanMessage = `Il y a ${newLoanRequestsCount} ${
+				newLoanRequestsCount === 1 ? "nouvelle" : "nouvelles"
+			} ${
+				newLoanRequestsCount === 1 ? "demande de prêt" : "demandes de prêt"
+			} ce mois-ci.`;
+			userNotificationsElement.appendChild(
+				createNotificationElement(
+					loanMessage,
+					"Voir les demandes",
+					"http://germax-frontend/page-bookings-management/"
+				)
+			);
+		} else {
+			userNotificationsElement.innerHTML +=
+				"<div class='user-notification'>Il n'y a pas de nouvelles demandes de prêt ce mois-ci.</div>";
+		}
+	} else if (userType === "stockman") {
+		statistics = await getStockmanDashboardStatistics();
+		const newEquipmentCount = statistics.newEquipment;
+
+		if (newEquipmentCount > 0) {
+			const equipmentMessage = `Il y a ${newEquipmentCount} ${
+				newEquipmentCount === 1
+					? "nouvelle commande d'équipement"
+					: "nouvelles commandes d'équipement"
+			} ce mois-ci.`;
+			userNotificationsElement.appendChild(
+				createNotificationElement(
+					equipmentMessage,
+					"Voir l'équipement",
+					"http://germax-frontend/page-order-new-equipment/"
+				)
+			);
+		} else {
+			userNotificationsElement.innerHTML +=
+				"<div class='user-notification'>Il n'y a pas de nouvelles commandes d'équipement ce mois-ci.</div>";
+		}
+	} else if (userType === "student" || userType === "teacher") {
+		const userId = localStorage.getItem("id_user");
+		statistics = await apiRental.getRecentRentals(userId);
+		userNotificationsElement.innerHTML =
+			"<div class='user-notification'><strong>Vos locations récentes en cours:</strong></div>";
+		if (statistics.length > 0) {
+			statistics.forEach((rental) => {
+				const rentalElement = document.createElement("div");
+				rentalElement.classList.add("user-notification");
+				rentalElement.innerHTML = `
+								<div>
+										<strong>Modèle:</strong> ${rental.model_name}<br>
+										<strong>Numéro de série:</strong> ${rental.serial_number}<br>
+										<strong>Période:</strong> du ${new Date(rental.date_start).toLocaleString(
+											"fr-FR"
+										)} au ${new Date(rental.date_end).toLocaleString("fr-FR")}
+								</div>
+						`;
+				userNotificationsElement.appendChild(rentalElement);
+			});
+		} else {
+			userNotificationsElement.innerHTML +=
+				"<div class='user-notification'>Aucune location récente.</div>";
+		}
+	}
+}
+
+// Извлечение namePermission из localStorage
+const userType = localStorage.getItem("namePermission");
+
+if (userType) {
+	displayStatistics(userType);
+} else {
+	console.error("User type is not defined in localStorage.");
 }
 
 const logoutButton = document.getElementById("logoutButton");

@@ -84,7 +84,7 @@ class RentalService
 
 	private function requestLoan($data)
 	{
-		$insertLoanSql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, comment, loan_status) VALUES (CURDATE(), ?, ?, ?, ?, false, ?, 'loan_request');";
+		$insertLoanSql = "INSERT INTO loan (request_date, date_start, date_end, id_user, id_good, accord, comment, loan_status, notification_sent) VALUES (CURDATE(), ?, ?, ?, ?, false, ?, 'loan_request', 0);";
 		$stmtLoan = $this->pdo->prepare($insertLoanSql);
 		$stmtLoan->execute([$data['dateStart'], $data['dateEnd'], $data['id_user'], $data['goodId'], $data['comments']]);
 		return $stmtLoan->rowCount() > 0;
@@ -303,6 +303,57 @@ class RentalService
 			$this->pdo->rollBack();
 			error_log("Error during loan cancellation: " . $e->getMessage(), 3, "../debug.php");
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
+
+	public function fetchLoanRequests()
+	{
+		try {
+			$stmt = $this->pdo->prepare("
+            SELECT l.id_loan, l.request_date, l.date_start, l.date_end, l.comment, u.lastname, u.firstname, g.serial_number, m.name as model_name
+            FROM loan l
+            JOIN user u ON l.id_user = u.id_user
+            JOIN good g ON l.id_good = g.id_good
+            JOIN model m ON g.id_model = m.id_model
+            WHERE l.loan_status = 'loan_request' AND l.notification_sent = 0
+        ");
+			$stmt->execute();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			// Обновление поля notification_sent
+			$updateStmt = $this->pdo->prepare("UPDATE loan SET notification_sent = 1 WHERE id_loan = :id_loan");
+			foreach ($result as $loan) {
+				$updateStmt->execute(['id_loan' => $loan['id_loan']]);
+			}
+
+			return $result;
+		} catch (PDOException $e) {
+			error_log("Error fetching loan requests: " . $e->getMessage());
+			return [];
+		}
+	}
+
+	public function fetchRecentRentals($userId, $limit = 3)
+	{
+		try {
+			$sql = "
+				SELECT l.id_loan, l.date_start, l.date_end, g.serial_number, m.name as model_name
+				FROM loan l
+				JOIN good g ON l.id_good = g.id_good
+				JOIN model m ON g.id_model = m.id_model
+				WHERE l.id_user = :userId AND l.loan_status = 'loaned'
+				ORDER BY l.date_start DESC
+				LIMIT :limit
+			";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+			$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+			$stmt->execute();
+
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch (PDOException $e) {
+			error_log("Error fetching recent rentals: " . $e->getMessage());
+			return [];
 		}
 	}
 }

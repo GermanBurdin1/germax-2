@@ -1,7 +1,6 @@
 @import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css);
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css);
 
-
 .badge {
 	display: inline-block;
 	padding: 0.25em 0.4em;
@@ -21,14 +20,15 @@
 
 /* Основные цвета */
 :root {
-	--primary-color: #E7717D;
-	--secondary-color: #C2CAD0;
-	--tertiary-color: #C2B9B0;
-	--quaternary-color: #7E685A;
-	--accent-color: #AFD275;
+	--primary-color: #e7717d;
+	--secondary-color: #c2cad0;
+	--tertiary-color: #c2b9b0;
+	--quaternary-color: #7e685a;
+	--accent-color: #afd275;
 }
 
-body, html {
+body,
+html {
 	height: 100%;
 	margin: 0;
 }
@@ -138,7 +138,8 @@ header {
 	border-radius: 10px;
 }
 
-.modal-header, .modal-footer {
+.modal-header,
+.modal-footer {
 	border: none;
 }
 
@@ -160,10 +161,10 @@ header {
 	color: white;
 }
 
-.modal-footer .btn-secondary:hover, .modal-footer .btn-primary:hover {
+.modal-footer .btn-secondary:hover,
+.modal-footer .btn-primary:hover {
 	background-color: var(--accent-color);
 }
-
 
 /* réglages */
 
@@ -246,16 +247,26 @@ header {
 }
 
 /* Стили для текста настроек */
-.settings-card h1, .settings-card h2, .settings-card h3, .settings-card h4, .settings-card h5, .settings-card h6 {
+.settings-card h1,
+.settings-card h2,
+.settings-card h3,
+.settings-card h4,
+.settings-card h5,
+.settings-card h6 {
 	color: var(--quaternary-color);
 }
 
-.settings-card p, .settings-card span {
+.settings-card p,
+.settings-card span {
 	color: var(--quaternary-color);
 }
 
 /* Дополнительные стили для улучшения пользовательского интерфейса */
-.settings-card .mb-2, .settings-card .mb-3, .settings-card .mb-4, .settings-card .mt-3, .settings-card .mt-4 {
+.settings-card .mb-2,
+.settings-card .mb-3,
+.settings-card .mb-4,
+.settings-card .mt-3,
+.settings-card .mt-4 {
 	margin-bottom: 1rem !important;
 	margin-top: 1rem !important;
 }
@@ -264,22 +275,30 @@ header {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
-
 /* Личный кабинет */
 
 /* Стили для секции профиля */
 #profileSection {
 	padding: 20px;
-	background: linear-gradient(45deg, #E7717D, #C2CAD0, #C2B9B0, #7E685A, #AFD275);
+	background: linear-gradient(
+		45deg,
+		#e7717d,
+		#c2cad0,
+		#c2b9b0,
+		#7e685a,
+		#afd275
+	);
 	border-radius: 10px;
 	text-align: center;
 	margin-bottom: 20px;
 }
 
 #profileGreeting {
-	font-size: 1.5em;
-	color: var(--quaternary-color);
+	font-size: 2em; /* Увеличенный размер текста */
+	color: #362c26; /* Тёмный цвет из вашей палитры */
 	margin-bottom: 10px;
+	font-weight: bold; /* Выделение текста жирным шрифтом */
+	white-space: pre; /* Сохранение пробелов и переносов строк */
 }
 
 #profileAvatarContainer {
@@ -328,7 +347,9 @@ header {
 }
 
 #divider {
-	width: calc(100% - 300px); /* Adjust the width to ensure it does not overlap with the sidebar */
+	width: calc(
+		100% - 300px
+	); /* Adjust the width to ensure it does not overlap with the sidebar */
 	height: 4px;
 	background-color: var(--accent-color);
 	position: relative;
@@ -373,12 +394,9 @@ header {
 }
 
 .user-notification a {
-	color: white;
 	text-decoration: none;
-}
-
-.user-notification a:hover {
-	text-decoration: underline;
+	color: #8bc34a; /* Салатовый цвет из палитры */
+	border-bottom: 1px solid #8bc34a;
 }
 
 /* Стили для вкладки настроек */

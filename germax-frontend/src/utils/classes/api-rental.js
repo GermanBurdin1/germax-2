@@ -209,4 +209,31 @@ export class ApiRental {
 				throw error;
 			});
 	}
+
+	// для личного кабинета
+	async getRecentRentals(userId) {
+		const token = this._apiAuth.getToken();
+		console.log("Token being sent:", token);
+
+		return fetch(`${this._baseUrl}/recent-rentals`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
+				return data.data;
+			})
+			.catch((error) => {
+				console.error("Error in getRecentRentals:", error);
+				throw error;
+			});
+	}
 }

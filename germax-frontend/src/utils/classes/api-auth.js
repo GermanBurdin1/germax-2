@@ -136,6 +136,31 @@ export class ApiAuth {
 			});
 	}
 
+	async getUserPermission() {
+		const token = this.getToken();
+
+		return fetch("http://germax-api/auth/get-user-permission.endpoint", {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json",
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(
+						data.message || "Failed to get user permission"
+					);
+				}
+				return data.data;
+			})
+			.catch((error) => {
+				console.error("Error fetching user permission:", error);
+				throw error;
+			});
+	}
+
 	static getInstance() {
 		if (ApiAuth._instance === null) {
 			ApiAuth._instance = new ApiAuth();

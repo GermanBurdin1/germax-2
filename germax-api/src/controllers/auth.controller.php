@@ -55,4 +55,12 @@ class AuthController
 	public function update_user_status($user_id, $status, $authorization) {
 		return $this->authService->update_user_status($user_id, $status, $authorization);
 	}
+
+	public function getUserByToken($token) {
+		return $this->authService->getUserByToken($token);
+}
+
+public function getUserPermission($userId) {
+		return $this->authService->getUserPermission($userId);
+}
 }
