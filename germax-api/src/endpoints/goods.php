@@ -12,11 +12,29 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/goods.controller.php'
 $goodsController = new GoodsController();
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-	$modelName = isset($_GET['modelName']) ? $_GET['modelName'] : NULL;
-	$typeName = isset($_GET['typeName']) ? $_GET['typeName'] : NULL;
-	$statusName = isset($_GET['statusName']) ? $_GET['statusName'] : NULL;
+	$action = isset($_GET['action']) ? $_GET['action'] : 'default';
 
-	$goodsController->getAllByParams($modelName, $typeName, $statusName);
+	switch ($action) {
+		case 'getUnitsByModelId':
+			$modelId = isset($_GET['modelId']) ? intval($_GET['modelId']) : null;
+			if ($modelId) {
+				$goodsController->getUnitsByModelId($modelId);
+			} else {
+				echo json_encode(['success' => false, 'message' => 'Model ID is required']);
+			}
+			break;
+
+		case 'default':
+		default:
+			$modelName = isset($_GET['modelName']) ? $_GET['modelName'] : NULL;
+			$typeName = isset($_GET['typeName']) ? $_GET['typeName'] : NULL;
+			$statusNames = isset($_GET['statusNames']) ? explode(",", $_GET['statusNames']) : ["available"];
+			$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+			$limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
+
+			$goodsController->getAllByParams($modelName, $typeName, $statusNames, $page, $limit);
+			break;
+	}
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$input = json_decode(file_get_contents('php://input'), true);
 	$modelName = $input['modelName'] ?? null;
@@ -49,6 +67,3 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 	exit;
 }
-
-
-renderErrorAndExit(['This route does not support this HTTP method'], 405);

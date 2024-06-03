@@ -101,14 +101,18 @@
 		</div>
 	</div>
 
+	<h1>Liste des équipements par modèles</h1>
 	<div class="table-responsive">
 		<table class="table" id="goodsTable">
 			<thead>
 				<tr>
-					<th>Numéro de Commande <button class="btn btn-link p-0 border-0 sortButton"
+					<th>Numéro du modèle <button class="btn btn-link p-0 border-0 sortButton"
 							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
 					<th>Nom de l'Équipement</th>
 					<th>Catégorie</th>
+					<th>Photo</th>
+					<th>Status</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -116,6 +120,7 @@
 					<td>1001</td>
 					<td>Ordinateur Portable Avancé</td>
 					<td>10</td>
+					<td></td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -123,34 +128,10 @@
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item confirm-delivrance" href="#">Confirmer la réception</a></li>
+								<li><a class="dropdown-item confirm-delivrance" href="#">Voir les unités disponibles</a></li>
 								<li>
-									<a class="dropdown-item annulate-booking-action" href="#">Annuler la commande</a>
-								</li>
+								<li><a class="dropdown-item confirm-delivrance" href="#">Modifier les données</a></li>
 								<li>
-									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme livré</a>
-								</li>
-								<li>
-									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
-										data-bs-target="#detailsModal">Voir les détails</a>
-								</li>
-								<!-- поля для stockman -->
-								<li>
-									<a class="dropdown-item mark-as-programm-action" href="#">Programmer l'envoi</a>
-									<!-- для статуса disponible -->
-								</li>
-								<li>
-									<a class="dropdown-item mark-as-programm-action" href="#">Annuler l'envoi</a>
-									<!-- для статуса programmé -->
-								</li>
-								<li>
-									<a class="dropdown-item mark-as-send-action" href="#">Marquer comme envoyé</a>
-									<!-- для статуса en attente -->
-								</li>
-								<li>
-									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme délivré</a>
-									<!-- Подстраховочно, если сбои у менеджера, для статуса envoyé -->
-								</li>
 							</ul>
 						</div>
 					</td>
@@ -158,6 +139,11 @@
 			</tbody>
 		</table>
 	</div>
+	<div class="pagination-container">
+    <button id="prevPageBtn" class="btn btn-primary">Précédent</button>
+    <span id="pageInfo"></span>
+    <button id="nextPageBtn" class="btn btn-primary">Suivant</button>
+</div>
 
 	<!-- Modal for Checking Availability -->
 	<div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
@@ -183,4 +169,22 @@
 		</div>
 	</div>
 
+</div>
+
+<!-- Modal for Viewing Units -->
+<div class="modal fade" id="unitsModal" tabindex="-1" aria-labelledby="unitsModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="unitsModalLabel">Unités Disponibles</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Контент модального окна будет обновляться динамически -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
 </div>

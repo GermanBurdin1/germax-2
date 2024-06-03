@@ -5,3 +5,142 @@
 	flex-direction: column;
 	gap: 50px;
 }
+
+/* index.css */
+
+/* Цветовая палитра */
+:root {
+	--primary-color: #E7717D;
+	--secondary-color: #C2CAD0;
+	--tertiary-color: #C2B9B0;
+	--quaternary-color: #7E685A;
+	--accent-color: #AFD275;
+	--background-color: #F8F9FA;
+	--white-color: #ffffff;
+	--text-color: #343a40;
+}
+
+.container:not(footer .container) {
+	background-color: var(--background-color);
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-title {
+	font-weight: bold;
+	color: var(--text-color);
+}
+
+.jumbotron {
+	background-color: var(--white-color);
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+	margin-bottom: 20px;
+}
+
+.input-group .form-control {
+	border-radius: 5px;
+	border: 1px solid var(--tertiary-color);
+}
+
+.list-group-item {
+	cursor: pointer;
+	background-color: var(--secondary-color);
+	color: var(--text-color);
+}
+
+.list-group-item.active {
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+	color: var(--white-color);
+}
+
+.equipment-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
+.model-details {
+	background-color: var(--white-color);
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	flex: 1 0 21%; /* fallback for older browsers */
+	flex: 1 0 calc(25% - 20px);
+	box-sizing: border-box;
+}
+
+.model-details img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 10px;
+}
+
+.model-details h3 {
+	color: var(--primary-color);
+}
+
+.btn-primary {
+	background-color: var(--accent-color);
+	border-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+}
+
+.btn-secondary {
+	background-color: var(--quaternary-color);
+	border-color: var(--quaternary-color);
+}
+
+.btn-secondary:hover {
+	background-color: var(--quaternary-color);
+	border-color: var(--quaternary-color);
+}
+
+.modal-content {
+	border-radius: 10px;
+}
+
+.custom-jumbotron {
+	background-color: #C2CAD0;
+	padding: 2rem;
+	border-radius: 10px;
+}
+
+.custom-jumbotron .lead,
+.custom-jumbotron p {
+	color: #7E685A;
+}
+
+.custom-jumbotron .btn-primary {
+	background-color: #E7717D;
+	border: none;
+}
+
+.custom-jumbotron .btn-primary:hover {
+	background-color: #AFD275;
+}
+
+.custom-title {
+	text-align: center;
+	font-family: 'Arial', sans-serif;
+	color: #E7717D;
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+	font-size: 2.5rem;
+	font-weight: bold;
+}
+
+#request-button {
+	font-size: 1.2rem; /* Увеличение размера шрифта */
+	padding: 1rem 1.5rem; /* Увеличение отступов внутри кнопки */
+}

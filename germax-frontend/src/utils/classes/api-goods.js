@@ -7,13 +7,23 @@ export class ApiGoods {
 
 	constructor() {}
 
-	getAllGoods({
+	async getAllGoods({
 		typeName = null,
 		modelName = null,
-		statusName = "available",
+		statusNames = ["available"],
+		page = 1,
+		limit = 20,
 	} = {}) {
-		console.log("getAllGoods вызывается")
-		const paramsStr = stringifyParams({ typeName, modelName, statusName });
+		console.log("getAllGoods вызывается");
+
+		// Преобразуем массив статусов в строку, разделенную запятыми
+		const paramsStr = stringifyParams({
+			typeName,
+			modelName,
+			statusNames: statusNames.join(","),
+			page,
+			limit,
+		});
 
 		return fetch(`${this._baseUrl}?${paramsStr}`, {
 			method: "GET",
@@ -26,7 +36,10 @@ export class ApiGoods {
 				if (!response.ok) return Promise.reject(json);
 				return json;
 			})
-			.then((data) => data.data);
+			.then((data) => ({
+				goods: data.data,
+				totalItems: data.totalItems, // Предполагается, что API возвращает это значение
+			}));
 	}
 
 	async createGood({
@@ -73,5 +86,30 @@ export class ApiGoods {
 				console.error("Error in createGood:", error);
 				throw error;
 			});
+	}
+
+	async getUnitsByModelId(modelId) {
+		try {
+			const response = await fetch(
+				`http://germax-api/goods?action=getUnitsByModelId&modelId=${modelId}`,
+				{
+					method: "GET",
+					headers: {
+						token: this._apiAuth.getToken(),
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(`Error fetching units: ${response.statusText}`);
+			}
+
+			const data = await response.json();
+			return data.data;
+		} catch (error) {
+			console.error("Error fetching units:", error);
+			throw error;
+		}
 	}
 }

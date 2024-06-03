@@ -6,7 +6,7 @@ function getAdminNav() {
 <a class="nav-link" id="adminClientManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
 <a class="nav-link" id="adminReservationHistoryLink" href="/page-reservation-history">Historique des résérvations</a>
 <a class="nav-link" id="adminEquipmentManagementLink" href="/page-equipment-management">Attribuer un équipement</a>
-<a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Commander un nouvel équipement</a>
+<a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Gestion de l'équipement</a>
 <a class="nav-link" id="adminReportsLink">Faire un rapport</a>
 <a class="nav-link" id="adminFeedBackLink">Retours et remarques</a>
 <a class="nav-link" id="adminSettingsLink">Réglages globales</a>
@@ -27,8 +27,8 @@ function getRentalManagerNav() {
 function getStockmanNav() {
 	return `<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
-	<a class="nav-link" id="orderNewEquipment" href="/page-orders">Commander un nouvel équipement</a>
-	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Nouvelles commandes</a>
+	<a class="nav-link" id="orderNewEquipment" href="/page-orders">Gestion de l'équipement</a>
+	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Gestion des commandes</a>
 	<a class="nav-link" id="locationsLink" href="/page-stockman-equipment-under-repair">Matériel en maintenance ou sous signalement</a>
 </div>`;
 }

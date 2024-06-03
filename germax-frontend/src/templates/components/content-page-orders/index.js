@@ -24,6 +24,9 @@ console.log("Auth token:", authToken);
 if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
 }
+
+let currentPage = 1;
+const itemsPerPage = 20;
 loadGoodsData();
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
@@ -60,29 +63,143 @@ function fetchAuthUser(url) {
 }
 
 async function loadGoodsData(params = {}) {
-	console.log("функция loadGoodsData вызывается")
+	if (!params.statusNames) {
+		params.statusNames = ["available", "unavailable", "booked", "cancelled"];
+	}
+	params.page = currentPage;
+	params.limit = itemsPerPage;
+
 	try {
-			const goods = await apiGoods.getAllGoods(params);
-			displayGoods(goods);
+		const response = await apiGoods.getAllGoods(params);
+		const goods = response.goods.data; // Данные из API находятся под ключом "data"
+		const totalItems = response.goods.totalItems;
+		console.log(goods);
+		console.log(totalItems);
+		displayGoods(goods);
+		updatePaginationControls(totalItems);
 	} catch (error) {
-			console.error("Ошибка при получении данных:", error);
+		console.error("Ошибка при получении данных:", error);
 	}
 }
 
+
 function displayGoods(goods) {
+	console.log(goods);
 	const tableBody = document.querySelector("#goodsTable tbody");
 	tableBody.innerHTML = ""; // Очистка существующих строк
 
-	goods.forEach(good => {
+	goods.forEach((good) => {
+			let statusText;
+			switch (good.status.name) {
+					case "booked":
+							statusText = "loué";
+							break;
+					case "available":
+							statusText = "disponible";
+							break;
+					case "unavailable":
+							statusText = "indisponible";
+							break;
+					case "cancelled":
+							statusText = "réservation annulée";
+							break;
+					default:
+							statusText = good.status.name;
+							break;
+			}
+
 			const row = document.createElement("tr");
 			row.innerHTML = `
-					<td>${good.id}</td>
+					<td>${good.model.id}</td>
 					<td>${good.model.name}</td>
 					<td>${good.model.type.name}</td>
+					<td><img src="${good.model.photo}" alt="${good.model.name}" style="width: 200px; height: 200px;"></td>
+					<td>${statusText}</td>
+					<td>
+							<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${good.model.id}"
+											data-bs-toggle="dropdown" aria-expanded="false">
+											Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${good.model.id}">
+											<li><a class="dropdown-item view-units" href="#" data-model-id="${good.model.id}">Voir les unités disponibles</a></li>
+											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
+									</ul>
+							</div>
 					</td>
 			`;
 			tableBody.appendChild(row);
 	});
+}
+
+
+function updatePaginationControls(totalItems) {
+	const totalPages = Math.ceil(totalItems / itemsPerPage);
+	document.getElementById(
+		"pageInfo"
+	).textContent = `Page ${currentPage} of ${totalPages}`;
+
+	document.getElementById("prevPageBtn").disabled = currentPage === 1;
+	document.getElementById("nextPageBtn").disabled = currentPage === totalPages;
+}
+
+document.getElementById("prevPageBtn").addEventListener("click", () => {
+	if (currentPage > 1) {
+		currentPage--;
+		loadGoodsData();
+	}
+});
+
+document.getElementById("nextPageBtn").addEventListener("click", () => {
+	currentPage++;
+	loadGoodsData();
+});
+
+document.addEventListener("click", function (event) {
+	if (event.target.classList.contains("view-units")) {
+		const modelId = event.target.getAttribute("data-model-id");
+		showUnitsModal(modelId);
+	}
+});
+
+async function showUnitsModal(modelId) {
+	try {
+		const units = await apiGoods.getUnitsByModelId(modelId);
+		displayUnitsModal(units);
+	} catch (error) {
+		console.error("Error fetching units:", error);
+	}
+}
+
+function displayUnitsModal(units) {
+	const modalBody = document.querySelector("#unitsModal .modal-body");
+	modalBody.innerHTML = `
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date d'ajout</th>
+					<th>Numéro de série</th>
+					<th>Statut de location</th>
+				</tr>
+			</thead>
+			<tbody>
+				${units
+					.map(
+						(unit) => `
+					<tr>
+						<td>${unit.added_date}</td>
+						<td>${unit.serial_number}</td>
+						<td>${unit.status_name}</td>
+					</tr>
+				`
+					)
+					.join("")}
+			</tbody>
+		</table>
+	`;
+
+	const unitsModal = new Modal(document.getElementById("unitsModal"));
+	unitsModal.show();
 }
 
 function renderEquipmentOrder(userData) {
@@ -108,7 +225,7 @@ function renderEquipmentOrder(userData) {
 		const titleAddingOrdersMarkup = `<h2>Ajout du nouvel équipement</h2>`;
 		const markup = `
 					<div class="mb-4">
-							<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Ajouter un équipement</button>
+							<button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Ajouter un équipement</button>
 							<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Ajouter une catégorie</button>
 					</div>
 			`;
@@ -256,8 +373,8 @@ async function searchBrands() {
 async function saveEquipment() {
 	const form = document.getElementById("addEquipmentForm");
 	if (form.checkValidity() === false) {
-			form.reportValidity();
-			return;
+		form.reportValidity();
+		return;
 	}
 
 	const modelName = document.getElementById("equipmentName").value;
@@ -269,41 +386,41 @@ async function saveEquipment() {
 
 	let brandId = await fetchBrandIdByName(brandName);
 	if (!brandId) {
-			brandId = await addNewBrand(brandName);
+		brandId = await addNewBrand(brandName);
 	}
 
 	let photoUrl = "";
 	if (photoFile) {
-			const uploadData = await uploadApi.uploadPhoto(photoFile);
-			if (uploadData.success) {
-					photoUrl = uploadData.url;
-			} else {
-					throw new Error(uploadData.message);
-			}
+		const uploadData = await uploadApi.uploadPhoto(photoFile);
+		if (uploadData.success) {
+			photoUrl = uploadData.url;
+		} else {
+			throw new Error(uploadData.message);
+		}
 	}
-
+	console.log("отправляемый объект" ,modelName, serial_number, id_type, brandName, photoUrl);
 	try {
-			const data = await apiGoods.createGood({
-					modelName,
-					statusId: 1,
-					serialNumbers: [serial_number], // Wrapping in an array to use createGood
-					id_type,
-					brandName,
-					description,
-					photo: photoUrl,
-			});
+		const data = await apiGoods.createGood({
+			modelName,
+			statusId: 1,
+			serialNumbers: [serial_number], // Wrapping in an array to use createGood
+			id_type,
+			brandName,
+			description,
+			photo: photoUrl,
+		});
 
-			if (data.success) {
-					alert("Équipement ajouté avec succès!");
-					form.reset();
-					addEquipmentModal.hide();
-					loadGoodsData();
-			} else {
-					alert("Erreur: " + data.message);
-			}
+		if (data.success) {
+			alert("Équipement ajouté avec succès!");
+			form.reset();
+			addEquipmentModal.hide();
+			loadGoodsData();
+		} else {
+			alert("Erreur: " + data.message);
+		}
 	} catch (error) {
-			console.error("Erreur:", error);
-			alert("Erreur lors de l'ajout de l'équipement.");
+		console.error("Erreur:", error);
+		alert("Erreur lors de l'ajout de l'équipement.");
 	}
 }
 

@@ -243,11 +243,13 @@ function openRequestNotFoundItemsModal(authUser) {
 function createOneGoodNode(good, authUser) {
 	const modelElement = document.createElement("div");
 	const srcStr = `
-        <img
-            src="${good.model.photo || ""}"
-            alt="${good.model.name}"
-            style="width: 100%;"
-        >
+        <div style="text-align: center;">
+            <img
+                src="${good.model.photo || ""}"
+                alt="${good.model.name}"
+                style="width: 200px; height: 200px; object-fit: cover;"
+            >
+        </div>
     `;
 
 	modelElement.classList.add("model-details");
@@ -255,12 +257,14 @@ function createOneGoodNode(good, authUser) {
         <h3>${good.model.name}</h3>
         <p>${good.model.description}</p>
         ${good.model.photo !== null ? srcStr : ""}
-        <button
-            class="btn btn-primary reservation-modal-btn"
-            data-bs-target="#newLoanFormModal"
-        >
-            Demander la réservation
-        </button>
+        <div style="text-align: center; margin-top: 10px;">
+            <button
+                class="btn btn-primary reservation-modal-btn"
+                data-bs-target="#newLoanFormModal"
+            >
+                Demander la réservation
+            </button>
+        </div>
     `;
 	const reservationButton = modelElement.querySelector(
 		".reservation-modal-btn"
@@ -271,6 +275,7 @@ function createOneGoodNode(good, authUser) {
 
 	return modelElement;
 }
+
 
 function initSearchListener(authUser) {
 	if (searchInputNode === null) throw new Error("not found searchInputNode");

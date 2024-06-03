@@ -933,7 +933,7 @@ async function displayStatistics(userType) {
 				)
 			);
 		} else {
-			userNotificationsElement.innerHTML +=
+			userNotificationsElement.innerHTML =
 				"<div class='user-notification'>Il n'y a pas de nouvelles commandes d'équipement ce mois-ci.</div>";
 		}
 	} else if (userType === "student" || userType === "teacher") {

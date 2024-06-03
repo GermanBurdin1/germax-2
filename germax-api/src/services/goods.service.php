@@ -22,85 +22,119 @@ class GoodsService
 		$this->brandService = new BrandService();
 	}
 
-	public function getAllByParams($modelName, $typeName, $statusName)
+	public function getAllByParams($modelName, $typeName, $statusNames, $page, $limit)
 	{
+		$offset = ($page - 1) * $limit;
+
 		$sql = "
-			SELECT
-				good.id_good,
-				good.serial_number,
-				good.id_model,
-				model.name AS model_name,
-				model.description AS model_description,
-				model.photo AS model_photo,
-				good.id_status,
-				statu.name AS status_name,
-				model.id_type AS model_id_type,
-				typ.name AS model_type_name,
-				model.id_brand AS model_id_brand,
-				brand.name AS model_brand_name
-			FROM
-				good good
-			JOIN
-				status statu ON good.id_status = statu.id_status
-			JOIN
-				model model ON good.id_model = model.id_model
-			JOIN
-				type typ ON model.id_type = typ.id_type
-			JOIN
-				brand brand ON model.id_brand = brand.id_brand
-		";
+        SELECT
+            good.id_good,
+            good.serial_number,
+            good.id_model,
+            model.name AS model_name,
+            model.description AS model_description,
+            model.photo AS model_photo,
+            good.id_status,
+            statu.name AS status_name,
+            model.id_type AS model_id_type,
+            typ.name AS model_type_name,
+            model.id_brand AS model_id_brand,
+            brand.name AS model_brand_name
+        FROM
+            good good
+        JOIN
+            status statu ON good.id_status = statu.id_status
+        JOIN
+            model model ON good.id_model = model.id_model
+        JOIN
+            type typ ON model.id_type = typ.id_type
+        JOIN
+            brand brand ON model.id_brand = brand.id_brand
+    ";
 
 		$params = [
 			"modelName" => [
 				"exists" => $modelName != NULL,
-				"sql" => "model.name LIKE :modelName ",
+				"sql" => "model.name LIKE :modelName",
 				"matches" => true,
 				"value" => $modelName
 			],
 			"typeName" => [
 				"exists" => $typeName != NULL,
-				"sql" => "typ.name LIKE :typeName ",
+				"sql" => "typ.name LIKE :typeName",
 				"matches" => true,
 				"value" => $typeName
 			],
-			"statusName" => [
-				"exists" => $statusName != NULL,
-				"sql" => "statu.name LIKE :statusName ",
+			"statusNames" => [
+				"exists" => !empty($statusNames),
+				"sql" => "statu.name IN (" . implode(", ", array_map(function ($i) {
+					return ":statusName$i";
+				}, array_keys($statusNames))) . ")",
 				"matches" => false,
-				"value" => $statusName
+				"value" => $statusNames
 			]
 		];
 
 		$whereSql = $this->generateWhereClause($params);
 		$sql .= $whereSql;
-		$sql .= ";";
+		$sql .= " LIMIT :limit OFFSET :offset;";
+
+		// Запрос для подсчета общего количества элементов
+		$countSql = "
+        SELECT COUNT(*)
+        FROM good good
+        JOIN status statu ON good.id_status = statu.id_status
+        JOIN model model ON good.id_model = model.id_model
+        JOIN type typ ON model.id_type = typ.id_type
+        JOIN brand brand ON model.id_brand = brand.id_brand
+    ";
+		$countSql .= $whereSql;
 
 		try {
 			$stmt = $this->pdo->prepare($sql);
+			$countStmt = $this->pdo->prepare($countSql);
 
 			foreach ($params as $paramName => $param) {
 				if ($param["exists"] == true) {
-					$value = $param["matches"] === true ? "%$param[value]%" : $param["value"];
-					$stmt->bindValue(":" . $paramName, $value);
+					if ($paramName == "statusNames") {
+						foreach ($param["value"] as $index => $value) {
+							$stmt->bindValue(":statusName$index", $value, PDO::PARAM_STR);
+							$countStmt->bindValue(":statusName$index", $value, PDO::PARAM_STR);
+						}
+					} else {
+						$value = $param["matches"] === true ? "%" . $param["value"] . "%" : $param["value"];
+						$stmt->bindValue(":" . $paramName, $value, PDO::PARAM_STR);
+						$countStmt->bindValue(":" . $paramName, $value, PDO::PARAM_STR);
+					}
 				}
 			}
 
+			// Привязка параметров лимита и смещения
+			$stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+			$stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
+
+			// Выполнение запросов
 			$stmt->execute();
-			$goods = $stmt->fetchAll();
+			$countStmt->execute();
+
+			// Получение данных и общего количества элементов
+			$goods = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$totalItems = $countStmt->fetchColumn();
 			$formatedGoods = $this->formatArrGoods($goods);
 
-			// return renderSuccessAndExit([
-			// 	'Goods found', removeSpecialCharacters($sql)
-			// ], 200, $formatedGoods);
-			return $formatedGoods;
+			return [
+				'data' => $formatedGoods,
+				'totalItems' => $totalItems
+			];
 		} catch (PDOException $e) {
 			return renderErrorAndExit('sql query error', 404, [
-				"error" => $e,
+				"error" => $e->getMessage(),
 				"sql" => removeSpecialCharacters($sql),
 				"params" => $params
 			]);
 		}
 	}
+
 
 	private function generateWhereClause($params)
 	{
@@ -114,12 +148,13 @@ class GoodsService
 				} else {
 					$firstParam = false;
 				}
-				$whereClause .= "$param[sql]";
+				$whereClause .= $param['sql'];
 			}
 		}
 
 		return $whereClause ? "WHERE $whereClause" : '';
 	}
+
 
 	private function formatArrGoods($goods)
 	{
@@ -261,7 +296,7 @@ class GoodsService
 
 	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
 	{
-    error_log("createGoods__Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
+		error_log("createGoods__Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
 		$results = [];
 
 		foreach ($serialNumbers as $serialNumber) {
@@ -275,5 +310,32 @@ class GoodsService
 		}
 
 		return ['success' => true, 'goods' => $results];
+	}
+
+	public function getUnitsByModelId($modelId)
+	{
+		$sql = "
+        SELECT
+            good.id_good,
+            good.serial_number,
+            good.added_date,
+            statu.name AS status_name
+        FROM
+            good
+        JOIN
+            status statu ON good.id_status = statu.id_status
+        WHERE
+            good.id_model = :modelId
+    ";
+
+		try {
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->bindValue(':modelId', $modelId, PDO::PARAM_INT);
+			$stmt->execute();
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch (PDOException $e) {
+			error_log("Error fetching units by model ID: " . $e->getMessage());
+			return [];
+		}
 	}
 }
