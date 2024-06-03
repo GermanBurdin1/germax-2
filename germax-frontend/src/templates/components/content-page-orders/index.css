@@ -7,7 +7,22 @@
 	--tertiary-color: #C2B9B0;
 	--quaternary-color: #7E685A;
 	--accent-color: #AFD275;
+	--darker-quaternary-color: #5A4A3A;
 }
+
+#titleAddingOrders,
+#equipmentByModels {
+    color: var(--darker-quaternary-color);
+    font-weight: bold;
+    font-size: 1.5rem; /* Вы можете изменить размер шрифта по своему усмотрению */
+}
+
+/* Расположение #titleAddingOrders ниже на странице */
+#titleAddingOrders {
+    position: relative;
+    margin-top: 50px; /* Добавляем отступ сверху, чтобы опустить его ниже */
+}
+
 
 body, html {
 	height: 100%;
@@ -126,13 +141,12 @@ header {
 }
 
 /* Дополнительные стили для форм и таблиц на странице заказов */
-#titleAddingOrders, #titleOrders, #listOrdersTitle, #titleOrdersRequest {
+#titleOrders, #listOrdersTitle, #titleOrdersRequest {
 	color: var(--quaternary-color);
 	font-weight: bold;
-	margin-bottom: 30px;
 }
 
-#orderForm, #equipmentAddingContainer {
+#equipmentAddingContainer {
 	background-color: var(--secondary-color);
 	border-radius: 10px;
 	padding: 20px;
@@ -323,4 +337,23 @@ header {
 
 .custom-modify:hover {
 	background-color: var(--secondary-color);
+}
+
+.jumbotron {
+	background-color: var(--white-color);
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item {
+	cursor: pointer;
+	background-color: var(--secondary-color);
+	color: var(--text-color);
+}
+
+.list-group-item.active {
+	background-color: var(--primary-color);
+	border-color: var(--primary-color);
+	color: var(--white-color);
 }

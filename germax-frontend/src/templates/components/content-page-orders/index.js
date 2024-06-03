@@ -10,6 +10,13 @@ import { ApiGoods } from "../../../utils/classes/api-goods";
 import { CategoryAPI } from "../../../utils/classes/api-category";
 import { BrandAPI } from "../../../utils/classes/api-brand";
 import { UploadAPI } from "../../../utils/classes/api-upload";
+import { debounce } from "../../../utils/debounce";
+
+const categoryItemNodes = Array.from(document.getElementsByClassName("list-group-item"));
+const searchInputNode = document.querySelector("#model-search");
+
+initRadioBtns();
+initSearchListener();
 
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiRental = new ApiRental();
@@ -68,6 +75,8 @@ async function loadGoodsData(params = {}) {
 	}
 	params.page = currentPage;
 	params.limit = itemsPerPage;
+	params.typeName = getActiveCategory(); // Добавляем фильтр по категории
+	params.modelName = searchInputNode.value.trim(); // Добавляем фильтр по модели
 
 	try {
 		const response = await apiGoods.getAllGoods(params);
@@ -567,4 +576,60 @@ async function showEditModal(goodId) {
 				alert("Please select a photo to upload.");
 			}
 		});
+}
+
+function initRadioBtns() {
+	const typeFilter = document.getElementById("type-filter");
+
+	typeFilter.addEventListener(
+		"click",
+		debounce(function (event) {
+			const clickedCategoryItemNode = event.target.closest(".list-group-item");
+
+			categoryItemNodes.forEach((item) => item.classList.remove("active"));
+			clickedCategoryItemNode.classList.add("active");
+
+			loadGoodsData();
+		}, 200)
+	);
+}
+
+function getActiveCategory() {
+	const activeCategoryItemNode = categoryItemNodes.filter((node) =>
+		node.classList.contains("active")
+	)[0];
+
+	if (activeCategoryItemNode === undefined) return "";
+	if (activeCategoryItemNode.dataset.type === "all") return "";
+
+	return activeCategoryItemNode.dataset.type;
+}
+
+function initSearchListener() {
+	if (searchInputNode === null) throw new Error("not found searchInputNode");
+
+	searchInputNode.addEventListener(
+		"input",
+		debounce(() => {
+			loadGoodsData();
+		}, 200)
+	);
+}
+
+const logoutButton = document.getElementById("logoutButton");
+
+if (logoutButton) {
+	logoutButton.addEventListener("click", function (event) {
+		event.preventDefault();
+		logout();
+	});
+}
+
+function logout() {
+	// Удаляем данные аутентификации из localStorage
+	localStorage.removeItem("authToken");
+	localStorage.removeItem("id_user");
+
+	// Перенаправляем пользователя на корневую страницу сайта
+	window.location.href = "/"; // Перенаправить на корневую страницу
 }

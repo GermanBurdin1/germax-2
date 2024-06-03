@@ -54,24 +54,57 @@ function getActiveCategory() {
 	return activeCategoryItemNode.dataset.type;
 }
 
-async function getAllGoods() {
+async function getAllGoods(page = 1, limit = 20) {
 	const modelNameSearch = searchInputNode.value.trim();
 	const typeNameSearch = getActiveCategory();
 
 	return apiGoods.getAllGoods({
 		typeName: typeNameSearch,
 		modelName: modelNameSearch,
+		page,
+		limit,
 	});
 }
+
+let currentPage = 1;
+const itemsPerPage = 20;
 
 async function getAllGoodsAndRender(authUser) {
-	getAllGoods().then((goods) => {
-		renderGoods(goods, authUser);
-	});
+	const response = await getAllGoods(currentPage, itemsPerPage);
+	const goods = response.goods.data;
+	const totalItems = response.goods.totalItems;
+	renderGoods(goods, authUser);
+	updatePaginationControls(totalItems);
 }
 
+function updatePaginationControls(totalItems) {
+	const totalPages = Math.ceil(totalItems / itemsPerPage);
+	document.getElementById(
+		"pageInfo"
+	).textContent = `Page ${currentPage} of ${totalPages}`;
+	document.getElementById("prevPageBtn").disabled = currentPage === 1;
+	document.getElementById("nextPageBtn").disabled = currentPage === totalPages;
+}
+
+document.getElementById("prevPageBtn").addEventListener("click", () => {
+	if (currentPage > 1) {
+		currentPage--;
+		getAllGoodsAndRender(authUser);
+	}
+});
+
+document.getElementById("nextPageBtn").addEventListener("click", () => {
+	if (currentPage < totalPages) {
+		currentPage++;
+		getAllGoodsAndRender(authUser);
+	}
+});
+
 function renderGoods(goods, authUser) {
-	const uniqueGoods = getUniqueGoods(goods);
+	const availableGoods = goods.filter(
+		(good) => good.status.name === "available"
+	);
+	const uniqueGoods = getUniqueGoods(availableGoods);
 
 	equipmentListNode.innerHTML = "";
 
@@ -87,6 +120,7 @@ function renderGoods(goods, authUser) {
 }
 
 function getUniqueGoods(goods) {
+	console.log(goods);
 	const uniqueNames = {};
 
 	const uniqueModels = goods.filter((good) => {
@@ -275,7 +309,6 @@ function createOneGoodNode(good, authUser) {
 
 	return modelElement;
 }
-
 
 function initSearchListener(authUser) {
 	if (searchInputNode === null) throw new Error("not found searchInputNode");
