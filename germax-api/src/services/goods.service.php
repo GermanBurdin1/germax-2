@@ -338,4 +338,81 @@ class GoodsService
 			return [];
 		}
 	}
+
+	public function updateGood($goodId, $modelName, $idType, $brandName, $photo)
+	{
+		try {
+			$this->pdo->beginTransaction();
+
+			// Обновление модели
+			$sqlModel = "UPDATE model SET name = :modelName, id_type = :idType, photo = :photo WHERE id_model = (SELECT id_model FROM good WHERE id_good = :goodId)";
+			$stmtModel = $this->pdo->prepare($sqlModel);
+			$stmtModel->execute([
+				'modelName' => $modelName,
+				'idType' => $idType,
+				'photo' => $photo,
+				'goodId' => $goodId
+			]);
+
+			// Обновление бренда
+			$sqlBrand = "UPDATE brand SET name = :brandName WHERE id_brand = (SELECT id_brand FROM model WHERE id_model = (SELECT id_model FROM good WHERE id_good = :goodId))";
+			$stmtBrand = $this->pdo->prepare($sqlBrand);
+			$stmtBrand->execute([
+				'brandName' => $brandName,
+				'goodId' => $goodId
+			]);
+
+			$this->pdo->commit();
+
+			return ['success' => true, 'message' => 'Good updated successfully'];
+		} catch (Exception $e) {
+			$this->pdo->rollBack();
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+	}
+
+
+	public function getGoodById($id_good)
+	{
+		$sql = "
+        SELECT
+            good.id_good,
+            good.serial_number,
+            good.id_model,
+            model.name AS model_name,
+            model.description AS model_description,
+            model.photo AS model_photo,
+            good.id_status,
+            statu.name AS status_name,
+            model.id_type AS model_id_type,
+            typ.name AS model_type_name,
+            model.id_brand AS model_id_brand,
+            brand.name AS model_brand_name
+        FROM
+            good good
+        JOIN
+            status statu ON good.id_status = statu.id_status
+        JOIN
+            model model ON good.id_model = model.id_model
+        JOIN
+            type typ ON model.id_type = typ.id_type
+        JOIN
+            brand brand ON model.id_brand = brand.id_brand
+        WHERE
+            good.id_good = :id_good
+    ";
+
+		try {
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->bindValue(':id_good', $id_good, PDO::PARAM_INT);
+			$stmt->execute();
+			$good = $stmt->fetch(PDO::FETCH_ASSOC);
+			return $good ? $this->formatGood($good) : null;
+		} catch (PDOException $e) {
+			return renderErrorAndExit('sql query error', 404, [
+				"error" => $e->getMessage(),
+				"sql" => removeSpecialCharacters($sql)
+			]);
+		}
+	}
 }

@@ -112,4 +112,63 @@ export class ApiGoods {
 			throw error;
 		}
 	}
+
+	async updateGood({ id_good, modelName, id_type, brandName, photo }) {
+		const body = JSON.stringify({
+			id_good,
+			modelName,
+			id_type,
+			brandName,
+			photo,
+		});
+
+		return fetch(`${this._baseUrl}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				return response.text().then((text) => {
+					if (!response.ok) {
+						return Promise.reject(text);
+					}
+					return JSON.parse(text);
+				});
+			})
+			.then((data) => {
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in updateGood:", error);
+				throw error;
+			});
+	}
+
+	async getGoodById(id_good) {
+		try {
+			const response = await fetch(
+				`http://germax-api/goods?action=getGoodById&id_good=${id_good}`,
+				{
+					method: "GET",
+					headers: {
+						token: this._apiAuth.getToken(),
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			if (!response.ok) {
+				throw new Error(`Error fetching good: ${response.statusText}`);
+			}
+
+			const data = await response.json();
+			return data.data;
+		} catch (error) {
+			console.error("Error fetching good:", error);
+			throw error;
+		}
+	}
 }

@@ -32,6 +32,13 @@ class CategoryService
 		}
 	}
 
+	public function getCategories()
+	{
+		$sql = "SELECT id_type, name FROM type";
+		$stmt = $this->pdo->query($sql);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
 	private function getManagers()
 	{
 		$sql = "SELECT id_user FROM user WHERE id_permission = (SELECT id_permission FROM permission WHERE name = 'rental-manager')";

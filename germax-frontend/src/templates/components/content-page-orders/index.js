@@ -82,34 +82,33 @@ async function loadGoodsData(params = {}) {
 	}
 }
 
-
 function displayGoods(goods) {
 	console.log(goods);
 	const tableBody = document.querySelector("#goodsTable tbody");
 	tableBody.innerHTML = ""; // Очистка существующих строк
 
 	goods.forEach((good) => {
-			let statusText;
-			switch (good.status.name) {
-					case "booked":
-							statusText = "loué";
-							break;
-					case "available":
-							statusText = "disponible";
-							break;
-					case "unavailable":
-							statusText = "indisponible";
-							break;
-					case "cancelled":
-							statusText = "réservation annulée";
-							break;
-					default:
-							statusText = good.status.name;
-							break;
-			}
+		let statusText;
+		switch (good.status.name) {
+			case "booked":
+				statusText = "loué";
+				break;
+			case "available":
+				statusText = "disponible";
+				break;
+			case "unavailable":
+				statusText = "indisponible";
+				break;
+			case "cancelled":
+				statusText = "réservation annulée";
+				break;
+			default:
+				statusText = good.status.name;
+				break;
+		}
 
-			const row = document.createElement("tr");
-			row.innerHTML = `
+		const row = document.createElement("tr");
+		row.innerHTML = `
 					<td>${good.model.id}</td>
 					<td>${good.model.name}</td>
 					<td>${good.model.type.name}</td>
@@ -123,15 +122,14 @@ function displayGoods(goods) {
 									</button>
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${good.model.id}">
 											<li><a class="dropdown-item view-units" href="#" data-model-id="${good.model.id}">Voir les unités disponibles</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
+											<li><a class="dropdown-item edit-good" href="#" data-good-id="${good.id}">Modifier les données</a></li>
 									</ul>
 							</div>
 					</td>
 			`;
-			tableBody.appendChild(row);
+		tableBody.appendChild(row);
 	});
 }
-
 
 function updatePaginationControls(totalItems) {
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -159,6 +157,10 @@ document.addEventListener("click", function (event) {
 	if (event.target.classList.contains("view-units")) {
 		const modelId = event.target.getAttribute("data-model-id");
 		showUnitsModal(modelId);
+	} else if (event.target.classList.contains("edit-good")) {
+		const goodId = event.target.getAttribute("data-good-id");
+		console.log("goodId передаваемый в showEditModal", goodId);
+		showEditModal(goodId);
 	}
 });
 
@@ -220,7 +222,7 @@ function renderEquipmentOrder(userData) {
 	orderEquipmentContainer.innerHTML = "";
 	titleOrders.innerHTML = ``;
 	listOrdersTitle.innerHTML = ``;
-
+	loadCategories("categoryName");
 	if (userData.name_permission === "stockman") {
 		const titleAddingOrdersMarkup = `<h2>Ajout du nouvel équipement</h2>`;
 		const markup = `
@@ -270,6 +272,7 @@ function renderEquipmentOrder(userData) {
 		orderEquipmentContainer.innerHTML = markup;
 		titleOrders.innerHTML = titleOrdersMarkup;
 		listOrdersTitle.innerHTML = listOrdersTitleMarkup;
+		loadCategories("categoryName");
 		// отправка на equipment_requests
 		document
 			.getElementById("equipmentRequestForm")
@@ -398,7 +401,14 @@ async function saveEquipment() {
 			throw new Error(uploadData.message);
 		}
 	}
-	console.log("отправляемый объект" ,modelName, serial_number, id_type, brandName, photoUrl);
+	console.log(
+		"отправляемый объект",
+		modelName,
+		serial_number,
+		id_type,
+		brandName,
+		photoUrl
+	);
 	try {
 		const data = await apiGoods.createGood({
 			modelName,
@@ -440,4 +450,121 @@ function autoFillModelName() {
 	if (!modelNameInput.value) {
 		modelNameInput.value = brandName;
 	}
+}
+
+async function loadCategories(selectElementId) {
+	const categorySelect = document.getElementById(selectElementId);
+	categorySelect.innerHTML = ""; // Очистка существующих опций
+
+	try {
+		const categories = await categoryApi.getCategories();
+		categories.forEach((category) => {
+			const option = document.createElement("option");
+			option.value = category.id;
+			option.textContent = category.name;
+			categorySelect.appendChild(option);
+		});
+	} catch (error) {
+		console.error("Ошибка при загрузке категорий:", error);
+	}
+}
+
+// Добавление логики для редактирования и обновления данных на странице
+async function showEditModal(goodId) {
+	const good = await apiGoods.getGoodById(goodId);
+	const categories = await categoryApi.getCategories(); // Получение категорий из API
+	const editModalBody = document.querySelector("#editModal .modal-body");
+
+	editModalBody.innerHTML = `
+			<form id="editGoodForm">
+					<div class="form-group">
+							<label for="editModelName">Nom de modèle</label>
+							<input type="text" class="form-control" id="editModelName" value="${
+								good.model.name
+							}">
+					</div>
+					<div class="form-group">
+							<label for="editBrandName">Nom de marque</label>
+							<input type="text" class="form-control" id="editBrandName" value="${
+								good.model.brand.name
+							}">
+					</div>
+					<div class="form-group">
+							<label for="editCategoryName">Catégorie</label>
+							<select class="form-control" id="editCategoryName">
+								${categories
+									.map(
+										(category) =>
+											`<option value="${category.id}">${category.name}</option>`
+									)
+									.join("")}
+							</select>
+					</div>
+					<div class="form-group">
+							<label for="editPhoto">Photo</label>
+							<input type="text" class="form-control" id="editPhoto" value="${
+								good.model.photo
+							}">
+							<input type="file" class="form-control" id="editPhotoFile">
+							<button type="button" class="btn btn-secondary mt-2" id="uploadPhotoBtn">Upload Photo</button>
+					</div>
+					<button type="submit" class="btn btn-primary mt-3 custom-modify">Enregistrer les modifications</button>
+			</form>
+	`;
+
+	const editModal = new Modal(document.getElementById("editModal"));
+	editModal.show();
+
+	document
+		.getElementById("editGoodForm")
+		.addEventListener("submit", async function (event) {
+			event.preventDefault();
+
+			const photoValue = document.getElementById("editPhoto").value;
+			const categoryValue = document.getElementById("editCategoryName").value;
+			console.log("извлечение данных:","photovalue:",photoValue, "categoryValue", categoryValue)
+			const updatedGood = {
+				id_good: goodId,
+				modelName: document.getElementById("editModelName").value,
+				id_type:
+					categoryValue !== "undefined" ? categoryValue : good.model.type.id,
+				brandName: document.getElementById("editBrandName").value,
+				photo: photoValue !== "null" ? photoValue : good.model.photo,
+			};
+
+			console.log("updatedGood перед отправкой на update,", updatedGood);
+
+			try {
+				await apiGoods.updateGood(updatedGood);
+				editModal.hide();
+				loadGoodsData();
+			} catch (error) {
+				console.error("Error updating good:", error);
+				alert("Erreur lors de la mise à jour des données");
+			}
+		});
+
+	document
+		.getElementById("uploadPhotoBtn")
+		.addEventListener("click", async function () {
+			console.log("срабатывает клик по uploadPhotoBtn");
+			const photoFile = document.getElementById("editPhotoFile").files[0];
+			console.log("photoFile который я отправляю на сервер", photoFile)
+			if (photoFile) {
+				try {
+					const uploadData = await uploadApi.uploadPhoto(photoFile);
+					if (uploadData.success) {
+						document.getElementById("editPhoto").value = uploadData.url;
+						alert("Photo uploaded successfully!");
+					} else {
+						alert("Error uploading photo: " + uploadData.message);
+					}
+				} catch (error) {
+					console.error("Error uploading photo:", error);
+					alert("Erreur lors du téléchargement de la photo");
+				}
+			} else {
+				alert("Please select a photo to upload.");
+			}
+		});
 }

@@ -12,22 +12,25 @@ $authService = new AuthService();
 $categoryController = new CategoryController($authService);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $headers = getallheaders();
-    $token = $headers['token'] ?? null;
+	$headers = getallheaders();
+	$token = $headers['token'] ?? null;
 
-    if ($token === null) {
-        echo json_encode(['success' => false, 'message' => 'Token is missing']);
-        exit;
-    }
+	if ($token === null) {
+		echo json_encode(['success' => false, 'message' => 'Token is missing']);
+		exit;
+	}
 
-    $data = json_decode(file_get_contents('php://input'), true);
-    $name = $data['name'] ?? ''; // Получаем данные из POST запроса
-    $response = $categoryController->addCategory($name, $token); // Вызываем метод добавления категории
-    echo json_encode($response);
+	$data = json_decode(file_get_contents('php://input'), true);
+	$name = $data['name'] ?? ''; // Получаем данные из POST запроса
+	$response = $categoryController->addCategory($name, $token); // Вызываем метод добавления категории
+	echo json_encode($response);
+} elseif ($_SERVER["REQUEST_METHOD"] == "GET") {
+	$response = $categoryController->getCategories();
+	echo json_encode($response);
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(204); // No Content for preflight
-    exit;
+	http_response_code(204); // No Content for preflight
+	exit;
 } else {
-    http_response_code(405); // Method Not Allowed
-    echo json_encode(['error' => 'Method not allowed']);
+	http_response_code(405); // Method Not Allowed
+	echo json_encode(['error' => 'Method not allowed']);
 }

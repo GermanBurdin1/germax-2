@@ -2,7 +2,7 @@
 
 header("Access-Control-Allow-Origin: http://germax-frontend");
 header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, *");
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -21,6 +21,15 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 				$goodsController->getUnitsByModelId($modelId);
 			} else {
 				echo json_encode(['success' => false, 'message' => 'Model ID is required']);
+			}
+			break;
+
+		case 'getGoodById':
+			$id_good = isset($_GET['id_good']) ? intval($_GET['id_good']) : null;
+			if ($id_good) {
+				$goodsController->getGoodById($id_good);
+			} else {
+				echo json_encode(['success' => false, 'message' => 'Good ID is required']);
 			}
 			break;
 
@@ -57,6 +66,21 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 		}
 	} else {
 		echo json_encode(['success' => false, 'message' => 'Model name, serial number, type, and brand are required']);
+	}
+	exit;
+} elseif ($_SERVER["REQUEST_METHOD"] == "PUT") {
+	$input = json_decode(file_get_contents('php://input'), true);
+	$id_good = $input['id_good'] ?? null;
+	$modelName = $input['modelName'] ?? null;
+	$idType = $input['id_type'] ?? null;
+	$brandName = $input['brandName'] ?? null;
+	$photo = $input['photo'] ?? '';
+
+	if ($id_good && $modelName && $idType && $brandName) {
+		$result = $goodsController->updateGood($id_good, $modelName, $idType, $brandName, $photo);
+		echo json_encode($result);
+	} else {
+		echo json_encode(['success' => false, 'message' => 'ID, Model name, type, and brand are required']);
 	}
 	exit;
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

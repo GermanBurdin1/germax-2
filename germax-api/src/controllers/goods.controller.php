@@ -41,4 +41,19 @@ class GoodsController
 		$units = $this->goodsService->getUnitsByModelId($modelId);
 		echo json_encode(['success' => true, 'data' => $units]);
 	}
+
+	public function updateGood($id_good, $modelName, $idType, $brandName, $photo)
+	{
+		return $this->goodsService->updateGood($id_good, $modelName, $idType, $brandName, $photo);
+	}
+
+	public function getGoodById($id_good)
+	{
+		$good = $this->goodsService->getGoodById($id_good);
+		if ($good) {
+			echo json_encode(['success' => true, 'data' => $good]);
+		} else {
+			echo json_encode(['success' => false, 'message' => 'Good not found']);
+		}
+	}
 }

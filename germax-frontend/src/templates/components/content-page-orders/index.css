@@ -316,3 +316,11 @@ header {
 	font-size: 16px;
 	color: var(--text-color);
 }
+
+.custom-modify {
+	background-color: var(--accent-color);
+}
+
+.custom-modify:hover {
+	background-color: var(--secondary-color);
+}

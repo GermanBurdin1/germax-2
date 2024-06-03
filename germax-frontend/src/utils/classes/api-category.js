@@ -28,4 +28,19 @@ export class CategoryAPI {
 		}
 		return data;
 	}
+
+	async getCategories() {
+		const response = await fetch(`${this._baseUrl}/endpoint`, {
+			method: "GET",
+			headers: {
+				token: this._apiAuth.getToken(),
+			},
+		});
+
+		const data = await response.json();
+		if (!response.ok) {
+			throw new Error(data.message || "Failed to fetch categories");
+		}
+		return data.categories;
+	}
 }
