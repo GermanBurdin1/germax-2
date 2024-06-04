@@ -32,6 +32,23 @@ class EquipmentRequestService
 		return ['success' => true, 'message' => 'Request created successfully'];
 	}
 
+	public function createFirstRequestFromManager($data)
+	{
+		// Убедитесь, что $data содержит нужную структуру
+		$info = $data['formRequestItemInfo'];
+
+		$sql = "INSERT INTO equipment_request (request_date, id_user, id_type, equipment_name, quantity, comment, treatment_status, equipment_status) VALUES (CURDATE(), ?, ?, ?, ?, ?, 'pending_stockman', 'equipment_availability_pending')";
+		$stmt = $this->pdo->prepare($sql);
+		// Передаем данные из $info, а не напрямую из $data
+		$stmt->execute([
+			$data['id_user'],
+			$info['id_type'],
+			$info['modelName'],
+			$info['quantity'],
+			$info['comments']
+		]);
+		return ['success' => true, 'message' => 'Request created successfully'];
+	}
 
 	public function getAllRequests()
 	{

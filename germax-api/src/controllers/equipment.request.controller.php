@@ -28,6 +28,21 @@ class EquipmentRequestController
 		echo json_encode($response);
 	}
 
+	public function createFirstRequestFromManager($requestData, $token)
+	{
+		$user = $this->authService->getUserByToken($token);
+		if ($user === null) {
+			echo json_encode(['success' => false, 'message' => 'Invalid token or user not found']);
+			return;
+		}
+
+		// Включите id_user в ваш запрос, если он нужен для createFirstRequestFromUser
+		$requestData['id_user'] = $user['id_user'];
+
+		$response = $this->equipmentRequestService->createFirstRequestFromManager($requestData);
+		echo json_encode($response);
+	}
+
 	public function getAllRequests()
 	{
 		return $this->equipmentRequestService->getAllRequests();

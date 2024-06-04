@@ -138,7 +138,7 @@
 					<th>Nom de l'Équipement</th>
 					<th>Catégorie</th>
 					<th>Photo</th>
-					<th>Status</th>
+					<th id="statusHeader">Status</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -227,5 +227,58 @@
 				<!-- Форма для редактирования будет динамически добавлена сюда -->
 			</div>
 		</div>
+	</div>
+</div>
+
+<!-- Modal for Manager -->
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<div class="container-fluid">
+									<input type="text" id="searchUser" class="form-control mb-3" placeholder="Rechercher par nom ou prénom...">
+									<div class="row">
+											<div class="col-md-3">
+													<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+															<a class="nav-link active" id="v-pills-enseignants-tab" data-bs-toggle="pill"
+																	href="#v-pills-enseignants" role="tab" aria-controls="v-pills-enseignants"
+																	aria-selected="true">Enseignants</a>
+															<a class="nav-link" id="v-pills-etudiants-tab" data-bs-toggle="pill" href="#v-pills-etudiants"
+																	role="tab" aria-controls="v-pills-etudiants" aria-selected="false">Étudiants</a>
+													</div>
+											</div>
+											<div class="col-md-9">
+													<div class="tab-content" id="v-pills-tabContent">
+															<div class="tab-pane fade show active" id="v-pills-enseignants" role="tabpanel"
+																	aria-labelledby="v-pills-enseignants-tab">
+																	<!-- Контент для Enseignants будет сгенерирован здесь -->
+															</div>
+															<div class="tab-pane fade" id="v-pills-etudiants" role="tabpanel"
+																	aria-labelledby="v-pills-etudiants-tab">
+																	<!-- Контент для Étudiants будет сгенерирован здесь -->
+															</div>
+													</div>
+											</div>
+									</div>
+							</div>
+							<div class="pagination-controls text-center">
+									<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+													<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"
+																	aria-disabled="true">Précédent</a></li>
+													<!-- Нумерация страниц будет сгенерирована здесь -->
+													<li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+											</ul>
+									</nav>
+							</div>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+			</div>
 	</div>
 </div>

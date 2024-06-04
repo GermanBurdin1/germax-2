@@ -429,6 +429,13 @@ function createTableRow(request, namePermission) {
 		}
 	}
 
+	const dateStart = (request.date_start && request.date_start !== "0000-00-00")
+		? request.date_start
+		: "les dates n'ont pas été indiquées";
+	const dateEnd = (request.date_end && request.date_end !== "0000-00-00")
+		? request.date_end
+		: "les dates n'ont pas été indiquées";
+
 	if (namePermission === "rental-manager") {
 		if (request.treatment_status === "pending_manager") {
 			actionsMarkup = `
@@ -497,8 +504,8 @@ function createTableRow(request, namePermission) {
 					<td>${categoryByIdType[request.id_type] || "N/A"}</td>
 					<td>${request.quantity}</td>
 					<td>${request.request_date}</td>
-					<td>${request.date_start}</td>
-					<td>${request.date_end}</td>
+					<td>${dateStart}</td>
+          <td>${dateEnd}</td>
 					<td>${treatmentStatus}</td>
 					<td>${equipmentStatus}</td>
 					<td>
@@ -731,11 +738,18 @@ function updateSingleRow(requestId, updatedData) {
 		updatedEquipmentStatus = "trouvé";
 	}
 
+	const dateStart = (updatedData.date_start && updatedData.date_start !== "0000-00-00")
+		? updatedData.date_start
+		: "les dates n'ont pas été indiquées";
+	const dateEnd = (updatedData.date_end && updatedData.date_end !== "0000-00-00")
+		? updatedData.date_end
+		: "les dates n'ont pas été indiquées";
+
 	row.querySelector("[data-equipment-name]").textContent =
 		updatedData.equipment_name;
 	row.children[3].textContent = updatedData.quantity;
-	row.children[5].textContent = updatedData.date_start;
-	row.children[6].textContent = updatedData.date_end;
+	row.children[5].textContent = dateStart;
+	row.children[6].textContent = dateEnd;
 
 	if (updatedTreatmentStatus !== undefined) {
 		row.children[7].textContent = updatedTreatmentStatus;

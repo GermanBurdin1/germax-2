@@ -12,7 +12,9 @@ import { BrandAPI } from "../../../utils/classes/api-brand";
 import { UploadAPI } from "../../../utils/classes/api-upload";
 import { debounce } from "../../../utils/debounce";
 
-const categoryItemNodes = Array.from(document.getElementsByClassName("list-group-item"));
+const categoryItemNodes = Array.from(
+	document.getElementsByClassName("list-group-item")
+);
 const searchInputNode = document.querySelector("#model-search");
 
 initRadioBtns();
@@ -30,6 +32,14 @@ const namePermission = localStorage.getItem("namePermission");
 console.log("Auth token:", authToken);
 if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
+}
+
+// 1. Удаление элементов для rental-manager
+if (namePermission === "rental-manager") {
+	document.getElementById("titleAddingOrders").style.display = "none";
+	document.getElementById("equipmentAddingContainer").style.display = "none";
+	const statusHeader = document.querySelector("#statusHeader");
+	if (statusHeader) statusHeader.style.display = "none";
 }
 
 let currentPage = 1;
@@ -71,7 +81,10 @@ function fetchAuthUser(url) {
 
 async function loadGoodsData(params = {}) {
 	if (!params.statusNames) {
-		params.statusNames = ["available", "unavailable", "booked", "cancelled"];
+		params.statusNames =
+			namePermission === "rental-manager"
+				? ["available"]
+				: ["available", "unavailable", "booked", "cancelled"];
 	}
 	params.page = currentPage;
 	params.limit = itemsPerPage;
@@ -121,19 +134,25 @@ function displayGoods(goods) {
 					<td>${good.model.id}</td>
 					<td>${good.model.name}</td>
 					<td>${good.model.type.name}</td>
-					<td><img src="${good.model.photo}" alt="${good.model.name}" style="width: 200px; height: 200px;"></td>
-					<td>${statusText}</td>
+					<td><img src="${good.model.photo}" alt="${
+			good.model.name
+		}" style="width: 200px; height: 200px;"></td>
+		${namePermission !== "rental-manager" ? `<td>${statusText}</td>` : ""}
 					<td>
-							<div class="dropdown">
-									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${good.model.id}"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${good.model.id}">
-											<li><a class="dropdown-item view-units" href="#" data-model-id="${good.model.id}">Voir les unités disponibles</a></li>
-											<li><a class="dropdown-item edit-good" href="#" data-good-id="${good.id}">Modifier les données</a></li>
-									</ul>
-							</div>
+							${
+								namePermission === "rental-manager"
+									? '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal">Attribuer l\'équipement</button>'
+									: `<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${good.model.id}"
+															data-bs-toggle="dropdown" aria-expanded="false">
+															Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${good.model.id}">
+													<li><a class="dropdown-item view-units" href="#" data-model-id="${good.model.id}">Voir les unités disponibles</a></li>
+													<li><a class="dropdown-item edit-good" href="#" data-good-id="${good.id}">Modifier les données</a></li>
+											</ul>
+									</div>`
+							}
 					</td>
 			`;
 		tableBody.appendChild(row);
@@ -213,7 +232,26 @@ function displayUnitsModal(units) {
 	unitsModal.show();
 }
 
-function renderEquipmentOrder(userData) {
+async function loadCategories(selectElementId) {
+	const categorySelect = document.getElementById(selectElementId);
+	categorySelect.innerHTML = ""; // Очистка существующих опций
+
+	try {
+		const categories = await categoryApi.getCategories();
+		categories.forEach((category) => {
+			const option = document.createElement("option");
+			option.value = category.id_type;
+			option.textContent = category.name;
+			categorySelect.appendChild(option);
+		});
+		console.log("Категории загружены успешно:", categories);
+		return categories;
+	} catch (error) {
+		console.error("Ошибка при загрузке категорий:", error);
+	}
+}
+
+async function renderEquipmentOrder(userData) {
 	const titleAddingOrders = document.getElementById("titleAddingOrders");
 	const addingEquipmentContainer = document.getElementById(
 		"equipmentAddingContainer"
@@ -276,51 +314,50 @@ function renderEquipmentOrder(userData) {
 </div>
 
 		`;
-		const listOrdersTitleMarkup = `<h2>Gestion des demandes de nouvelles réservations</h2>`;
+		const listOrdersTitleMarkup = `<h2>Attribution de l'équipement</h2>`;
 
 		orderEquipmentContainer.innerHTML = markup;
 		titleOrders.innerHTML = titleOrdersMarkup;
 		listOrdersTitle.innerHTML = listOrdersTitleMarkup;
-		loadCategories("categoryName");
-		// отправка на equipment_requests
-		document
-			.getElementById("equipmentRequestForm")
-			.addEventListener("submit", function (event) {
-				event.preventDefault(); // Предотвратить стандартное поведение формы
+		try {
+			const сategories = await loadCategories("categoryName");
+			console.log("loadCategories", сategories);
 
-				// Собираем данные формы
-				const equipmentName = document.getElementById("equipmentName").value;
-				const quantity = document.getElementById("quantity").value;
-				const comment = document.getElementById("equipmentDescription").value;
-				const id_type = document.getElementById("categoryName").value;
+			// отправка на equipment_requests
+			document
+				.getElementById("equipmentRequestForm")
+				.addEventListener("submit", function (event) {
+					event.preventDefault(); // Предотвратить стандартное поведение формы
 
-				// Создаем объект с данными для отправки на сервер
-				const requestData = {
-					equipment_name: equipmentName,
-					quantity: parseInt(quantity, 10),
-					comment: comment,
-					id_type,
-					id_user,
-				};
+					// Собираем данные формы
+					const equipmentName = document.getElementById("equipmentName").value;
+					const quantity = document.getElementById("quantity").value;
+					const comments = document.getElementById("equipmentDescription").value;
+					const id_type = document.getElementById("categoryName").value;
+					console.log(document.getElementById("categoryName"));
+					// Создаем объект с данными для отправки на сервер
+					const requestData = {
+						modelName: equipmentName,
+						comments,
+						quantity: parseInt(quantity, 10),
+						id_type: id_type,
+					};
 
-				// Отправляем запрос на сервер
-				fetch("http://germax-api/equipment_requests", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(requestData),
-				})
-					.then((response) => response.json())
-					.then((data) => {
-						console.log("Success:", data);
-						alert("Запрос на оборудование успешно отправлен!");
-					})
-					.catch((error) => {
-						console.error("Error:", error);
-						alert("Ошибка при отправке запроса на оборудование");
-					});
-			});
+					// Используем ApiEquipmentRequest для отправки запроса
+					apiEquipmentRequest
+						.createEquipmentRequestFromManager(requestData)
+						.then((data) => {
+							console.log("Success:", data);
+							alert("Запрос на оборудование успешно отправлен!");
+						})
+						.catch((error) => {
+							console.error("Error:", error);
+							alert("Ошибка при отправке запроса на оборудование");
+						});
+				});
+		} catch (error) {
+			console.error("Ошибка при загрузке категорий:", error);
+		}
 	}
 }
 
@@ -461,23 +498,6 @@ function autoFillModelName() {
 	}
 }
 
-async function loadCategories(selectElementId) {
-	const categorySelect = document.getElementById(selectElementId);
-	categorySelect.innerHTML = ""; // Очистка существующих опций
-
-	try {
-		const categories = await categoryApi.getCategories();
-		categories.forEach((category) => {
-			const option = document.createElement("option");
-			option.value = category.id;
-			option.textContent = category.name;
-			categorySelect.appendChild(option);
-		});
-	} catch (error) {
-		console.error("Ошибка при загрузке категорий:", error);
-	}
-}
-
 // Добавление логики для редактирования и обновления данных на странице
 async function showEditModal(goodId) {
 	const good = await apiGoods.getGoodById(goodId);
@@ -531,7 +551,13 @@ async function showEditModal(goodId) {
 
 			const photoValue = document.getElementById("editPhoto").value;
 			const categoryValue = document.getElementById("editCategoryName").value;
-			console.log("извлечение данных:","photovalue:",photoValue, "categoryValue", categoryValue)
+			console.log(
+				"извлечение данных:",
+				"photovalue:",
+				photoValue,
+				"categoryValue",
+				categoryValue
+			);
 			const updatedGood = {
 				id_good: goodId,
 				modelName: document.getElementById("editModelName").value,
@@ -558,7 +584,7 @@ async function showEditModal(goodId) {
 		.addEventListener("click", async function () {
 			console.log("срабатывает клик по uploadPhotoBtn");
 			const photoFile = document.getElementById("editPhotoFile").files[0];
-			console.log("photoFile который я отправляю на сервер", photoFile)
+			console.log("photoFile который я отправляю на сервер", photoFile);
 			if (photoFile) {
 				try {
 					const uploadData = await uploadApi.uploadPhoto(photoFile);

@@ -357,3 +357,21 @@ header {
 	border-color: var(--primary-color);
 	color: var(--white-color);
 }
+
+/* Стили для кнопки "Attribuer l'équipement" */
+.btn-primary {
+	background-color: var(--primary-color);
+	color: white;
+	border: none;
+	transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+	background-color: var(--accent-color);
+	color: white;
+}
+
+/* Перемещение заголовка ниже хедера */
+#titleOrders {
+	margin-top: 20px; /* Отступ для перемещения ниже хедера */
+}

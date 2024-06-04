@@ -48,6 +48,46 @@ export class ApiEquipmentRequest {
 			});
 	}
 
+	async createEquipmentRequestFromManager({
+		modelName,
+		comments,
+		quantity,
+		id_type,
+		id_user
+	}) {
+		const body = JSON.stringify({
+			formRequestItemInfo: {
+				modelName,
+				comments,
+				quantity,
+				id_type,
+				id_user
+			},
+		});
+		console.log("Sending JSON:", body);
+		return fetch(`${this._baseUrl}/create-first-request-from-manager`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((json) => Promise.reject(json));
+				}
+				return response.json();
+			})
+			.then((data) => {
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in createRequestRental:", error);
+				throw error;
+			});
+	}
+
 	async getAllRequests() {
 		return fetch(`${this._baseUrl}/get-all-requests`, {
 			method: "GET",

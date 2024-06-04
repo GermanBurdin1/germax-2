@@ -19,7 +19,7 @@ function getRentalManagerNav() {
 	<a class="nav-link" id="indicateursLink" href="/page-order-new-equipment">Gestion du nouvel équipement</a>
 	<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des réservations</a>
 	<a class="nav-link" id="usersManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
-	<a class="nav-link" id="indicateursLink" href="/page-equipment-management">Gestion de l'équipement</a>
+	<a class="nav-link" id="indicateursLink" href="/page-orders">Gestion de l'équipement</a>
 	</div>
 `;
 }
