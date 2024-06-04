@@ -310,6 +310,7 @@ class EquipmentRequestService
 
 	public function cancelRequest($id_request)
 	{
+		error_log("Cancelling request with ID: $id_request");
 		$sql = "UPDATE equipment_request SET treatment_status = 'closed_by_user', equipment_status = 'canceled' WHERE id_request = ?";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$id_request]);
@@ -317,6 +318,7 @@ class EquipmentRequestService
 		if ($stmt->rowCount() > 0) {
 			return ['success' => true];
 		} else {
+			error_log("No rows updated for request ID: $id_request");
 			return ['success' => false, 'message' => 'No rows updated'];
 		}
 	}

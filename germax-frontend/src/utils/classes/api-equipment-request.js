@@ -53,7 +53,7 @@ export class ApiEquipmentRequest {
 		comments,
 		quantity,
 		id_type,
-		id_user
+		id_user,
 	}) {
 		const body = JSON.stringify({
 			formRequestItemInfo: {
@@ -61,7 +61,7 @@ export class ApiEquipmentRequest {
 				comments,
 				quantity,
 				id_type,
-				id_user
+				id_user,
 			},
 		});
 		console.log("Sending JSON:", body);
@@ -263,24 +263,33 @@ export class ApiEquipmentRequest {
 
 	async cancelRequest(requestId) {
 		const body = JSON.stringify({ id_request: requestId });
-		return fetch(`${this._baseUrl}/cancel-request`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				token: this._apiAuth.getToken(),
-			},
-			body,
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				if (!data.success) {
-					throw new Error(data.message || "Failed to cancel request");
-				}
-				return data;
-			})
-			.catch((error) => {
-				console.error("Error cancelling request:", error);
-				throw error;
+		try {
+			const response = await fetch(`${this._baseUrl}/cancel-request`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					token: this._apiAuth.getToken(),
+				},
+				body,
 			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				throw new Error(
+					`HTTP error! Status: ${response.status}, Message: ${errorText}`
+				);
+			}
+
+			const data = await response.json();
+
+			if (!data.success) {
+				throw new Error(data.message || "Failed to cancel request");
+			}
+
+			return data;
+		} catch (error) {
+			console.error("Error cancelling request:", error);
+			throw error;
+		}
 	}
 }

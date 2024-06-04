@@ -118,7 +118,6 @@ function updateNotificationCount(count) {
 	}
 }
 
-
 function displayNotifications(notifications) {
 	const notificationsList = document.getElementById("notificationsList");
 	notificationsList.innerHTML = "";
@@ -433,15 +432,21 @@ let managerProposalModal;
 function loadClientLoans() {
 	const myLoans = document.getElementById("myLoans");
 	const userId = localStorage.getItem("id_user");
+
 	Promise.all([
 		apiRental.getClientRentals(),
 		apiEquipmentRequest.getAllRequestsByUser(userId),
 	])
 		.then(([rentals, requests]) => {
 			requests = requests.data;
-			console.log("Rentals:", rentals);
-			console.log("Requests:", requests);
-			// Допустим, что функция returnClientLoans теперь может обрабатывать оба типа данных
+			console.log("Rentals Data:", rentals);
+			console.log("Requests Data:", requests);
+
+			// Проверка наличия данных
+			if (!Array.isArray(rentals) || !Array.isArray(requests)) {
+				throw new Error("Invalid data format from API");
+			}
+
 			// Объединяем данные о реальных арендах и запросах в один массив
 			myLoans.innerHTML = returnClientLoans(rentals, requests);
 			myLoans.style.display = "block";
@@ -450,8 +455,21 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
-			setupCancelReservationModal();
-			// setupProposalModalBeforeSendingItem();
+
+			// Убедимся, что все строки корректно обрабатываются
+			const rows = document.querySelectorAll("#myLoans tr[data-id]");
+			let hasRentals = rentals.length > 0;
+			let hasRequests = requests.length > 0;
+
+			// Вызываем функции для настройки модальных окон в зависимости от наличия данных
+			if (hasRentals) {
+				console.log("Calling setupCancelLoansModal");
+				setupCancelLoansModal();
+			}
+			if (hasRequests) {
+				console.log("Calling setupCancelReservationModal");
+				setupCancelReservationModal();
+			}
 		})
 		.catch((error) => {
 			console.error("Failed to load data:", error);
@@ -696,6 +714,7 @@ function updateTableRowStatus(requestId, status) {
 }
 
 function setupCancelReservationModal() {
+	console.log("вызвалась setupCancelReservationModal");
 	const cancelReservationModal = new Modal(
 		document.getElementById("request--reverse-loan-modal")
 	);
@@ -704,10 +723,13 @@ function setupCancelReservationModal() {
 		if (event.target.dataset.bsTarget === "#request--reverse-loan-modal") {
 			event.preventDefault();
 			const requestId = event.target.closest("tr").getAttribute("data-id");
-			document
-				.getElementById("request--reverse-loan-modal")
-				.setAttribute("data-id", requestId);
-			cancelReservationModal.show();
+			const requestType = event.target.closest("tr").getAttribute("data-type");
+			if (requestType === "request") {
+				document
+					.getElementById("request--reverse-loan-modal")
+					.setAttribute("data-id", requestId);
+				cancelReservationModal.show();
+			}
 		}
 	});
 
@@ -743,17 +765,21 @@ function setupCancelReservationModal() {
 }
 
 function setupCancelLoansModal() {
+	console.log("вызвалась setupCancelLoansModal ");
 	const reverseLoanModalElement = document.getElementById("reverse-loan-modal");
 	const cancelLoansModal = new Modal(reverseLoanModalElement);
-	console.log("cancelLoansModal",cancelLoansModal)
+	console.log("cancelLoansModal", cancelLoansModal);
 
 	document.querySelector(".table").addEventListener("click", (event) => {
 		if (event.target.dataset.bsTarget === "#reverse-loan-modal") {
 			event.preventDefault();
 			const requestId = event.target.closest("tr").getAttribute("data-id");
-			const modal = document.getElementById("reverse-loan-modal");
-			modal.setAttribute("data-id", requestId);
-			cancelLoansModal.show();
+			const requestType = event.target.closest("tr").getAttribute("data-type");
+			if (requestType === "rental") {
+				const modal = document.getElementById("reverse-loan-modal");
+				modal.setAttribute("data-id", requestId);
+				cancelLoansModal.show();
+			}
 		}
 	});
 
@@ -928,15 +954,17 @@ function createNotificationElement(message, linkText, linkHref) {
 function loadUserNotifications(userType) {
 	let notifications = [];
 	if (userType === "rental-manager") {
-			notifications = getManagerNotifications();
+		notifications = getManagerNotifications();
 	} else if (userType === "stockman") {
-			notifications = getStockmanNotifications();
+		notifications = getStockmanNotifications();
 	} else if (userType === "student" || userType === "teacher") {
-			notifications = getStudentTeacherNotifications();
+		notifications = getStudentTeacherNotifications();
 	}
 
 	const notificationsContainer = document.getElementById("userNotifications");
-	notificationsContainer.innerHTML = notifications.map(createNotificationElement).join("");
+	notificationsContainer.innerHTML = notifications
+		.map(createNotificationElement)
+		.join("");
 }
 
 async function displayStatistics(userType) {

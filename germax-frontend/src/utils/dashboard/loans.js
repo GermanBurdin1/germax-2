@@ -95,7 +95,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 			}
 
 			return `
-			<tr data-id="${entry.id}">
+		<tr data-id="${entry.id}" data-type="${entry.type}">
     <td>${entry.id || "N/A"}</td>
     <td>${entry.model_name || "N/A"}</td>
     <td>${formatDate(entry.date_start) || "N/A"}</td>
@@ -277,12 +277,8 @@ export function returnRentalHistoryLoans(rentals = []) {
 								Choisir une action
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#communication-manager-modal">Contacter le manager</a></li>
+							<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
 								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
-								<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#anticipate-return-loan-modal">Retour anticipé</a></li>
-								<li>
-    						<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#extension-loan-modal">Extension de la location</a>
-								</li>
 							</ul>
 						</div>
 					</td>
@@ -321,29 +317,26 @@ export function returnRentalHistoryLoans(rentals = []) {
 		</div>
 
 		<!-- Модальное окно для связи с менеджером -->
-		<div class="modal fade" id="communication-manager-modal" tabindex="-1" aria-labelledby="communication-manager-modal-label" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="communication-manager-modal-label">Communication avec le gestionnaire d'inventaire</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form id="communicationForm">
-							<div class="form-group">
-								<label for="communicationMessageText">Message</label>
-								<textarea class="form-control" id="communicationMessageText" rows="3" placeholder="décrivez votre situation"></textarea>
-							</div>
-							<button type="submit" class="btn btn-primary">Envoyer</button>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
+<div class="modal fade" id="student-communication-manager-modal" tabindex="-1" aria-labelledby="student-communication-manager-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="student-communication-manager-modal-label">Pour la moindre question ou problème écrivez votre message au manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-info">
+                    <p><strong>Téléphone:</strong> +33 1 23 45 67 89</p>
+                    <p><strong>Heures de travail:</strong> Lundi - Vendredi, 9:00 - 18:00</p>
+                    <p><strong>Email:</strong> <a href="mailto:manager@exemple.com">manager@exemple.com</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 		<!-- Modal annulation-->
     <div class="modal fade" id="reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
