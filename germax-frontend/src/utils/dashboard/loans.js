@@ -18,7 +18,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				statusMessage:
 					rental.id_status === 4
 						? `requête effectuée le ${formatDate(rental.date_start)}`
-						: "Status not defined",
+						: "Status non défini",
 			};
 			console.log("Processed rental entry:", processedRental);
 			return processedRental;
@@ -75,7 +75,7 @@ export function returnClientLoans(rentals = [], requests = []) {
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
 					if (entry.photo) {
-						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
+						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo" style="width: 200px; height: 200px; object-fit: cover;"></td></tr>`;
 					}
 				} else if (entry.statusMessage === "closed_by_stockman") {
 					statusMessage = "vous pouvez récupérer le matériel";
@@ -96,24 +96,26 @@ export function returnClientLoans(rentals = [], requests = []) {
 
 			return `
 			<tr data-id="${entry.id}">
-					<td>${entry.id || "N/A"}</td>
-					<td>${entry.model_name || "N/A"}</td>
-					<td>${formatDate(entry.date_start) || "N/A"}</td>
-					<td>${formatDate(entry.date_end) || "N/A"}</td>
-					<td>${statusMessage}</td>
-									<td>
-											<div class="dropdown">
-													<button class="btn btn-secondary dropdown-toggle" type="button"
-																	id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-															Choisir une action
-													</button>
-													<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-													${actionsMarkup}
-													</ul>
-											</div>
-									</td>
-							</tr>
-							${photoHtml}
+    <td>${entry.id || "N/A"}</td>
+    <td>${entry.model_name || "N/A"}</td>
+    <td>${formatDate(entry.date_start) || "N/A"}</td>
+    <td>${formatDate(entry.date_end) || "N/A"}</td>
+    <td>${statusMessage}</td>
+    <td>
+        ${entry.photo ? `<img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo" style="width: 100px; height: 100px; object-fit: cover;">` : "N/A"}
+    </td>
+    <td>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Choisir une action
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                ${actionsMarkup}
+            </ul>
+        </div>
+    </td>
+</tr>
 					`;
 		})
 		.join("");
@@ -142,6 +144,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 																							class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
 															</th>
 															<th>Status</th>
+															<th>Photo</th>
 															<th>Actions</th>
 													</tr>
 											</thead>

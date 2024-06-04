@@ -110,6 +110,28 @@ export class ApiEquipmentRequest {
 			});
 	}
 
+	async getAllRequestsByUser(requestId) {
+		return fetch(`${this._baseUrl}/get-all-requests-by-user?id=${requestId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${this._apiAuth.getToken()}`,
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.success && Array.isArray(data.data)) {
+					return data;
+				} else {
+					throw new Error("Invalid response structure");
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching equipment requests:", error);
+				return { success: false, data: [] }; // Возвращаем объект с пустым массивом данных в случае ошибки
+			});
+	}
+
 	async updateEquipmentRequest(updatedData) {
 		const body = JSON.stringify(updatedData);
 		return fetch(`${this._baseUrl}/update-request`, {

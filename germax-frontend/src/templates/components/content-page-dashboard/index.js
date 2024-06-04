@@ -432,10 +432,10 @@ function loadRentalHistory() {
 let managerProposalModal;
 function loadClientLoans() {
 	const myLoans = document.getElementById("myLoans");
-
+	const userId = localStorage.getItem("id_user");
 	Promise.all([
 		apiRental.getClientRentals(),
-		apiEquipmentRequest.getAllRequests(),
+		apiEquipmentRequest.getAllRequestsByUser(userId),
 	])
 		.then(([rentals, requests]) => {
 			requests = requests.data;

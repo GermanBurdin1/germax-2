@@ -48,6 +48,11 @@ class EquipmentRequestController
 		return $this->equipmentRequestService->getAllRequests();
 	}
 
+	public function getAllRequestsByUser($id)
+	{
+		return $this->equipmentRequestService->getAllRequestsByUser($id);
+	}
+
 	public function updateRequest($requestData, $token)
 	{
 		$user = $this->authService->getUserByToken($token);
