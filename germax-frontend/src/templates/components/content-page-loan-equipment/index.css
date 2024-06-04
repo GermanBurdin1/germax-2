@@ -144,3 +144,36 @@
 	font-size: 1.2rem; /* Увеличение размера шрифта */
 	padding: 1rem 1.5rem; /* Увеличение отступов внутри кнопки */
 }
+
+.pagination-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.pagination-container button {
+	background-color: var(--primary-color);
+	border: none;
+	color: var(--white-color);
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.pagination-container button:hover {
+	background-color: var(--accent-color);
+}
+
+.pagination-container button:disabled {
+	background-color: var(--secondary-color);
+	cursor: not-allowed;
+}
+
+.pagination-container #pageInfo {
+	font-size: 16px;
+	color: var(--text-color);
+}

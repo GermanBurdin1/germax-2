@@ -2,15 +2,36 @@ import { Dropdown } from "bootstrap";
 import { Modal } from "bootstrap";
 import "./index.css";
 import { ApiRental } from "../../../utils/classes/api-rental";
+import { ApiUsers } from "../../../utils/classes/api-users";
 
 const apiRental = new ApiRental();
+const apiUsers = new ApiUsers();
+let currentPage = 1;
+const itemsPerPage = 10;
+
+document.getElementById("prevPageBtn").addEventListener("click", () => {
+	console.log("клик на prevPageBtn");
+	if (currentPage > 1) {
+		currentPage--;
+		refreshRentals();
+	}
+});
+
+const nextPageBtn = document.getElementById("nextPageBtn");
+console.log(nextPageBtn);
+nextPageBtn.addEventListener("click", () => {
+	console.log("клик на nextPageBtn");
+	currentPage++;
+	refreshRentals();
+});
 // получить данные которые были отправлены на странице
 async function refreshRentals() {
 	try {
-		const data = await apiRental.getRentals();
+		const data = await apiRental.getRentals(currentPage, itemsPerPage); // Передаем параметры пагинации
 		if (data) {
-			console.log(data);
-			updateBookingsTable(data);
+			console.log("data", data);
+			updateBookingsTable(data.data);
+			updatePaginationControls(data.totalItems);
 		} else {
 			console.error("Failed to fetch data");
 		}
@@ -27,31 +48,41 @@ function updateBookingsTable(rentals) {
 	rentals.forEach((rental) => {
 		const row = tbody.insertRow();
 		row.innerHTML = `
-			<td>${rental.id_loan}</td>
-			<td>${rental.user_name} ${rental.user_surname}</td>
-			<td>${rental.model_name} (${rental.serial_number})</td>
-			<td>${rental.date_start}-${rental.date_end}</td>
-			<td>${rental.comment || "aucun commentaire"} </td>
-			<td>${rental.loan_status}</td>
-			<td>bon état</td>
-			<td>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu${
-											rental.id_good
-										}"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Choisir une action
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="actionMenu${
-											rental.id_good
-										}">
-                        <li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-                        <li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+        <td>${rental.id_loan}</td>
+				<td>${rental.id_user}</td>
+        <td>${rental.user_name} ${rental.user_surname}</td>
+        <td>${rental.model_name} (${rental.serial_number})</td>
+        <td>${rental.date_start}-${rental.date_end}</td>
+        <td>${rental.comment || "aucun commentaire"} </td>
+        <td>${rental.loan_status}</td>
+        <td>bon état</td>
+        <td>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu${
+									rental.id_good
+								}" data-bs-toggle="dropdown" aria-expanded="false">
+                    Choisir une action
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="actionMenu${
+									rental.id_good
+								}">
+                    ${
+											rental.loan_status === "loaned"
+												? `
+                        <li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>
+                    `
+												: rental.loan_status === "loan_request"
+												? `
                         <li><a class="dropdown-item manage-rental" href="#">Gérer la location</a></li>
-                    </ul>
-                </div>
-            </td>`;
+                    `
+												: ""
+										}
+                </ul>
+            </div>
+        </td>`;
 		const manageLinks = row.querySelectorAll(".manage-rental"); // Уточняем селектор, чтобы выбрать только нужную ссылку
+		const infoLinks = row.querySelectorAll(".info_client");
+
 		manageLinks.forEach((link) => {
 			link.addEventListener("click", function (event) {
 				console.log("вызов функции");
@@ -67,9 +98,71 @@ function updateBookingsTable(rentals) {
 					.getElementById("cancelRentalButton")
 					.setAttribute("data-id", rental.id_loan);
 				modal.show();
+				const closeManagementRentalModalButton = document.getElementById(
+					"closeManagementRentalModalButton"
+				);
+				console.log(
+					"closeManagementRentalModalButton",
+					closeManagementRentalModalButton
+				);
+				closeManagementRentalModalButton.addEventListener(
+					"click",
+					function (event) {
+						event.preventDefault();
+						modal.hide();
+					}
+				);
+			});
+		});
+
+		infoLinks.forEach((link) => {
+			link.addEventListener("click", async function (event) {
+				event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+				const userId = event.target.getAttribute("data-user-id");
+				const userInfo = await apiUsers.getUserInformationById(userId);
+				displayUserInfoInModal(userInfo);
+				const modal = new Modal(document.getElementById("infoClientModal"), {});
+				modal.show();
+				const closeButton = document.getElementById("closeClientModal");
+				closeButton.addEventListener("click", function (event) {
+					event.preventDefault();
+					modal.hide();
+				});
 			});
 		});
 	});
+}
+
+function displayUserInfoInModal(userInfo) {
+	const modalBody = document.querySelector("#infoClientModal .modal-body");
+	modalBody.innerHTML = `
+        <div>
+            <img src="${
+							userInfo.picture || "placeholder.jpg"
+						}" alt="User Picture" style="width: 100px; height: 100px;">
+            <p><strong>Email:</strong> ${userInfo.email}</p>
+            <p><strong>Phone:</strong> ${userInfo.phone}</p>
+            <h5>Rental History:</h5>
+            <ul>
+                ${userInfo.rentals
+									.map(
+										(rental) => `
+                    <li>
+                        <p><strong>Dates:</strong> ${rental.date_start} - ${
+											rental.date_end
+										}</p>
+                        <p><strong>Return Date:</strong> ${
+													rental.return_date || "N/A"
+												}</p>
+                        <p><strong>Status:</strong> ${rental.loan_status}</p>
+                        <p><strong>State:</strong> ${rental.state}</p>
+                    </li>
+                `
+									)
+									.join("")}
+            </ul>
+        </div>
+    `;
 }
 
 function getStatusName(statusId) {
@@ -95,7 +188,7 @@ document
 	.getElementById("approveRentalButton")
 	.addEventListener("click", function () {
 		const rentalId = this.getAttribute("data-id");
-		console.log("rentalId",rentalId)
+		console.log("rentalId", rentalId);
 		approveRental(rentalId);
 	});
 
@@ -107,11 +200,11 @@ document
 	});
 
 function approveRental(loanId) {
-	console.log("сработала approveRental",loanId)
+	console.log("сработала approveRental", loanId);
 	apiRental
 		.approveRental(loanId)
 		.then((data) => {
-			console.log("data какая пришла", data)
+			console.log("data какая пришла", data);
 			if (data.success) {
 				// Обновите интерфейс или уведомите пользователя об успешном одобрении
 			} else {
@@ -255,6 +348,15 @@ document.addEventListener("click", function (event) {
 		});
 	}
 });
+
+function updatePaginationControls(totalItems) {
+	const totalPages = Math.ceil(totalItems / itemsPerPage);
+	document.getElementById(
+		"pageInfo"
+	).textContent = `Page ${currentPage} of ${totalPages}`;
+	document.getElementById("prevPageBtn").disabled = currentPage === 1;
+	document.getElementById("nextPageBtn").disabled = currentPage === totalPages;
+}
 
 
 const backArrowContainer = document.getElementById("backArrowContainer");

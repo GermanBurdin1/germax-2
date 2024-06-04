@@ -98,25 +98,60 @@ class RentalService
 		return $stmt->fetchColumn();
 	}
 
-	public function fetchRentals()
-	{
-		try {
-			$stmt = $this->pdo->prepare("SELECT g.id_good, g.id_status, g.serial_number, u.lastname AS user_name, u.firstname AS user_surname, l.id_loan, l.date_start, l.date_end, l.comment, l.loan_status, m.name AS model_name FROM loan l JOIN good g ON l.id_good = g.id_good JOIN model m ON g.id_model = m.id_model JOIN user u ON l.id_user = u.id_user WHERE g.id_status = 3;");
-			$stmt->execute();
-			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	public function fetchRentals($page, $limit)
+{
+    $offset = ($page - 1) * $limit;
+    try {
+        // Основной запрос для выборки данных с учетом пагинации
+        $stmt = $this->pdo->prepare("
+            SELECT g.id_good, g.id_status, g.serial_number, u.lastname AS user_name, u.firstname AS user_surname, u.id_user,
+                   l.id_loan, l.date_start, l.date_end, l.comment, l.loan_status, m.name AS model_name
+            FROM loan l
+            JOIN good g ON l.id_good = g.id_good
+            JOIN model m ON g.id_model = m.id_model
+            JOIN user u ON l.id_user = u.id_user
+            WHERE g.id_status = 3
+            LIMIT :limit OFFSET :offset;
+        ");
 
-			if (!$result) {
-				error_log("fetchRentals query returned empty result.");
-			} else {
-				error_log("fetchRentals query result: " . print_r($result, true));
-			}
+        // Привязка параметров лимита и смещения
+        $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+        $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-			return $result;
-		} catch (PDOException $e) {
-			error_log("Error in fetchRentals: " . $e->getMessage());
-			return [];
-		}
-	}
+        // Запрос для подсчета общего количества элементов
+        $countStmt = $this->pdo->prepare("
+            SELECT COUNT(*)
+            FROM loan l
+            JOIN good g ON l.id_good = g.id_good
+            JOIN model m ON g.id_model = m.id_model
+            JOIN user u ON l.id_user = u.id_user
+            WHERE g.id_status = 3;
+        ");
+        $countStmt->execute();
+        $totalItems = $countStmt->fetchColumn();
+
+        // Логирование результатов для отладки
+        if (!$result) {
+            error_log("fetchRentals query returned empty result.");
+        } else {
+            error_log("fetchRentals query result: " . print_r($result, true));
+        }
+
+        return [
+            'data' => $result,
+            'totalItems' => $totalItems
+        ];
+    } catch (PDOException $e) {
+        error_log("Error in fetchRentals: " . $e->getMessage());
+        return [
+            'data' => [],
+            'totalItems' => 0
+        ];
+    }
+}
+
 
 
 	public function fetchRentalsByUser($userId)

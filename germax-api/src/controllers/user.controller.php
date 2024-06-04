@@ -64,7 +64,12 @@ class UserController
 	}
 
 	public function getUserById($userId)
-    {
-        return $this->userService->getUserById($userId);
-    }
+	{
+		return $this->userService->getUserById($userId);
+	}
+
+	public function getUserInformationById($userId)
+	{
+		return $this->userService->getUserInformationById($userId);
+	}
 }

@@ -23,16 +23,17 @@ $headers = getallheaders();
 $token = $headers['token'] ?? null;
 
 if ($token === null) {
-    echo json_encode(['success' => false, 'message' => 'Token is missing']);
-    exit;
+	echo json_encode(['success' => false, 'message' => 'Token is missing']);
+	exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	// Обработка GET запроса для получения текущих аренд
 	error_log("GET request received.");
-	$rentalController->fetchRentals();
+	$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+	$limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
+	$rentalController->fetchRentals($page, $limit);
 } else {
 	error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
 	echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
-?>

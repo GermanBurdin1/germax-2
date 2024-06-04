@@ -1,4 +1,5 @@
 import { ApiAuth } from "./api-auth";
+import { stringifyParams } from "../stringify-params";
 
 export class ApiRental {
 	_apiAuth = ApiAuth.getInstance();
@@ -102,9 +103,14 @@ export class ApiRental {
 			});
 	}
 
-	async getRentals() {
+	async getRentals(page, limit) {
+		const paramsStr = stringifyParams({
+			page,
+			limit,
+		});
+
 		console.log("функция getRentals вызывается ");
-		return fetch(`${this._baseUrl}/`, {
+		return fetch(`${this._baseUrl}/?${paramsStr}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",

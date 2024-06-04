@@ -107,6 +107,9 @@ async function getNotifications(userId) {
 
 function updateNotificationCount(count) {
 	const notificationCountElement = document.getElementById("notificationCount");
+	if (!notificationCountElement) {
+		return; // Если элемент не найден, просто выходим из функции
+	}
 	if (count > 0) {
 		notificationCountElement.textContent = count;
 		notificationCountElement.style.display = "inline-block";
@@ -114,6 +117,7 @@ function updateNotificationCount(count) {
 		notificationCountElement.style.display = "none";
 	}
 }
+
 
 function displayNotifications(notifications) {
 	const notificationsList = document.getElementById("notificationsList");
@@ -244,6 +248,41 @@ function initListeners() {
 				formChanged = true;
 			});
 		}
+		if (targetId === "loansRequests" && myLoans.dataset.visible === "true") {
+			myLoans.style.display = "none";
+			myLoans.dataset.visible = "false";
+			showProfile();
+			localStorage.setItem("activeTab", "profile");
+			return; // Добавьте return, чтобы завершить выполнение обработчика
+		}
+
+		if (
+			targetId === "loansRealized" &&
+			clientLoansHistory.dataset.visible === "true"
+		) {
+			clientLoansHistory.style.display = "none";
+			clientLoansHistory.dataset.visible = "false";
+			showProfile();
+			localStorage.setItem("activeTab", "profile");
+			return; // Добавьте return, чтобы завершить выполнение обработчика
+		}
+
+		if (myLoans.dataset.visible === "true" && !myLoans.contains(event.target)) {
+			myLoans.style.display = "none";
+			myLoans.dataset.visible = "false";
+			showProfile();
+			localStorage.setItem("activeTab", "profile");
+		}
+
+		if (
+			clientLoansHistory.dataset.visible === "true" &&
+			!clientLoansHistory.contains(event.target)
+		) {
+			clientLoansHistory.style.display = "none";
+			clientLoansHistory.dataset.visible = "false";
+			showProfile();
+			localStorage.setItem("activeTab", "profile");
+		}
 
 		switch (targetId) {
 			case "saveChanges":
@@ -299,6 +338,8 @@ function initListeners() {
 				if (myLoans.dataset.visible === "true") {
 					myLoans.style.display = "none";
 					myLoans.dataset.visible = "false";
+					showProfile();
+					localStorage.setItem("activeTab", "profile");
 				} else {
 					hideActiveTabs(myLoans);
 					myLoans.style.display = "block";
@@ -314,6 +355,8 @@ function initListeners() {
 				if (clientLoansHistory.dataset.visible === "true") {
 					clientLoansHistory.style.display = "none";
 					clientLoansHistory.dataset.visible = "false";
+					showProfile();
+					localStorage.setItem("activeTab", "profile");
 				} else {
 					hideActiveTabs(clientLoansHistory);
 					clientLoansHistory.style.display = "block";
@@ -342,15 +385,17 @@ function initListeners() {
 					localStorage.setItem("activeTab", "settings");
 				}
 				break;
-			case "navbarDropdownMenuLink":
-				break;
 			default:
 				console.log(`No case for targetId: ${targetId}`);
+				const clickInsideTables =
+					myLoans.contains(event.target) ||
+					clientLoansHistory.contains(event.target);
 				const settingsTab = document.getElementById("tabPlace");
 				if (
 					!formChanged &&
 					activeTab === "settings" &&
-					!settingsTab.contains(event.target)
+					!settingsTab.contains(event.target) &&
+					!clickInsideTables
 				) {
 					showProfile();
 					localStorage.setItem("activeTab", "profile");
@@ -359,6 +404,13 @@ function initListeners() {
 		}
 	});
 }
+
+// Отдельный обработчик событий для таблиц
+document.querySelectorAll("#myLoans, #clientLoansHistory").forEach((table) => {
+	table.addEventListener("click", function (event) {
+		event.stopPropagation(); // Останавливает распространение события, чтобы избежать переключения на профиль
+	});
+});
 
 function loadRentalHistory() {
 	const clientLoansHistory = document.getElementById("clientLoansHistory");
@@ -458,7 +510,7 @@ function renderDashboard(responseData) {
 		console.error("notificationsModalElement not found");
 	}
 
-	setupCancelLoansModal();
+	// setupCancelLoansModal();
 }
 
 // Для менеджеров
@@ -693,6 +745,7 @@ function setupCancelReservationModal() {
 function setupCancelLoansModal() {
 	const reverseLoanModalElement = document.getElementById("reverse-loan-modal");
 	const cancelLoansModal = new Modal(reverseLoanModalElement);
+	console.log("cancelLoansModal",cancelLoansModal)
 
 	document.querySelector(".table").addEventListener("click", (event) => {
 		if (event.target.dataset.bsTarget === "#reverse-loan-modal") {
@@ -870,6 +923,20 @@ function createNotificationElement(message, linkText, linkHref) {
 	notificationElement.innerHTML = `${message} `;
 	notificationElement.appendChild(linkElement);
 	return notificationElement;
+}
+
+function loadUserNotifications(userType) {
+	let notifications = [];
+	if (userType === "rental-manager") {
+			notifications = getManagerNotifications();
+	} else if (userType === "stockman") {
+			notifications = getStockmanNotifications();
+	} else if (userType === "student" || userType === "teacher") {
+			notifications = getStudentTeacherNotifications();
+	}
+
+	const notificationsContainer = document.getElementById("userNotifications");
+	notificationsContainer.innerHTML = notifications.map(createNotificationElement).join("");
 }
 
 async function displayStatistics(userType) {

@@ -1,190 +1,167 @@
 <div class="container mt-4">
-	<div id="backArrowContainer"></div>
 	<h1 class="mb-3">Gestion des réservations</h1>
-	<div class="mb-3">
-		<!-- Фильтры -->
-		<div class="row g-3">
-			<div class="col-md-4">
-				<select multiple class="form-select" id="filterUser">
-					<option selected>Tous les utilisateurs</option>
-					<option value="teachers">Enseignants</option>
-					<option value="students">Etudiants</option>
-					<option value="stockmen">Magasiniers</option>
-					<option value="managers">Managers</option>
-					<!-- Добавьте другие опции динамически -->
-				</select>
-			</div>
-			<div class="col-md-4">
-				<select multiple class="form-select" id="filterEquipment">
-					<option selected>Tous les équipements</option>
-					<option value="laptop">Laptop</option>
-					<option value="computer_monitor">Computer Monitor</option>
-					<option value="smartphone">Smartphone</option>
-					<option value="accessory">Accessory</option>
-					<option value="tablet">Tablet</option>
-					<option value="VR_headset">VR Headset</option>
-					<!-- Добавьте другие опции динамически -->
-				</select>
-			</div>
-			<div class="col-md-4">
-				<select multiple class="form-select" id="filterStatus">
-					<option selected>Tous les statuts</option>
-					<option>Actif</option>
-					<option>En attente</option>
-					<option>Annulé</option>
-					<!-- Добавьте другие опции динамически -->
-				</select>
-			</div>
-		</div>
-	</div>
-
-	<div class="filter-section mb-4">
-		<form class="form-inline">
-			<!-- Фильтры по датам, если необходимо -->
-			<div class="form-group mb-2 mr-2">
-				<label for="startDate" class="sr-only">Date de début</label>
-				<input type="date" class="form-control" id="startDate" placeholder="Date de début">
-			</div>
-			<div class="form-group mb-2 mr-2">
-				<label for="endDate" class="sr-only">Date de fin</label>
-				<input type="date" class="form-control" id="endDate" placeholder="Date de fin">
-			</div>
-			<button type="submit" class="btn btn-primary mb-2">Filtrer</button>
-		</form>
-	</div>
-
+	<div id="backArrowContainer"></div>
 	<div class="nav nav-tabs" id="equipmentTabs" role="tablist">
 		<a class="nav-link active" id="active-booking-tab" data-bs-toggle="tab" href="#requestBookingsManagement" role="tab"
 			aria-controls="requestBookingsManagement" aria-selected="true">Gestion des demandes de réservations </a>
 
-	<!-- Содержимое вкладок -->
-	<div class="tab-content" id="equipmentTabsContent">
-		<!-- Вкладка запрос оборудования -->
-		<div class="tab-pane fade show active" id="requestBookingsManagement" role="tabpanel"
-			aria-labelledby="request-bookings-management-tab">
-			<div class="row">
-				<div class="col-12">
-					<table class="table table-hover" id="request-bookings-table">
-						<thead>
-							<tr>
-								<th data-column="id" data-type="number">ID Réservation <button
+		<!-- Содержимое вкладок -->
+		<div class="tab-content" id="equipmentTabsContent">
+			<!-- Вкладка запрос оборудования -->
+			<div class="tab-pane fade show active" id="requestBookingsManagement" role="tabpanel"
+				aria-labelledby="request-bookings-management-tab">
+				<div class="row">
+					<div class="col-12">
+						<table class="table table-hover" id="request-bookings-table">
+							<thead>
+								<tr>
+									<th data-column="id" data-type="number">ID Réservation <button
+											class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+									</th>
+									<th data-column="id" data-type="number">ID User <button
 										class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
 								</th>
-								<th>Nom du locataire</th>
-								<th>Modèle à louer (numéro de série) <button class="btn btn-link p-0 border-0" id="sortByName"
-										style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
-								<th>Dates désirées</th>
-								<th>Commentaire laissé</th>
-								<th>Statut de la réservation actuel</th>
-								<th>Etat du matériel <button class="btn btn-link p-0 border-0 sortButton"
-										title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- Предположим, что это оборудование с ID 1 -->
-							<tr data-booking-id="1">
-								<td>1</td>
-								<td>1</td>
-								<td>John Doe</td>
-								<td>Ordinateur portable</td>
-								<td>1</td>
-								<td>Date1</td>
-								<td>Pour les cours, pas pour jouer</td>
-								<td>A traiter</td>
-								<td>Bon état</td>
-								<td>
-									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu1"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="actionMenu1">
-											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
-											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr data-booking-id="2">
-								<td>2</td>
-								<td>2</td>
-								<td>Jane Smith</td>
-								<td>Imprimante 3D</td>
-								<td>2</td>
-								<td>Date2</td>
-								<td>Juste pour une semaine. Il faut vite</td>
-								<td>Refusé</td>
-								<td>Bon état</td>
-								<td>
-									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu2"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="actionMenu2">
-											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
-											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr data-booking-id="3">
-								<td>3</td>
-								<td>3</td>
-								<td>Emily Johnson</td>
-								<td>Scanner de documents</td>
-								<td>1</td>
-								<td>Date3</td>
-								<td>Il faut m'expliquer comment l'utiliser</td>
-								<td>Accepté</td>
-								<td>Bon état</td>
-								<td>
-									<div class="dropdown">
-										<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu3"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="actionMenu3">
-											<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
-											<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
-											<li><a class="dropdown-item" href="#">Gérer la location</a></li>
-											<li><a class="dropdown-item" href="#">Modifier les données</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+									<th>Nom du locataire</th>
+									<th>Modèle à louer (numéro de série) <button class="btn btn-link p-0 border-0" id="sortByName"
+											style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
+									<th>Dates désirées</th>
+									<th>Commentaire laissé</th>
+									<th>Statut de la réservation actuel</th>
+									<th>Etat du matériel <button class="btn btn-link p-0 border-0 sortButton"
+											title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Предположим, что это оборудование с ID 1 -->
+								<tr data-booking-id="1">
+									<td>1</td>
+									<td>1</td>
+									<td>John Doe</td>
+									<td>Ordinateur portable</td>
+									<td>1</td>
+									<td>Date1</td>
+									<td>Pour les cours, pas pour jouer</td>
+									<td>A traiter</td>
+									<td>Bon état</td>
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu1"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="actionMenu1">
+												<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+												<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+												<li><a class="dropdown-item" href="#">Gérer la location</a></li>
+												<li><a class="dropdown-item" href="#">Modifier les données</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+								<tr data-booking-id="2">
+									<td>2</td>
+									<td>2</td>
+									<td>Jane Smith</td>
+									<td>Imprimante 3D</td>
+									<td>2</td>
+									<td>Date2</td>
+									<td>Juste pour une semaine. Il faut vite</td>
+									<td>Refusé</td>
+									<td>Bon état</td>
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu2"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="actionMenu2">
+												<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+												<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+												<li><a class="dropdown-item" href="#">Gérer la location</a></li>
+												<li><a class="dropdown-item" href="#">Modifier les données</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+								<tr data-booking-id="3">
+									<td>3</td>
+									<td>3</td>
+									<td>Emily Johnson</td>
+									<td>Scanner de documents</td>
+									<td>1</td>
+									<td>Date3</td>
+									<td>Il faut m'expliquer comment l'utiliser</td>
+									<td>Accepté</td>
+									<td>Bon état</td>
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu3"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="actionMenu3">
+												<li><a class="dropdown-item" href="#">Voir l'équipement</a></li>
+												<li><a class="dropdown-item" href="#">Voir le locataire</a></li>
+												<li><a class="dropdown-item" href="#">Gérer la location</a></li>
+												<li><a class="dropdown-item" href="#">Modifier les données</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Rental Management Modal -->
+	<div class="modal fade" id="rentalManagementModal" tabindex="-1" role="dialog"
+		aria-labelledby="rentalManagementModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="rentalManagementModalLabel">Manage Rental</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeManagementRentalModalButton">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Est-ce que vous voulez valider la location pour cet utilisateur?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" id="cancelRentalButton">Cancel Rental</button>
+					<button type="button" class="btn btn-success" id="approveRentalButton">Approve Rental</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-</div>
 
-<!-- Rental Management Modal -->
-<div class="modal fade" id="rentalManagementModal" tabindex="-1" role="dialog" aria-labelledby="rentalManagementModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
+	<div class="modal fade" id="infoClientModal" tabindex="-1" role="dialog"
+		aria-labelledby="infoClientModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-					<div class="modal-header">
-							<h5 class="modal-title" id="rentalManagementModalLabel">Manage Rental</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-							</button>
-					</div>
-					<div class="modal-body">
-							<p>Do you want to approve or cancel this rental?</p>
-					</div>
-					<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-danger" id="cancelRentalButton">Cancel Rental</button>
-							<button type="button" class="btn btn-success" id="approveRentalButton">Approve Rental</button>
-					</div>
+				<div class="modal-header">
+					<h5 class="modal-title" id="infoClientModalLabel">Information de l'utilisateur</h5>
+					<button type="button" id="closeClientModal" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h2 class="card-title mb-4">Informations du client</h2>
+					<p class="text-muted">Coordonnées: +33 1 23 45 67 89</p>
+					<p class="text-muted">Email: jean.dupont@example.com</p>
+				</div>
 			</div>
+		</div>
 	</div>
-</div>
+
+	<div id="paginationControls">
+		<button id="prevPageBtn" class="btn btn-secondary">Previous</button>
+		<span id="pageInfo"></span>
+		<button id="nextPageBtn" class="btn btn-secondary">Next</button>
+	</div>

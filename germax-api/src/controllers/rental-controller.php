@@ -45,9 +45,9 @@ class RentalController
 	}
 
 
-	public function fetchRentals()
+	public function fetchRentals($page, $limit)
 	{
-		$rentals = $this->rentalService->fetchRentals();
+		$rentals = $this->rentalService->fetchRentals($page, $limit);
 		if (empty($rentals)) {
 			error_log("No rentals found.");
 		} else {

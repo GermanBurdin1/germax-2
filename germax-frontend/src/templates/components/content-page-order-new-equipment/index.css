@@ -144,7 +144,7 @@ header {
 	margin-bottom: 30px;
 }
 
-#orderForm, #equipmentAddingContainer {
+#orderForm {
 	background-color: var(--secondary-color);
 	border-radius: 10px;
 	padding: 20px;
