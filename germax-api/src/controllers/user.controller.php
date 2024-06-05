@@ -72,4 +72,19 @@ class UserController
 	{
 		return $this->userService->getUserInformationById($userId);
 	}
+
+	public function updateUserStatus($data)
+	{
+		if (!isset($data['id_user']) || !isset($data['connexion_permission'])) {
+			echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+			return;
+		}
+
+		$result = $this->userService->updateUserStatus($data['id_user'], $data['connexion_permission']);
+		if ($result) {
+			echo json_encode(['success' => true, 'message' => 'User status updated successfully']);
+		} else {
+			echo json_encode(['success' => false, 'message' => 'Failed to update user status']);
+		}
+	}
 }

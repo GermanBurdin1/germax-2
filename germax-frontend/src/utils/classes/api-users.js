@@ -104,4 +104,29 @@ export class ApiUsers {
 				throw error;
 			});
 	}
+
+	async updateUserStatus(userId, status) {
+		const token = this._apiAuth.getToken(); // Убедитесь, что токен правильно извлекается
+		console.log("Token being sent:", token); // Логируем токен для отладки
+		return fetch(`${this._baseUrl}/block-user.endpoint`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`, // Убедитесь, что заголовок устанавливается правильно
+			},
+			body: JSON.stringify({ id_user: userId, connexion_permission: status }),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.success) {
+					return data;
+				} else {
+					throw new Error(data.message || "Error updating user status");
+				}
+			})
+			.catch((error) => {
+				console.error("Error updating user status:", error);
+				throw error;
+			});
+	}
 }

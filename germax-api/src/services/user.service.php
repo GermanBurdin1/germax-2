@@ -100,4 +100,19 @@ class UserService
 
 		return $userInfo;
 	}
+
+	public function updateUserStatus($userId, $connexion_permission)
+	{
+		$sql = "
+            UPDATE user
+            SET connexion_permission = :connexion_permission
+            WHERE id_user = :id_user
+        ";
+
+		$stmt = $this->pdo->prepare($sql);
+		return $stmt->execute([
+			'connexion_permission' => $connexion_permission,
+			'id_user' => $userId
+		]);
+	}
 }

@@ -223,7 +223,7 @@ class AuthService
 
 	public function get_processed_users() {
 		try {
-			$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission IN ('authorized', 'declined')");
+			$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission IN ('authorized', 'declined', 'blocked')");
 			$stmt->execute();
 
 			$users = $stmt->fetchAll(PDO::FETCH_ASSOC);

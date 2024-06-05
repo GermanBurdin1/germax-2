@@ -4,9 +4,13 @@ import Modal from "bootstrap/js/dist/modal";
 import Tab from "bootstrap/js/dist/tab";
 import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiRental } from "../../../utils/classes/api-rental";
+import { ApiUsers } from "../../../utils/classes/api-users";
+
+const userType = localStorage.getItem("name_permission");
 
 const apiAuth = ApiAuth.getInstance();
 const apiRental = new ApiRental();
+const apiUsers = new ApiUsers();
 
 async function fetchPendingUsers(apiAuth) {
 	try {
@@ -33,7 +37,7 @@ async function fetchProcessedUsers(apiAuth) {
 function createRow(user) {
 	const row = document.createElement("tr");
 	let dropdownMenuContent;
-
+	console.log("user", user)
 	if (user.connexion_permission === "pending") {
 		dropdownMenuContent = `
 			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#authorizationClientModal" data-user-id="${user.id_user}">Gérer la réponse</a></li>
@@ -46,7 +50,12 @@ function createRow(user) {
 		dropdownMenuContent = `
 			<li><span class="dropdown-item-text text-muted">Utilisateur refusé</span></li>
 		`;
-	}
+	} else if (user.connexion_permission === "blocked") {
+		user.connexion_permission = "bloqué";
+		dropdownMenuContent = `
+				<li><span class="dropdown-item-text text-muted">Utilisateur bloqué</span></li>
+		`;
+}
 
 	row.innerHTML = `
 		<td>${user.lastname} ${user.firstname}</td>
@@ -64,9 +73,54 @@ function createRow(user) {
 			</div>
 		</td>
 	`;
-	console.log("Created row HTML:", row.innerHTML); // Debugging output
+
+	const userType = localStorage.getItem("name_permission");
+	if (userType === "admin" && user.connexion_permission !== "declined" && user.connexion_permission !== "bloqué") {
+		row.querySelector(".dropdown-menu").innerHTML += `
+			<li><button class="dropdown-item admin-action" data-user-id="${user.id_user}">Bloquer cet utilisateur</button></li>
+		`;
+	}
 	return row;
 }
+
+document.addEventListener("click", function (event) {
+	if (event.target.classList.contains("admin-action")) {
+		const userId = event.target.getAttribute("data-user-id");
+		console.log("Admin action for user ID:", userId);
+		openBlockUserModal(userId);
+	}
+});
+
+function openBlockUserModal(userId) {
+	const blockUserModal = new Modal(document.getElementById("blockUserModal"));
+	const confirmBlockUserButton = document.getElementById("confirmBlockUser");
+
+	confirmBlockUserButton.setAttribute("data-user-id", userId);
+	blockUserModal.show();
+
+	confirmBlockUserButton.addEventListener("click", async () => {
+			try {
+					await apiUsers.updateUserStatus(userId, "blocked");
+					alert("L'utilisateur a été bloqué.");
+					blockUserModal.hide();
+
+					// Обновляем статус пользователя в таблице
+					const userRow = document.querySelector(`button[data-user-id='${userId}']`).closest("tr");
+					userRow.querySelector("td:nth-child(4)").textContent = "blocked";
+
+					// Убираем кнопку блокировки
+					const actionDropdown = userRow.querySelector(".dropdown-menu");
+					const blockButton = actionDropdown.querySelector(".admin-action");
+					if (blockButton) {
+							blockButton.remove();
+					}
+			} catch (error) {
+					console.error("Ошибка при блокировке пользователя:", error);
+					alert("Ошибка при блокировке пользователя: " + error.message);
+			}
+	});
+}
+
 
 function populateTables(pendingUsers, studentTables, teacherTable) {
 	pendingUsers.forEach((user) => {
@@ -99,46 +153,54 @@ function attachEventHandlers(apiAuth) {
 
 	function renderPage(page) {
 		const modalBody = document.querySelector("#detailsClientModal .modal-body");
-		modalBody.innerHTML = ''; // Очищаем содержимое модального окна
+		modalBody.innerHTML = ""; // Очищаем содержимое модального окна
 
 		const startIndex = (page - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		const pageItems = rentals.slice(startIndex, endIndex);
 
-		pageItems.forEach(rental => {
-			const rentalCard = document.createElement('div');
-			rentalCard.className = 'card mb-3';
+		pageItems.forEach((rental) => {
+			const rentalCard = document.createElement("div");
+			rentalCard.className = "card mb-3";
 			rentalCard.innerHTML = `
 				<div class="card-body">
 					<h5 class="card-title">Équipement: ${rental.model_name || "N/A"}</h5>
-					<p class="card-text"><strong>Date de prise:</strong> ${rental.date_start || "N/A"}</p>
-					<p class="card-text"><strong>Date de restitution:</strong> ${rental.date_end || "N/A"}</p>
-					<p class="card-text"><strong>Date de retour du matériel:</strong> ${rental.return_date || "inconnue à ce jour"}</p>
-					<p class="card-text"><strong>État du matériel rendu:</strong> ${rental.status_name || "N/A"}</p>
+					<p class="card-text"><strong>Date de prise:</strong> ${
+						rental.date_start || "N/A"
+					}</p>
+					<p class="card-text"><strong>Date de restitution:</strong> ${
+						rental.date_end || "N/A"
+					}</p>
+					<p class="card-text"><strong>Date de retour du matériel:</strong> ${
+						rental.return_date || "inconnue à ce jour"
+					}</p>
+					<p class="card-text"><strong>État du matériel rendu:</strong> ${
+						rental.status_name || "N/A"
+					}</p>
 				</div>
 			`;
 			modalBody.appendChild(rentalCard);
 		});
 
-		const pagination = document.createElement('div');
-		pagination.className = 'd-flex justify-content-between mt-3';
+		const pagination = document.createElement("div");
+		pagination.className = "d-flex justify-content-between mt-3";
 
-		const prevButton = document.createElement('button');
-		prevButton.className = 'btn btn-secondary';
-		prevButton.textContent = 'Previous';
+		const prevButton = document.createElement("button");
+		prevButton.className = "btn btn-secondary";
+		prevButton.textContent = "Previous";
 		prevButton.disabled = currentPage === 1;
-		prevButton.addEventListener('click', () => {
+		prevButton.addEventListener("click", () => {
 			if (currentPage > 1) {
 				currentPage--;
 				renderPage(currentPage);
 			}
 		});
 
-		const nextButton = document.createElement('button');
-		nextButton.className = 'btn btn-secondary';
-		nextButton.textContent = 'Next';
+		const nextButton = document.createElement("button");
+		nextButton.className = "btn btn-secondary";
+		nextButton.textContent = "Next";
 		nextButton.disabled = endIndex >= rentals.length;
-		nextButton.addEventListener('click', () => {
+		nextButton.addEventListener("click", () => {
 			if (endIndex < rentals.length) {
 				currentPage++;
 				renderPage(currentPage);
@@ -173,8 +235,11 @@ function attachEventHandlers(apiAuth) {
 						currentPage = 1;
 						renderPage(currentPage);
 					} else {
-						const modalBody = document.querySelector("#detailsClientModal .modal-body");
-						modalBody.innerHTML = '<p class="text-muted">Aucune donnée de location disponible.</p>';
+						const modalBody = document.querySelector(
+							"#detailsClientModal .modal-body"
+						);
+						modalBody.innerHTML =
+							'<p class="text-muted">Aucune donnée de location disponible.</p>';
 					}
 
 					detailsClientModal.show();
@@ -227,8 +292,6 @@ function attachEventHandlers(apiAuth) {
 			}
 		});
 }
-
-
 
 async function init() {
 	const apiAuth = ApiAuth.getInstance();
@@ -292,14 +355,6 @@ const dropdownElementList = [].slice.call(
 const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
 	return new Dropdown(dropdownToggleEl);
 });
-
-const userType = localStorage.getItem("namePermission");
-
-if (userType) {
-	displayStatistics(userType);
-} else {
-	console.error("User type is not defined in localStorage.");
-}
 
 const logoutButton = document.getElementById("logoutButton");
 
