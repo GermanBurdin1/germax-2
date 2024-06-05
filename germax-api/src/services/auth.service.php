@@ -46,7 +46,8 @@ class AuthService
 		return renderSuccessAndExit(['Token success created'], 200, [
 			'token' => $token,
 			'id_user' => $foundUser['id_user'],
-			'role' => $permission['name']
+			'role' => $permission['name'],
+			'connexion_permission' => $foundUser['connexion_permission']
 		]);
 	}
 
