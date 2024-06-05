@@ -56,7 +56,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				}
 				actionsMarkup = `
                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
             `;
 			} else if (entry.type === "request") {
 				statusMessage = entry.treatment_status || "unknown status";
@@ -88,7 +88,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 					}
 				} else {
 					actionsMarkup = `
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
 				}
@@ -217,6 +217,25 @@ export function returnClientLoans(rentals = [], requests = []) {
         </div>
     </div>
 </div>
+
+<!-- Modal annulation for loans-->
+    <div class="modal fade" id="reverse-loan-modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Confirmation d'annulation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir annuler cette réservation ? Vous ne pourrez pas réserver cet équipement de nouveau avant un certain temps.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-danger" id="cancelLoanButton">Annuler la réservation</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 			<!-- Modal для подтверждения предложения менеджера -->

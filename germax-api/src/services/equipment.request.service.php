@@ -82,6 +82,31 @@ class EquipmentRequestService
 
 	public function getAllRequestsByUser($id)
 	{
+		error_log("id: " . $id);
+
+		// Проверка наличия пользователя
+		$userSql = "SELECT * FROM user WHERE id_user = ?";
+		$userStmt = $this->pdo->prepare($userSql);
+		$userStmt->execute([$id]);
+		$userResult = $userStmt->fetch(PDO::FETCH_ASSOC);
+
+		if (!$userResult) {
+			error_log("User not found.");
+			return [];
+		}
+
+		// Проверка наличия запросов оборудования
+		$equipmentRequestSql = "SELECT * FROM equipment_request WHERE id_user = ?";
+		$equipmentRequestStmt = $this->pdo->prepare($equipmentRequestSql);
+		$equipmentRequestStmt->execute([$id]);
+		$equipmentRequestResult = $equipmentRequestStmt->fetchAll(PDO::FETCH_ASSOC);
+
+		if (empty($equipmentRequestResult)) {
+			error_log("No equipment requests found for user.");
+			return [];
+		}
+
+		// Основной запрос
 		$sql = "
         SELECT
             er.id_request,
@@ -99,18 +124,26 @@ class EquipmentRequestService
             er.id_good,
             m.photo
         FROM
-						user u
-				LEFT JOIN
+            user u
+        LEFT JOIN
             equipment_request er ON er.id_user = u.id_user
         LEFT JOIN
             good g ON er.id_good = g.id_good
         LEFT JOIN
             model m ON g.id_model = m.id_model
-				WHERE u.id_user = ?
+        WHERE u.id_user = ?
     ";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute([$id]);
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		if (empty($result)) {
+			error_log("No data found for the combined query.");
+			return [];
+		}
+
+		error_log("Result: " . print_r($result, true));
+		return $result;
 	}
 
 
