@@ -919,18 +919,20 @@ async function loadUserProfile() {
 
 		type();
 
-		if (user.picture) {
-			profileAvatar.src = user.picture;
+		const showAvatar = (src) => {
+			profileAvatar.src = src;
 			profileAvatar.classList.add("show");
 			avatarPlaceholder.classList.remove("show");
+		};
+
+		if (user.picture) {
+			showAvatar(user.picture);
 		} else {
 			profileAvatar.classList.remove("show");
 			avatarPlaceholder.classList.add("show");
 		}
 
-		profileSection.style.display = "block";
-
-		avatarPlaceholder.addEventListener("click", () => {
+		const handleAvatarClick = () => {
 			const fileInput = document.createElement("input");
 			fileInput.type = "file";
 			fileInput.accept = "image/*";
@@ -945,9 +947,7 @@ async function loadUserProfile() {
 							// Обновление пользователя с новым URL картинки
 							await apiUsers.updateUser({ picture: pictureUrl });
 
-							profileAvatar.src = pictureUrl;
-							profileAvatar.classList.add("show");
-							avatarPlaceholder.classList.remove("show");
+							showAvatar(pictureUrl);
 						} else {
 							alert("Failed to upload avatar");
 						}
@@ -958,11 +958,17 @@ async function loadUserProfile() {
 				}
 			};
 			fileInput.click();
-		});
+		};
+
+		profileAvatar.addEventListener("click", handleAvatarClick);
+		avatarPlaceholder.addEventListener("click", handleAvatarClick);
+
+		profileSection.style.display = "block";
 	} catch (error) {
 		console.error("Error loading user profile:", error);
 	}
 }
+
 
 async function saveUserSettings(showProfile) {
 	const settingsForm = document.getElementById("settingsForm");

@@ -102,6 +102,11 @@ function getManagerHorizontalNav() {
 			</a>
 		</li>
 		<li class="nav-item">
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#supportModalContact">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i> Support
+                </a>
+            </li>
+		<li class="nav-item">
 			<a class="nav-link" href="#settings" id="settings-link">
 				<i class="fa fa-cog" aria-hidden="true"></i>
 			</a>
@@ -119,6 +124,11 @@ function getStockmanStudentTeacherHorizontalNav() {
 				<span class="badge badge-danger">3</span>
 			</a>
 		</li>
+		<li class="nav-item">
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#supportModalContact">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i> Support
+                </a>
+            </li>
 		<li class="nav-item">
 			<a class="nav-link" href="#" id="settings-link">
 				<i class="fa fa-cog" aria-hidden="true"></i>
@@ -183,9 +193,6 @@ function returnSettingsTab(userType) {
 	</div>
 	`;
 }
-
-
-
 
 
 function returnSupportModal() {
