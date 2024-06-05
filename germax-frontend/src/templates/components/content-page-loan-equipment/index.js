@@ -8,6 +8,7 @@ import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiNotification } from "../../../utils/classes/api-notification";
 import { ApiUsers } from "../../../utils/classes/api-users";
+import { ApiSettings } from "../../../utils/classes/api-settings";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
@@ -15,6 +16,8 @@ const apiRental = new ApiRental();
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiNotification = new ApiNotification();
 const apiUsers = new ApiUsers();
+const apiSettings = new ApiSettings();
+
 const categoryItemNodes = Array.from(
 	document.getElementsByClassName("list-group-item")
 );
@@ -139,7 +142,8 @@ async function checkAvailableQuantity(event, good) {
 	const quantity = parseInt(quantityInputNode.value, 10);
 
 	try {
-		const goods = await apiGoods.getAllGoods({ modelName: good.model.name });
+		const response = await apiGoods.getAllGoods({ modelName: good.model.name });
+		const goods = response.goods.data;
 		console.log("Fetched goods:", goods);
 
 		// Проверка статуса с использованием `g.status.id`
@@ -220,13 +224,13 @@ function openReservationModal(event, good, authUser) {
 
 let formSubmitHandler = null; // Сохраняем ссылку на обработчик
 
-function openRequestNotFoundItemsModal(authUser) {
+function openRequestNotFoundItemsModal(authUser, userPermissions) {
 	if (!authUser || !authUser.name_permission) {
 		console.error("authUser is not defined or missing 'name_permission'");
 		return;
 	}
 
-	const userPermissions = getUserPermissions(authUser);
+	console.log("Opening request not found items modal with userPermissions:", userPermissions);
 
 	requestNotFoundItemsModalNode = document.getElementById(
 		"requestNotFoundItemsModal"
@@ -321,37 +325,38 @@ function initSearchListener(authUser) {
 	);
 }
 
-function getUserPermissions(user) {
+async function getUserPermissions(user) {
+	const settings = await apiSettings.getSettings();
+
 	const userPermissions = {
 		min: 1,
 		max: 1,
 	};
 
-	switch (user.name_permission) {
-		case "student":
-			userPermissions.max = 2;
-			break;
-		case "teacher":
-			userPermissions.max = 10;
-			break;
-		default:
-			userPermissions.max = 1;
+	const setting = settings.find(
+		(setting) => setting.id_permission === user.id_permission
+	);
+	if (setting) {
+		userPermissions.max = setting.max_reservations;
 	}
-
+	console.log("Fetched User Permissions:", userPermissions);
 	return userPermissions;
 }
 
 function initMain() {
-	apiAuth.fetchMeAuthUser().then((authUser) => {
+	apiAuth.fetchMeAuthUser().then(async (authUser) => {
 		if (!authUser || !authUser.name_permission) {
 			console.error("Failed to fetch auth user or missing 'name_permission'");
 			return;
 		}
 
+		const userPermissions = await getUserPermissions(authUser);
+		console.log("User Permissions:", userPermissions);
+
 		getAllGoodsAndRender(authUser);
 		initRadioBtns(authUser);
 		initSearchListener(authUser);
-		initNotFoundItemsModalListener(authUser);
+		initNotFoundItemsModalListener(authUser, userPermissions);
 	});
 }
 
@@ -390,14 +395,14 @@ function submitRentalNotFoundItemRequest(formInfo, requestNotFoundItemsModal) {
 		});
 }
 
-function initNotFoundItemsModalListener(authUser) {
+function initNotFoundItemsModalListener(authUser, userPermissions) {
 	const loansRequestButton = document.getElementById("request-button");
 	if (loansRequestButton === null)
 		throw new Error("loansRequest button not found");
 
 	loansRequestButton.addEventListener("click", (event) => {
 		event.preventDefault();
-		openRequestNotFoundItemsModal(authUser);
+		openRequestNotFoundItemsModal(authUser, userPermissions);
 	});
 }
 

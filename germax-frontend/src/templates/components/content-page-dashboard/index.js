@@ -53,6 +53,7 @@ import { ApiNotification } from "../../../utils/classes/api-notification";
 import { ApiUsers } from "../../../utils/classes/api-users";
 import { UploadAPI } from "../../../utils/classes/api-upload";
 import { ApiStatistics } from "../../../utils/classes/api-statistics";
+import { ApiSettings } from "../../../utils/classes/api-settings";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
@@ -62,6 +63,7 @@ const apiNotification = new ApiNotification();
 const apiUsers = new ApiUsers();
 const uploadApi = new UploadAPI();
 const apiStatistics = new ApiStatistics();
+const apiSettings = new ApiSettings();
 
 async function getUserPermission() {
 	try {
@@ -282,7 +284,6 @@ function initListeners() {
 			showProfile();
 			localStorage.setItem("activeTab", "profile");
 		}
-
 		switch (targetId) {
 			case "saveChanges":
 				event.preventDefault();
@@ -309,21 +310,6 @@ function initListeners() {
 				}
 				localStorage.setItem("activeTab", "profile");
 				break;
-			case "adminReportsLink":
-				event.preventDefault();
-				adminReportsModalContainer.innerHTML = returnAdminReportsModal();
-				const adminReportsModal = document.getElementById("adminReportModal");
-				const initializedAdminReportsModal = new Modal(adminReportsModal);
-				initializedAdminReportsModal.show();
-				break;
-			case "adminFeedBackLink":
-				event.preventDefault();
-				adminFeedBackContainer.innerHTML = returnAdminFeedbackModal();
-				const adminFeedBackModal =
-					document.getElementById("adminFeedbackModal");
-				const initializedAdminFeedbackModal = new Modal(adminFeedBackModal);
-				initializedAdminFeedbackModal.show();
-				break;
 			case "adminSettingsLink":
 				event.preventDefault();
 				adminSettingsContainter.innerHTML = returnAdminSettingsModal();
@@ -331,7 +317,93 @@ function initListeners() {
 					document.getElementById("adminSettingsModal");
 				const initializedAdminSettingsModal = new Modal(adminSettingsModal);
 				initializedAdminSettingsModal.show();
+				console.log("Fetching settings...");
+
+				apiSettings
+					.getSettings()
+					.then((settings) => {
+						console.log("Fetched settings:", settings);
+
+						let studentMaxReservations = "";
+						let teacherMaxReservations = "";
+
+						settings.forEach((setting) => {
+							if (setting.permission_name === "student") {
+								studentMaxReservations = setting.max_reservations;
+							} else if (setting.permission_name === "teacher") {
+								teacherMaxReservations = setting.max_reservations;
+							}
+						});
+
+						const userTypeSelect = document.getElementById("userTypeSelect");
+						const studentSettings = document.getElementById("studentSettings");
+						const teacherSettings = document.getElementById("teacherSettings");
+
+						document.getElementById("studentMaxReservations").value =
+							studentMaxReservations;
+						document.getElementById("teacherMaxReservations").value =
+							teacherMaxReservations;
+
+						// Функция для отображения соответствующего поля настроек
+						function displaySettings() {
+							if (userTypeSelect.value === "student") {
+								studentSettings.classList.add("show");
+								teacherSettings.classList.remove("show");
+								document.getElementById("studentMaxReservations").value =
+									studentMaxReservations;
+							} else if (userTypeSelect.value === "teacher") {
+								teacherSettings.classList.add("show");
+								studentSettings.classList.remove("show");
+								document.getElementById("teacherMaxReservations").value =
+									teacherMaxReservations;
+							}
+						}
+
+						// Добавляем слушатель изменений для селекта
+						userTypeSelect.addEventListener("change", displaySettings);
+
+						// Устанавливаем начальное состояние полей при открытии модального окна
+						displaySettings();
+
+						document
+							.getElementById("saveSettingsButton")
+							.addEventListener("click", () => {
+								const newStudentMaxReservations = document.getElementById(
+									"studentMaxReservations"
+								).value;
+								const newTeacherMaxReservations = document.getElementById(
+									"teacherMaxReservations"
+								).value;
+
+								apiSettings
+									.saveSettings({
+										id_permission: 5,
+										id_functionality: 1,
+										max_reservations:
+											newStudentMaxReservations || studentMaxReservations,
+									})
+									.then(() => {
+										return apiSettings.saveSettings({
+											id_permission: 2,
+											id_functionality: 1,
+											max_reservations:
+												newTeacherMaxReservations || teacherMaxReservations,
+										});
+									})
+									.then(() => {
+										alert("Settings saved successfully");
+										initializedAdminSettingsModal.hide();
+									})
+									.catch((error) => {
+										console.error("Error saving settings:", error);
+									});
+							});
+					})
+					.catch((error) => {
+						console.error("Error fetching settings:", error);
+					});
 				break;
+
 			case "loansRequests":
 				event.preventDefault();
 				if (myLoans.dataset.visible === "true") {

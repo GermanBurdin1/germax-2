@@ -293,3 +293,28 @@ const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
 	return new Dropdown(dropdownToggleEl);
 });
 
+const userType = localStorage.getItem("namePermission");
+
+if (userType) {
+	displayStatistics(userType);
+} else {
+	console.error("User type is not defined in localStorage.");
+}
+
+const logoutButton = document.getElementById("logoutButton");
+
+if (logoutButton) {
+	logoutButton.addEventListener("click", function (event) {
+		event.preventDefault();
+		logout();
+	});
+}
+
+function logout() {
+	// Удаляем данные аутентификации из localStorage
+	localStorage.removeItem("authToken");
+	localStorage.removeItem("id_user");
+
+	// Перенаправляем пользователя на корневую страницу сайта
+	window.location.href = "/"; // Перенаправить на корневую страницу
+}

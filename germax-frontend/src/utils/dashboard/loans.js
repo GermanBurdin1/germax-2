@@ -71,7 +71,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				) {
 					statusMessage = "votre matériel est recherché";
 					actionsMarkup = `
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
 					if (entry.photo) {
@@ -80,12 +80,19 @@ export function returnClientLoans(rentals = [], requests = []) {
 				} else if (entry.statusMessage === "closed_by_stockman") {
 					statusMessage = "vous pouvez récupérer le matériel";
 					actionsMarkup = `
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
 					if (entry.photo) {
 						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;
 					}
+				} else if (entry.statusMessage === "closed_by_user") {
+					statusMessage = "vous avez annulé votre demande de réservation";
+					actionsMarkup = `
+				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+		`;
+				} else if (entry.statusMessage === "pending_manager") {
+					statusMessage = "votre demande a été envoyée au manager";
 				} else {
 					actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
@@ -102,7 +109,11 @@ export function returnClientLoans(rentals = [], requests = []) {
     <td>${formatDate(entry.date_end) || "N/A"}</td>
     <td>${statusMessage}</td>
     <td>
-        ${entry.photo ? `<img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo" style="width: 100px; height: 100px; object-fit: cover;">` : "N/A"}
+        ${
+					entry.photo
+						? `<img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo" style="width: 100px; height: 100px; object-fit: cover;">`
+						: "N/A"
+				}
     </td>
     <td>
         <div class="dropdown">
@@ -278,9 +289,10 @@ export function returnRentalHistoryLoans(rentals = []) {
 	const rows = rentals
 		.filter((rental) => rental.accord === true || rental.accord === 1) // Только подтвержденные аренды
 		.map((rental) => {
-			let statusMessage = rental.loan_status === "cancelled"
-				? "annulé"
-				: `loué le ${formatDate(rental.date_accord)}`;
+			let statusMessage =
+				rental.loan_status === "cancelled"
+					? "annulé"
+					: `loué le ${formatDate(rental.date_accord)}`;
 
 			return `
 				<tr data-id="${rental.id}">

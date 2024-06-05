@@ -96,8 +96,8 @@ function returnAdminFeedbackModal() {
 function returnAdminSettingsModal() {
 	return `<!-- Модальное окно для настроек -->
 	<!-- Модальное окно для настроек -->
-<div class="modal fade active show" id="adminSettingsModal" tabindex="-1" aria-labelledby="adminSettingsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl"> <!-- modal-xl для большего размера модального окна -->
+	<div class="modal fade" id="adminSettingsModal" tabindex="-1" aria-labelledby="adminSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="adminSettingsModalLabel">Paramètres</h5>
@@ -105,38 +105,34 @@ function returnAdminSettingsModal() {
             </div>
             <div class="modal-body">
                 <!-- Форма настроек -->
-                <form>
+                <form id="settingsForm">
                     <div class="mb-3">
-                        <label for="passwordPolicy" class="form-label">Politique de mot de passe</label>
-                        <select class="form-select" id="passwordPolicy">
-                            <option>Standard</option>
-                            <option>Renforcée</option>
+                        <label for="userTypeSelect" class="form-label">Sélectionnez le type d'utilisateur</label>
+                        <select class="form-select" id="userTypeSelect">
+                            <option value="student">Étudiant</option>
+                            <option value="teacher">Enseignant</option>
                         </select>
-					</div>
-					<div class="mb-3">
-					<label for="autoLogout" class="form-label">Déconnexion automatique</label>
-					<select class="form-select" id="autoLogout">
-							<option>5 minutes</option>
-							<option>15 minutes</option>
-							<option>30 minutes</option>
-							<option>Jamais</option>
-					</select>
-			</div>
-			<div class="mb-3">
-					<label for="themeSelect" class="form-label">Thème d'affichage</label>
-					<select class="form-select" id="themeSelect">
-							<option>Clair</option>
-							<option>Sombre</option>
-					</select>
-			</div>
-			<button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-	</form>
-</div>
-<div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-</div>
-</div>
-</div>
+                    </div>
+                    <div class="collapse" id="studentSettings">
+                        <div class="mb-3">
+                            <label for="studentMaxReservations" class="form-label">Nombre maximal de réservations</label>
+                            <input type="number" class="form-control" id="studentMaxReservations" min="1" max="100">
+                        </div>
+                    </div>
+                    <div class="collapse" id="teacherSettings">
+                        <div class="mb-3">
+                            <label for="teacherMaxReservations" class="form-label">Nombre maximal de réservations</label>
+                            <input type="number" class="form-control" id="teacherMaxReservations" min="1" max="100">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" id="saveSettingsButton">Enregistrer les modifications</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 	`;

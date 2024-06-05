@@ -4,11 +4,9 @@ function getAdminNav() {
 	<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 	<a class="nav-link active" id="locationsLink" href="./">Profil</a>
 <a class="nav-link" id="adminClientManagementLink" href="/page-client-management">Gestion des utilisateurs</a>
-<a class="nav-link" id="adminReservationHistoryLink" href="/page-reservation-history">Historique des résérvations</a>
-<a class="nav-link" id="adminEquipmentManagementLink" href="/page-equipment-management">Attribuer un équipement</a>
+<a class="nav-link" id="bookingsLink" href="/page-bookings-management">Gestion des réservations</a>
+<a class="nav-link" id="adminEquipmentManagementLink" href="/page-orders">Attribuer un équipement</a>
 <a class="nav-link" id="adminOrderNewEquipmentLink" href="/page-order-new-equipment">Gestion de l'équipement</a>
-<a class="nav-link" id="adminReportsLink">Faire un rapport</a>
-<a class="nav-link" id="adminFeedBackLink">Retours et remarques</a>
 <a class="nav-link" id="adminSettingsLink">Réglages globales</a>
 `;
 }
