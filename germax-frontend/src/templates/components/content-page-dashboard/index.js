@@ -77,19 +77,33 @@ async function getUserPermission() {
 }
 
 async function initializeDashboard() {
-	const userPermission = await getUserPermission();
-	console.log("userPermission,", userPermission);
-	if (userPermission) {
-		const { name_permission } = userPermission;
-		localStorage.setItem("name_permission", name_permission);
-		displayStatistics(name_permission);
-	} else {
-		console.error("Failed to fetch user permission data.");
+	try {
+			const userPermission = await getUserPermission();
+			console.log("userPermission", userPermission);
+			if (userPermission) {
+					const { name_permission } = userPermission;
+					localStorage.setItem("name_permission", name_permission);
+
+					// Получаем userId и уведомления до рендеринга статистики
+					const userId = JSON.parse(localStorage.getItem("id_user"));
+					const notifications = await apiNotification.getNotifications(userId);
+
+					// Вызываем обе функции после получения всех данных
+					await Promise.all([displayStatistics(name_permission), loadUserNotifications(name_permission, notifications)]);
+
+					updateNotificationCount(notifications.length);
+					displayNotifications(notifications);
+			} else {
+					console.error("Failed to fetch user permission data.");
+			}
+	} catch (error) {
+			console.error("Error during dashboard initialization:", error);
 	}
 }
 
 // Инициализация дашборда
 initializeDashboard();
+
 
 async function getNotifications(userId) {
 	try {
