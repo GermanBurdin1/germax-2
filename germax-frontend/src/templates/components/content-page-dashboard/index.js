@@ -637,6 +637,20 @@ function getManagerNotifications() {
 	];
 }
 
+// Для менеджеров
+function getStockmanNotifications() {
+  return [
+    {
+      title: "Nouvelle commande d'équipement",
+      message: "Il y a une nouvelle commande d'équipement ce mois-ci.",
+      linkText: "Voir l'équipement",
+      linkHref: "/page-orders",
+      timestamp: new Date().toLocaleString(),
+    },
+  ];
+}
+
+
 // Для студентов и enseignants
 function getStudentTeacherNotifications() {
 	return [
@@ -680,6 +694,8 @@ function updateNotificationsModal(userType) {
 	let notifications = [];
 	if (userType === "rental-manager") {
 		notifications = getManagerNotifications();
+	} else if (userType === "stockman") {
+		notifications = getStockmanNotifications();
 	} else {
 		notifications = getStudentTeacherNotifications();
 	}
@@ -687,6 +703,7 @@ function updateNotificationsModal(userType) {
 	const notificationsList = document.getElementById("notificationsList");
 	notificationsList.innerHTML = createNotificationsList(notifications);
 }
+
 
 function adjustUIBasedOnUserType(userType) {
 	const dynamicMenu = document.getElementById("dynamicMenu");
@@ -1105,7 +1122,7 @@ async function displayStatistics(userType) {
 	} else if (userType === "stockman") {
 		statistics = await getStockmanDashboardStatistics();
 		const newEquipmentCount = statistics.newEquipment;
-
+		userNotificationsElement.innerHTML = "";
 		if (newEquipmentCount > 0) {
 			const equipmentMessage = `Il y a ${newEquipmentCount} ${
 				newEquipmentCount === 1

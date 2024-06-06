@@ -28,7 +28,7 @@ const brandApi = new BrandAPI();
 const uploadApi = new UploadAPI();
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 const authToken = localStorage.getItem("authToken");
-const namePermission = localStorage.getItem("namePermission");
+let namePermission = localStorage.getItem("namePermission");
 console.log("Auth token:", authToken);
 if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
@@ -44,8 +44,10 @@ if (namePermission === "rental-manager") {
 
 let currentPage = 1;
 const itemsPerPage = 20;
-loadGoodsData();
-function fetchAuthUser(url) {
+// loadGoodsData();
+
+
+async function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
 	const id_user = JSON.parse(localStorage.getItem("id_user"));
 
@@ -54,30 +56,77 @@ function fetchAuthUser(url) {
 		return;
 	}
 
-	fetch(url, {
-		method: "GET",
-		headers: {
-			token: token,
-			"Content-Type": "application/json",
-		},
-	})
-		.then((response) => {
-			console.log("HTTP Status:", response.status);
-			const json = response.json();
-			if (!response.ok) return Promise.reject(json);
-			console.log("Data received:", json);
-			return json;
-		})
-		.then((data) => {
-			console.log("data:", data);
-			console.log("namePermission", data.data.name_permission);
-			renderEquipmentOrder(data.data);
-			localStorage.setItem("namePermission", data.data.name_permission); // Сохраняем роль пользователя
-		})
-		.catch((error) => {
-			console.error("Failed to fetch data:", error);
+	try {
+		const response = await fetch(url, {
+			method: "GET",
+			headers: {
+				token: token,
+				"Content-Type": "application/json",
+			},
 		});
+
+		const data = await response.json();
+
+		if (!response.ok) {
+			return Promise.reject(data);
+		}
+
+		console.log("Data received:", data);
+		localStorage.setItem("namePermission", data.data.name_permission); // Сохраняем роль пользователя
+		cleanupPreviousUserElements(); // Очистка элементов предыдущего пользователя
+		renderEquipmentOrder(data.data); // Инициализация правильных элементов для нового пользователя
+		initializePageForUser(data.data.name_permission); // Обновление отображения страницы в зависимости от роли пользователя
+	} catch (error) {
+		console.error("Failed to fetch data:", error);
+	}
 }
+
+
+function cleanupPreviousUserElements() {
+	// Очистка элементов предыдущего пользователя
+	document.getElementById("titleAddingOrders").innerHTML = "";
+	document.getElementById("equipmentAddingContainer").innerHTML = "";
+	document.getElementById("titleOrdersRequest").innerHTML = "";
+	document.getElementById("orderForm").innerHTML = "";
+	document.getElementById("titleOrders").innerHTML = "";
+	document.getElementById("listOrdersTitle").innerHTML = "";
+}
+
+function updateTableHeaders(role) {
+	const tableHead = document.querySelector("#goodsTable thead tr");
+	tableHead.innerHTML = `
+		<th>Numéro du modèle</th>
+		<th>Nom de l'Équipement</th>
+		<th>Catégorie</th>
+		<th>Photo</th>
+		${role !== "rental-manager" ? `<th>Status</th>` : ""}
+		<th>Actions</th>
+	`;
+}
+
+
+function initializePageForUser(role) {
+	namePermission = role;
+	if (role === "stockman") {
+		document.getElementById("titleAddingOrders").style.display = "block";
+		document.getElementById("equipmentAddingContainer").style.display = "block";
+		document.getElementById("titleOrdersRequest").style.display = "none";
+		document.getElementById("orderForm").style.display = "none";
+		document.getElementById("titleOrders").style.display = "none";
+		document.getElementById("listOrdersTitle").style.display = "none";
+	} else if (role === "rental-manager") {
+		document.getElementById("titleAddingOrders").style.display = "none";
+		document.getElementById("equipmentAddingContainer").style.display = "none";
+		document.getElementById("titleOrdersRequest").style.display = "block";
+		document.getElementById("orderForm").style.display = "block";
+		document.getElementById("titleOrders").style.display = "block";
+		document.getElementById("listOrdersTitle").style.display = "block";
+	}
+	updateTableHeaders(role);
+	loadGoodsData();
+};
+
+initializePageForUser(namePermission);
 
 async function loadGoodsData(params = {}) {
 	if (!params.statusNames) {
