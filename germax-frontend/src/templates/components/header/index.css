@@ -1,0 +1,11 @@
+@import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css);
+
+.btn-auth {
+	background-color: #E7717D;
+	color: white;
+	border: none;
+}
+
+.btn-auth:hover {
+	background-color: #C2CAD0;
+}

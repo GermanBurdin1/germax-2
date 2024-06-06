@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<title>Dashboard</title>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="/school/">
+				<img src="../../assets/GERMAX.jpg" alt="logo" style="height: 50px;">
+			</a>
+			<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
+				<ul class="navbar-nav align-items-center">
+					<li class="nav-item">
+						<a class="nav-link" href="./subpages/nav/notfifcations.html" data-bs-toggle="modal"
+							data-bs-target="#notificationsModal">
+							<i class="fa fa-bell">Notifications</i>
+							<span class="badge badge-danger">3</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="./subpages/support.html" data-bs-toggle="modal"
+							data-bs-target="#supportModal">
+							<i class="fa fa-question-circle">Support</i>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="./subpages/nav/settings.html">
+							<i class="fa fa-cog" aria-hidden="true"></i>
+						</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"
+							aria-haspopup="true" aria-expanded="false">
+							<i class="fa fa-user"></i>
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" href="./dashboard.html">Profil</a>
+							<a class="dropdown-item" href="./subpages/nav/settings.html">Paramètres</a>
+							<a class="dropdown-item" href="login.html">Déconnexion</a>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="main-content d-flex">
+			<div id="background-image" class="background-image-upload">
+				<label for="background-upload" class="custom-background-upload fas" title="charger votre image de fond">
+					<input id="background-upload" type="file" style="display:none;" onchange="loadBackground(event)" />
+				</label>
+			</div>
+			<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+				<a class="nav-link active" id="locationsLink" href="./dashboard.html">Profil</a>
+				<a class="nav-link" id="locationsLink" href="./subpages/loansCalendar.html">Mes
+					locations</a>
+				<a class="nav-link" id="indicateursLink" href="./subpages/loansRequests/loansRequest.html">Louer un
+					nouveau matériel</a>
+					<a class="nav-link active" id="rentalHistoryLink" href="./subpages/loansRequests/rentalHistory.html" data-bs-toggle="pill">История
+						аренды и статус бронирований</a>
+			</div>
+			<div class="content">
+				<div class="row mb-4">
+					<div class="col-md-4">
+						<div class="profile-img">
+							<img src="https://via.placeholder.com/150" alt="фото профиля" class="img-thumbnail"
+								id="profile-picture">
+							<label for="file-upload" class="custom-file-upload fas" title="chargez votre photo">
+								<input id="file-upload" type="file" style="display:none;" onchange="loadFile(event)" />
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer class="footer align-items-center justify-content-center text-center">
+		<a class="nav-link" href="link_to_other_page.html">
+			<i class="fa fa-question-circle" aria-hidden="true"></i> Foire Aux Questions
+		</a>
+	</footer>
+	<script>
+		const loadFile = function (event) {
+			let profilePicture = document.getElementById('profile-picture');
+			profilePicture.src = URL.createObjectURL(event.target.files[0]);
+			profilePicture.onload = function () {
+				URL.revokeObjectURL(profilePicture.src) // Free memory
+			}
+		};
+
+		const loadBackground = function (event) {
+			let backgroundImage = document.createElement('img'); // Создаём новый элемент img
+			backgroundImage.src = URL.createObjectURL(event.target.files[0]);
+			backgroundImage.onload = function () {
+				document.getElementById('background-image').style.backgroundImage = `url('${backgroundImage.src}')`; // Устанавливаем фон
+				URL.revokeObjectURL(backgroundImage.src) // Освобождаем память
+			}
+			document.getElementById('background-image').appendChild(backgroundImage); // Добавляем img в DOM
+		};
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

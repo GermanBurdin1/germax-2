@@ -1,0 +1,453 @@
+<div class="container mt-4">
+	<h2>Historique des Réservations</h2>
+
+
+	<!-- Вкладки для переключения между активными и завершенными резервациями -->
+	<div class="nav nav-tabs" id="reservationTabs" role="tablist">
+		<a class="nav-link active" id="active-reservations-tab" data-bs-toggle="tab" href="#activeReservations"
+			role="tab" aria-controls="activeReservations" aria-selected="true">Réservations actives</a>
+		<a class="nav-link" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
+			role="tab" aria-controls="completedReservations" aria-selected="false">Réservations archivées</a>
+	</div>
+
+	<!-- Содержимое вкладок -->
+	<div class="tab-content" id="reservationTabsContent">
+		<!-- Вкладка Активные резервации -->
+		<div class="tab-pane fade show active" id="activeReservations" role="tabpanel"
+			aria-labelledby="active-reservations-tab">
+			<div class="table-responsive">
+				<table class="table" id="reservationsTable">
+					<thead>
+						<tr>
+							<th data-column="id" data-type="number">ID Réservation <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="user" data-type="text">Utilisateur
+							</th>
+							<th data-column="equipment" data-type="text">Équipement
+							</th>
+							<th data-column="startdate" data-type="date">Date Début <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="enddate" data-type="date">Date Fin <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="status" data-type="status">Statut <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Преподаватели -->
+						<tr data-id="1" data-user="Enseignant A" data-equipment="Laptop" data-startdate="2023-04-01"
+							data-enddate="2023-04-03" data-status="Actif">
+							<td>1</td>
+							<td>Enseignant A</td>
+							<td>Laptop</td>
+							<td>
+								<span class="view-mode" data-name="startdate">2023-04-01</span>
+								<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode" data-name="enddate">2023-04-03</span>
+								<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode">Actif</span>
+								<select class="edit-mode d-none">
+									<option value="Actif">Actif</option>
+									<option value="Waiting">En attente</option>
+									<option value="Cancelled">Annulé</option>
+								</select>
+							</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<!-- только для админа -->
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="2" data-user="Enseignant B" data-equipment="Tablet" data-startdate="2023-04-04"
+							data-enddate="2023-04-05" data-status="En attente">
+							<td>2</td>
+							<td>Enseignant B</td>
+							<td>Tablet</td>
+							<td>2023-04-04</td>
+							<td>2023-04-05</td>
+							<td>En attente</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="3" data-user="Enseignant C" data-equipment="Smartphone" data-startdate="2023-04-06"
+							data-enddate="2023-04-07" data-status="Annulé">
+							<td>3</td>
+							<td>Enseignant C</td>
+							<td>Smartphone</td>
+							<td>2023-04-06</td>
+							<td>2023-04-07</td>
+							<td>Annulé</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<!-- Менеджеры -->
+						<tr data-id="4" data-user="Manager A" data-equipment="Computer Monitor"
+							data-startdate="2023-04-08" data-enddate="2023-04-09" data-status="Actif">
+							<td>4</td>
+							<td>Manager A</td>
+							<td>Computer Monitor</td>
+							<td>2023-04-08</td>
+							<td>2023-04-09</td>
+							<td>Actif</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="5" data-user="Manager B" data-equipment="VR Headset" data-startdate="2023-04-10"
+							data-enddate="2023-04-11" data-status="En attente">
+							<td>5</td>
+							<td>Manager B</td>
+							<td>VR Headset</td>
+							<td>2023-04-10</td>
+							<td>2023-04-11</td>
+							<td>En attente</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="6" data-user="Manager C" data-equipment="Accessory" data-startdate="2023-04-12"
+							data-enddate="2023-04-13" data-status="Annulé">
+							<td>6</td>
+							<td>Manager C</td>
+							<td>Accessory</td>
+							<td>2023-04-12</td>
+							<td>2023-04-13</td>
+							<td>Annulé</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<!-- Студенты -->
+						<tr data-id="7" data-user="Etudiant A" data-equipment="Laptop" data-startdate="2023-04-14"
+							data-enddate="2023-04-15" data-status="Actif">
+							<td>7</td>
+							<td>Etudiant A</td>
+							<td>Laptop</td>
+							<td>2023-04-14</td>
+							<td>2023-04-15</td>
+							<td>Actif</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="8" data-user="Etudiant B" data-equipment="Tablet" data-startdate="2023-04-16"
+							data-enddate="2023-04-17" data-status="En attente">
+							<td>8</td>
+							<td>Etudiant B</td>
+							<td>Tablet</td>
+							<td>2023-04-16</td>
+							<td>2023-04-17</td>
+							<td>En attente</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="9" data-user="Etudiant C" data-equipment="Smartphone" data-startdate="2023-04-18"
+							data-enddate="2023-04-19" data-status="Annulé">
+							<td>9</td>
+							<td>Etudiant C</td>
+							<td>Smartphone</td>
+							<td>2023-04-18</td>
+							<td>2023-04-19</td>
+							<td>Annulé</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<!-- Кладовщики -->
+						<tr data-id="10" data-user="Magasinier A" data-equipment="VR Headset"
+							data-startdate="2023-04-20" data-enddate="2023-04-21" data-status="Actif">
+							<td>10</td>
+							<td>Magasinier A</td>
+							<td>VR Headset</td>
+							<td>2023-04-20</td>
+							<td>2023-04-21</td>
+							<td>Actif</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="11" data-user="Magasinier B" data-equipment="Computer Monitor"
+							data-startdate="2023-04-22" data-enddate="2023-04-23" data-status="En attente">
+							<td>11</td>
+							<td>Magasinier B</td>
+							<td>Computer Monitor</td>
+							<td>2023-04-22</td>
+							<td>2023-04-23</td>
+							<td>En attente</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-id="12" data-user="Magasinier C" data-equipment="Accessory" data-startdate="2023-04-24"
+							data-enddate="2023-04-25" data-status="Annulé">
+							<td>12</td>
+							<td>Magasinier C</td>
+							<td>Accessory</td>
+							<td>2023-04-24</td>
+							<td>2023-04-25</td>
+							<td>Annulé</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button"
+										id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+												data-bs-target="#detailsModal">Voir les détails</a>
+										</li>
+										<li><a class="dropdown-item edit-reservation" href="#">Modifier les données</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Cacher la ligne</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a
+												href="#">Rétablir</a></li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Вкладка Завершенные резервации -->
+		<div class="tab-pane fade" id="completedReservations" role="tabpanel"
+			aria-labelledby="completed-reservations-tab">
+			<div class="table-responsive">
+				<table class="table" id="completedReservationsTable">
+					<thead>
+						<tr class="rowToRestore">
+							<th data-column="id" data-type="number">ID Réservation</th>
+							<th data-column="user" data-type="text">Utilisateur</th>
+							<th data-column="equipment" data-type="text">Équipement</th>
+							<th data-column="startdate" data-type="date">Date Début</th>
+							<th data-column="enddate" data-type="date">Date Fin</th>
+							<th data-column="status" data-type="status">Statut</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Détails de la réservation -->
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detailsModalLabel">Détails de la réservation</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h6>Informations sur la réservation :</h6>
+				<p>ID : 1, Utilisateur : Enseignant A, Équipement : Laptop, Dates : du 2023-04-01 au 2023-04-03, Statut
+					: Actif</p>
+				<h6>Historique des actions :</h6>
+				<ol>
+					<li>Date et heure des modifications : 2023-04-02 14:00 - Changement de statut à "Annulé" en raison
+						d'une panne de l'équipement.</li>
+					<li>Description de l'action : Un commentaire sur la maintenance de l'équipement a été ajouté.</li>
+					<li>Utilisateur ayant effectué l'action : Admin1</li>
+					<li>Commentaires ou Remarques : "L'équipement a été envoyé en réparation."</li>
+					<li>Réponses aux Remarques des Utilisateurs : "Une alternative d'équipement a été proposée."</li>
+					<li>Modifications dans les Détails de la Réservation : "La réservation a été reportée à la semaine
+						suivante."</li>
+					<li>États de Résolution des Conflits : "Le conflit a été résolu, un projecteur de remplacement a été
+						fourni."</li>
+					<li>Actions de Maintenance de l'Équipement : "L'équipement a été retourné après réparation, vérifié
+						et prêt à être utilisé."</li>
+				</ol>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- TODO: ajouter un filtre type de rapport! -->
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+<body>
+  <div class="container-fluid">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/school/">
+			<img src="../../assets/GERMAX.jpg" alt="logo" style="height: 50px;">
+		</a>
+		<div class="collapse navbar-collapse justify-content-end" id="navbarSupport">
+			<ul class="navbar-nav align-items-center">
+				<li class="nav-item">
+					<a class="nav-link" href="./subpages/nav/notfifcations.html" data-bs-toggle="modal"
+						data-bs-target="#notificationsModal">
+						<i class="fa fa-bell">Notifications</i>
+						<span class="badge badge-danger">3</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="./subpages/nav/settings.html">
+						<i class="fa fa-cog" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-user"></i>
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<a class="dropdown-item" href="./dashboard.html">Profil</a>
+						<a class="dropdown-item" href="./subpages/nav/settings.html">Paramètres</a>
+						<a class="dropdown-item" href="login.html">Déconnexion</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action">Dashboard</a>
+          <a href="#" class="list-group-item list-group-item-action">User Management</a>
+          <a href="#" class="list-group-item list-group-item-action">Equipment Management</a>
+          <a href="#" class="list-group-item list-group-item-action">Reservation Management</a>
+          <a href="#" class="list-group-item list-group-item-action">Reports</a>
+          <a href="#" class="list-group-item list-group-item-action">Feedback and Issues</a>
+          <a href="#" class="list-group-item list-group-item-action">Settings</a>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <!-- Содержимое выбранной секции -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

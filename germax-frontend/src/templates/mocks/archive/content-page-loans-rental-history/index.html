@@ -1,0 +1,252 @@
+<h3>Histoire de location et statut des réservations actuelles</h3>
+<br><br>
+<!-- Вкладки для переключения между активным оборудованием и архивом -->
+<div class="nav nav-tabs" id="equipmentTabs" role="tablist">
+	<a class="nav-link active" id="active-equipment-tab" data-bs-toggle="tab" href="#activeEquipment" role="tab"
+		aria-controls="activeEquipment" aria-selected="true">Equipement actif</a>
+	<a class="nav-link" id="archive-equipment-tab" data-bs-toggle="tab" href="#archiveEquipment" role="tab"
+		aria-controls="archiveEquipment" aria-selected="false">Archive</a>
+</div>
+
+<!-- Содержимое вкладок -->
+<div class="tab-content" id="equipmentTabsContent">
+	<!-- Вкладка Активное оборудование -->
+	<div class="tab-pane fade show active" id="activeEquipment" role="tabpanel" aria-labelledby="active-equipment-tab">
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-hover" id="equipment-table">
+					<thead>
+						<tr>
+							<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i class="fas fa-sort"></i></button>
+							</th>
+							<th>Nom de l'équipement</th>
+							<th data-column="startdate" data-type="date">Date Début <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th data-column="enddate" data-type="date">Date Fin <button
+									class="btn btn-link p-0 border-0 sortButton"><i class="fas fa-sort"></i></button>
+							</th>
+							<th>Description</th>
+							<th>Statut<button class="btn btn-link p-0 border-0" id="sortByStatus"
+									style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<!-- Предположим, что это оборудование с ID 1 -->
+						<tr data-equipment-id="1" class="">
+							<td>1</td>
+							<td>
+								<span class="equipment-name view-mode">Ordinateur portable</span>
+								<input type="text" class="form-control d-none edit-mode" name="equipment-name"
+									value="Ordinateur portable">
+							</td>
+							<td>
+								<span class="view-mode" data-name="startdate">2023-04-01</span>
+								<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode" data-name="enddate">2023-04-03</span>
+								<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="equipment-description view-mode">Haute performance pour le gaming</span>
+								<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
+							</td>
+							<td>
+								<span class="equipment-availability view-mode">Disponible</span>
+								<input type="text" class="form-control d-none edit-mode" name="equipment-availability"
+									value="Disponible">
+								<select class="form-select edit-mode d-none" name="equipment-availability">
+									<option value="Disponible">Disponible</option>
+									<option value="Non disponible">Non disponible</option>
+								</select>
+							</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+										<li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
+										<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
+										<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+										<li><a class="dropdown-item" href="#">Réserver</a></li>
+										<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
+												actions</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="1"><a href="#">Rétablir</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-equipment-id="2" class="">
+							<td>2</td>
+							<td>
+								<span class="equipment-name view-mode">Imprimante 3D</span>
+								<input type="text" class="form-control d-none edit-mode" name="equipment-name" value="Imprimante 3D">
+							</td>
+							<td>
+								<span class="view-mode" data-name="startdate">2023-04-01</span>
+								<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode" data-name="enddate">2023-04-03</span>
+								<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="equipment-description view-mode">Modèle industriel avancé</span>
+								<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
+							</td>
+							<td>
+								<span class="equipment-availability view-mode">Non disponible</span>
+								<input type="text" class="form-control d-none edit-mode" name="equipment-availability"
+									value="Non disponible">
+								<select class="form-select edit-mode d-none" name="equipment-availability">
+									<option value="Disponible">Disponible</option>
+									<option value="Non disponible">Non disponible</option>
+								</select>
+							</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+										<li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
+										<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
+										<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+										<li><a class="dropdown-item" href="#">Réserver</a></li>
+										<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-2">Journal des
+												actions</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="2"><a href="#">Rétablir</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr data-equipment-id="3" class="">
+							<td>3</td>
+							<td>
+								<span class="equipment-name view-mode">Scanner de documents</span>
+								<input type="text" class="form-control d-none edit-mode" name="equipment-name"
+									value="Scanner de documents">
+							</td>
+							<td>
+								<span class="view-mode" data-name="startdate">2023-04-01</span>
+								<input type="date" class="edit-mode d-none" name="startdate" value="2023-04-01">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="view-mode" data-name="enddate">2023-04-03</span>
+								<input type="date" class="edit-mode d-none" name="enddate" value="2023-04-03">
+								<span class="error-message d-none"></span> <!-- Элемент для сообщения об ошибке -->
+							</td>
+							<td>
+								<span class="equipment-description view-mode">Haute résolution et rapide</span>
+								<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
+							</td>
+							<td>
+								<span class="equipment-availability view-mode">Disponible</span>
+								<input type="text" class="form-control d-none edit-mode" name="equipment-availability"
+									value="Disponible">
+								<select class="form-select edit-mode d-none" name="equipment-availability">
+									<option value="Disponible">Disponible</option>
+									<option value="Non disponible">Non disponible</option>
+								</select>
+							</td>
+							<td>
+								<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+										<li><a class="dropdown-item edit-action" href="#">Éditer</a></li>
+										<li><a class="dropdown-item delete-action" href="#">Supprimer</a></li>
+										<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+										<li><a class="dropdown-item" href="#">Réserver</a></li>
+										<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-3">Journal des
+												actions</a></li>
+										<li><a class="dropdown-item archive-action" href="#">Archiver</a></li>
+										<li class="dropdown-item d-none restore-action" data-equipment-id="3"><a href="#">Rétablir</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+
+
+
+						<!-- Скрытая строка для журнала действий -->
+						<div class="modal fade" id="actionLogModal" tabindex="-1" aria-labelledby="actionLogModalLabel"
+							aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="actionLogModalLabel">Journal des actions
+										</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+									</div>
+									<div class="modal-body">
+										<!-- Элементы управления -->
+										<div class="filters">
+											<input type="text" id="searchByName" placeholder="Recherche par nom...">
+											<button id="sortByDate">Trier par date</button>
+										</div>
+										<div id="actionLogEntries">
+											<!-- Здесь будут выводиться записи журнала -->
+										</div>
+										<!-- Пагинация -->
+										<div class="pagination">
+											<button id="prevPage">Précédent</button>
+											<span id="currentPage">1</span>
+											<button id="nextPage">Suivant</button>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+										<button type="button" id="exportLog">Exporter le journal</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Повторите структуру выше для каждой единицы оборудования -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Вкладка Архив -->
+	<div class="tab-pane fade" id="archiveEquipment" role="tabpanel" aria-labelledby="archive-equipment-tab">
+		<div class="row">
+			<div class="col-12">
+				<table class="table table-hover" id="archive-equipment-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nom de l'équipement</th>
+							<th>Catégorie</th>
+							<th>Description</th>
+							<th>Statut</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Здесь будет размещаться список архивированного оборудования с возможностью восстановления -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

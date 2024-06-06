@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Interface utilisateur</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container pt-3 pb-1">
+		<!-- Main Header -->
+		<div class="row pb-2">
+			<div class="col">
+				<h1 style="font-weight: bold;">Utilisateurs</h1>
+			</div>
+		</div>
+
+		<!-- Primary Tabs -->
+		<div class="row">
+			<div class="col">
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" id="students-tab" data-bs-toggle="tab" href="#students" role="tab"
+							aria-controls="students" aria-selected="true">Élèves</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="teachers-tab" data-bs-toggle="tab" href="#teachers" role="tab"
+							aria-controls="teachers" aria-selected="false">Enseignants</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- Search Bar -->
+		<div class="row">
+			<div class="col">
+				<div class="input-group mb-3 mt-3">
+					<div class="input-group-prepend">
+						<!-- <span class="input-group-text" id="basic-addon1"><img src="search-icon.svg" alt=""></span> -->
+					</div>
+					<input type="text" class="form-control" placeholder="Recherche de clients..." aria-label="Поиск"
+						aria-describedby="basic-addon1">
+				</div>
+			</div>
+		</div>
+
+		<!-- Tab Contents -->
+		<div class="tab-content" id="myTabContent">
+			<!-- Students Tab Pane -->
+			<div class="tab-pane fade show active" id="students" role="tabpanel" aria-labelledby="students-tab">
+				<!-- Secondary Students Tabs -->
+				<ul class="nav nav-tabs mt-3">
+					<li class="nav-item">
+						<a class="nav-link active" id="devInfo-tab" data-bs-toggle="tab" href="#devInfo" role="tab"
+							aria-controls="devInfo" aria-selected="true">Étudiants Développement informatique</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="sysReseau-tab" data-bs-toggle="tab" href="#sysReseau" role="tab"
+							aria-controls="sysReseau" aria-selected="false">Étudiants Systèmes, réseaux et
+							cybersécurité</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="comMarketing-tab" data-bs-toggle="tab" href="#comMarketing" role="tab"
+							aria-controls="comMarketing" aria-selected="false">Étudiants Commerce et Marketing
+							digital</a>
+					</li>
+				</ul>
+
+				<!-- Secondary Tab Content -->
+				<div class="tab-content">
+					<!-- Content for "Étudiants Développement informatique" -->
+					<div class="tab-pane fade show active" id="devInfo" role="tabpanel" aria-labelledby="devInfo-tab">
+						<!-- Cards or any other content -->
+					</div>
+					<div class="tab-pane fade" id="sysReseau" role="tabpanel" aria-labelledby="sysReseau-tab">
+						<!-- Content for "Étudiants Systèmes, réseaux et cybersécurité" -->
+					</div>
+					<div class="tab-pane fade" id="comMarketing" role="tabpanel" aria-labelledby="comMarketing-tab">
+						<!-- Content for "Étudiants Commerce et Marketing digital" -->
+					</div>
+				</div>
+			</div>
+
+			<!-- Teachers Tab Pane -->
+			<div class="tab-pane fade" id="teachers" role="tabpanel" aria-labelledby="teachers-tab">
+				<!-- Content for Teachers -->
+				<p>Contenu pour les enseignants ici.</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="card-body">
+		<div class="table-responsive">
+			<table class="table align-middle">
+				<thead>
+					<tr>
+						<th>Client</th>
+						<th>Dernière visite</th>
+						<th>Email</th>
+						<th>Téléphone</th>
+						<th>Date de location</th>
+						<th>Date de retour</th>
+						<th>Statut</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Далее следуют строки с данными арендаторов. Пример одной строки: -->
+					<tr>
+						<td>
+							<div class="d-flex align-items-center">
+								<!-- <img src="img/user7.png" class="img-4x rounded-5 me-3" alt="Avatar"> -->
+								<p class="m-0">Felicia Quinn</p>
+							</div>
+						</td>
+						<td>Il y a 2 heures</td>
+						<td>info@example.com</td>
+						<td>(128) 898-0326</td>
+						<td>01/09/2022</td>
+						<td>10/09/2022</td>
+						<td>
+							<span class="badge shade-light-green">Payé</span>
+						</td>
+						<td>
+							<a class="btn btn-primary" href="./infoClient.html">Gérer</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="d-flex align-items-center">
+								<!-- <img src="img/user7.png" class="img-4x rounded-5 me-3" alt="Avatar"> -->
+								<p class="m-0">Felicia Quinn</p>
+							</div>
+						</td>
+						<td>Il y a 2 heures</td>
+						<td>info@example.com</td>
+						<td>(128) 898-0326</td>
+						<td>01/09/2022</td>
+						<td>10/09/2022</td>
+						<td>
+							<span class="badge shade-light-green">Payé</span>
+						</td>
+						<td>
+							<a class="btn btn-primary" href="./infoClient.html">Gérer</a>
+						</td>
+					</tr>
+					<!-- Добавьте дополнительные строки согласно вашим данным -->
+				</tbody>
+			</table>
+			<!-- Пагинация (если нужна) -->
+		</div>
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

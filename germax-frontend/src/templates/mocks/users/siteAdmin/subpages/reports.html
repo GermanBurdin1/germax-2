@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapports d'Utilisation</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="./style.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Rapports d'Utilisation</h2>
+    <div class="mb-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">Générer un Rapport</button>
+    </div>
+    <div id="reportsSection">
+        <!-- Reports generated will be displayed here -->
+    </div>
+</div>
+
+<!-- Modal for Generating Report -->
+<div class="modal fade show active" id="generateReportModal" tabindex="-1" aria-labelledby="generateReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="generateReportModalLabel">Générer un Rapport</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="reportType">Type de Rapport</label>
+            <select class="form-control" id="reportType">
+              <option>Utilisation d'Équipement</option>
+              <option>Activité des Utilisateurs</option>
+              <option>Performance du Service</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reportPeriod">Période</label>
+            <input type="date" class="form-control" id="startDate">
+            <input type="date" class="form-control" id="endDate">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary">Générer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+<!-- Доступ к отчетам для администратора позволяет:
+
+Анализировать использование ресурсов: Понимание того, как используется оборудование и сервисы, может помочь в принятии решений о расширении или модификации сервиса.
+Оптимизация работы сервиса: Отчеты могут выявить "узкие места" в работе сервиса, на основе которых администратор может вносить коррективы для улучшения сервиса. -->

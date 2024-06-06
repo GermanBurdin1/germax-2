@@ -1,0 +1,303 @@
+<div class="tab-pane fade show active" id="commandes-equipement" role="tabpanel"
+	aria-labelledby="commandes-equipement-link">
+	<div id="backArrowContainer"></div>
+
+	<!-- Заголовок Добавления оборудования для менеджера -->
+	<div id="titleAddingOrders"></div>
+	<div id="equipmentAddingContainer"></div>
+	<div id="titleOrdersRequest"></div>
+
+	<!-- Заголовок Заказов для менеджера -->
+	<div id="titleOrders"></div>
+	<!-- Новая форма для заказа для менеджера -->
+	<div id="orderForm"></div>
+	<!-- Заголовок список заказов для менеджера -->
+	<div id="listOrdersTitle"></div>
+
+	<div id="equipmentByModels">Liste des équipements par modèles</div>
+	<form class="jumbotron mt-4">
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="list-group" id="type-filter">
+						<a class="list-group-item list-group-item-action active" data-type="all">All</a>
+						<a class="list-group-item list-group-item-action" data-type="laptop">Ordinateurs portables</a>
+						<a class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+						<a class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
+						<a class="list-group-item list-group-item-action" data-type="accessory">Accessoires</a>
+						<a class="list-group-item list-group-item-action" data-type="tablet">Tablettes</a>
+						<a class="list-group-item list-group-item-action" data-type="VR_headset">Casque VR</a>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<div class="equipment-list" id="equipment-list">
+						<!-- Сюда будут загружаться результаты -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+	<!-- Modal for Adding Equipment -->
+	<div class="modal fade" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addEquipmentModalLabel">Ajouter un nouvel équipement</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="addEquipmentForm">
+						<div class="form-group">
+							<label for="equipmentName">Nom</label>
+							<input type="text" class="form-control" id="equipmentName" required>
+						</div>
+						<div class="form-group">
+							<label for="categoryName">Catégorie</label>
+							<select class="form-control" id="categoryName" required>
+								<option value="1">Laptop</option>
+								<option value="2">Computer Monitor</option>
+								<option value="3">Smartphone</option>
+								<option value="4">Accessory</option>
+								<option value="5">Tablet</option>
+								<option value="6">VR Headset</option>
+								<!-- нужно добавить чтобы категории динамически обновлялись -->
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="brandName">Marque</label>
+							<input type="text" class="form-control" id="brandName" required>
+							<div id="brandSuggestions" class="list-group"></div>
+						</div>
+						<div class="form-group">
+							<label for="equipmentDescription">Description</label>
+							<textarea class="form-control" id="equipmentDescription" rows="3" required></textarea>
+						</div>
+						<div class="form-group">
+							<label for="serialNumber">Numéro de série</label>
+							<input type="text" class="form-control" id="serialNumber" required>
+						</div>
+						<div class="form-group">
+							<label for="equipmentPhoto">Photo</label>
+							<input type="file" class="form-control-file" id="equipmentPhoto" accept="image/*" required>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" id="saveEquipmentBtn" class="btn btn-primary">Sauvegarder</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Modal for Adding Category -->
+	<div class="modal fade show active" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addCategoryModalLabel">Ajouter une nouvelle catégorie</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="newCategoryName">Nom de la catégorie</label>
+							<input type="text" class="form-control" id="newCategoryName">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary
+" data-bs-dismiss="modal">Fermer</button>
+					<button type="button" id="saveCategoryBtn" class="btn btn-primary">Sauvegarder la catégorie</button>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="table-responsive">
+		<table class="table" id="goodsTable">
+			<thead>
+				<tr>
+					<th>Numéro du modèle <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+					<th>Nom de l'Équipement</th>
+					<th>Catégorie</th>
+					<th>Photo</th>
+					<th id="statusHeader">Status</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1001</td>
+					<td>Ordinateur Portable Avancé</td>
+					<td>10</td>
+					<td></td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item confirm-delivrance" href="#">Voir les unités disponibles</a></li>
+								<li>
+								<li><a class="dropdown-item confirm-delivrance" href="#">Modifier les données</a></li>
+								<li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="pagination-container">
+		<button id="prevPageBtn" class="btn btn-primary">Précédent</button>
+		<span id="pageInfo"></span>
+		<button id="nextPageBtn" class="btn btn-primary">Suivant</button>
+	</div>
+
+	<!-- Modal for Checking Availability -->
+	<div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="availabilityModalLabel">Vérifier la disponibilité</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="checkAvailabilityForm">
+						<div class="mb-3">
+							<label for="equipmentInput" class="form-label">Nom de l'équipement</label>
+							<input type="text" class="form-control" id="equipmentInput">
+						</div>
+						<button type="submit" class="btn btn-primary">Vérifier</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- Modal for Viewing Units -->
+<div class="modal fade" id="unitsModal" tabindex="-1" aria-labelledby="unitsModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="unitsModalLabel">Unités Disponibles</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Контент модального окна будет обновляться динамически -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editModalLabel">Modifier les données</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Форма для редактирования будет динамически добавлена сюда -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal for Manager -->
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<div class="container-fluid">
+									<input type="text" id="searchUser" class="form-control mb-3" placeholder="Rechercher par nom ou prénom...">
+									<div class="row">
+											<div class="col-md-3">
+													<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+															<a class="nav-link active" id="v-pills-enseignants-tab" data-bs-toggle="pill"
+																	href="#v-pills-enseignants" role="tab" aria-controls="v-pills-enseignants"
+																	aria-selected="true">Enseignants</a>
+															<a class="nav-link" id="v-pills-etudiants-tab" data-bs-toggle="pill" href="#v-pills-etudiants"
+																	role="tab" aria-controls="v-pills-etudiants" aria-selected="false">Étudiants</a>
+													</div>
+											</div>
+											<div class="col-md-9">
+													<div class="tab-content" id="v-pills-tabContent">
+															<div class="tab-pane fade show active" id="v-pills-enseignants" role="tabpanel"
+																	aria-labelledby="v-pills-enseignants-tab">
+																	<!-- Контент для Enseignants будет сгенерирован здесь -->
+															</div>
+															<div class="tab-pane fade" id="v-pills-etudiants" role="tabpanel"
+																	aria-labelledby="v-pills-etudiants-tab">
+																	<!-- Контент для Étudiants будет сгенерирован здесь -->
+															</div>
+													</div>
+											</div>
+									</div>
+							</div>
+							<div class="pagination-controls text-center">
+									<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+													<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"
+																	aria-disabled="true">Précédent</a></li>
+													<!-- Нумерация страниц будет сгенерирована здесь -->
+													<li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+											</ul>
+									</nav>
+							</div>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+			</div>
+	</div>
+</div>
+
+<!-- Units Modal -->
+<div class="modal fade" id="unitsModal" tabindex="-1" aria-labelledby="unitsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="unitsModalLabel">Détails de l'équipement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Контент для количества единиц оборудования будет сгенерирован здесь -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

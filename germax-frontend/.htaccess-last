@@ -1,0 +1,22 @@
+RewriteEngine On
+
+# Перенаправление для JS файлов
+RewriteRule ^(.*)\.js$ /dist/$1.js [L]
+
+# Перенаправление для assets
+RewriteRule ^assets/(.*)$ /dist/assets/$1 [L]
+
+# Перенаправление всех запросов на корень сервера в папку php-pages, кроме assets
+RewriteCond %{REQUEST_URI} !^/assets/.*
+RewriteCond %{REQUEST_URI} !^/php-pages/.*
+RewriteCond %{REQUEST_URI} !\.js$ # Исключаем JS файлы из этого правила
+RewriteRule ^(.*)$ /php-pages/$1 [L]
+
+# Запретить доступ ко всем остальным ресурсам, кроме assets и php-pages
+RewriteCond %{REQUEST_URI} !^/php-pages/
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteRule .* - [R=403,L]
+
+# Запретить прямой доступ к папке api-functions и всем её подпапкам
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /api-functions/ [NC]
+RewriteRule ^api-functions/ - [F,L]

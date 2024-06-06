@@ -1,0 +1,145 @@
+@import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css);
+
+/* Общие стили для основных цветов */
+:root {
+	--color-primary: #E7717D;
+	--color-secondary: #C2CAD0;
+	--color-tertiary: #C2B9B0;
+	--color-quaternary: #7E685A;
+	--color-accent: #AFD275;
+}
+
+body,
+html {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+	padding-top: 70px; /* Высота вашего хедера */
+}
+
+/* Стили для хедера */
+header {
+	background-color: var(--color-primary);
+	color: white;
+	padding: 1rem;
+}
+
+.container h1 {
+	color: var(--color-primary);
+}
+
+/* Стили для модалок */
+.modal-header {
+	background-color: var(--color-primary);
+	color: white;
+}
+
+.modal-footer .btn {
+	background-color: var(--color-secondary);
+	color: var(--color-quaternary);
+}
+
+.modal-footer .btn:hover {
+	background-color: var(--color-tertiary);
+	color: white;
+}
+
+/* Стили для таблицы */
+.table th {
+	background-color: var(--color-secondary);
+	color: var(--color-quaternary);
+}
+
+.table td {
+	color: var(--color-quaternary);
+}
+
+/* Карточки аренды */
+.rental-card {
+	background-color: var(--color-secondary);
+	color: var(--color-quaternary);
+	border: 1px solid var(--color-tertiary);
+	border-radius: 0.5rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+.rental-card h5 {
+	color: var(--color-primary);
+}
+
+/* Стили для вкладок навигации */
+.nav-tabs .nav-item .nav-link {
+	color: var(--color-quaternary);
+	background-color: var(--color-secondary);
+	border: 1px solid var(--color-tertiary);
+	border-radius: 0.375rem 0.375rem 0 0;
+	margin-right: 5px; /* Добавить немного пространства между вкладками */
+	padding: 0.5rem 1rem; /* Регулировка отступов для вкладок */
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+	color: white;
+	background-color: var(--color-primary);
+	border-color: var(--color-primary);
+}
+
+.nav-tabs .nav-item .nav-link:hover {
+	color: white;
+	background-color: var(--color-accent);
+	border-color: var(--color-primary);
+}
+
+/* retour en arrière */
+#backArrowContainer {
+	position: fixed;
+	top: 40px; /* Отрегулируйте это значение по необходимости */
+	left: 10px; /* Почти прижата к левому краю страницы */
+	z-index: 1000;
+}
+
+.back-arrow {
+	font-size: 20px; /* Сделаем кнопку жирнее */
+	color: var(--color-primary);
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	transition: color 0.3s ease, opacity 0.3s ease; /* Добавим плавный переход для непрозрачности */
+	padding: 10px;
+	border-radius: 5px;
+	opacity: 0.3; /* Полупрозрачная кнопка */
+}
+
+.back-arrow:hover {
+	color: var(--color-accent);
+	text-decoration: underline;
+	opacity: 1; /* Увеличим непрозрачность при наведении */
+}
+
+.back-arrow i {
+	margin-right: 5px;
+	transition: transform 0.3s ease;
+}
+
+.back-arrow:hover i {
+	transform: translateX(-5px);
+}
+
+.navbar .btn-auth {
+	background-color: var(--color-primary);
+	color: white;
+}
+
+.navbar .btn-auth:hover {
+	background-color: var(--color-accent);
+}

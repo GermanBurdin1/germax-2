@@ -1,0 +1,69 @@
+<div class="container-fluid">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="collapse navbar-collapse justify-content-end" id="horizontalNavbar">
+			<!-- генерация вертикального меню -->
+		</div>
+		<div id="notificationsModalPlace">
+		</div>
+		<div id="supportModalContainer">
+		</div>
+	</nav>
+	<!-- Контейнер для вкладок, расположенный прямо под навигацией -->
+	<!-- Здесь будет разметка вкладок -->
+</div>
+
+<div class="row g-0">
+	<div class="col-md-3">
+		<div class="list-group">
+			<!-- вертикальное меню слева -->
+			<div id="dynamicMenu"></div>
+		</div>
+	</div>
+	<div class="col-md-9">
+		<div id="profileSection" style="display:none;">
+			<div id="profileGreeting"></div>
+			<div id="profileAvatarContainer">
+        <img id="profileAvatar" alt="User Avatar">
+        <div id="avatarPlaceholder">Téléchargez votre avatar</div>
+    </div>
+			<div id="divider"></div>
+			<div id="userNotifications"></div>
+		</div>
+		<!-- Содержимое для студентов и преподавателей -->
+		<div id="tabPlace"></div>
+		<div id="myLoans"></div>
+		<div id="clientLoansHistory"></div>
+		<div id="modalNewStudentOrTeacherRequest"></div>
+		<div id="modalRequestLoan"></div>
+		<div id="modalLoanForm"></div>
+		<div id="modalClientLoans"></div>
+		<!-- Содержимое для админа -->
+		<div id="adminReportsModal"></div>
+		<div id="adminFeedBackModal"></div>
+		<div id="adminContainerSettingsModal"></div>
+		<!-- Содержимое для кладовщика -->
+		<div id="profileContainer"></div>
+	</div>
+</div>
+</div>
+
+<div class="modal fade" id="supportModalContact" tabindex="-1" aria-labelledby="supportModalContactLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="supportModalContactLabel">Pour la moindre question ou problème écrivez votre message à l'admin</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<div class="contact-info">
+									<p><strong>Téléphone:</strong> +33 1 23 45 67 89</p>
+									<p><strong>Heures de travail:</strong> Lundi - Vendredi, 9:00 - 18:00</p>
+									<p><strong>Email:</strong> <a href="mailto:admin@exemple.com">admin@exemple.com</a></p>
+							</div>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+			</div>
+	</div>
+</div>

@@ -1,0 +1,421 @@
+<div id="backArrowContainer"></div>
+<div class="tab-pane fade show active" id="commandes-equipement" role="tabpanel"
+	aria-labelledby="commandes-equipement-link">
+	<!-- Заголовок Добавления оборудования для менеджера -->
+	<div id="titleAddingOrders"></div>
+	<div id="equipmentAddingContainer"></div>
+	<!-- Заголовок Заказов для менеджера -->
+	<div id="titleOrders"></div>
+	<!-- Новая форма для заказа для менеджера -->
+	<div id="orderForm"></div>
+	<!-- Заголовок список заказов для менеджера -->
+	<div id="listOrdersTitle"></div>
+	<div id="titleOrdersRequest"></div>
+
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Numéro de Commande <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+					<th>Nom de l'Équipement</th>
+					<th>Catégorie</th>
+					<th>Quantité <button class="btn btn-link p-0 border-0 sortButton" title="Trier par Quantité"><i
+								class="fas fa-sort"></i></button></th>
+					<th>Date de la Commande <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Date de la Commande"><i class="fas fa-sort"></i></button></th>
+					<th>Date du début de location <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Date de la Commande"><i class="fas fa-sort"></i></button></th>
+					<th>Date de fin de location <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Date de la Commande"><i class="fas fa-sort"></i></button></th>
+					<th>Statut de la Requête <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Statut de la requête"><i class="fas fa-sort"></i></button></th>
+					<th>Statut de l'équipement <button class="btn btn-link p-0 border-0 sortButton"
+							title="Trier par Statut de Livraison"><i class="fas fa-sort"></i></button></th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1001</td>
+					<td>Ordinateur Portable Avancé</td>
+					<td>10</td>
+					<td>01/04/2024</td>
+					<td>Pending</td>
+					<td>Statut à décider</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item confirm-delivrance" href="#">Confirmer la réception</a></li>
+								<li>
+									<a class="dropdown-item annulate-booking-action" href="#">Annuler la commande</a>
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme livré</a>
+								</li>
+								<li>
+									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails</a>
+								</li>
+								<!-- поля для stockman -->
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Programmer l'envoi</a>
+									<!-- для статуса disponible -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Annuler l'envoi</a>
+									<!-- для статуса programmé -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-send-action" href="#">Marquer comme envoyé</a>
+									<!-- для статуса en attente -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme délivré</a>
+									<!-- Подстраховочно, если сбои у менеджера, для статуса envoyé -->
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>1002</td>
+					<td>Scanner 3D Pro</td>
+					<td>5</td>
+					<td>05/04/2024</td>
+					<td>Article trouvé</td>
+					<td>Livrée</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item confirm-delivrance" href="#">Confirmer la réception</a></li>
+								<li>
+									<a class="dropdown-item annulate-booking-action" href="#">Annuler la commande</a>
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme livré</a>
+								</li>
+								<li>
+									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails</a>
+								</li>
+								<!-- поля для stockman -->
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Programmer l'envoi</a>
+									<!-- для статуса disponible -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Annuler l'envoi</a>
+									<!-- для статуса programmé -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-send-action" href="#">Marquer comme envoyé</a>
+									<!-- для статуса en attente -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme délivré</a>
+									<!-- Подстраховочно, если сбои у менеджера, для статуса envoyé -->
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>1003</td>
+					<td>Drones de Surveillance</td>
+					<td>20</td>
+					<td>10/04/2024</td>
+					<td>Article non trouvé</td>
+					<td>Pas de livraison possible</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+								data-bs-toggle="dropdown" aria-expanded="false">
+								Choisir une action
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<li><a class="dropdown-item confirm-delivrance" href="#">Confirmer la réception</a></li>
+								<li>
+									<a class="dropdown-item annulate-booking-action" href="#">Annuler la commande</a>
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme livré</a>
+								</li>
+								<li>
+									<a class="dropdown-item view-details" href="#" data-bs-toggle="modal"
+										data-bs-target="#detailsModal">Voir les détails</a>
+								</li>
+								<!-- поля для stockman -->
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Programmer l'envoi</a>
+									<!-- для статуса disponible -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-programm-action" href="#">Annuler l'envoi</a>
+									<!-- для статуса programmé -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-send-action" href="#">Marquer comme envoyé</a>
+									<!-- для статуса en attente -->
+								</li>
+								<li>
+									<a class="dropdown-item mark-as-delivered-action" href="#">Marquer comme délivré</a>
+									<!-- Подстраховочно, если сбои у менеджера, для статуса envoyé -->
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div id="paginationControls">
+		<button id="prevPageBtn" class="btn btn-secondary">Previous</button>
+		<span id="pageInfo"></span>
+		<button id="nextPageBtn" class="btn btn-secondary">Next</button>
+	</div>
+
+	<!-- Modal for Checking Availability -->
+	<div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="availabilityModalLabel">Vérifier la disponibilité</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="checkAvailabilityForm">
+						<div class="mb-3">
+							<label for="equipmentInput" class="form-label">Nom de l'équipement</label>
+							<input type="text" class="form-control" id="equipmentInput">
+						</div>
+						<button type="submit" class="btn btn-primary">Vérifier</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<!-- Модальное окно для изменения данных -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editModalLabel">Changer les données</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="editForm">
+					<input type="hidden" id="editRequestId">
+					<div class="mb-3">
+						<label for="editEquipmentName" class="form-label">Nom de l'équipement</label>
+						<input type="text" class="form-control" id="editEquipmentName">
+					</div>
+					<div class="mb-3">
+						<label for="editQuantity" class="form-label">Quantité</label>
+						<input type="number" class="form-control" id="editQuantity">
+					</div>
+					<div class="mb-3">
+						<label for="editDateStart" class="form-label">Date de début</label>
+						<input type="date" class="form-control" id="editDateStart">
+					</div>
+					<div class="mb-3">
+						<label for="editDateEnd" class="form-label">Date de fin</label>
+						<input type="date" class="form-control" id="editDateEnd">
+					</div>
+					<div class="mb-3">
+						<label for="editComment" class="form-label">Commentaire</label>
+						<textarea class="form-control" id="editComment"></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary">Sauvegarder les changements</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Модальное окно для подтверждения с юзером -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmationModalLabel">Confirmation des données</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant sur Confirmer les données réctifiées seront envoyées à l'utilisateur</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary" id="confirmApprovalButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Модальное окно для отправки на согласование с кладовщиком -->
+<div class="modal fade" id="stockmanApprovalModal" tabindex="-1" aria-labelledby="stockmanApprovalModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="stockmanApprovalModalLabel">Soumission pour approbation</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Après la confirmation, le gestionnaire commencera à chercher votre équipement</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary" id="confirmStockmanApprovalButton">Envoyer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal for Stockman Response -->
+<div class="modal fade" id="stockmanResponseModal" tabindex="-1" aria-labelledby="stockmanResponseModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="stockmanResponseModalLabel">Réponse du Stockman</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="stockmanResponseForm">
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="stockmanResponse" id="responseFound" value="found">
+						<label class="form-check-label" for="responseFound">Équipement trouvé</label>
+					</div>
+					<div class="form-group mt-3" id="equipmentDetailsContainer" style="display: none;">
+						<label for="stockmanResponseEquipmentName">Nom de l'équipement</label>
+						<input type="text" class="form-control" id="stockmanResponseEquipmentName">
+
+						<label for="equipmentType" class="mt-3">Type d'équipement</label>
+						<select class="form-control" id="equipmentType">
+							<option value="laptop">Laptop</option>
+							<option value="computer_monitor">Computer Monitor</option>
+							<option value="smartphone">Smartphone</option>
+							<option value="accessory">Accessory</option>
+							<option value="tablet">Tablet</option>
+							<option value="VR_headset">VR Headset</option>
+						</select>
+
+						<label for="equipmentBrand" class="mt-3">Marque</label>
+						<input type="text" class="form-control" id="equipmentBrand" placeholder="Marque de l'équipement">
+
+						<label for="equipmentQuantity" class="mt-3">Quantité</label>
+						<input type="text" class="form-control" id="equipmentQuantity"
+							placeholder="Quantité disponible de l'équipement">
+
+						<label for="equipmentDescription" class="mt-3">Description</label>
+						<textarea class="form-control" id="equipmentDescription" rows="3"
+							placeholder="Description de l'équipement"></textarea>
+
+						<label for="equipmentPhoto" class="mt-3">Photo</label>
+						<input type="file" class="form-control" id="equipmentPhoto" accept="image/jpeg, image/png">
+
+						<label for="rentalDateStart" class="mt-3">Date de début de location souhaitée</label>
+						<input type="date" class="form-control" id="rentalDateStart" readonly>
+
+						<label for="rentalDateEnd" class="mt-3">Date de fin de location souhaitée</label>
+						<input type="date" class="form-control" id="rentalDateEnd" readonly>
+
+						<label for="equipmentSerialNumbers" class="mt-3">Numéros de série de l'équipement</label>
+						<div id="equipmentSerialNumbers"></div>
+					</div>
+					<div class="form-check mt-3">
+						<input class="form-check-input" type="radio" name="stockmanResponse" id="responseNotFound"
+							value="not_found">
+						<label class="form-check-label" for="responseNotFound">Équipement non trouvé</label>
+					</div>
+					<button type="button" class="btn btn-primary mt-3" id="sendStockmanResponseButton">Envoyer</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal для подтверждения предложения менеджера перед отправк-->
+<div class="modal fade" id="confirmSendingModal" tabindex="-1" aria-labelledby="confirmSendingModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmSendingModalLabel">Confirmer l'envoi</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant "confirmer" le gestionnaire enverra l'équipement la date prévue.</p>
+				<button type="button" class="btn btn-primary" id="confirmSendingButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal для подтверждения отправки оборудования-->
+<div class="modal fade" id="sendingItemModal" tabindex="-1" aria-labelledby="sendingItemModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="sendingItemModalLabel">Confirmer l'envoi</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant "confirmer" vous confirmez que vous avez envoyé l'équipement.</p>
+				<button type="button" class="btn btn-primary" id="sendingItemButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal для подтверждения отправки оборудования-->
+<div class="modal fade" id="confirmReceivingModal" tabindex="-1" aria-labelledby="confirmReceivingModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmReceivingModalLabel">Confirmer la réception</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant "confirmer" vous confirmez que vous avez récéptionné l'équipement.</p>
+				<button type="button" class="btn btn-primary" id="confirmReceivingItemButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal для подтверждения отправки оборудования-->
+<div class="modal fade" id="handOverModal" tabindex="-1" aria-labelledby="handOverModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="handOverModalLabel">Confirmer la remise de l'équipement</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>En appuyant "confirmer" vous confirmez que vous avez donné l'équipement dans les mains.</p>
+				<button type="button" class="btn btn-primary" id="handOverItemButton">Confirmer</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,34 @@
+<div class="tab-pane fade show active" id="communication-manager" role="tabpanel" aria-labelledby="communication-manager-link">
+	<h2>Communication avec les gestionnaires de location</h2>
+	<div class="communication-form">
+		<form>
+			<div class="form-group">
+				<label for="managerSelect">Sélectionner le gestionnaire</label>
+				<select class="form-control" id="managerSelect">
+					<!-- Options des gestionnaires chargées dynamiquement -->
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="topicSelect">Sujet de la communication</label>
+				<select class="form-control" id="topicSelect">
+					<option value="maintenance">Maintenance de matériel</option>
+					<option value="reservation">Réservation d'équipement</option>
+					<option value="return">Retour d'équipement</option>
+					<option value="report">Signalement de problème</option>
+					<option value="other">Autre</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="messageText">Message</label>
+				<textarea class="form-control" id="messageText" rows="3"></textarea>
+			</div>
+			<button type="submit" class="btn btn-primary">Envoyer</button>
+		</form>
+	</div>
+	<div class="previous-communications">
+		<h3>Communications précédentes</h3>
+		<ul class="list-group">
+			<!-- La liste des messages précédents sera générée dynamiquement ici -->
+		</ul>
+	</div>
+</div>
