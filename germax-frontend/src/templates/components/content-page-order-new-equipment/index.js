@@ -212,11 +212,11 @@ function renderEquipmentOrder(userData) {
 	titleOrders.innerHTML = ``;
 	listOrdersTitle.innerHTML = ``;
 
-	if (userData.name_permission === "stockman") {
+	if (userData.name_permission === "stockman" || userData.name_permission === "admin") {
 		const titleOrdersRequestMarkup = `<h2>Requêtes du nouvel équipement</h2>`;
 		addingEquipmentContainer.innerHTML = markup;
 		titleOrdersRequest.innerHTML = titleOrdersRequestMarkup;
-	} else if (userData.name_permission === "rental-manager") {
+	} else if (userData.name_permission === "rental-manager" || userData.name_permission === "admin") {
 		const titleOrdersMarkup = `<h2>Nouvelle commande d'équipement</h2>`;
 		const markup = `
 		<div class="order-form mb-4">
@@ -325,11 +325,11 @@ function updateEquipmentRequestsTable(namePermission, page = 1, itemsPerPage = 1
             if (data.success && Array.isArray(requests)) {
                 requests.forEach((request) => {
                     if (
-                        namePermission !== "stockman" ||
+                        namePermission !== "stockman" && namePermission !== "admin" ||
                         isStatusVisibleForStockman(request.treatment_status)
                     ) {
                         if (
-                            namePermission === "stockman" &&
+                            namePermission === "stockman" || namePermission === "admin" &&
                             request.treatment_status === "closed_by_stockman" &&
                             request.equipment_status === "received"
                         ) {
@@ -430,7 +430,7 @@ function createTableRow(request, namePermission) {
 	let treatmentStatus = request.treatment_status;
 	let equipmentStatus = request.equipment_status;
 
-	if (namePermission === "stockman") {
+	if (namePermission === "stockman" || namePermission === "admin") {
 		if (
 			treatmentStatus === "pending_stockman" &&
 			equipmentStatus === "equipment_availability_pending"
@@ -464,7 +464,7 @@ function createTableRow(request, namePermission) {
 			treatmentStatus = "traité avec le manager";
 			equipmentStatus = "envoyé";
 		}
-	} else if (namePermission === "rental-manager") {
+	} else if (namePermission === "rental-manager" || namePermission === "admin") {
 		if (
 			treatmentStatus === "treated_manager_user" &&
 			equipmentStatus === "equipment_availability_pending"
@@ -499,7 +499,7 @@ function createTableRow(request, namePermission) {
 		? request.date_end
 		: "les dates n'ont pas été indiquées";
 
-	if (namePermission === "rental-manager") {
+	if (namePermission === "rental-manager" || namePermission === "admin") {
 		if (request.treatment_status === "pending_manager") {
 			actionsMarkup = `
 			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
@@ -543,7 +543,7 @@ function createTableRow(request, namePermission) {
 			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
 			`;
 		}
-	} else if (namePermission === "stockman") {
+	} else if (namePermission === "stockman" || namePermission === "admin") {
 		if (request.treatment_status === "pending_stockman") {
 			actionsMarkup = `
 			<li><a class="dropdown-item stockman-send-response" href="#" data-id="${request.id_request}">Envoyer une réponse</a></li>
