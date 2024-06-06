@@ -190,7 +190,7 @@ function displayGoods(goods) {
 					<td>
 							${
 								namePermission === "rental-manager"
-									? '<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveModal">Attribuer l\'équipement</button>'
+									? `<button class="btn btn-primary view-units" data-model-id="${good.model.id}">Voir les détails</button>`
 									: `<div class="dropdown">
 											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${good.model.id}"
 															data-bs-toggle="dropdown" aria-expanded="false">
@@ -233,6 +233,7 @@ document.getElementById("nextPageBtn").addEventListener("click", () => {
 document.addEventListener("click", function (event) {
 	if (event.target.classList.contains("view-units")) {
 		const modelId = event.target.getAttribute("data-model-id");
+		console.log(modelId);
 		showUnitsModal(modelId);
 	} else if (event.target.classList.contains("edit-good")) {
 		const goodId = event.target.getAttribute("data-good-id");
