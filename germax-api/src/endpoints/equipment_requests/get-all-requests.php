@@ -14,8 +14,7 @@ $equipmentRequestController = new EquipmentRequestController($equipmentRequestSe
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $response = $equipmentRequestController->getAllRequests();
-    echo json_encode(['success' => true, 'data' => $response]);
-
+    echo json_encode(['success' => true, 'data' => $response['requests'], 'totalItems' => $response['totalItems']]);
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(204); // No Content for preflight
     exit;

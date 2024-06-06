@@ -88,14 +88,17 @@ export class ApiEquipmentRequest {
 			});
 	}
 
-	async getAllRequests() {
-		return fetch(`${this._baseUrl}/get-all-requests`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${this._apiAuth.getToken()}`,
-			},
-		})
+	async getAllRequests(page = 1, itemsPerPage = 10) {
+		return fetch(
+			`${this._baseUrl}/get-all-requests?page=${page}&itemsPerPage=${itemsPerPage}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${this._apiAuth.getToken()}`,
+				},
+			}
+		)
 			.then((response) => response.json())
 			.then((data) => {
 				if (data.success && Array.isArray(data.data)) {
@@ -106,7 +109,7 @@ export class ApiEquipmentRequest {
 			})
 			.catch((error) => {
 				console.error("Error fetching equipment requests:", error);
-				return { success: false, data: [] }; // Возвращаем объект с пустым массивом данных в случае ошибки
+				return { success: false, data: [], totalItems: 0 }; // Возвращаем объект с пустым массивом данных в случае ошибки
 			});
 	}
 

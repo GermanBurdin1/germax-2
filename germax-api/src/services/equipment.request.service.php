@@ -50,8 +50,9 @@ class EquipmentRequestService
 		return ['success' => true, 'message' => 'Request created successfully'];
 	}
 
-	public function getAllRequests()
+	public function getAllRequests($page, $itemsPerPage)
 	{
+		$offset = ($page - 1) * $itemsPerPage;
 		$sql = "
         SELECT
             er.id_request,
@@ -74,10 +75,24 @@ class EquipmentRequestService
             good g ON er.id_good = g.id_good
         LEFT JOIN
             model m ON g.id_model = m.id_model
+        LIMIT :itemsPerPage OFFSET :offset
     ";
 		$stmt = $this->pdo->prepare($sql);
+		$stmt->bindValue(':itemsPerPage', (int) $itemsPerPage, PDO::PARAM_INT);
+		$stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
 		$stmt->execute();
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		// Получаем общее количество записей
+		$totalSql = "SELECT COUNT(*) FROM equipment_request";
+		$totalStmt = $this->pdo->prepare($totalSql);
+		$totalStmt->execute();
+		$totalItems = $totalStmt->fetchColumn();
+
+		return [
+			'requests' => $requests,
+			'totalItems' => $totalItems
+		];
 	}
 
 	public function getAllRequestsByUser($id)

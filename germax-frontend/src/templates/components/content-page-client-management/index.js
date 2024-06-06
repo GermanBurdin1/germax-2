@@ -12,6 +12,12 @@ const apiAuth = ApiAuth.getInstance();
 const apiRental = new ApiRental();
 const apiUsers = new ApiUsers();
 
+document.getElementById('userSearchInput').addEventListener('input', function (event) {
+	const searchTerm = event.target.value.toLowerCase();
+	searchUsers(searchTerm);
+});
+
+
 async function fetchPendingUsers(apiAuth) {
 	try {
 		const pendingUsers = await apiAuth.getPendingUsers();
@@ -293,57 +299,93 @@ function attachEventHandlers(apiAuth) {
 		});
 }
 
+let allUsers = [];
+
 async function init() {
 	const apiAuth = ApiAuth.getInstance();
 
 	try {
-		await apiAuth.fetchMeAuthUser();
-		const pendingUsers = await fetchPendingUsers(apiAuth);
-		const processedUsers = await fetchProcessedUsers(apiAuth); // Получение обработанных пользователей
+			await apiAuth.fetchMeAuthUser();
+			const pendingUsers = await fetchPendingUsers(apiAuth);
+			const processedUsers = await fetchProcessedUsers(apiAuth); // Получение обработанных пользователей
 
-		const studentTables = {
+			// Сохраняем всех пользователей в одной переменной, если они существуют
+			if (pendingUsers && pendingUsers.length > 0) {
+					allUsers = [...pendingUsers];
+			}
+			if (processedUsers && processedUsers.length > 0) {
+					allUsers = [...allUsers, ...processedUsers];
+			}
+
+			const studentTables = {
+					development: document.querySelector("#devInfoTable tbody"),
+					cybersecurity: document.querySelector("#sysReseauTable tbody"),
+					marketing: document.querySelector("#comMarketingTable tbody"),
+			};
+
+			const teacherTable = document.querySelector("#teachersTable tbody");
+
+			// Очищаем существующие строки в таблицах
+			Object.values(studentTables).forEach((table) => {
+					if (table) {
+							table.innerHTML = "";
+					} else {
+							console.warn("Table not found");
+					}
+			});
+			if (teacherTable) {
+					teacherTable.innerHTML = "";
+			} else {
+					console.warn("Teacher table not found");
+			}
+
+			// Заполняем таблицы
+			populateTables(allUsers, studentTables, teacherTable);
+
+			attachEventHandlers(apiAuth);
+	} catch (error) {
+			console.error("Initialization error:", error);
+	}
+}
+
+function searchUsers(searchTerm) {
+	const filteredUsers = allUsers.filter(user => {
+			return (
+					user.lastname.toLowerCase().includes(searchTerm) ||
+					user.firstname.toLowerCase().includes(searchTerm) ||
+					user.email.toLowerCase().includes(searchTerm) ||
+					user.phone.toLowerCase().includes(searchTerm) ||
+					user.connexion_permission.toLowerCase().includes(searchTerm)
+			);
+	});
+
+	const studentTables = {
 			development: document.querySelector("#devInfoTable tbody"),
 			cybersecurity: document.querySelector("#sysReseauTable tbody"),
 			marketing: document.querySelector("#comMarketingTable tbody"),
-		};
+	};
 
-		const teacherTable = document.querySelector("#teachersTable tbody");
+	const teacherTable = document.querySelector("#teachersTable tbody");
 
-		// Проверка наличия таблиц
-		console.log("Student Tables:", studentTables);
-		console.log("Teacher Table:", teacherTable);
-
-		// Очищаем существующие строки в таблицах
-		Object.values(studentTables).forEach((table) => {
+	// Очищаем существующие строки в таблицах
+	Object.values(studentTables).forEach((table) => {
 			if (table) {
-				table.innerHTML = "";
+					table.innerHTML = "";
 			} else {
-				console.warn("Table not found");
+					console.warn("Table not found");
 			}
-		});
-		if (teacherTable) {
+	});
+	if (teacherTable) {
 			teacherTable.innerHTML = "";
-		} else {
+	} else {
 			console.warn("Teacher table not found");
-		}
+	}
 
-		if (pendingUsers && pendingUsers.length > 0) {
-			console.log("Pending Users:", pendingUsers);
-			populateTables(pendingUsers, studentTables, teacherTable);
-		} else {
-			console.log("No pending users found.");
-		}
-
-		if (processedUsers && processedUsers.length > 0) {
-			console.log("Processed Users:", processedUsers);
-			populateTables(processedUsers, studentTables, teacherTable);
-		} else {
-			console.log("No processed users found.");
-		}
-
-		attachEventHandlers(apiAuth);
-	} catch (error) {
-		console.error("Initialization error:", error);
+	if (filteredUsers && filteredUsers.length > 0) {
+			console.log("Filtered Users:", filteredUsers);
+			populateTables(filteredUsers, studentTables, teacherTable);
+	} else {
+			console.log("No users found for the search term.");
 	}
 }
 

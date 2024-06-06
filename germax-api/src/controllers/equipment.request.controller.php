@@ -45,8 +45,11 @@ class EquipmentRequestController
 
 	public function getAllRequests()
 	{
-		return $this->equipmentRequestService->getAllRequests();
+		$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+		$itemsPerPage = isset($_GET['itemsPerPage']) ? (int)$_GET['itemsPerPage'] : 10;
+		return $this->equipmentRequestService->getAllRequests($page, $itemsPerPage);
 	}
+
 
 	public function getAllRequestsByUser($id)
 	{

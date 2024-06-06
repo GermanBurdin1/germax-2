@@ -296,45 +296,107 @@ function renderEquipmentOrder(userData) {
 			});
 	}
 }
-// обновление таблицы данными
+// обновление таблицы с сортировкой и пагинацией
 
-function updateEquipmentRequestsTable(namePermission) {
-	apiEquipmentRequest
-		.getAllRequests()
-		.then((data) => {
-			console.log(data);
-			const tableBody = document.querySelector(".table tbody");
-			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
+let sortField = ''; // Поле для сортировки
+let sortOrder = 'asc'; // Порядок сортировки: 'asc' или 'desc'
 
-			if (data.success && Array.isArray(data.data)) {
-				data.data.forEach((request) => {
-					if (
-						namePermission !== "stockman" ||
-						isStatusVisibleForStockman(request.treatment_status)
-					) {
-						if (
-							namePermission === "stockman" &&
-							request.treatment_status === "closed_by_stockman" &&
-							request.equipment_status === "received"
-						) {
-							request.treatment_status = "demande fermée";
-							request.equipment_status = "délivré";
-						}
+function updateEquipmentRequestsTable(namePermission, page = 1, itemsPerPage = 10, sortField = '', sortOrder = 'asc') {
+    apiEquipmentRequest
+        .getAllRequests(page, itemsPerPage)
+        .then((data) => {
+            let requests = data.data;
 
-						const row = createTableRow(request, namePermission);
-						tableBody.innerHTML += row;
-					}
-				});
-			} else {
-				console.error("No data found or data is not an array:", data);
-				alert("No data found or data format error.");
-			}
-		})
-		.catch((error) => {
-			console.error("Failed to fetch equipment requests:", error);
-			alert("Error fetching equipment requests.");
-		});
+            // Сортируем данные
+            if (sortField) {
+                requests.sort((a, b) => {
+                    if (sortOrder === 'asc') {
+                        return a[sortField] > b[sortField] ? 1 : -1;
+                    } else {
+                        return a[sortField] < b[sortField] ? 1 : -1;
+                    }
+                });
+            }
+
+            const tableBody = document.querySelector(".table tbody");
+            tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
+
+            if (data.success && Array.isArray(requests)) {
+                requests.forEach((request) => {
+                    if (
+                        namePermission !== "stockman" ||
+                        isStatusVisibleForStockman(request.treatment_status)
+                    ) {
+                        if (
+                            namePermission === "stockman" &&
+                            request.treatment_status === "closed_by_stockman" &&
+                            request.equipment_status === "received"
+                        ) {
+                            request.treatment_status = "demande fermée";
+                            request.equipment_status = "délivré";
+                        }
+
+                        const row = createTableRow(request, namePermission);
+                        tableBody.innerHTML += row;
+                    }
+                });
+                updatePaginationControls(data.totalItems, page, itemsPerPage);
+            } else {
+                console.error("No data found or data is not an array:", data);
+                alert("No data found or data format error.");
+            }
+        })
+        .catch((error) => {
+            console.error("Failed to fetch equipment requests:", error);
+            alert("Error fetching equipment requests.");
+        });
 }
+
+
+let currentPage = 1;
+const itemsPerPage = 10;
+
+updateEquipmentRequestsTable(namePermission, currentPage, itemsPerPage);
+
+function updatePaginationControls(totalItems, currentPage, itemsPerPage) {
+	const totalPages = Math.ceil(totalItems / itemsPerPage);
+	const pageInfo = document.getElementById("pageInfo");
+	const prevPageBtn = document.getElementById("prevPageBtn");
+	const nextPageBtn = document.getElementById("nextPageBtn");
+
+	if (pageInfo) {
+			pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+	} else {
+			console.error("Element with id 'pageInfo' not found.");
+	}
+
+	if (prevPageBtn) {
+			prevPageBtn.disabled = currentPage === 1;
+	} else {
+			console.error("Element with id 'prevPageBtn' not found.");
+	}
+
+	if (nextPageBtn) {
+			nextPageBtn.disabled = currentPage === totalPages;
+	} else {
+			console.error("Element with id 'nextPageBtn' not found.");
+	}
+}
+
+document.getElementById("prevPageBtn").addEventListener("click", () => {
+	if (currentPage > 1) {
+			currentPage--;
+			updateEquipmentRequestsTable(localStorage.getItem("namePermission"), currentPage, itemsPerPage, sortField, sortOrder);
+	}
+});
+
+document.getElementById("nextPageBtn").addEventListener("click", () => {
+	currentPage++;
+	updateEquipmentRequestsTable(localStorage.getItem("namePermission"), currentPage, itemsPerPage, sortField, sortOrder);
+});
+
+
+// recherche par utilisateur
 
 function isStatusVisibleForStockman(status) {
 	const visibleStatuses = [
@@ -1407,6 +1469,31 @@ function closeRequestByStockman(requestId, status) {
 			alert("Error updating request.");
 		});
 }
+
+// сортировка
+
+document.querySelectorAll('.sortButton').forEach(button => {
+	button.addEventListener('click', function() {
+			const fieldMap = {
+					"Numéro de Commande": "id_request",
+					"Nom de l'Équipement": "equipment_name",
+					"Catégorie": "id_type",
+					"Quantité": "quantity",
+					"Date de la Commande": "request_date",
+					"Date du début de location": "date_start",
+					"Date de fin de location": "date_end",
+					"Statut de la Requête": "treatment_status",
+					"Statut de l'équipement": "equipment_status"
+			};
+			const field = fieldMap[this.parentElement.textContent.trim()];
+			const order = this.getAttribute('data-order') === 'asc' ? 'desc' : 'asc';
+			this.setAttribute('data-order', order);
+			sortField = field;
+			sortOrder = order;
+			updateEquipmentRequestsTable(namePermission, currentPage, itemsPerPage, sortField, sortOrder);
+	});
+});
+
 
 const backArrowContainer = document.getElementById("backArrowContainer");
 
