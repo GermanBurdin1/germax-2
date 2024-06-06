@@ -12,6 +12,19 @@ const apiAuth = ApiAuth.getInstance();
 const apiRental = new ApiRental();
 const apiUsers = new ApiUsers();
 
+const backArrowContainer = document.getElementById("backArrowContainer");
+
+if (backArrowContainer) {
+	console.log("Контейнер найден. Создаем кнопку 'Retour'");
+	const backArrow = document.createElement("a");
+	backArrow.href = "javascript:history.back()";
+	backArrow.className = "back-arrow";
+	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrowContainer.appendChild(backArrow);
+} else {
+	console.error("Контейнер 'backArrowContainer' не найден.");
+}
+
 document.getElementById('userSearchInput').addEventListener('input', function (event) {
 	const searchTerm = event.target.value.toLowerCase();
 	searchUsers(searchTerm);

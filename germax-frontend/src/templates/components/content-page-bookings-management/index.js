@@ -9,6 +9,19 @@ const apiUsers = new ApiUsers();
 let currentPage = 1;
 const itemsPerPage = 10;
 
+const backArrowContainer = document.getElementById("backArrowContainer");
+
+if (backArrowContainer) {
+	console.log("Контейнер найден. Создаем кнопку 'Retour'");
+	const backArrow = document.createElement("a");
+	backArrow.href = "javascript:history.back()";
+	backArrow.className = "back-arrow";
+	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrowContainer.appendChild(backArrow);
+} else {
+	console.error("Контейнер 'backArrowContainer' не найден.");
+}
+
 document.getElementById("prevPageBtn").addEventListener("click", () => {
 	console.log("клик на prevPageBtn");
 	if (currentPage > 1) {
@@ -18,7 +31,6 @@ document.getElementById("prevPageBtn").addEventListener("click", () => {
 });
 
 const nextPageBtn = document.getElementById("nextPageBtn");
-console.log(nextPageBtn);
 nextPageBtn.addEventListener("click", () => {
 	console.log("клик на nextPageBtn");
 	currentPage++;
@@ -359,12 +371,3 @@ function updatePaginationControls(totalItems) {
 }
 
 
-const backArrowContainer = document.getElementById("backArrowContainer");
-
-if (backArrowContainer) {
-	const backArrow = document.createElement("a");
-	backArrow.href = "javascript:history.back()";
-	backArrow.className = "back-arrow";
-	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour';
-	backArrowContainer.appendChild(backArrow);
-}

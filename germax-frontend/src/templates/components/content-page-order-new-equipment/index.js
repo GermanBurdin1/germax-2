@@ -154,6 +154,7 @@ if (authToken) {
 // 	}
 // }
 
+
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
 	const id_user = JSON.parse(localStorage.getItem("id_user"));
@@ -1501,6 +1502,6 @@ if (backArrowContainer) {
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
-	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour';
+	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
 	backArrowContainer.appendChild(backArrow);
 }

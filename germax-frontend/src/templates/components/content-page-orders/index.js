@@ -642,6 +642,16 @@ function initSearchListener() {
 	);
 }
 
+const backArrowContainer = document.getElementById("backArrowContainer");
+
+if (backArrowContainer) {
+	const backArrow = document.createElement("a");
+	backArrow.href = "javascript:history.back()";
+	backArrow.className = "back-arrow";
+	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrowContainer.appendChild(backArrow);
+}
+
 const logoutButton = document.getElementById("logoutButton");
 
 if (logoutButton) {

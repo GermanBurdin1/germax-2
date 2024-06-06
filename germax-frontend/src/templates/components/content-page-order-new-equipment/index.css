@@ -236,49 +236,6 @@ header {
 	color: white;
 }
 
-.btn-back {
-	color: #7E685A !important;
-	margin-top: 75px;
-	font-size: 1.5rem;
-	display: block;
-	position: absolute;
-	left: 15px;
-	top: 90px;
-}
-
-#backArrowContainer {
-	position: relative;
-	top: 20px;
-	left: 20px;
-	z-index: 1000;
-}
-
-.back-arrow {
-	font-size: 30px;
-	color: var(--primary-color);
-	text-decoration: none;
-	display: flex;
-	align-items: center;
-	transition: color 0.3s ease;
-	background-color: var(--secondary-color);
-	padding: 10px;
-	border-radius: 5px;
-}
-
-.back-arrow:hover {
-	color: var(--accent-color);
-	text-decoration: underline;
-}
-
-.back-arrow i {
-	margin-right: 5px;
-	transition: transform 0.3s ease;
-}
-
-.back-arrow:hover i {
-	transform: translateX(-5px);
-}
-
 #paginationContainer {
 	display: flex;
 	justify-content: center;
@@ -305,4 +262,39 @@ header {
 
 #paginationContainer button:hover:not(:disabled) {
 	background-color: var(--accent-color);
+}
+
+/* retour en arrière */
+#backArrowContainer {
+	position: fixed;
+	top: 80px; /* Отрегулируйте это значение по необходимости */
+	left: 10px; /* Почти прижата к левому краю страницы */
+	z-index: 1000;
+}
+
+.back-arrow {
+	font-size: 20px; /* Сделаем кнопку жирнее */
+	color: var(--primary-color);
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	transition: color 0.3s ease, opacity 0.3s ease; /* Добавим плавный переход для непрозрачности */
+	padding: 10px;
+	border-radius: 5px;
+	opacity: 0.3; /* Полупрозрачная кнопка */
+}
+
+.back-arrow:hover {
+	color: var(--accent-color);
+	text-decoration: underline;
+	opacity: 1; /* Увеличим непрозрачность при наведении */
+}
+
+.back-arrow i {
+	margin-right: 5px;
+	transition: transform 0.3s ease;
+}
+
+.back-arrow:hover i {
+	transform: translateX(-5px);
 }

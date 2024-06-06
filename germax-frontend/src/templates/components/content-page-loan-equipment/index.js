@@ -407,3 +407,31 @@ function initNotFoundItemsModalListener(authUser, userPermissions) {
 }
 
 initMain();
+
+const backArrowContainer = document.getElementById("backArrowContainer");
+
+if (backArrowContainer) {
+	const backArrow = document.createElement("a");
+	backArrow.href = "javascript:history.back()";
+	backArrow.className = "back-arrow";
+	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrowContainer.appendChild(backArrow);
+}
+
+const logoutButton = document.getElementById("logoutButton");
+
+if (logoutButton) {
+	logoutButton.addEventListener("click", function (event) {
+		event.preventDefault();
+		logout();
+	});
+}
+
+function logout() {
+	// Удаляем данные аутентификации из localStorage
+	localStorage.removeItem("authToken");
+	localStorage.removeItem("id_user");
+
+	// Перенаправляем пользователя на корневую страницу сайта
+	window.location.href = "/"; // Перенаправить на корневую страницу
+}

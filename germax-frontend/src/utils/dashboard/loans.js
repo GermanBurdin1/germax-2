@@ -321,7 +321,7 @@ export function returnRentalHistoryLoans(rentals = []) {
 	return `
 		<div class="nav nav-tabs" id="historyTabs" role="tablist">
 			<a class="nav-link active" id="completed-reservations-tab" data-bs-toggle="tab" href="#completedReservations"
-				role="tab" aria-controls="completedReservations" aria-selected="true">Historique de mes locations</a>
+				role="tab" aria-controls="completedReservations" aria-selected="true">Mes locations en cours</a>
 		</div>
 
 		<div class="tab-content" id="rentalHistoryLink">
