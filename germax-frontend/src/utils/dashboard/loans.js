@@ -15,6 +15,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 						: rental.equipment_name,
 				date_start: rental.date_start,
 				date_end: rental.date_end,
+				photo: rental.photo || null,
 				statusMessage:
 					rental.id_status === 4
 						? `requête effectuée le ${formatDate(rental.date_start)}`

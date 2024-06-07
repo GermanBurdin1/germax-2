@@ -168,6 +168,7 @@ class RentalService
 								l.loan_status,
                 g.serial_number,
                 m.name AS model_name,
+								m.photo,
                 s.name AS status_name,
                 g.id_status
             FROM
