@@ -184,13 +184,13 @@ function initializeRegistrationForm() {
 					id: "inputLastname",
 					validate: (value) => /^[a-zA-Z-]+$/.test(value),
 					error:
-						"Nom est obligatoire и ne doit contenir que des lettres и des tirets",
+						"Nom est obligatoire et ne doit contenir que des lettres et des tirets",
 				},
 				{
 					id: "inputFirstname",
 					validate: (value) => /^[a-zA-Z-]+$/.test(value),
 					error:
-						"Prénom est obligatoire и ne doit contenir que des lettres и des tirets",
+						"Prénom est obligatoire и ne doit contenir que des lettres et des tirets",
 				},
 				{
 					id: "inputPhone",
@@ -256,9 +256,14 @@ function initializeRegistrationForm() {
 				.then((data) => {
 					console.log("Success:", data); // Вывести данные ответа в консоль
 					if (data.success) {
-						// Переход на страницу логина
-						// switchToLogin();
-						alert("Le manager reviendra vers vous dans les meilleurs délais!");
+						let message;
+						const userType = typePermissionSelect.value;
+						if (userType === "student" || userType === "teacher") {
+							message = "Le manager reviendra vers vous dans les meilleurs délais!";
+						} else {
+							message = "L'administrateur reviendra vers vous dans les meilleurs délais!";
+						}
+						alert(message);
 						window.location.href = "/";
 					}
 				})
@@ -267,6 +272,7 @@ function initializeRegistrationForm() {
 				});
 		});
 }
+
 
 function initializeLinks() {
 	document.querySelector(".link_2").addEventListener("click", function (event) {

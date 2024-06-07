@@ -19,6 +19,14 @@
 					<a class="nav-link" id="teachers-tab" data-bs-toggle="tab" href="#teachers" role="tab"
 						aria-controls="teachers" aria-selected="false">Enseignants</a>
 				</li>
+				<li class="nav-item" id="managers-tab" style="display: none;">
+					<a class="nav-link" data-bs-toggle="tab" href="#managers" role="tab" aria-controls="managers"
+						aria-selected="false">Managers</a>
+				</li>
+				<li class="nav-item" id="stockman-tab" style="display: none;">
+					<a class="nav-link" data-bs-toggle="tab" href="#stockman" role="tab" aria-controls="stockman"
+						aria-selected="false">Stockman</a>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -30,8 +38,8 @@
 				<div class="input-group-prepend">
 					<!-- <span class="input-group-text" id="basic-addon1"><img src="search-icon.svg" alt=""></span> -->
 				</div>
-				<input type="text" class="form-control" id="userSearchInput" placeholder="Recherche de clients..." aria-label="Recherche par clients"
-    aria-describedby="basic-addon1">
+				<input type="text" class="form-control" id="userSearchInput" placeholder="Recherche de clients..."
+					aria-label="Recherche par clients" aria-describedby="basic-addon1">
 			</div>
 		</div>
 	</div>
@@ -137,11 +145,52 @@
 				</table>
 			</div>
 		</div>
+
+		<!-- Managers Tab Pane -->
+		<div class="tab-pane fade" id="managers" role="tabpanel" aria-labelledby="managers-tab">
+			<div class="table-responsive">
+				<table class="table align-middle" id="managersTable">
+					<thead>
+						<tr>
+							<th>Client</th>
+							<th>Email</th>
+							<th>Téléphone</th>
+							<th>Statut du client</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Строки будут добавляться здесь динамически -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Stockman Tab Pane -->
+		<div class="tab-pane fade" id="stockman" role="tabpanel" aria-labelledby="stockman-tab">
+			<div class="table-responsive">
+				<table class="table align-middle" id="stockmanTable">
+					<thead>
+						<tr>
+							<th>Client</th>
+							<th>Email</th>
+							<th>Téléphone</th>
+							<th>Statut du client</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Строки будут добавляться здесь динамически -->
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 
 <!-- Details Modal -->
-<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel" aria-hidden="true">
+<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel"
+	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -157,7 +206,6 @@
 		</div>
 	</div>
 </div>
-
 
 <!-- Modal for user details -->
 <div class="modal fade" id="authorizationClientModal" tabindex="-1" aria-labelledby="authorizationClientModalLabel"
@@ -175,19 +223,18 @@
 <!-- Block User Confirmation Modal -->
 <div class="modal fade" id="blockUserModal" tabindex="-1" aria-labelledby="blockUserModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header">
-							<h5 class="modal-title" id="blockUserModalLabel">Blocage de l'utilisateur</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-							Êtes-vous sûr de vouloir bloquer cet utilisateur ?
-					</div>
-					<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-							<button type="button" class="btn btn-danger" id="confirmBlockUser">Oui</button>
-					</div>
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="blockUserModalLabel">Blocage de l'utilisateur</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
+			<div class="modal-body">
+				Êtes-vous sûr de vouloir bloquer cet utilisateur ?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-danger" id="confirmBlockUser">Oui</button>
+			</div>
+		</div>
 	</div>
 </div>
-
