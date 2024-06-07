@@ -56,21 +56,25 @@ async function fetchProcessedUsers(apiAuth) {
 function createRow(user) {
 	const row = document.createElement("tr");
 	let dropdownMenuContent;
-	console.log("user", user)
+	console.log("user", user);
+	let connexionPermissionText = user.connexion_permission;
 	if (user.connexion_permission === "pending") {
+		connexionPermissionText = "validation en cours";
 		dropdownMenuContent = `
 			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#authorizationClientModal" data-user-id="${user.id_user}">Gérer la réponse</a></li>
 		`;
 	} else if (user.connexion_permission === "authorized") {
+		connexionPermissionText = "utilisateur authorisé";
 		dropdownMenuContent = `
 			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#detailsClientModal" data-user-id="${user.id_user}">Voir les détails</a></li>
 		`;
 	} else if (user.connexion_permission === "declined") {
+		connexionPermissionText = "demande d'inscription refusée";
 		dropdownMenuContent = `
 			<li><span class="dropdown-item-text text-muted">Utilisateur refusé</span></li>
 		`;
 	} else if (user.connexion_permission === "blocked") {
-		user.connexion_permission = "bloqué";
+		connexionPermissionText = "bloqué";
 		dropdownMenuContent = `
 				<li><span class="dropdown-item-text text-muted">Utilisateur bloqué</span></li>
 		`;
@@ -80,7 +84,7 @@ function createRow(user) {
 		<td>${user.lastname} ${user.firstname}</td>
 		<td>${user.email}</td>
 		<td>${user.phone}</td>
-		<td>${user.connexion_permission}</td>
+		<td>${connexionPermissionText}</td>
 		<td>
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -271,38 +275,42 @@ function attachEventHandlers(apiAuth) {
 	});
 
 	document
-		.getElementById("approveUser")
-		.addEventListener("click", async function () {
-			const userId = this.getAttribute("data-user-id");
-			console.log("userId", userId);
-			try {
-				const response = await apiAuth.updateUserStatus(
-					userId,
-					"authorized",
-					"1"
-				);
-				console.log("API Response:", response);
-				alert("User status updated successfully.");
-				authorizationClientModal.hide();
-				location.reload();
-			} catch (error) {
-				console.error("Error updating user status:", error);
-				alert("Error updating user status: " + error.message);
-			}
-		});
+    .getElementById("approveUser")
+    .addEventListener("click", async function () {
+        const userId = this.getAttribute("data-user-id");
+        console.log("userId", userId);
+
+        // Создаем объект с данными пользователя для обновления
+        const userData = {
+            id_user: userId,
+            connexion_permission: "authorized",
+            authorization_permission: "1"
+        };
+
+        try {
+            const response = await apiUsers.updateUser(userData);
+            console.log("API Response:", response);
+            alert("L'utilisateur est ajouté avec succès");
+            authorizationClientModal.hide();
+            location.reload();
+        } catch (error) {
+            console.error("Error updating user status:", error);
+            alert("Error updating user status: " + error.message);
+        }
+    });
 
 	document
 		.getElementById("declineUser")
 		.addEventListener("click", async function () {
 			const userId = this.getAttribute("data-user-id");
 			try {
-				const response = await apiAuth.updateUserStatus(
+				const response = await apiUsers.updateUserStatus(
 					userId,
 					"declined",
 					"0"
 				);
 				console.log("API Response:", response);
-				alert("User status updated successfully.");
+				alert("La demande a été refusée.");
 				authorizationClientModal.hide();
 				location.reload();
 			} catch (error) {
@@ -332,8 +340,8 @@ async function init() {
 
 			const studentTables = {
 					development: document.querySelector("#devInfoTable tbody"),
-					cybersecurity: document.querySelector("#sysReseauTable tbody"),
-					marketing: document.querySelector("#comMarketingTable tbody"),
+					'cyber-security': document.querySelector("#sysReseauTable tbody"),
+					'digital-marketing': document.querySelector("#comMarketingTable tbody"),
 			};
 
 			const teacherTable = document.querySelector("#teachersTable tbody");
@@ -375,7 +383,7 @@ function searchUsers(searchTerm) {
 	const studentTables = {
 			development: document.querySelector("#devInfoTable tbody"),
 			cybersecurity: document.querySelector("#sysReseauTable tbody"),
-			marketing: document.querySelector("#comMarketingTable tbody"),
+			'digital-marketing': document.querySelector("#comMarketingTable tbody"),
 	};
 
 	const teacherTable = document.querySelector("#teachersTable tbody");

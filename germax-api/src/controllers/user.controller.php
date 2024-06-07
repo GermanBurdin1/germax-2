@@ -28,40 +28,9 @@ class UserController
 	}
 
 	public function updateUser($userId, $data)
-	{
-		$fields = [];
-		$params = ['id_user' => $userId];
-
-		if (isset($data['phone'])) {
-			$fields[] = 'phone = :phone';
-			$params['phone'] = $data['phone'];
-		}
-		if (isset($data['email'])) {
-			$fields[] = 'email = :email';
-			$params['email'] = $data['email'];
-		}
-		if (isset($data['date_birth'])) {
-			$fields[] = 'date_birth = :date_birth';
-			$params['date_birth'] = $data['date_birth'];
-		}
-		if (isset($data['useful_information'])) {
-			$fields[] = 'useful_information = :useful_information';
-			$params['useful_information'] = $data['useful_information'];
-		}
-		if (isset($data['picture'])) {
-			$fields[] = 'picture = :picture';
-			$params['picture'] = $data['picture'];
-		}
-
-		if (empty($fields)) {
-			return false;
-		}
-
-		$sql = "UPDATE user SET " . implode(', ', $fields) . " WHERE id_user = :id_user";
-
-		$stmt = $this->pdo->prepare($sql);
-		return $stmt->execute($params);
-	}
+{
+    return $this->userService->updateUser($userId, $data);
+}
 
 	public function getUserById($userId)
 	{

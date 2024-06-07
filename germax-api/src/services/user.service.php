@@ -26,22 +26,72 @@ class UserService
 
 	public function updateUser($userId, $data)
 	{
-		$sql = "
-        UPDATE user
-        SET lastname = :lastname, firstname = :firstname, phone = :phone, email = :email, date_birth = :date_birth, picture = :picture
-        WHERE id_user = :id_user
-    ";
+		$fields = [];
+		$params = ['id_user' => $userId];
+
+		error_log("Received data: " . print_r($data, true));
+
+		if (isset($data['lastname'])) {
+			$fields[] = 'lastname = :lastname';
+			$params['lastname'] = $data['lastname'];
+		}
+		if (isset($data['firstname'])) {
+			$fields[] = 'firstname = :firstname';
+			$params['firstname'] = $data['firstname'];
+		}
+		if (isset($data['phone'])) {
+			$fields[] = 'phone = :phone';
+			$params['phone'] = $data['phone'];
+		}
+		if (isset($data['email'])) {
+			$fields[] = 'email = :email';
+			$params['email'] = $data['email'];
+		}
+		if (isset($data['date_birth'])) {
+			$fields[] = 'date_birth = :date_birth';
+			$params['date_birth'] = $data['date_birth'];
+		}
+		if (isset($data['useful_information'])) {
+			$fields[] = 'useful_information = :useful_information';
+			$params['useful_information'] = $data['useful_information'];
+		}
+		if (isset($data['picture'])) {
+			$fields[] = 'picture = :picture';
+			$params['picture'] = $data['picture'];
+		}
+		if (isset($data['connexion_permission'])) {
+			$fields[] = 'connexion_permission = :connexion_permission';
+			$params['connexion_permission'] = $data['connexion_permission'];
+		}
+		if (isset($data['authorization_permission'])) {
+			$fields[] = 'authorization_permission = :authorization_permission';
+			$params['authorization_permission'] = $data['authorization_permission'];
+		}
+
+		// Always update the creation_date field
+		$fields[] = 'creation_date = CURDATE()';
+
+		if (empty($fields)) {
+			error_log("No fields to update");
+			return false;
+		}
+
+		$sql = "UPDATE user SET " . implode(', ', $fields) . " WHERE id_user = :id_user";
 
 		$stmt = $this->pdo->prepare($sql);
-		return $stmt->execute([
-			'lastname' => $data['lastname'],
-			'firstname' => $data['firstname'],
-			'phone' => $data['phone'],
-			'email' => $data['email'],
-			'date_birth' => $data['date_birth'],
-			'picture' => $data['picture'],
-			'id_user' => $userId
-		]);
+		error_log("SQL: " . $sql);
+		error_log("Params: " . print_r($params, true));
+
+		$result = $stmt->execute($params);
+
+		if (!$result) {
+			$errorInfo = $stmt->errorInfo();
+			error_log("SQL Error: " . $errorInfo[2]);
+		} else {
+			error_log("Update successful for user ID: " . $userId);
+		}
+
+		return $result;
 	}
 
 	public function getUserById($userId)
@@ -105,7 +155,8 @@ class UserService
 	{
 		$sql = "
             UPDATE user
-            SET connexion_permission = :connexion_permission
+            SET connexion_permission = :connexion_permission,
+						creation_date = CURDATE()
             WHERE id_user = :id_user
         ";
 

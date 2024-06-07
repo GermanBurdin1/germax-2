@@ -39,24 +39,38 @@ function loginFetch(url, data) {
 					loginLogic(data);
 			})
 			.catch((error) => {
-					console.error("Login error:", error);
-			});
+        console.error("Login error:", error);
+        if (error && error.error && error.error[0] === "No authorization permission from manager") {
+            showAuthorizationPendingModal();
+        }
+    });
 }
 
 function loginLogic(responseData) {
 	console.log("Login response data:", responseData.data.connexion_permission); // Логируем данные внутри loginLogic
 	if (responseData.data && responseData.data.connexion_permission === "blocked") {
-			showAccessDeniedModal();
+		showAccessDeniedModal();
 	} else {
-			localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
-			localStorage.setItem("id_user", JSON.stringify(responseData.data.id_user));
-			window.location.href = "/page-dashboard";
+		localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
+		localStorage.setItem("id_user", JSON.stringify(responseData.data.id_user));
+		window.location.href = "/page-dashboard";
 	}
 }
 
 function showAccessDeniedModal() {
 	const accessDeniedModal = new Modal(document.getElementById("accessDeniedModal"));
 	accessDeniedModal.show();
+}
+
+function showAuthorizationPendingModal() {
+	const authorizationPendingModal = new Modal(document.getElementById("authorizationPendingModal"));
+
+	const modalElement = document.getElementById("authorizationPendingModal");
+	modalElement.addEventListener('hidden.bs.modal', function () {
+			window.location.href = "/";
+	});
+
+	authorizationPendingModal.show();
 }
 
 //registration
@@ -245,7 +259,7 @@ function initializeRegistrationForm() {
 						// Переход на страницу логина
 						// switchToLogin();
 						alert("Le manager reviendra vers vous dans les meilleurs délais!");
-						window.location.href = "/page-dashboard";
+						window.location.href = "/";
 					}
 				})
 				.catch((error) => {
