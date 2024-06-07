@@ -31,11 +31,15 @@ if (backArrowContainer) {
 }
 
 document
-	.getElementById("userSearchInput")
-	.addEventListener("input", function (event) {
-		const searchTerm = event.target.value.toLowerCase();
-		searchUsers(searchTerm);
-	});
+    .getElementById("userSearchInput")
+    .addEventListener("input", function (event) {
+        const searchTerm = event.target.value.toLowerCase();
+        searchUsers(searchTerm);
+
+        if (searchTerm === "") {
+            resetTables();
+        }
+    });
 
 async function fetchPendingUsers(apiAuth) {
 	try {
@@ -407,6 +411,7 @@ async function init() {
 		);
 
 		attachEventHandlers(apiAuth);
+		resetTables();
 	} catch (error) {
 		console.error("Initialization error:", error);
 	}
@@ -430,6 +435,8 @@ function searchUsers(searchTerm) {
 	};
 
 	const teacherTable = document.querySelector("#teachersTable tbody");
+	const managerTable = document.querySelector("#managersTable tbody");
+	const stockmanTable = document.querySelector("#stockmanTable tbody");
 
 	// Очищаем существующие строки в таблицах
 	Object.values(studentTables).forEach((table) => {
@@ -444,6 +451,16 @@ function searchUsers(searchTerm) {
 	} else {
 		console.warn("Teacher table not found");
 	}
+	if (managerTable) {
+		managerTable.innerHTML = "";
+	} else {
+		console.warn("Manager table not found");
+	}
+	if (stockmanTable) {
+		stockmanTable.innerHTML = "";
+	} else {
+		console.warn("Stockman table not found");
+	}
 
 	if (filteredUsers && filteredUsers.length > 0) {
 		console.log("Filtered Users:", filteredUsers);
@@ -454,8 +471,96 @@ function searchUsers(searchTerm) {
 			managerTable,
 			stockmanTable
 		);
+		filteredUsers.forEach((user) => {
+			if (user.id_permission === 2) {
+				showTab("teachers-tab", "teachers");
+			} else if (user.id_permission === 3) {
+				showTab("managers-tab", "managers");
+			} else if (user.id_permission === 4) {
+				showTab("stockman-tab", "stockman");
+			} else {
+				showTab("students-tab", "students");
+				showTab("devInfo-tab", "devInfo");
+			}
+		});
 	} else {
 		console.log("No users found for the search term.");
+		resetTables();
+	}
+}
+
+function resetTables() {
+	// Восстанавливаем первоначальный вид таблиц и вкладок
+	const studentTables = {
+			development: document.querySelector("#devInfoTable tbody"),
+			"cyber-security": document.querySelector("#sysReseauTable tbody"),
+			"digital-marketing": document.querySelector("#comMarketingTable tbody"),
+	};
+
+	const teacherTable = document.querySelector("#teachersTable tbody");
+	const managerTable = document.querySelector("#managersTable tbody");
+	const stockmanTable = document.querySelector("#stockmanTable tbody");
+
+	// Очищаем существующие строки в таблицах
+	Object.values(studentTables).forEach((table) => {
+			if (table) {
+					table.innerHTML = "";
+			} else {
+					console.warn("Table not found");
+			}
+	});
+	if (teacherTable) {
+			teacherTable.innerHTML = "";
+	} else {
+			console.warn("Teacher table not found");
+	}
+	if (managerTable) {
+			managerTable.innerHTML = "";
+	} else {
+			console.warn("Manager table not found");
+	}
+	if (stockmanTable) {
+			stockmanTable.innerHTML = "";
+	} else {
+			console.warn("Stockman table not found");
+	}
+
+	// Заполняем таблицы всеми пользователями
+	populateTables(
+			allUsers,
+			studentTables,
+			teacherTable,
+			managerTable,
+			stockmanTable
+	);
+
+	// Переинициализация вкладок для предотвращения непредвиденного поведения
+	const mainTabs = document.querySelectorAll('#myTab .nav-link');
+	mainTabs.forEach(tab => tab.classList.remove('active'));
+	const mainTabContents = document.querySelectorAll('.tab-content .tab-pane');
+	mainTabContents.forEach(content => content.classList.remove('show', 'active'));
+
+	// Отображаем вкладку "Étudiants Développement Informatique"
+	document.getElementById("students-tab").classList.add('active');
+	document.getElementById("students").classList.add('show', 'active');
+
+	const devInfoTabs = document.querySelectorAll('#students .nav-link');
+	devInfoTabs.forEach(tab => tab.classList.remove('active'));
+	const devInfoTabContents = document.querySelectorAll('#students .tab-pane');
+	devInfoTabContents.forEach(content => content.classList.remove('show', 'active'));
+
+	document.getElementById("devInfo-tab").classList.add('active');
+	document.getElementById("devInfo").classList.add('show', 'active');
+}
+
+
+
+function showTab(tabId, tabContentId) {
+	const tabElement = new Tab(document.getElementById(tabId));
+	tabElement.show();
+	const tabContentElement = document.getElementById(tabContentId);
+	if (tabContentElement) {
+		tabContentElement.classList.add("show", "active");
 	}
 }
 
