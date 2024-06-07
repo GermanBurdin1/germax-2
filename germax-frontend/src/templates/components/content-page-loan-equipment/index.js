@@ -280,6 +280,7 @@ function openRequestNotFoundItemsModal(authUser, userPermissions) {
 
 function createOneGoodNode(good, authUser) {
 	const modelElement = document.createElement("div");
+	modelElement.setAttribute("data-good-id", good.id);
 	const srcStr = `
         <div style="text-align: center;">
             <img
@@ -367,6 +368,7 @@ function submitRentalRequest(good, formInfo) {
 			console.log("Rental request successful:", response);
 			alert("Votre demande de location a été enregistrée avec succès.");
 			newLoanFormModal.hide();
+			removeGoodFromList(good.id);
 		})
 		.catch((error) => {
 			console.error("Rental request failed:", error);
@@ -425,6 +427,13 @@ if (logoutButton) {
 		event.preventDefault();
 		logout();
 	});
+}
+
+function removeGoodFromList(goodId) {
+	const goodNode = document.querySelector(`[data-good-id="${goodId}"]`);
+	if (goodNode) {
+			goodNode.remove();
+	}
 }
 
 function logout() {
