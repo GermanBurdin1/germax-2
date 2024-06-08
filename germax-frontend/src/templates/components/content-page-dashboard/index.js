@@ -78,32 +78,34 @@ async function getUserPermission() {
 
 async function initializeDashboard() {
 	try {
-			const userPermission = await getUserPermission();
-			console.log("userPermission", userPermission);
-			if (userPermission) {
-					const { name_permission } = userPermission;
-					localStorage.setItem("name_permission", name_permission);
+		const userPermission = await getUserPermission();
+		console.log("userPermission", userPermission);
+		if (userPermission) {
+			const { name_permission } = userPermission;
+			localStorage.setItem("name_permission", name_permission);
 
-					// Получаем userId и уведомления до рендеринга статистики
-					const userId = JSON.parse(localStorage.getItem("id_user"));
-					const notifications = await apiNotification.getNotifications(userId);
+			// Получаем userId и уведомления до рендеринга статистики
+			const userId = JSON.parse(localStorage.getItem("id_user"));
+			const notifications = await apiNotification.getNotifications(userId);
 
-					// Вызываем обе функции после получения всех данных
-					await Promise.all([displayStatistics(name_permission), loadUserNotifications(name_permission, notifications)]);
+			// Вызываем обе функции после получения всех данных
+			await Promise.all([
+				displayStatistics(name_permission),
+				loadUserNotifications(name_permission, notifications),
+			]);
 
-					updateNotificationCount(notifications.length);
-					displayNotifications(notifications);
-			} else {
-					console.error("Failed to fetch user permission data.");
-			}
+			updateNotificationCount(notifications.length);
+			displayNotifications(notifications);
+		} else {
+			console.error("Failed to fetch user permission data.");
+		}
 	} catch (error) {
-			console.error("Error during dashboard initialization:", error);
+		console.error("Error during dashboard initialization:", error);
 	}
 }
 
 // Инициализация дашборда
 initializeDashboard();
-
 
 async function getNotifications(userId) {
 	try {
@@ -541,7 +543,6 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
-
 			// Убедимся, что все строки корректно обрабатываются
 			const rows = document.querySelectorAll("#myLoans tr[data-id]");
 			let hasRentals = rentals.length > 0;
@@ -639,17 +640,16 @@ function getManagerNotifications() {
 
 // Для менеджеров
 function getStockmanNotifications() {
-  return [
-    {
-      title: "Nouvelle commande d'équipement",
-      message: "Il y a une nouvelle commande d'équipement ce mois-ci.",
-      linkText: "Voir l'équipement",
-      linkHref: "/page-orders",
-      timestamp: new Date().toLocaleString(),
-    },
-  ];
+	return [
+		{
+			title: "Nouvelle commande d'équipement",
+			message: "Il y a une nouvelle commande d'équipement ce mois-ci.",
+			linkText: "Voir l'équipement",
+			linkHref: "/page-orders",
+			timestamp: new Date().toLocaleString(),
+		},
+	];
 }
-
 
 // Для студентов и enseignants
 function getStudentTeacherNotifications() {
@@ -703,7 +703,6 @@ function updateNotificationsModal(userType) {
 	const notificationsList = document.getElementById("notificationsList");
 	notificationsList.innerHTML = createNotificationsList(notifications);
 }
-
 
 function adjustUIBasedOnUserType(userType) {
 	const dynamicMenu = document.getElementById("dynamicMenu");
@@ -852,11 +851,12 @@ function setupCancelReservationModal() {
 				const response = await apiEquipmentRequest.cancelRequest(requestId);
 
 				if (response.success) {
-					alert("Reservation cancelled successfully.");
+					alert("La demande de réservation a été annulée avec succès.");
 					// Обновляем UI, чтобы отразить отмену
 					updateTableRowStatus(requestId, "annulé");
 					// Закрываем модальное окно
 					cancelReservationModal.hide();
+					loadClientLoans();
 				} else {
 					alert("Failed to cancel reservation: " + response.message);
 				}
@@ -902,11 +902,23 @@ function setupCancelLoansModal() {
 				const response = await apiRental.cancelRental(requestId);
 
 				if (response.success) {
-					alert("Reservation cancelled successfully.");
+					alert("La demande de réservation a été annulée avec succès.");
 					// Обновляем UI, чтобы отразить отмену
 					updateTableRowStatus(requestId, "annulé");
 					// Закрываем модальное окно
 					cancelLoansModal.hide();
+					loadClientLoans();
+					reverseLoanModalElement.addEventListener(
+						"hidden.bs.modal",
+						function () {
+							// Удаляем затемненный фон
+							const backdrop = document.querySelector(".modal-backdrop");
+							if (backdrop) {
+								backdrop.remove();
+							}
+						},
+						{ once: true }
+					);
 				} else {
 					alert("Failed to cancel reservation: " + response.message);
 				}
@@ -999,7 +1011,6 @@ async function loadUserProfile() {
 		console.error("Error loading user profile:", error);
 	}
 }
-
 
 async function saveUserSettings(showProfile) {
 	const settingsForm = document.getElementById("settingsForm");

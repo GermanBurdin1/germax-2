@@ -5,6 +5,16 @@ export function returnClientLoans(rentals = [], requests = []) {
 	// Объединяем обе коллекции в одну для удобства обработки
 	const allEntries = [
 		...rentals.map((rental) => {
+			let statusMessage = "Status non défini";
+
+			if (rental.loan_status === "cancelled" && rental.id_status === 1) {
+				statusMessage = `La requête de la location a été annulée le ${formatDate(
+					rental.date_end
+				)}`;
+			} else if (rental.id_status === 4) {
+				statusMessage = `requête effectuée le ${formatDate(rental.date_start)}`;
+			}
+
 			const processedRental = {
 				...rental,
 				type: "rental",
@@ -16,10 +26,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				date_start: rental.date_start,
 				date_end: rental.date_end,
 				photo: rental.photo || null,
-				statusMessage:
-					rental.id_status === 4
-						? `requête effectuée le ${formatDate(rental.date_start)}`
-						: "Status non défini",
+				statusMessage: statusMessage,
 			};
 			console.log("Processed rental entry:", processedRental);
 			return processedRental;
