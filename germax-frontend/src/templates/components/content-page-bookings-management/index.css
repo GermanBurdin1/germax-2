@@ -208,3 +208,18 @@ h1.mb-3 {
 .back-arrow:hover i {
 	transform: translateX(-5px);
 }
+
+#rentalManagementModal .modal-footer .btn-danger {
+	background-color: var(--tertiary-color);
+	color: white;
+}
+
+#rentalManagementModal .modal-footer .btn-success {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+#rentalManagementModal .modal-footer .btn-danger:hover,
+#rentalManagementModal .modal-footer .btn-success:hover {
+	background-color: var(--accent-color);
+}

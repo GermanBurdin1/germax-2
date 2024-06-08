@@ -9,6 +9,12 @@ const apiUsers = new ApiUsers();
 let currentPage = 1;
 const itemsPerPage = 10;
 
+// Инициализация модального окна заранее
+const rentalManagementModalElement = document.getElementById(
+	"rentalManagementModal"
+);
+const rentalManagementModal = new Modal(rentalManagementModalElement);
+
 const backArrowContainer = document.getElementById("backArrowContainer");
 
 if (backArrowContainer) {
@@ -16,7 +22,8 @@ if (backArrowContainer) {
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
-	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrow.innerHTML =
+		'<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
 	backArrowContainer.appendChild(backArrow);
 } else {
 	console.error("Контейнер 'backArrowContainer' не найден.");
@@ -58,6 +65,17 @@ function updateBookingsTable(rentals) {
 		.getElementsByTagName("tbody")[0];
 	tbody.innerHTML = ""; // Очистить текущие строки таблицы
 	rentals.forEach((rental) => {
+		let loanStatusText;
+		if (rental.loan_status === "loan_request") {
+			loanStatusText = "demande de location";
+		} else if (rental.loan_status === "loaned") {
+			loanStatusText = "équipement loué";
+		} else if (rental.loan_status === "approved") {
+			loanStatusText = "demande de location approuvée";
+		} else {
+			loanStatusText = rental.loan_status;
+		}
+
 		const row = tbody.insertRow();
 		row.innerHTML = `
         <td>${rental.id_loan}</td>
@@ -66,7 +84,7 @@ function updateBookingsTable(rentals) {
         <td>${rental.model_name} (${rental.serial_number})</td>
         <td>${rental.date_start}-${rental.date_end}</td>
         <td>${rental.comment || "aucun commentaire"} </td>
-        <td>${rental.loan_status}</td>
+        <td>${loanStatusText}</td>
         <td>bon état</td>
         <td>
             <div class="dropdown">
@@ -99,17 +117,13 @@ function updateBookingsTable(rentals) {
 			link.addEventListener("click", function (event) {
 				console.log("вызов функции");
 				event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
-				const modal = new Modal(
-					document.getElementById("rentalManagementModal"),
-					{}
-				);
 				document
 					.getElementById("approveRentalButton")
 					.setAttribute("data-id", rental.id_loan);
 				document
 					.getElementById("cancelRentalButton")
 					.setAttribute("data-id", rental.id_loan);
-				modal.show();
+				rentalManagementModal.show();
 				const closeManagementRentalModalButton = document.getElementById(
 					"closeManagementRentalModalButton"
 				);
@@ -121,7 +135,7 @@ function updateBookingsTable(rentals) {
 					"click",
 					function (event) {
 						event.preventDefault();
-						modal.hide();
+						rentalManagementModal.hide();
 					}
 				);
 			});
@@ -218,7 +232,16 @@ function approveRental(loanId) {
 		.then((data) => {
 			console.log("data какая пришла", data);
 			if (data.success) {
-				// Обновите интерфейс или уведомите пользователя об успешном одобрении
+				alert("Votre demande de location a été approuvée.");
+				rentalManagementModal.hide();
+
+				// Обновление статуса в таблице
+				const row = document.querySelector(`tr[data-booking-id="${loanId}"]`);
+				if (row) {
+					row.querySelector("td:nth-child(7)").textContent =
+						"demande de location approuvée";
+				}
+				refreshRentals();
 			} else {
 				console.error("Failed to approve rental.");
 				// Обработка ошибок сервера или сообщения об ошибке
@@ -369,5 +392,3 @@ function updatePaginationControls(totalItems) {
 	document.getElementById("prevPageBtn").disabled = currentPage === 1;
 	document.getElementById("nextPageBtn").disabled = currentPage === totalPages;
 }
-
-
