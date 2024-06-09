@@ -514,6 +514,7 @@ async function saveEquipment() {
 			brandName,
 			description,
 			photo: photoUrl,
+			location: "stock_stockman" // Добавлено поле местоположения
 		});
 
 		if (data.success) {
@@ -529,6 +530,7 @@ async function saveEquipment() {
 		alert("Erreur lors de l'ajout de l'équipement.");
 	}
 }
+
 
 async function fetchBrandIdByName(brandName) {
 	const brand = await brandApi.searchBrands(brandName);

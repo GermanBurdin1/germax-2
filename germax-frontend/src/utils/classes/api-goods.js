@@ -50,6 +50,7 @@ export class ApiGoods {
 		brandName,
 		description = "",
 		photo = "",
+		location = "stock_stockman" // Добавлено поле местоположения
 	}) {
 		const body = JSON.stringify({
 			modelName,
@@ -59,6 +60,7 @@ export class ApiGoods {
 			brandName,
 			description,
 			photo,
+			location // Добавлено поле местоположения
 		});
 		console.log("Sending data to server:", body);
 
@@ -87,6 +89,7 @@ export class ApiGoods {
 				throw error;
 			});
 	}
+
 
 	async getUnitsByModelId(modelId) {
 		try {

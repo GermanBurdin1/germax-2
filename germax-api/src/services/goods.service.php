@@ -248,22 +248,19 @@ class GoodsService
 		return $stmt->execute(['statusId' => $statusId, 'goodId' => $goodId]);
 	}
 
-	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '')
+	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
 		// Проверка обязательных параметров
 		if (empty($modelName) || empty($serialNumber) || empty($idType) || empty($brandName)) {
 			return ['success' => false, 'message' => 'Model name, serial number, type, and brand are required'];
 		}
 		// Создаем или находим бренд
-		error_log("Request to get or create brand: " . $brandName);
 		$brandId = $this->brandService->getOrCreateBrand($brandName);
-		error_log("Result from getOrCreateBrand: " . $brandId);
 
 		if ($brandId === null) {
 			return renderErrorAndExit('Failed to create or find brand', 500);
 		}
 
-		error_log("Brand ID: " . $brandId);
 		// Создаем или находим модель
 		$modelId = $this->modelService->getOrCreateModel($modelName, $idType, $brandId, $description, $photo);
 
@@ -271,13 +268,12 @@ class GoodsService
 			return renderErrorAndExit('Failed to create or find model', 500);
 		}
 
-		error_log("Model ID: " . $modelId);
 		// Создаем товар
-		$sql = "INSERT INTO good (id_model, id_status, serial_number) VALUES (:modelId, :statusId, :serialNumber)";
+		$sql = "INSERT INTO good (id_model, id_status, serial_number, location) VALUES (:modelId, :statusId, :serialNumber, :location)";
 		$stmt = $this->pdo->prepare($sql);
 
 		try {
-			$stmt->execute(['modelId' => $modelId, 'statusId' => $statusId, 'serialNumber' => $serialNumber]);
+			$stmt->execute(['modelId' => $modelId, 'statusId' => $statusId, 'serialNumber' => $serialNumber, 'location' => $location]);
 			$id_good = $this->pdo->lastInsertId();
 			return [
 				'success' => true,
@@ -294,16 +290,14 @@ class GoodsService
 		}
 	}
 
-	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
+	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
-		error_log("createGoods__Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
 		$results = [];
 
 		foreach ($serialNumbers as $serialNumber) {
-			$good = $this->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
+			$good = $this->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo, $location);
 			if ($good['success']) {
 				$results[] = $good;
-				error_log("createGoods__Successfully created good: " . print_r($good, true));
 			} else {
 				return ['success' => false, 'message' => 'Failed to create some goods', 'results' => $results];
 			}
@@ -311,6 +305,7 @@ class GoodsService
 
 		return ['success' => true, 'goods' => $results];
 	}
+
 
 	public function getUnitsByModelId($modelId)
 	{

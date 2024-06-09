@@ -53,6 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	$brandName = $input['brandName'] ?? null;
 	$description = $input['description'] ?? '';
 	$photo = $input['photo'] ?? '';
+	$location = $input['location'] ?? 'stock_stockman';
 	error_log("Received data: " . print_r($input, true));
 	if ($modelName && $serialNumbers && $idType && $brandName) {
 		if (is_array($serialNumbers)) {

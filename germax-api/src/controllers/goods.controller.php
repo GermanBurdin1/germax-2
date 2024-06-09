@@ -26,15 +26,16 @@ class GoodsController
 		return renderSuccessAndExit(['Goods found'], 200, $goods);
 	}
 
-	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '')
+	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
-		return $this->goodsService->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
+		return $this->goodsService->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo, $location);
 	}
 
-	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
+	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
-		return $this->goodsService->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
+		return $this->goodsService->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo, $location);
 	}
+
 
 	public function getUnitsByModelId($modelId)
 	{
