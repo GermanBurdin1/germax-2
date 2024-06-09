@@ -22,7 +22,7 @@ class GoodsService
 		$this->brandService = new BrandService();
 	}
 
-	public function getAllByParams($modelName, $typeName, $statusNames, $page, $limit)
+	public function getAllByParams($modelName, $typeName, $statusNames, $shippingStatus, $page, $limit)
 	{
 		$offset = ($page - 1) * $limit;
 
@@ -76,6 +76,12 @@ class GoodsService
 				}, array_keys($statusNames))) . ")",
 				"matches" => false,
 				"value" => $statusNames
+			],
+			"shippingStatus" => [
+				"exists" => $shippingStatus != NULL,
+				"sql" => "good.shipping_status = :shippingStatus",
+				"matches" => false,
+				"value" => $shippingStatus
 			]
 		];
 
@@ -138,6 +144,7 @@ class GoodsService
 			]);
 		}
 	}
+
 
 
 	private function generateWhereClause($params)
@@ -421,27 +428,26 @@ class GoodsService
 	}
 
 	public function sendEquipment($id_good)
-{
-	$sql = "UPDATE good SET date_sending = CURDATE(), shipping_status = 'send_to_manager' WHERE id_good = :id_good";
-	$stmt = $this->pdo->prepare($sql);
-	try {
-		$stmt->execute(['id_good' => $id_good]);
-		return ['success' => true, 'message' => 'Date d\'envoi et statut d\'expédition mis à jour avec succès'];
-	} catch (PDOException $e) {
-		return ['success' => false, 'message' => $e->getMessage()];
+	{
+		$sql = "UPDATE good SET date_sending = CURDATE(), shipping_status = 'send_to_manager' WHERE id_good = :id_good";
+		$stmt = $this->pdo->prepare($sql);
+		try {
+			$stmt->execute(['id_good' => $id_good]);
+			return ['success' => true, 'message' => 'Date d\'envoi et statut d\'expédition mis à jour avec succès'];
+		} catch (PDOException $e) {
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
 	}
-}
 
-public function confirmReceiving($id_good)
-{
-	$sql = "UPDATE good SET date_receiving = CURDATE(), shipping_status = 'received_by_manager' WHERE id_good = :id_good";
-	$stmt = $this->pdo->prepare($sql);
-	try {
-		$stmt->execute(['id_good' => $id_good]);
-		return ['success' => true, 'message' => 'Date de réception et statut d\'expédition mis à jour avec succès'];
-	} catch (PDOException $e) {
-		return ['success' => false, 'message' => $e->getMessage()];
+	public function confirmReceiving($id_good)
+	{
+		$sql = "UPDATE good SET date_receiving = CURDATE(), shipping_status = 'received_by_manager' WHERE id_good = :id_good";
+		$stmt = $this->pdo->prepare($sql);
+		try {
+			$stmt->execute(['id_good' => $id_good]);
+			return ['success' => true, 'message' => 'Date de réception et statut d\'expédition mis à jour avec succès'];
+		} catch (PDOException $e) {
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
 	}
-}
-
 }

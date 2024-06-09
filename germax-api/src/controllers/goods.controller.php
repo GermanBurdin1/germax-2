@@ -13,12 +13,13 @@ class GoodsController
 		$this->goodsService = new GoodsService();
 	}
 
-	public function getAllByParams($modelName, $typeName, $statusName, $page, $limit)
+	public function getAllByParams($modelName, $typeName, $statusNames, $shippingStatus, $page, $limit)
 	{
 		$goods = $this->goodsService->getAllByParams(
 			$modelName,
 			$typeName,
-			$statusName,
+			$statusNames,
+			$shippingStatus,
 			$page,
 			$limit
 		);

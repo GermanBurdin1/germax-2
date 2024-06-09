@@ -38,10 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			$modelName = isset($_GET['modelName']) ? $_GET['modelName'] : NULL;
 			$typeName = isset($_GET['typeName']) ? $_GET['typeName'] : NULL;
 			$statusNames = isset($_GET['statusNames']) ? explode(",", $_GET['statusNames']) : ["available"];
+			$shippingStatus = isset($_GET['shippingStatus']) ? $_GET['shippingStatus'] : NULL;
 			$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 			$limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
 
-			$goodsController->getAllByParams($modelName, $typeName, $statusNames, $page, $limit);
+			$goodsController->getAllByParams($modelName, $typeName, $statusNames, $shippingStatus, $page, $limit);
 			break;
 	}
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
