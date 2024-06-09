@@ -50,7 +50,7 @@ export class ApiGoods {
 		brandName,
 		description = "",
 		photo = "",
-		location = "stock_stockman" // Добавлено поле местоположения
+		location = "stock_stockman", // Добавлено поле местоположения
 	}) {
 		const body = JSON.stringify({
 			modelName,
@@ -60,7 +60,7 @@ export class ApiGoods {
 			brandName,
 			description,
 			photo,
-			location // Добавлено поле местоположения
+			location, // Добавлено поле местоположения
 		});
 		console.log("Sending data to server:", body);
 
@@ -89,7 +89,6 @@ export class ApiGoods {
 				throw error;
 			});
 	}
-
 
 	async getUnitsByModelId(modelId) {
 		try {
@@ -173,5 +172,59 @@ export class ApiGoods {
 			console.error("Error fetching good:", error);
 			throw error;
 		}
+	}
+
+	async sendEquipment(id_good) {
+		const body = JSON.stringify({
+			id_good,
+			action: "send",
+		});
+
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in sendEquipment:", error);
+				throw error;
+			});
+	}
+
+	async confirmReceiving(id_good) {
+		const body = JSON.stringify({
+			id_good,
+			action: "receive",
+		});
+
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in confirmReceiving:", error);
+				throw error;
+			});
 	}
 }

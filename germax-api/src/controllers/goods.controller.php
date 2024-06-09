@@ -57,4 +57,14 @@ class GoodsController
 			echo json_encode(['success' => false, 'message' => 'Good not found']);
 		}
 	}
+
+	public function sendEquipment($id_good)
+	{
+		return $this->goodsService->sendEquipment($id_good);
+	}
+
+	public function confirmReceiving($id_good)
+	{
+		return $this->goodsService->confirmReceiving($id_good);
+	}
 }

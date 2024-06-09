@@ -46,7 +46,6 @@ let currentPage = 1;
 const itemsPerPage = 20;
 // loadGoodsData();
 
-
 async function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
 	const id_user = JSON.parse(localStorage.getItem("id_user"));
@@ -81,7 +80,6 @@ async function fetchAuthUser(url) {
 	}
 }
 
-
 function cleanupPreviousUserElements() {
 	// Очистка элементов предыдущего пользователя
 	document.getElementById("titleAddingOrders").innerHTML = "";
@@ -99,11 +97,11 @@ function updateTableHeaders(role) {
 		<th>Nom de l'Équipement</th>
 		<th>Catégorie</th>
 		<th>Photo</th>
-		${role !== "rental-manager" ? `<th>Status</th>` : ""}
+		<th>Emplacement</th>
+		<th>Status</th>
 		<th>Actions</th>
 	`;
 }
-
 
 function initializePageForUser(role) {
 	namePermission = role;
@@ -124,7 +122,7 @@ function initializePageForUser(role) {
 	}
 	updateTableHeaders(role);
 	loadGoodsData();
-};
+}
 
 initializePageForUser(namePermission);
 
@@ -154,7 +152,6 @@ async function loadGoodsData(params = {}) {
 }
 
 function displayGoods(goods) {
-	console.log(goods);
 	const tableBody = document.querySelector("#goodsTable tbody");
 	tableBody.innerHTML = ""; // Очистка существующих строк
 
@@ -178,34 +175,154 @@ function displayGoods(goods) {
 				break;
 		}
 
+		let locationText;
+		if (good.location === "stock_stockman") {
+			locationText = "chez le géstionnaire";
+		} else {
+			locationText = good.location;
+		}
+
+		let shippingStatusText;
+		switch (good.shipping_status) {
+			case "pending":
+				shippingStatusText = "en attente d'envoi";
+				break;
+			case "send_to_manager":
+				shippingStatusText = "envoyé au manager";
+				break;
+			case "received_by_manager":
+				shippingStatusText = "reçu par le manager";
+				break;
+			case "send_to_stockman":
+				shippingStatusText = "envoyé au stockman";
+				break;
+			case "reveived_by_stockman":
+				shippingStatusText = "reçu par le stockman";
+				break;
+			default:
+				shippingStatusText = good.shipping_status;
+				break;
+		}
+
 		const row = document.createElement("tr");
 		row.innerHTML = `
-					<td>${good.model.id}</td>
-					<td>${good.model.name}</td>
-					<td>${good.model.type.name}</td>
-					<td><img src="${good.model.photo}" alt="${
+			<td>${good.model.id}</td>
+			<td>${good.model.name}</td>
+			<td>${good.model.type.name}</td>
+			<td><img src="${good.model.photo}" alt="${
 			good.model.name
 		}" style="width: 200px; height: 200px;"></td>
-		${namePermission !== "rental-manager" ? `<td>${statusText}</td>` : ""}
-					<td>
-							${
-								namePermission === "rental-manager"
-									? `<button class="btn btn-primary view-units" data-model-id="${good.model.id}">Voir les détails</button>`
-									: `<div class="dropdown">
-											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${good.model.id}"
-															data-bs-toggle="dropdown" aria-expanded="false">
-															Choisir une action
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${good.model.id}">
-													<li><a class="dropdown-item view-units" href="#" data-model-id="${good.model.id}">Voir les unités disponibles</a></li>
-													<li><a class="dropdown-item edit-good" href="#" data-good-id="${good.id}">Modifier les données</a></li>
-											</ul>
-									</div>`
-							}
-					</td>
-			`;
+			<td>${locationText}</td>
+			<td>${statusText}
+				<br/><small id="date-sent-${good.id}"></small>
+				<br/><small id="shipping-status-${good.id}">${shippingStatusText}</small>
+			</td>
+			<td>
+				<div class="dropdown">
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${
+						good.model.id
+					}" data-bs-toggle="dropdown" aria-expanded="false">
+						Choisir une action
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${good.model.id}">
+						<li><a class="dropdown-item view-units" href="#" data-model-id="${
+							good.model.id
+						}">Voir les unités disponibles</a></li>
+						${
+							namePermission !== "rental-manager"
+								? `<li><a class="dropdown-item edit-good" href="#" data-good-id="${good.id}">Modifier les données</a></li>`
+								: ""
+						}
+						${
+							namePermission === "stockman" &&
+							good.location === "stock_stockman"
+								? `<li><a class="dropdown-item send-equipment" href="#" data-good-id="${good.id}">Envoyer l'équipement</a></li>`
+								: ""
+						}
+						${namePermission === "rental-manager" && good.shipping_status === "send_to_manager" ? `<li><a class="dropdown-item confirm-receiving" href="#" data-good-id="${good.id}">Confirmer la réception</a></li>` : ""}
+					</ul>
+				</div>
+			</td>
+		`;
 		tableBody.appendChild(row);
 	});
+
+	document.querySelectorAll(".send-equipment").forEach((button) => {
+		button.addEventListener("click", function (event) {
+			event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+			const goodId = event.target.getAttribute("data-good-id");
+			if (confirm("envoyer l'équipement?")) {
+				sendEquipment(goodId);
+			}
+		});
+	});
+
+	document.querySelectorAll(".confirm-receiving").forEach((button) => {
+		button.addEventListener("click", function (event) {
+			event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+			const goodId = event.target.getAttribute("data-good-id");
+			if (confirm("Confirmer la réception?")) {
+				confirmReceiving(goodId);
+			}
+		});
+	});
+}
+
+async function sendEquipment(goodId) {
+	try {
+		const response = await apiGoods.sendEquipment(goodId);
+		if (response.success) {
+			alert(response.message);
+			// Обновление интерфейса
+			const dateSentElement = document.getElementById(`date-sent-${goodId}`);
+			const shippingStatusElement = document.getElementById(
+				`shipping-status-${goodId}`
+			);
+			const currentDate = new Date().toLocaleDateString();
+			dateSentElement.textContent = `Sent on: ${currentDate}`;
+			shippingStatusElement.textContent = "envoyé au manager";
+			// Добавление кнопки подтверждения получения
+			if (namePermission === "rental-manager") {
+				const confirmReceivingButton = document.createElement("a");
+				confirmReceivingButton.href = "#";
+				confirmReceivingButton.className = "dropdown-item confirm-receiving";
+				confirmReceivingButton.textContent = "Confirmer la réception";
+				confirmReceivingButton.setAttribute("data-good-id", goodId);
+				confirmReceivingButton.addEventListener("click", function (event) {
+					event.preventDefault();
+					if (confirm("Confirmer la réception?")) {
+						confirmReceiving(goodId);
+					}
+				});
+				document
+					.querySelector(`#dropdownMenuButton${goodId}`)
+					.parentNode.querySelector(".dropdown-menu")
+					.appendChild(confirmReceivingButton);
+			}
+		} else {
+			alert("Ошибка при отправке оборудования: " + response.message);
+		}
+	} catch (error) {
+		alert("Ошибка при отправке оборудования: " + error);
+	}
+}
+
+async function confirmReceiving(goodId) {
+	try {
+		const response = await apiGoods.confirmReceiving(goodId);
+		if (response.success) {
+			alert(response.message);
+			// Обновление интерфейса
+			const shippingStatusElement = document.getElementById(
+				`shipping-status-${goodId}`
+			);
+			shippingStatusElement.textContent = "reçu par le manager";
+		} else {
+			alert("Ошибка при подтверждении получения: " + response.message);
+		}
+	} catch (error) {
+		alert("Ошибка при подтверждении получения: " + error);
+	}
 }
 
 function updatePaginationControls(totalItems) {
@@ -232,10 +349,12 @@ document.getElementById("nextPageBtn").addEventListener("click", () => {
 
 document.addEventListener("click", function (event) {
 	if (event.target.classList.contains("view-units")) {
+		event.preventDefault();
 		const modelId = event.target.getAttribute("data-model-id");
 		console.log(modelId);
 		showUnitsModal(modelId);
 	} else if (event.target.classList.contains("edit-good")) {
+		event.preventDefault();
 		const goodId = event.target.getAttribute("data-good-id");
 		console.log("goodId передаваемый в showEditModal", goodId);
 		showEditModal(goodId);
@@ -382,7 +501,9 @@ async function renderEquipmentOrder(userData) {
 					// Собираем данные формы
 					const equipmentName = document.getElementById("equipmentName").value;
 					const quantity = document.getElementById("quantity").value;
-					const comments = document.getElementById("equipmentDescription").value;
+					const comments = document.getElementById(
+						"equipmentDescription"
+					).value;
 					const id_type = document.getElementById("categoryName").value;
 					console.log(document.getElementById("categoryName"));
 					// Создаем объект с данными для отправки на сервер
@@ -514,7 +635,7 @@ async function saveEquipment() {
 			brandName,
 			description,
 			photo: photoUrl,
-			location: "stock_stockman" // Добавлено поле местоположения
+			location: "stock_stockman", // Добавлено поле местоположения
 		});
 
 		if (data.success) {
@@ -530,7 +651,6 @@ async function saveEquipment() {
 		alert("Erreur lors de l'ajout de l'équipement.");
 	}
 }
-
 
 async function fetchBrandIdByName(brandName) {
 	const brand = await brandApi.searchBrands(brandName);
@@ -700,7 +820,8 @@ if (backArrowContainer) {
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
-	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrow.innerHTML =
+		'<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
 	backArrowContainer.appendChild(backArrow);
 }
 

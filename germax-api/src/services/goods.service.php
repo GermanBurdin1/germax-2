@@ -35,6 +35,10 @@ class GoodsService
             model.description AS model_description,
             model.photo AS model_photo,
             good.id_status,
+            good.location,
+            good.date_sending,
+            good.date_receiving,
+            good.shipping_status,
             statu.name AS status_name,
             model.id_type AS model_id_type,
             typ.name AS model_type_name,
@@ -186,6 +190,10 @@ class GoodsService
 				"id" => $good["id_status"],
 				"name" => $good["status_name"]
 			],
+			"location" => $good["location"],
+			"date_sending" => $good["date_sending"], // Добавлено поле date_sending
+			"date_receiving" => $good["date_receiving"], // Добавлено поле date_receiving
+			"shipping_status" => $good["shipping_status"]  // Добавлено поле location
 		];
 
 		return $formattedGood;
@@ -378,6 +386,7 @@ class GoodsService
             model.description AS model_description,
             model.photo AS model_photo,
             good.id_status,
+						good.location,
             statu.name AS status_name,
             model.id_type AS model_id_type,
             typ.name AS model_type_name,
@@ -410,4 +419,29 @@ class GoodsService
 			]);
 		}
 	}
+
+	public function sendEquipment($id_good)
+{
+	$sql = "UPDATE good SET date_sending = CURDATE(), shipping_status = 'send_to_manager' WHERE id_good = :id_good";
+	$stmt = $this->pdo->prepare($sql);
+	try {
+		$stmt->execute(['id_good' => $id_good]);
+		return ['success' => true, 'message' => 'Date d\'envoi et statut d\'expédition mis à jour avec succès'];
+	} catch (PDOException $e) {
+		return ['success' => false, 'message' => $e->getMessage()];
+	}
+}
+
+public function confirmReceiving($id_good)
+{
+	$sql = "UPDATE good SET date_receiving = CURDATE(), shipping_status = 'received_by_manager' WHERE id_good = :id_good";
+	$stmt = $this->pdo->prepare($sql);
+	try {
+		$stmt->execute(['id_good' => $id_good]);
+		return ['success' => true, 'message' => 'Date de réception et statut d\'expédition mis à jour avec succès'];
+	} catch (PDOException $e) {
+		return ['success' => false, 'message' => $e->getMessage()];
+	}
+}
+
 }
