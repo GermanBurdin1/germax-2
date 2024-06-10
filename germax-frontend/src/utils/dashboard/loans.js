@@ -6,15 +6,34 @@ export function returnClientLoans(rentals = [], requests = []) {
 	const allEntries = [
 		...rentals.map((rental) => {
 			let statusMessage = "Status non défini";
+			let actionsMarkup = ""; // Инициализация переменной actionsMarkup
 
 			if (rental.loan_status === "cancelled" && rental.id_status === 1) {
 				statusMessage = `La requête de la location a été annulée le ${formatDate(
-					rental.date_end
-				)}`;
-			} else if (rental.id_status === 4) {
-				statusMessage = `requête effectuée le ${formatDate(rental.date_start)}`;
-			} else if (rental.id_status === 3) {
-				statusMessage = "vous pouvez récupérer le matériel";
+					rental.date_accord
+				)}. Vous pouvez obtenir des détails en écrivant au manager.`;
+				actionsMarkup = `
+					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+				`;
+			} else {
+				if (rental.id_status === 4) {
+					statusMessage = `requête effectuée le ${formatDate(
+						rental.date_start
+					)}`;
+				} else if (rental.id_status === 3) {
+					statusMessage = "vous pouvez récupérer le matériel";
+				}
+
+				if (rental.loan_status === "approved") {
+					actionsMarkup = `
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+					`;
+				} else {
+					actionsMarkup = `
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
+					`;
+				}
 			}
 
 			const processedRental = {
@@ -29,6 +48,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				date_end: rental.date_end,
 				photo: rental.photo || null,
 				statusMessage: statusMessage,
+				actionsMarkup: actionsMarkup, // Добавление actionsMarkup к processedRental
 			};
 			console.log("Processed rental entry:", processedRental);
 			return processedRental;
@@ -54,11 +74,12 @@ export function returnClientLoans(rentals = [], requests = []) {
 
 	const rows = allEntries
 		.map((entry) => {
-			let statusMessage;
+			let statusMessage = entry.statusMessage;
 			let photoHtml = "";
-			let actionsMarkup = "";
-			if (entry.type === "rental") {
-				statusMessage = entry.statusMessage;
+			let actionsMarkup = entry.actionsMarkup; // Использование actionsMarkup из processedRental
+
+			if (entry.type === "rental" && !actionsMarkup) {
+				// Проверяем, что actionsMarkup не задано
 				if (entry.id_status === 4) {
 					statusMessage = `requête effectuée le ${formatDate(
 						entry.date_start

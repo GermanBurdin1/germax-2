@@ -111,6 +111,7 @@ class RentalService
             JOIN model m ON g.id_model = m.id_model
             JOIN user u ON l.id_user = u.id_user
             WHERE g.id_status IN (3, 4)
+            OR (l.loan_status = 'cancelled' AND g.id_status = 1)
             LIMIT :limit OFFSET :offset;
         ");
 
@@ -327,7 +328,7 @@ class RentalService
 			}
 
 			// Update the loan status to 'cancelled'
-			$sql = "UPDATE loan SET loan_status = 'cancelled' WHERE id_loan = :loanId";
+			$sql = "UPDATE loan SET loan_status = 'cancelled', accord = 0, date_accord = CURDATE()   WHERE id_loan = :loanId";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute(['loanId' => $loanId]);
 

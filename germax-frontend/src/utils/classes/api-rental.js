@@ -163,12 +163,13 @@ export class ApiRental {
 
 	async cancelRental(loanId) {
 		const body = JSON.stringify({ loanId });
-
+		const token = this._apiAuth.getToken();
+		console.log("отправляемый токен", token)
 		return fetch(`${this._baseUrl}/cancel`, {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json",
-				token: this._apiAuth.getToken(),
+				token,
 			},
 			body,
 		})

@@ -74,6 +74,8 @@ function updateBookingsTable(rentals) {
 			loanStatusText = "équipement loué";
 		} else if (rental.loan_status === "approved") {
 			loanStatusText = "demande de location approuvée";
+		} else if (rental.loan_status === "cancelled") {
+			loanStatusText = "Location annulée";
 		} else {
 			loanStatusText = rental.loan_status;
 		}
@@ -105,11 +107,10 @@ function updateBookingsTable(rentals) {
 								? `
 						<li><a class="dropdown-item manage-rental" href="#">Gérer la location</a></li>
 					`
-								: ""
-						}
-						${
-							rental.loan_status === "approved"
+								: rental.loan_status === "approved"
 								? `<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${rental.id_loan}">Confirmer la remise du matériel</a></li>`
+								: rental.loan_status === "cancelled"
+								? `<li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>`
 								: ""
 						}
 					</ul>
@@ -341,31 +342,40 @@ function confirmHandOver(loanId, goodId) {
 }
 
 function cancelRental(loanId) {
-	const url = "http://germax-api/rental"; // URL, который обрабатывает отмену аренды
-	const data = {
-		action: "cancel",
-		loanId: loanId,
-	};
-
-	fetch(url, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(data),
-	})
-		.then((response) => response.json())
+	console.log("сработала cancelRental", loanId);
+	apiRental
+		.cancelRental(loanId)
 		.then((data) => {
+			console.log("data какая пришла", data);
 			if (data.success) {
-				console.log("Rental canceled successfully.");
-				// Обновите интерфейс или уведомите пользователя об успешной отмене
+				alert(
+					"Vous avez refusé la location et l'équipement est disponible pour la location."
+				);
+				const rentalManagementModal = Modal.getInstance(
+					document.getElementById("rentalManagementModal")
+				);
+				rentalManagementModal.hide();
+
+				// Обновление статуса в таблице
+				const row = document.querySelector(`tr[data-booking-id="${loanId}"]`);
+				if (row) {
+					row.querySelector("td:nth-child(7)").textContent = "annulé";
+
+					// Добавление пункта "Contacter le manager" в dropdown
+					const dropdownMenu = row.querySelector(`ul.dropdown-menu`);
+					const contactManagerItem = document.createElement("li");
+					contactManagerItem.innerHTML = `
+						<li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>`;
+					dropdownMenu.appendChild(contactManagerItem);
+				}
+				refreshRentals();
 			} else {
 				console.error("Failed to cancel rental.");
 				// Обработка ошибок сервера или сообщения об ошибке
 			}
 		})
 		.catch((error) => {
-			console.error("Error:", error);
+			console.error("Error in cancelRental:", error);
 		});
 }
 
