@@ -68,4 +68,9 @@ class GoodsController
 	{
 		return $this->goodsService->confirmReceiving($id_good);
 	}
+
+	public function confirmHandOver($id_loan, $id_good)
+	{
+		return $this->goodsService->confirmHandOver($id_loan, $id_good);
+	}
 }

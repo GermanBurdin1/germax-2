@@ -265,8 +265,8 @@ class RentalService
 				return ['success' => false, 'message' => 'Failed to update good status'];
 			}
 
-			// Update the loan status to 'loan_request'
-			$sql = "UPDATE loan SET loan_status = 'approved' WHERE id_loan = :loanId";
+			// Update the loan status to 'approved' and set accord and date_accord
+			$sql = "UPDATE loan SET loan_status = 'approved', accord = 1, date_accord = CURDATE() WHERE id_loan = :loanId";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute(['loanId' => $loanId]);
 
@@ -300,8 +300,6 @@ class RentalService
 			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
-
-
 
 	public function cancelRental($loanId)
 	{

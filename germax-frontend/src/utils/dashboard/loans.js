@@ -13,6 +13,8 @@ export function returnClientLoans(rentals = [], requests = []) {
 				)}`;
 			} else if (rental.id_status === 4) {
 				statusMessage = `requête effectuée le ${formatDate(rental.date_start)}`;
+			} else if (rental.id_status === 3) {
+				statusMessage = "vous pouvez récupérer le matériel";
 			}
 
 			const processedRental = {
@@ -62,10 +64,16 @@ export function returnClientLoans(rentals = [], requests = []) {
 						entry.date_start
 					)}`;
 				}
-				actionsMarkup = `
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
-            `;
+				if (entry.loan_status === "approved") {
+					actionsMarkup = `
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+					`;
+				} else {
+					actionsMarkup = `
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
+					`;
+				}
 			} else if (entry.type === "request") {
 				statusMessage = entry.treatment_status || "unknown status";
 				if (entry.statusMessage === "rental_details_discussion_manager_user") {
@@ -89,7 +97,6 @@ export function returnClientLoans(rentals = [], requests = []) {
 					statusMessage = "vous pouvez récupérer le matériel";
 					actionsMarkup = `
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--reverse-loan-modal">Annuler la réservation</a></li>
                 `;
 					if (entry.photo) {
 						photoHtml = `<tr class="photo-row"><td colspan="6"><img src="${entry.photo}" alt="Photo de l'équipement" class="equipment-photo"></td></tr>`;

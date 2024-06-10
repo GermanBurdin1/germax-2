@@ -55,8 +55,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 		if ($action == 'send') {
 			$result = $goodsController->sendEquipment($id_good);
 			echo json_encode($result);
-		}  elseif ($action == 'receive') {
+		} elseif ($action == 'receive') {
 			$result = $goodsController->confirmReceiving($id_good);
+		} elseif ($action == 'handOver') {
+			$id_loan = $input['id_loan'];
+			$id_good = $input['id_good'];
+			error_log("Hand over action called with id_loan: " . $id_loan . " and id_good: " . $id_good);
+			$result = $goodsController->confirmHandOver($id_loan, $id_good);
+			error_log("Hand over result: " . json_encode($result));
 		}
 		echo json_encode($result);
 	} else {

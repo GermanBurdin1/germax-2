@@ -3,9 +3,11 @@ import { Modal } from "bootstrap";
 import "./index.css";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiUsers } from "../../../utils/classes/api-users";
+import { ApiGoods } from "../../../utils/classes/api-goods";
 
 const apiRental = new ApiRental();
 const apiUsers = new ApiUsers();
+const apiGoods = new ApiGoods();
 let currentPage = 1;
 const itemsPerPage = 10;
 
@@ -78,40 +80,45 @@ function updateBookingsTable(rentals) {
 
 		const row = tbody.insertRow();
 		row.innerHTML = `
-        <td>${rental.id_loan}</td>
-				<td>${rental.id_user}</td>
-        <td>${rental.user_name} ${rental.user_surname}</td>
-        <td>${rental.model_name} (${rental.serial_number})</td>
-        <td>${rental.date_start}-${rental.date_end}</td>
-        <td>${rental.comment || "aucun commentaire"} </td>
-        <td>${loanStatusText}</td>
-        <td>bon état</td>
-        <td>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu${
-									rental.id_good
-								}" data-bs-toggle="dropdown" aria-expanded="false">
-                    Choisir une action
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="actionMenu${
-									rental.id_good
-								}">
-                    ${
-											rental.loan_status === "loaned"
-												? `
-                        <li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>
-                    `
-												: rental.loan_status === "loan_request"
-												? `
-                        <li><a class="dropdown-item manage-rental" href="#">Gérer la location</a></li>
-                    `
-												: ""
-										}
-                </ul>
-            </div>
-        </td>`;
+			<td>${rental.id_loan}</td>
+			<td>${rental.id_user}</td>
+			<td>${rental.user_name} ${rental.user_surname}</td>
+			<td>${rental.model_name} (${rental.serial_number})</td>
+			<td>${rental.date_start}-${rental.date_end}</td>
+			<td>${rental.comment || "aucun commentaire"} </td>
+			<td>${loanStatusText}</td>
+			<td>bon état</td>
+			<td>
+				<div class="dropdown">
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="actionMenu${
+						rental.id_good
+					}" data-bs-toggle="dropdown" aria-expanded="false">
+						Choisir une action
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="actionMenu${rental.id_good}">
+						${
+							rental.loan_status === "loaned"
+								? `
+						<li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>
+					`
+								: rental.loan_status === "loan_request"
+								? `
+						<li><a class="dropdown-item manage-rental" href="#">Gérer la location</a></li>
+					`
+								: ""
+						}
+						${
+							rental.loan_status === "approved"
+								? `<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${rental.id_loan}">Confirmer la remise du matériel</a></li>`
+								: ""
+						}
+					</ul>
+				</div>
+			</td>`;
+
 		const manageLinks = row.querySelectorAll(".manage-rental"); // Уточняем селектор, чтобы выбрать только нужную ссылку
 		const infoLinks = row.querySelectorAll(".info_client");
+		const confirmHandOverLinks = row.querySelectorAll(".confirm-hand-over");
 
 		manageLinks.forEach((link) => {
 			link.addEventListener("click", function (event) {
@@ -154,6 +161,21 @@ function updateBookingsTable(rentals) {
 					event.preventDefault();
 					modal.hide();
 				});
+			});
+		});
+
+		confirmHandOverLinks.forEach((link) => {
+			link.addEventListener("click", function (event) {
+				event.preventDefault();
+				const loanId = this.getAttribute("data-id");
+				const goodId = this.closest("tr").getAttribute("data-good-id"); // Получаем id_good из строки таблицы
+				const confirmButton = document.getElementById("confirmHandOverButton");
+				confirmButton.setAttribute("data-id", loanId);
+				confirmButton.setAttribute("data-good-id", goodId); // Устанавливаем id_good
+				const confirmHandOverModal = new Modal(
+					document.getElementById("confirmHandOverModal")
+				);
+				confirmHandOverModal.show();
 			});
 		});
 	});
@@ -219,6 +241,30 @@ document
 	});
 
 document
+	.getElementById("confirmHandOverButton")
+	.addEventListener("click", async function () {
+		const loanId = this.getAttribute("data-id");
+		const goodId = await getGoodIdByLoanId(loanId); // Получаем id_good по id_loan
+		confirmHandOver(loanId, goodId);
+	});
+
+async function getGoodIdByLoanId(loanId) {
+	try {
+		const data = await apiRental.getRentals(currentPage, itemsPerPage); // Получаем данные о всех арендах
+		if (data && data.data) {
+			const rental = data.data.find((rental) => rental.id_loan == loanId); // Ищем аренду по id_loan
+			return rental ? rental.id_good : null;
+		} else {
+			console.error("Failed to fetch data");
+			return null;
+		}
+	} catch (error) {
+		console.error("Error:", error);
+		return null;
+	}
+}
+
+document
 	.getElementById("cancelRentalButton")
 	.addEventListener("click", function () {
 		const rentalId = this.getAttribute("data-id");
@@ -240,6 +286,28 @@ function approveRental(loanId) {
 				if (row) {
 					row.querySelector("td:nth-child(7)").textContent =
 						"demande de location approuvée";
+
+					// Добавление пункта "Confirmer la remise du matériel" в dropdown
+					const dropdownMenu = row.querySelector(`ul.dropdown-menu`);
+					const confirmHandOverItem = document.createElement("li");
+					confirmHandOverItem.innerHTML = `
+								<a class="dropdown-item confirm-hand-over" href="#" data-id="${loanId}">
+									Confirmer la remise du matériel
+								</a>`;
+					dropdownMenu.appendChild(confirmHandOverItem);
+
+					// Добавление обработчика события на новый пункт меню
+					confirmHandOverItem.addEventListener("click", function (event) {
+						event.preventDefault();
+						const loanId = this.getAttribute("data-id");
+						document
+							.getElementById("confirmHandOverButton")
+							.setAttribute("data-id", loanId);
+						const confirmHandOverModal = new Modal(
+							document.getElementById("confirmHandOverModal")
+						);
+						confirmHandOverModal.show();
+					});
 				}
 				refreshRentals();
 			} else {
@@ -249,6 +317,26 @@ function approveRental(loanId) {
 		})
 		.catch((error) => {
 			console.error("Error in approveRental:", error);
+		});
+}
+
+function confirmHandOver(loanId, goodId) {
+	apiGoods
+		.confirmHandOver(loanId, goodId)
+		.then((data) => {
+			if (data.success) {
+				alert("La remise du matériel a été confirmée.");
+				const confirmHandOverModal = Modal.getInstance(
+					document.getElementById("confirmHandOverModal")
+				);
+				confirmHandOverModal.hide();
+				refreshRentals();
+			} else {
+				console.error("Failed to confirm hand over.");
+			}
+		})
+		.catch((error) => {
+			console.error("Error in confirmHandOver:", error);
 		});
 }
 
