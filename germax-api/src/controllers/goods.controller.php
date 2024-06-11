@@ -73,4 +73,9 @@ class GoodsController
 	{
 		return $this->goodsService->confirmHandOver($id_loan, $id_good);
 	}
+
+	public function reportReturn($id_loan, $id_good)
+	{
+		return $this->goodsService->reportReturn($id_loan, $id_good);
+	}
 }

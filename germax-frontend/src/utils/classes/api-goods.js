@@ -264,4 +264,41 @@ export class ApiGoods {
 				throw error;
 			});
 	}
+
+	async reportReturn(id_loan, id_good) {
+		const body = JSON.stringify({
+			id_loan,
+			id_good,
+			action: "return",
+		});
+		console.log("body sending", body);
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.text().then((text) => {
+						return Promise.reject(
+							new Error(`Request failed: ${response.statusText}`)
+						);
+					});
+				}
+				return response.json();
+			})
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in reportReturn:", error);
+				throw error;
+			});
+	}
 }

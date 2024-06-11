@@ -112,6 +112,7 @@ class RentalService
             JOIN user u ON l.id_user = u.id_user
             WHERE g.id_status IN (3, 4)
             OR (l.loan_status = 'cancelled' AND g.id_status = 1)
+						OR (l.loan_status = 'returned' AND g.id_status = 1)
             LIMIT :limit OFFSET :offset;
         ");
 

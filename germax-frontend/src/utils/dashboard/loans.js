@@ -15,6 +15,11 @@ export function returnClientLoans(rentals = [], requests = []) {
 				actionsMarkup = `
 					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
 				`;
+			} else if (rental.loan_status === "returned") {
+				statusMessage = "équipement retourné";
+				actionsMarkup = `
+						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+				`;
 			} else {
 				if (rental.id_status === 4) {
 					statusMessage = `requête effectuée le ${formatDate(

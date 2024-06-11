@@ -63,6 +63,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			error_log("Hand over action called with id_loan: " . $id_loan . " and id_good: " . $id_good);
 			$result = $goodsController->confirmHandOver($id_loan, $id_good);
 			error_log("Hand over result: " . json_encode($result));
+		} elseif ($action == 'return') {
+			$id_loan = $input['id_loan'];
+			$id_good = $input['id_good'];
+			error_log("Return action called with id_loan: " . $id_loan . " and id_good: " . $id_good);
+			$result = $goodsController->reportReturn($id_loan, $id_good);
+			error_log("Return result: " . json_encode($result));
 		}
 		echo json_encode($result);
 	} else {

@@ -452,38 +452,72 @@ class GoodsService
 	}
 
 	public function confirmHandOver($id_loan, $id_good)
-{
-    $this->pdo->beginTransaction();
-    try {
-        // Обновление записи в таблице good
-        $sqlGood = "UPDATE good SET shipping_status = 'handed_over', location = 'user' WHERE id_good = :id_good";
-        $stmtGood = $this->pdo->prepare($sqlGood);
-        $stmtGood->execute(['id_good' => $id_good]);
+	{
+		$this->pdo->beginTransaction();
+		try {
+			// Обновление записи в таблице good
+			$sqlGood = "UPDATE good SET shipping_status = 'handed_over', location = 'user' WHERE id_good = :id_good";
+			$stmtGood = $this->pdo->prepare($sqlGood);
+			$stmtGood->execute(['id_good' => $id_good]);
 
-        if ($stmtGood->rowCount() == 0) {
-            $this->pdo->rollBack();
-            error_log("Failed to update good status or good not found for id_good: " . $id_good);
-            return ['success' => false, 'message' => 'Failed to update good status or good not found'];
-        }
+			if ($stmtGood->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update good status or good not found for id_good: " . $id_good);
+				return ['success' => false, 'message' => 'Failed to update good status or good not found'];
+			}
 
-        // Обновление записи в таблице loan
-        $sqlLoan = "UPDATE loan SET loan_status = 'loaned', booking_date = CURDATE() WHERE id_loan = :id_loan";
-        $stmtLoan = $this->pdo->prepare($sqlLoan);
-        $stmtLoan->execute(['id_loan' => $id_loan]);
+			// Обновление записи в таблице loan
+			$sqlLoan = "UPDATE loan SET loan_status = 'loaned', booking_date = CURDATE() WHERE id_loan = :id_loan";
+			$stmtLoan = $this->pdo->prepare($sqlLoan);
+			$stmtLoan->execute(['id_loan' => $id_loan]);
 
-        if ($stmtLoan->rowCount() == 0) {
-            $this->pdo->rollBack();
-            error_log("Failed to update loan status or loan not found for id_loan: " . $id_loan);
-            return ['success' => false, 'message' => 'Failed to update loan status or loan not found'];
-        }
+			if ($stmtLoan->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update loan status or loan not found for id_loan: " . $id_loan);
+				return ['success' => false, 'message' => 'Failed to update loan status or loan not found'];
+			}
 
-        $this->pdo->commit();
-        return ['success' => true, 'message' => 'Goods handed over and loan updated successfully'];
-    } catch (PDOException $e) {
-        $this->pdo->rollBack();
-        error_log("Database error: " . $e->getMessage());
-        return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
-    }
-}
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Goods handed over and loan updated successfully'];
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Database error: " . $e->getMessage());
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
 
+	public function reportReturn($id_loan, $id_good)
+	{
+		$this->pdo->beginTransaction();
+		try {
+			// Обновление записи в таблице good
+			$sqlGood = "UPDATE good SET id_status = 1, shipping_status = 'returned' WHERE id_good = :id_good";
+			$stmtGood = $this->pdo->prepare($sqlGood);
+			$stmtGood->execute(['id_good' => $id_good]);
+
+			if ($stmtGood->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update good status or good not found for id_good: " . $id_good);
+				return ['success' => false, 'message' => 'Failed to update good status or good not found'];
+			}
+
+			// Обновление записи в таблице loan
+			$sqlLoan = "UPDATE loan SET loan_status = 'returned', return_date = CURDATE() WHERE id_loan = :id_loan";
+			$stmtLoan = $this->pdo->prepare($sqlLoan);
+			$stmtLoan->execute(['id_loan' => $id_loan]);
+
+			if ($stmtLoan->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update loan status or loan not found for id_loan: " . $id_loan);
+				return ['success' => false, 'message' => 'Failed to update loan status or loan not found'];
+			}
+
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Goods returned and loan updated successfully'];
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Database error: " . $e->getMessage());
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
 }

@@ -10,6 +10,7 @@ const apiUsers = new ApiUsers();
 const apiGoods = new ApiGoods();
 let currentPage = 1;
 const itemsPerPage = 10;
+let namePermission = localStorage.getItem("namePermission");
 
 // Инициализация модального окна заранее
 const rentalManagementModalElement = document.getElementById(
@@ -76,6 +77,8 @@ function updateBookingsTable(rentals) {
 			loanStatusText = "demande de location approuvée";
 		} else if (rental.loan_status === "cancelled") {
 			loanStatusText = "Location annulée";
+		} else if (rental.loan_status === "returned") {
+			loanStatusText = "équipement retourné";
 		} else {
 			loanStatusText = rental.loan_status;
 		}
@@ -98,18 +101,33 @@ function updateBookingsTable(rentals) {
 						Choisir une action
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="actionMenu${rental.id_good}">
+					${
+						rental.loan_status === "returned" &&
+						namePermission === "rental-manager"
+							? `
+								<li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>
+							`
+							: ""
+					}
+					${
+						rental.loan_status === "loaned" &&
+						namePermission === "rental-manager"
+							? `<li><a class="dropdown-item report-return" href="#" data-id="${rental.id_loan}">Signaler le retour de l'équipement</a></li>
+							 <li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>`
+							: ""
+					}
 						${
-							rental.loan_status === "loaned"
-								? `
-						<li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>
-					`
-								: rental.loan_status === "loan_request"
-								? `
-						<li><a class="dropdown-item manage-rental" href="#">Gérer la location</a></li>
-					`
-								: rental.loan_status === "approved"
+							rental.loan_status === "loan_request"
+								? `<li><a class="dropdown-item manage-rental" href="#">Gérer la location</a></li>`
+								: ""
+						}
+						${
+							rental.loan_status === "approved"
 								? `<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${rental.id_loan}">Confirmer la remise du matériel</a></li>`
-								: rental.loan_status === "cancelled"
+								: ""
+						}
+						${
+							rental.loan_status === "cancelled"
 								? `<li><a class="dropdown-item info_client" href="#" data-user-id="${rental.id_user}">Voir l'utilisateur</a></li>`
 								: ""
 						}
@@ -120,6 +138,7 @@ function updateBookingsTable(rentals) {
 		const manageLinks = row.querySelectorAll(".manage-rental"); // Уточняем селектор, чтобы выбрать только нужную ссылку
 		const infoLinks = row.querySelectorAll(".info_client");
 		const confirmHandOverLinks = row.querySelectorAll(".confirm-hand-over");
+		const reportReturnLinks = row.querySelectorAll(".report-return"); // Новая кнопка
 
 		manageLinks.forEach((link) => {
 			link.addEventListener("click", function (event) {
@@ -177,6 +196,20 @@ function updateBookingsTable(rentals) {
 					document.getElementById("confirmHandOverModal")
 				);
 				confirmHandOverModal.show();
+			});
+		});
+
+		// Обработчик для новой кнопки
+		reportReturnLinks.forEach((link) => {
+			link.addEventListener("click", function (event) {
+				event.preventDefault();
+				const loanId = this.getAttribute("data-id");
+				const goodId = this.getAttribute("data-good-id");
+				const confirmButton = document.getElementById("confirmReportReturnButton");
+				confirmButton.setAttribute("data-id", loanId);
+				confirmButton.setAttribute("data-good-id", goodId);
+				const reportReturnModal = new Modal(document.getElementById("reportReturnModal"));
+				reportReturnModal.show();
 			});
 		});
 	});
@@ -247,6 +280,16 @@ document
 		const loanId = this.getAttribute("data-id");
 		const goodId = await getGoodIdByLoanId(loanId); // Получаем id_good по id_loan
 		confirmHandOver(loanId, goodId);
+	});
+
+document
+	.getElementById("confirmReportReturnButton")
+	.addEventListener("click", async function () {
+		// Здесь будет код для обработки возврата оборудования
+		alert("Retour de l'\équipement est confirmé.");
+		const loanId = this.getAttribute("data-id");
+		const goodId = await getGoodIdByLoanId(loanId);
+		reportReturn(loanId, goodId);
 	});
 
 async function getGoodIdByLoanId(loanId) {
@@ -340,6 +383,27 @@ function confirmHandOver(loanId, goodId) {
 			console.error("Error in confirmHandOver:", error);
 		});
 }
+
+function reportReturn(loanId, goodId) {
+	apiGoods
+		.reportReturn(loanId, goodId)
+		.then((data) => {
+			if (data.success) {
+				alert("Le retour du matériel a été signalé.");
+				const reportReturnModal = Modal.getInstance(
+					document.getElementById("reportReturnModal")
+				);
+				reportReturnModal.hide();
+				refreshRentals();
+			} else {
+				console.error("Failed to report return.");
+			}
+		})
+		.catch((error) => {
+			console.error("Error in reportReturn:", error);
+		});
+}
+
 
 function cancelRental(loanId) {
 	console.log("сработала cancelRental", loanId);
