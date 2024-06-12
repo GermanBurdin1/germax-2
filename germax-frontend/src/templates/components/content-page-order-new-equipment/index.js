@@ -540,10 +540,16 @@ function createTableRow(request, namePermission) {
 			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
 			`;
 		} else {
-			actionsMarkup = `
-			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
-			`;
+			if (namePermission === "admin") {
+				actionsMarkup = `
+					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+				`;
+			} else {
+				actionsMarkup = `
+					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+				`;
+			}
 		}
 	} else if (namePermission === "stockman" || namePermission === "admin") {
 		if (request.treatment_status === "pending_stockman") {
@@ -1506,4 +1512,22 @@ if (backArrowContainer) {
 	backArrow.className = "back-arrow";
 	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
 	backArrowContainer.appendChild(backArrow);
+}
+
+const logoutButton = document.getElementById("logoutButton");
+
+if (logoutButton) {
+	logoutButton.addEventListener("click", function (event) {
+		event.preventDefault();
+		logout();
+	});
+}
+
+function logout() {
+	// Удаляем данные аутентификации из localStorage
+	localStorage.removeItem("authToken");
+	localStorage.removeItem("id_user");
+
+	// Перенаправляем пользователя на корневую страницу сайта
+	window.location.href = "/"; // Перенаправить на корневую страницу
 }

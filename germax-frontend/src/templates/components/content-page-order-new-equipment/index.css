@@ -298,3 +298,13 @@ header {
 .back-arrow:hover i {
 	transform: translateX(-5px);
 }
+
+.btn-primary {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--quaternary-color);
+  border-color: var(--quaternary-color);
+}
