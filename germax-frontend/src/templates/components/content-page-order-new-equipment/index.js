@@ -501,6 +501,8 @@ function createTableRow(request, namePermission) {
 
 	if (namePermission === "rental-manager" || namePermission === "admin") {
 		if (request.treatment_status === "pending_manager") {
+			treatmentStatus = "vérifier la nouvelle requête et l'envoyer aux gérants du stock";
+			equipmentStatus = "à rechercher";
 			actionsMarkup = `
 			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
 			<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>

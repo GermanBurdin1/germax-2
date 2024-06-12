@@ -49,6 +49,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				photo: rental.photo || null,
 				statusMessage: statusMessage,
 				actionsMarkup: actionsMarkup, // Добавление actionsMarkup к processedRental
+				quantity: rental.quantity || 1,
 			};
 			console.log("Processed rental entry:", processedRental);
 			return processedRental;
@@ -66,6 +67,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 				statusMessage: request.treatment_status,
 				type: "request",
 				photo: request.photo,
+				quantity: request.quantity || 1, // Добавлено количество
 			};
 			console.log("Processed request entry:", processedRequest);
 			return processedRequest;
@@ -112,6 +114,9 @@ export function returnClientLoans(rentals = [], requests = []) {
 	`;
 				} else if (entry.statusMessage === "pending_manager") {
 					statusMessage = "votre demande a été envoyée au manager";
+					actionsMarkup = `
+			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
+	`;
 				} else {
 					actionsMarkup = `
 									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
@@ -119,11 +124,14 @@ export function returnClientLoans(rentals = [], requests = []) {
 							`;
 				}
 			}
+			const equipmentDisplay = `${entry.model_name || "N/A"}${
+				entry.quantity > 1 ? ` (quantité: ${entry.quantity} pièces)` : ""
+			}`;
 
 			return `
 	<tr data-id="${entry.id}" data-type="${entry.type}">
 	<td>${entry.id || "N/A"}</td>
-	<td>${entry.model_name || "N/A"}</td>
+	<td>${equipmentDisplay || "N/A"}</td>
 	<td>${formatDate(entry.date_start) || "N/A"}</td>
 	<td>${formatDate(entry.date_end) || "N/A"}</td>
 	<td>${statusMessage}</td>
@@ -325,7 +333,10 @@ export function returnRentalHistoryLoans(rentals = []) {
 				actionsMarkup = `
 					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
 				`;
-			} else if (rental.loan_status === "loaned" || rental.shipping_status === "handed_over") {
+			} else if (
+				rental.loan_status === "loaned" ||
+				rental.shipping_status === "handed_over"
+			) {
 				statusMessage = "votre location est en cours";
 				actionsMarkup = `
 					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
@@ -334,7 +345,10 @@ export function returnRentalHistoryLoans(rentals = []) {
 				actionsMarkup = `
 					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#student-communication-manager-modal">Contacter le manager</a></li>
 				`;
-				if (rental.loan_status !== "returned" && rental.shipping_status !== "handed_over") {
+				if (
+					rental.loan_status !== "returned" &&
+					rental.shipping_status !== "handed_over"
+				) {
 					actionsMarkup += `
 						<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#reverse-loan-modal">Annuler la réservation</a></li>
 					`;
