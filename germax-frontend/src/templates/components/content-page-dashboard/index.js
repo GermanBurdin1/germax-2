@@ -773,6 +773,16 @@ function setupProposalModal() {
 			confirmApproval(requestId);
 			managerProposalModal.hide();
 		});
+
+		document.querySelectorAll('.btn-secondary').forEach(button => {
+			button.addEventListener('click', function (event) {
+				if (event.target.textContent.includes('Envoyer le message au manager')) {
+					event.preventDefault();
+					const managerModal = new Modal(document.getElementById("student-communication-manager-modal"));
+					managerModal.show();
+				}
+			});
+		});
 }
 
 function openManagerProposalModal(requestId) {

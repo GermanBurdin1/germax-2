@@ -89,17 +89,33 @@ export class ApiEquipmentRequest {
 	}
 
 	async getAllRequests(page = 1, itemsPerPage = 10) {
-		return fetch(
-			`${this._baseUrl}/get-all-requests?page=${page}&itemsPerPage=${itemsPerPage}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${this._apiAuth.getToken()}`,
-				},
-			}
-		)
-			.then((response) => response.json())
+		const url = `${this._baseUrl}/get-all-requests?page=${page}&itemsPerPage=${itemsPerPage}`;
+		return fetch(url, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${this._apiAuth.getToken()}`,
+			},
+			cache: "no-store",
+		})
+			.then((response) => {
+				console.log("Raw response:", response);
+				return response.text().then((text) => {
+					let jsonData;
+					try {
+						jsonData = JSON.parse(text);
+						if (jsonData.data) {
+						}
+
+						return jsonData;
+					} catch (error) {
+						console.error("Error parsing JSON:", error);
+						console.log("Invalid JSON response:", text);
+						throw error;
+					}
+					return jsonData;
+				});
+			})
 			.then((data) => {
 				if (data.success && Array.isArray(data.data)) {
 					return data;
@@ -137,6 +153,7 @@ export class ApiEquipmentRequest {
 
 	async updateEquipmentRequest(updatedData) {
 		const body = JSON.stringify(updatedData);
+		console.log("Request body:", body); // Логируем тело запроса
 		return fetch(`${this._baseUrl}/update-request`, {
 			method: "PUT",
 			headers: {
@@ -146,12 +163,17 @@ export class ApiEquipmentRequest {
 			body,
 		})
 			.then((response) => {
+				console.log("Raw response:", response); // Логируем необработанный ответ
 				if (!response.ok) {
-					return response.json().then((json) => Promise.reject(json));
+					return response.json().then((json) => {
+						console.log("Error response JSON:", json); // Логируем тело ошибки
+						return Promise.reject(json);
+					});
 				}
 				return response.json();
 			})
 			.then((data) => {
+				console.log("Response data:", data); // Логируем данные ответа
 				if (data.success) {
 					return data.data; // Возвращаем обновленные данные
 				} else {

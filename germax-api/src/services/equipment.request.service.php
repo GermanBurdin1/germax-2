@@ -68,6 +68,9 @@ class EquipmentRequestService
             er.id_user,
             er.equipment_status,
             er.id_good,
+            er.assigned_manager_id,
+						er.assigned_stockman_id,
+            u.email,
             m.photo
         FROM
             equipment_request er
@@ -75,6 +78,8 @@ class EquipmentRequestService
             good g ON er.id_good = g.id_good
         LEFT JOIN
             model m ON g.id_model = m.id_model
+        LEFT JOIN
+            user u ON er.id_user = u.id_user
         LIMIT :itemsPerPage OFFSET :offset
     ";
 		$stmt = $this->pdo->prepare($sql);
@@ -89,11 +94,18 @@ class EquipmentRequestService
 		$totalStmt->execute();
 		$totalItems = $totalStmt->fetchColumn();
 
+		error_log("Data to be sent: " . json_encode([
+			'requests' => $requests,
+			'totalItems' => $totalItems
+	]));
+
 		return [
 			'requests' => $requests,
 			'totalItems' => $totalItems
 		];
 	}
+
+
 
 	public function getAllRequestsByUser($id)
 	{
@@ -160,8 +172,6 @@ class EquipmentRequestService
 		error_log("Result: " . print_r($result, true));
 		return $result;
 	}
-
-
 
 	public function updateRequest($data)
 	{
@@ -231,6 +241,16 @@ class EquipmentRequestService
 		if (isset($data['id_good'])) {
 			$fieldsToUpdate[] = 'id_good = ?';
 			$values[] = $data['id_good'];
+		}
+
+		if (isset($data['assigned_manager_id'])) {
+			$fieldsToUpdate[] = 'assigned_manager_id = ?';
+			$values[] = $data['assigned_manager_id'];
+		}
+
+		if (isset($data['assigned_stockman_id'])) {
+			$fieldsToUpdate[] = 'assigned_stockman_id = ?';
+			$values[] = $data['assigned_stockman_id'];
 		}
 
 		$values[] = $data['id_request'];

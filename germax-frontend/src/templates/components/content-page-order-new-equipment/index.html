@@ -419,3 +419,62 @@
 		</div>
 	</div>
 </div>
+
+<!-- Модальное окно для связи с пользователем -->
+<div class="modal fade" id="request--communication-user-modal" tabindex="-1" aria-labelledby="request--communication-user-modal-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="request--communication-user-modal-label">Pour la moindre question ou problème écrivez votre message au locataire</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<div class="contact-info">
+									<p><strong>Email:</strong> <a href="mailto:" id="userEmail">user@exemple.com</a></p>
+							</div>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+			</div>
+	</div>
+</div>
+
+<!-- Modal для назначения менеджера -->
+<!-- Modal для подтверждения назначения менеджера -->
+<div class="modal fade" id="assignManagerModal" tabindex="-1" aria-labelledby="assignManagerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignManagerModalLabel">Prendre la commande</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       Vous êtes sûr de vouloir prendre en charge cette commande?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="confirmAssignButton">Accepter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Stockman Approval -->
+<div class="modal fade" id="assignStockmanModal" tabindex="-1" aria-labelledby="assignStockmanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignStockmanModalLabel">Confirmer la prise de la commande en charge</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+			<div class="modal-body">
+				Vous êtes sûr de vouloir prendre en charge cette commande?
+			 </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-primary" id="assignStockmanModalButton">Confirmer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -26,6 +26,96 @@ if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
 }
 
+document
+	.getElementById("confirmAssignButton")
+	.addEventListener("click", function () {
+		const requestId = this.getAttribute("data-id");
+		const managerId = localStorage.getItem("id_user");
+		assignManagerToRequest(requestId, managerId)
+			.then((response) => {
+				alert(
+					"Vous avez bien été assigné en tant que manager pour cette commande."
+				);
+				const row = document.querySelector(`tr[data-id="${requestId}"]`);
+				if (row) {
+					row.style.backgroundColor = "lightgreen";
+				}
+				updateTableRow(requestId, {
+					id_request: requestId,
+					assigned_manager_id: managerId,
+					treatment_status: "pending_manager", // или другой статус, который должен быть установлен
+					equipment_status: "equipment_availability_pending", // или другой статус, который должен быть установлен
+				});
+				assignManagerModal.hide();
+			})
+			.catch((error) => {
+				console.error("Ошибка при назначении менеджера на запрос:", error);
+				alert("Ошибка при назначении менеджера на запрос.");
+				assignManagerModal.hide();
+			});
+	});
+
+function assignManagerToRequest(requestId, managerId) {
+	const responseData = {
+		id_request: requestId,
+		assigned_manager_id: managerId,
+	};
+
+	return apiEquipmentRequest.updateEquipmentRequest(responseData);
+}
+
+const assignManagerModal = new Modal(
+	document.getElementById("assignManagerModal")
+);
+
+const assignStockmanModal = new Modal(
+	document.getElementById("assignStockmanModal")
+);
+
+function assignStockmanToRequest(requestId, stockmanId) {
+	console.log("функция assignStockmanToRequest вызвалась");
+	const responseData = {
+		id_request: requestId,
+		assigned_stockman_id: stockmanId,
+	};
+	console.log("assignStockmanToRequest responseData:", responseData);
+	return apiEquipmentRequest.updateEquipmentRequest(responseData);
+}
+
+document
+	.getElementById("assignStockmanModalButton")
+	.addEventListener("click", function () {
+		console.log("происходит клик по кнопке assignStockmanModalButton");
+		const requestId = this.getAttribute("data-id");
+		const stockmanId = localStorage.getItem("id_user");
+		console.log("stockmanId & requestTd:", stockmanId, requestId);
+		assignStockmanToRequest(requestId, stockmanId)
+			.then((response) => {
+				alert(
+					"Vous avez bien été assigné en tant que magasinier pour cette commande."
+				);
+				const row = document.querySelector(`tr[data-id="${requestId}"]`);
+				if (row) {
+					row.style.backgroundColor = "lightblue"; // Установите цвет для подтверждения
+				}
+				updateTableRow(requestId, {
+					id_request: requestId,
+					assigned_stockman_id: stockmanId,
+					// treatment_status: "pending_stockman", // или другой статус, который должен быть установлен
+					// equipment_status: "equipment_availability_pending" // или другой статус, который должен быть установлен
+				});
+				assignStockmanModal.hide();
+			})
+			.catch((error) => {
+				console.error(
+					"Erreur lors de l'affectation du magasinier à la demande:",
+					error
+				);
+				alert("Erreur lors de l'affectation du magasinier à la demande.");
+				assignStockmanModal.hide();
+			});
+	});
+
 // const addCategoryModalElement = document.getElementById("addCategoryModal");
 // const addCategoryModal = new Modal(addCategoryModalElement);
 // async function saveCategory() {
@@ -154,7 +244,6 @@ if (authToken) {
 // 	}
 // }
 
-
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
 	const id_user = JSON.parse(localStorage.getItem("id_user"));
@@ -212,11 +301,17 @@ function renderEquipmentOrder(userData) {
 	titleOrders.innerHTML = ``;
 	listOrdersTitle.innerHTML = ``;
 
-	if (userData.name_permission === "stockman" || userData.name_permission === "admin") {
+	if (
+		userData.name_permission === "stockman" ||
+		userData.name_permission === "admin"
+	) {
 		const titleOrdersRequestMarkup = `<h2>Requêtes du nouvel équipement</h2>`;
 		addingEquipmentContainer.innerHTML = markup;
 		titleOrdersRequest.innerHTML = titleOrdersRequestMarkup;
-	} else if (userData.name_permission === "rental-manager" || userData.name_permission === "admin") {
+	} else if (
+		userData.name_permission === "rental-manager" ||
+		userData.name_permission === "admin"
+	) {
 		const titleOrdersMarkup = `<h2>Nouvelle commande d'équipement</h2>`;
 		const markup = `
 		<div class="order-form mb-4">
@@ -299,60 +394,73 @@ function renderEquipmentOrder(userData) {
 }
 // обновление таблицы с сортировкой и пагинацией
 
-let sortField = ''; // Поле для сортировки
-let sortOrder = 'asc'; // Порядок сортировки: 'asc' или 'desc'
+let sortField = ""; // Поле для сортировки
+let sortOrder = "asc"; // Порядок сортировки: 'asc' или 'desc'
 
-function updateEquipmentRequestsTable(namePermission, page = 1, itemsPerPage = 10, sortField = '', sortOrder = 'asc') {
-    apiEquipmentRequest
-        .getAllRequests(page, itemsPerPage)
-        .then((data) => {
-            let requests = data.data;
+function updateEquipmentRequestsTable(
+	namePermission,
+	page = 1,
+	itemsPerPage = 10,
+	sortField = "",
+	sortOrder = "asc"
+) {
+	apiEquipmentRequest
+		.getAllRequests(page, itemsPerPage)
+		.then((data) => {
+			let requests = data.data;
 
-            // Сортируем данные
-            if (sortField) {
-                requests.sort((a, b) => {
-                    if (sortOrder === 'asc') {
-                        return a[sortField] > b[sortField] ? 1 : -1;
-                    } else {
-                        return a[sortField] < b[sortField] ? 1 : -1;
-                    }
-                });
-            }
+			// Сортируем данные
+			if (sortField) {
+				requests.sort((a, b) => {
+					if (sortOrder === "asc") {
+						return a[sortField] > b[sortField] ? 1 : -1;
+					} else {
+						return a[sortField] < b[sortField] ? 1 : -1;
+					}
+				});
+			}
 
-            const tableBody = document.querySelector(".table tbody");
-            tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
+			const tableBody = document.querySelector(".table tbody");
+			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
 
-            if (data.success && Array.isArray(requests)) {
-                requests.forEach((request) => {
-                    if (
-                        namePermission !== "stockman" && namePermission !== "admin" ||
-                        isStatusVisibleForStockman(request.treatment_status)
-                    ) {
-                        if (
-                            namePermission === "stockman" || namePermission === "admin" &&
-                            request.treatment_status === "closed_by_stockman" &&
-                            request.equipment_status === "received"
-                        ) {
-                            request.treatment_status = "demande fermée";
-                            request.equipment_status = "délivré";
-                        }
+			if (data.success && Array.isArray(requests)) {
+				requests.forEach((request) => {
+					const isAssignedToCurrentManager =
+						request.assigned_manager_id === null ||
+						request.assigned_manager_id ===
+							parseInt(localStorage.getItem("id_user"), 10);
 
-                        const row = createTableRow(request, namePermission);
-                        tableBody.innerHTML += row;
-                    }
-                });
-                updatePaginationControls(data.totalItems, page, itemsPerPage);
-            } else {
-                console.error("No data found or data is not an array:", data);
-                alert("No data found or data format error.");
-            }
-        })
-        .catch((error) => {
-            console.error("Failed to fetch equipment requests:", error);
-            alert("Error fetching equipment requests.");
-        });
+					if (
+						(namePermission === "rental-manager" &&
+							isAssignedToCurrentManager) ||
+						(namePermission === "stockman" &&
+							isStatusVisibleForStockman(request.treatment_status)) ||
+						namePermission === "admin"
+					) {
+						// if (
+						// 		namePermission === "stockman" ||
+						// 		(namePermission === "admin" &&
+						// 				request.treatment_status === "closed_by_stockman" &&
+						// 				request.equipment_status === "received")
+						// ) {
+						// 		request.treatment_status = "demande fermée";
+						// 		request.equipment_status = "délivré";
+						// }
+						const row = createTableRow(request, namePermission);
+						tableBody.innerHTML += row;
+					}
+				});
+				updatePaginationControls(data.totalItems, page, itemsPerPage);
+			} else {
+				console.error("No data found or data is not an array:", data);
+				alert("No data found or data format error.");
+			}
+		})
+		.catch((error) => {
+			console.error("Failed to fetch equipment requests:", error);
+			alert("Error fetching equipment requests.");
+		});
 }
-
 
 let currentPage = 1;
 const itemsPerPage = 10;
@@ -366,36 +474,47 @@ function updatePaginationControls(totalItems, currentPage, itemsPerPage) {
 	const nextPageBtn = document.getElementById("nextPageBtn");
 
 	if (pageInfo) {
-			pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+		pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
 	} else {
-			console.error("Element with id 'pageInfo' not found.");
+		console.error("Element with id 'pageInfo' not found.");
 	}
 
 	if (prevPageBtn) {
-			prevPageBtn.disabled = currentPage === 1;
+		prevPageBtn.disabled = currentPage === 1;
 	} else {
-			console.error("Element with id 'prevPageBtn' not found.");
+		console.error("Element with id 'prevPageBtn' not found.");
 	}
 
 	if (nextPageBtn) {
-			nextPageBtn.disabled = currentPage === totalPages;
+		nextPageBtn.disabled = currentPage === totalPages;
 	} else {
-			console.error("Element with id 'nextPageBtn' not found.");
+		console.error("Element with id 'nextPageBtn' not found.");
 	}
 }
 
 document.getElementById("prevPageBtn").addEventListener("click", () => {
 	if (currentPage > 1) {
-			currentPage--;
-			updateEquipmentRequestsTable(localStorage.getItem("namePermission"), currentPage, itemsPerPage, sortField, sortOrder);
+		currentPage--;
+		updateEquipmentRequestsTable(
+			localStorage.getItem("namePermission"),
+			currentPage,
+			itemsPerPage,
+			sortField,
+			sortOrder
+		);
 	}
 });
 
 document.getElementById("nextPageBtn").addEventListener("click", () => {
 	currentPage++;
-	updateEquipmentRequestsTable(localStorage.getItem("namePermission"), currentPage, itemsPerPage, sortField, sortOrder);
+	updateEquipmentRequestsTable(
+		localStorage.getItem("namePermission"),
+		currentPage,
+		itemsPerPage,
+		sortField,
+		sortOrder
+	);
 });
-
 
 // recherche par utilisateur
 
@@ -426,9 +545,34 @@ const categoryByIdType = {
 function createTableRow(request, namePermission) {
 	let actionsMarkup = "";
 
-	// Преобразование статусов для кладовщика
 	let treatmentStatus = request.treatment_status;
 	let equipmentStatus = request.equipment_status;
+	const isAssignedToCurrentManager =
+		request.assigned_manager_id ===
+		parseInt(localStorage.getItem("id_user"), 10);
+	const isAssignedToCurrentStockman =
+		request.assigned_stockman_id ===
+		parseInt(localStorage.getItem("id_user"), 10);
+	const dateStart =
+		request.date_start && request.date_start !== "0000-00-00"
+			? request.date_start
+			: "les dates n'ont pas été indiquées";
+	const dateEnd =
+		request.date_end && request.date_end !== "0000-00-00"
+			? request.date_end
+			: "les dates n'ont pas été indiquées";
+
+	// Добавление кнопки "Принять заказ" для заявок, если менеджер не назначен
+	if (
+		request.assigned_manager_id === null &&
+		namePermission === "rental-manager"
+	) {
+		actionsMarkup = `
+					<li><a class="dropdown-item assign-manager" href="#" data-id="${request.id_request}">Prendre la commande</a></li>
+			`;
+	}
+
+	// Добавление кнопки "Принять заказ" для заявок, если кладовщик не назначен
 
 	if (namePermission === "stockman" || namePermission === "admin") {
 		if (
@@ -464,7 +608,10 @@ function createTableRow(request, namePermission) {
 			treatmentStatus = "traité avec le manager";
 			equipmentStatus = "envoyé";
 		}
-	} else if (namePermission === "rental-manager" || namePermission === "admin") {
+	} else if (
+		namePermission === "rental-manager" ||
+		namePermission === "admin"
+	) {
 		if (
 			treatmentStatus === "treated_manager_user" &&
 			equipmentStatus === "equipment_availability_pending"
@@ -481,7 +628,7 @@ function createTableRow(request, namePermission) {
 			treatmentStatus === "rental_details_discussion_manager_user" &&
 			equipmentStatus === "equipment_availability_pending"
 		) {
-			treatmentStatus = "confirmation attendue de l'utilisateur";
+			treatmentStatus = "confirmation attendue du locataire";
 			equipmentStatus = "disponibilité de l'équipement en attente";
 		} else if (
 			treatmentStatus === "closed_by_stockman" &&
@@ -492,111 +639,145 @@ function createTableRow(request, namePermission) {
 		}
 	}
 
-	const dateStart = (request.date_start && request.date_start !== "0000-00-00")
-		? request.date_start
-		: "les dates n'ont pas été indiquées";
-	const dateEnd = (request.date_end && request.date_end !== "0000-00-00")
-		? request.date_end
-		: "les dates n'ont pas été indiquées";
-
 	if (namePermission === "rental-manager" || namePermission === "admin") {
 		if (request.treatment_status === "pending_manager") {
-			treatmentStatus = "vérifier la nouvelle requête et l'envoyer aux gérants du stock";
+			treatmentStatus =
+				"vérifier la nouvelle requête et l'envoyer aux gérants du stock";
 			equipmentStatus = "à rechercher";
-			actionsMarkup = `
-			<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
-			<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
-			`;
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
+											<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
+									`;
+			}
+		} else if (
+			request.treatment_status === "rental_details_discussion_manager_user"
+		) {
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal" data-email="${request.email}">Contacter le locataire</a></li>
+											<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier les dates</a></li>`;
+			}
 		} else if (request.treatment_status === "treated_manager_user") {
-			actionsMarkup = `
-			<li><a class="dropdown-item send-to-stockman" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#stockmanApprovalModal">Envoyer pour approbation avec le magasinier</a></li>
-			`;
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item send-to-stockman" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#stockmanApprovalModal">Envoyer pour approbation avec le magasinier</a></li>
+									`;
+			}
 		} else if (
 			request.treatment_status === "rental_details_discussion_manager_stockman"
 		) {
 			treatmentStatus = "confirmer l'envoi";
 			equipmentStatus = "trouvé";
-			actionsMarkup = `
-			<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi</a></li>
-			`;
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi</a></li>
+									`;
+			}
 		} else if (request.treatment_status === "sent_awaiting") {
 			treatmentStatus = "en attente d'envoi";
 			equipmentStatus = "trouvé";
-			actionsMarkup = `
-			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le user</a></li>
-			`;
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+									`;
+			}
 		} else if (request.treatment_status === "treated_rental_manager_stockman") {
 			treatmentStatus = "envoyé";
 			equipmentStatus = "trouvé";
-			actionsMarkup = `
-			<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
-			`;
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
+									`;
+			}
 		} else if (
 			request.treatment_status === "closed_by_stockman" &&
 			request.equipment_status === "received"
 		) {
-			actionsMarkup = `
-			<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
-			`;
+			if (isAssignedToCurrentManager) {
+				actionsMarkup = `
+											<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
+									`;
+			}
 		} else {
 			if (namePermission === "admin") {
 				actionsMarkup = `
-					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
-				`;
+											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+									`;
 			} else {
-				actionsMarkup = `
-					<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
-				`;
+				if (isAssignedToCurrentManager) {
+					actionsMarkup = `
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+											`;
+				}
 			}
 		}
 	} else if (namePermission === "stockman" || namePermission === "admin") {
 		if (request.treatment_status === "pending_stockman") {
-			actionsMarkup = `
-			<li><a class="dropdown-item stockman-send-response" href="#" data-id="${request.id_request}">Envoyer une réponse</a></li>
-			`;
+			if (isAssignedToCurrentStockman) {
+				actionsMarkup = `
+									<li><a class="dropdown-item stockman-send-response" href="#" data-id="${request.id_request}">Envoyer une réponse</a></li>
+							`;
+			} else {
+				actionsMarkup = `
+									<li><a class="dropdown-item assign-stockman" href="#" data-id="${request.id_request}">Prendre la commande</a></li>
+							`;
+			}
 		} else if (request.treatment_status === "sent_awaiting") {
-			actionsMarkup = `
-			<li><a class="dropdown-item stockman-send-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#sendingItemModal">Envoyer l'équipement</a></li>`;
+			if (isAssignedToCurrentStockman) {
+				actionsMarkup = `
+									<li><a class="dropdown-item stockman-send-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#sendingItemModal">Envoyer l'équipement</a></li>`;
+			}
 		} else {
 			actionsMarkup = `
-			<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-			`;
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+							`;
 		}
 	}
 
 	return `
-			<tr data-id="${request.id_request}" data-date-start="${
+					<tr data-id="${request.id_request}" data-date-start="${
 		request.date_start
 	}" data-date-end="${request.date_end}">
-					<td>${request.id_request}</td>
-					<td data-equipment-name>${request.equipment_name}</td>
-					<td>${categoryByIdType[request.id_type] || "N/A"}</td>
-					<td>${request.quantity}</td>
-					<td>${request.request_date}</td>
-					<td>${dateStart}</td>
-          <td>${dateEnd}</td>
-					<td>${treatmentStatus}</td>
-					<td>${equipmentStatus}</td>
-					<td>
-							<div class="dropdown">
-									<button class="btn btn-secondary dropdown-toggle" type="button"
-											id="dropdownMenuButton${
-												request.id_request
-											}" data-bs-toggle="dropdown" aria-expanded="false">
-											Choisir une action
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${
-										request.id_request
-									}">
-											${actionsMarkup}
-									</ul>
-							</div>
-					</td>
-			</tr>
+									<td>${request.id_request}</td>
+									<td data-equipment-name>${request.equipment_name}</td>
+									<td>${categoryByIdType[request.id_type] || "N/A"}</td>
+									<td>${request.quantity}</td>
+									<td>${request.request_date}</td>
+									<td>${dateStart}</td>
+									<td>${dateEnd}</td>
+									<td>${treatmentStatus}</td>
+									<td>${equipmentStatus}</td>
+									<td>
+													<div class="dropdown">
+																	<button class="btn btn-secondary dropdown-toggle" type="button"
+																					id="dropdownMenuButton${
+																						request.id_request
+																					}" data-bs-toggle="dropdown" aria-expanded="false">
+																					Choisir une action
+																	</button>
+																	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${
+																		request.id_request
+																	}">
+																					${actionsMarkup}
+																	</ul>
+													</div>
+									</td>
+					</tr>
 	`;
 }
+
+const userModal = document.getElementById("request--communication-user-modal");
+
+userModal.addEventListener("show.bs.modal", function (event) {
+	const button = event.relatedTarget;
+	const email = button.getAttribute("data-email");
+	const emailLink = userModal.querySelector("#userEmail");
+	emailLink.href = `mailto:${email}`;
+	emailLink.textContent = email;
+});
 
 //vérifier la disponibilité
 //модальное окно
@@ -655,7 +836,14 @@ const handOverModal = new Modal(document.getElementById("handOverModal"));
 updateEquipmentRequestsTable(namePermission);
 
 document.querySelector(".table").addEventListener("click", (event) => {
-	if (event.target.classList.contains("edit-request")) {
+	if (event.target.classList.contains("assign-manager")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		document
+			.getElementById("confirmAssignButton")
+			.setAttribute("data-id", requestId);
+		assignManagerModal.show();
+	} else if (event.target.classList.contains("edit-request")) {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
 		openEditModal(requestId);
@@ -687,6 +875,14 @@ document.querySelector(".table").addEventListener("click", (event) => {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
 		openHandOverModal(requestId);
+	} else if (event.target.classList.contains("assign-stockman")) {
+		event.preventDefault();
+		const requestId = event.target.getAttribute("data-id");
+		console.log("requestId по клику", requestId);
+		document
+			.getElementById("assignStockmanModalButton")
+			.setAttribute("data-id", requestId);
+		assignStockmanModal.show();
 	}
 });
 
@@ -789,7 +985,6 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 
 function updateSingleRow(requestId, updatedData) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-
 	if (!row) return;
 
 	let updatedTreatmentStatus = updatedData.treatment_status;
@@ -809,16 +1004,24 @@ function updateSingleRow(requestId, updatedData) {
 		updatedEquipmentStatus = "trouvé";
 	}
 
-	const dateStart = (updatedData.date_start && updatedData.date_start !== "0000-00-00")
-		? updatedData.date_start
-		: "les dates n'ont pas été indiquées";
-	const dateEnd = (updatedData.date_end && updatedData.date_end !== "0000-00-00")
-		? updatedData.date_end
-		: "les dates n'ont pas été indiquées";
+	const dateStart =
+		updatedData.date_start && updatedData.date_start !== "0000-00-00"
+			? updatedData.date_start
+			: row.children[5].textContent !== "les dates n'ont pas été indiquées"
+			? row.children[5].textContent
+			: "les dates n'ont pas été indiquées";
+	const dateEnd =
+		updatedData.date_end && updatedData.date_end !== "0000-00-00"
+			? updatedData.date_end
+			: row.children[6].textContent !== "les dates n'ont pas été indiquées"
+			? row.children[6].textContent
+			: "les dates n'ont pas été indiquées";
 
 	row.querySelector("[data-equipment-name]").textContent =
-		updatedData.equipment_name;
-	row.children[3].textContent = updatedData.quantity;
+		updatedData.equipment_name ||
+		row.querySelector("[data-equipment-name]").textContent;
+	row.children[3].textContent =
+		updatedData.quantity || row.children[3].textContent;
 	row.children[5].textContent = dateStart;
 	row.children[6].textContent = dateEnd;
 
@@ -828,6 +1031,21 @@ function updateSingleRow(requestId, updatedData) {
 
 	if (updatedEquipmentStatus !== undefined) {
 		row.children[8].textContent = updatedEquipmentStatus;
+	}
+
+	const actionsCell = row.querySelector(".dropdown-menu");
+	if (actionsCell) {
+		let actionsMarkup = "";
+
+		if (updatedData.assigned_manager_id) {
+			actionsMarkup = `<li><a class="dropdown-item confirm-approval" href="#" data-id="${requestId}">Confirmer l'approbation</a></li>`;
+		}
+
+		if (updatedData.assigned_stockman_id) {
+			actionsMarkup = `<li><a class="dropdown-item stockman-send-response" href="#" data-id="${requestId}">Envoyer une réponse</a></li>`;
+		}
+
+		actionsCell.innerHTML = actionsMarkup;
 	}
 }
 
@@ -1084,7 +1302,7 @@ function sendToStockman(requestId) {
 		treatment_status: "pending_stockman",
 		equipment_status: "equipment_availability_pending",
 	};
-	console.log(updatedData);
+	console.log("data send to stockman:", updatedData);
 
 	apiEquipmentRequest
 		.updateEquipmentRequest(updatedData)
@@ -1093,7 +1311,11 @@ function sendToStockman(requestId) {
 				"Les données ont été envoyées avec succès pour approbation avec le magasinier !"
 			);
 			// статус который будет видно до обновления
-			updateTableRowStatus(requestId, "la requête est envoyée au gestionnaire");
+			updateTableRowStatus(
+				requestId,
+				"la requête est envoyée au gestionnaire",
+				"disponibilité de l'équipement en attente"
+			);
 		})
 		.catch((error) => {
 			console.error(
@@ -1481,28 +1703,33 @@ function closeRequestByStockman(requestId, status) {
 
 // сортировка
 
-document.querySelectorAll('.sortButton').forEach(button => {
-	button.addEventListener('click', function() {
-			const fieldMap = {
-					"Numéro de Commande": "id_request",
-					"Nom de l'Équipement": "equipment_name",
-					"Catégorie": "id_type",
-					"Quantité": "quantity",
-					"Date de la Commande": "request_date",
-					"Date du début de location": "date_start",
-					"Date de fin de location": "date_end",
-					"Statut de la Requête": "treatment_status",
-					"Statut de l'équipement": "equipment_status"
-			};
-			const field = fieldMap[this.parentElement.textContent.trim()];
-			const order = this.getAttribute('data-order') === 'asc' ? 'desc' : 'asc';
-			this.setAttribute('data-order', order);
-			sortField = field;
-			sortOrder = order;
-			updateEquipmentRequestsTable(namePermission, currentPage, itemsPerPage, sortField, sortOrder);
+document.querySelectorAll(".sortButton").forEach((button) => {
+	button.addEventListener("click", function () {
+		const fieldMap = {
+			"Numéro de Commande": "id_request",
+			"Nom de l'Équipement": "equipment_name",
+			Catégorie: "id_type",
+			Quantité: "quantity",
+			"Date de la Commande": "request_date",
+			"Date du début de location": "date_start",
+			"Date de fin de location": "date_end",
+			"Statut de la Requête": "treatment_status",
+			"Statut de l'équipement": "equipment_status",
+		};
+		const field = fieldMap[this.parentElement.textContent.trim()];
+		const order = this.getAttribute("data-order") === "asc" ? "desc" : "asc";
+		this.setAttribute("data-order", order);
+		sortField = field;
+		sortOrder = order;
+		updateEquipmentRequestsTable(
+			namePermission,
+			currentPage,
+			itemsPerPage,
+			sortField,
+			sortOrder
+		);
 	});
 });
-
 
 const backArrowContainer = document.getElementById("backArrowContainer");
 
@@ -1510,7 +1737,8 @@ if (backArrowContainer) {
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
-	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrow.innerHTML =
+		'<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
 	backArrowContainer.appendChild(backArrow);
 }
 
