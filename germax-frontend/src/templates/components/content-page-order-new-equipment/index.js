@@ -1045,6 +1045,10 @@ function updateSingleRow(requestId, updatedData) {
 			actionsMarkup = `<li><a class="dropdown-item stockman-send-response" href="#" data-id="${requestId}">Envoyer une réponse</a></li>`;
 		}
 
+		if (updatedTreatmentStatus === "rental_details_discussion_manager_stockman" && updatedEquipmentStatus === "found") {
+			actionsMarkup = `<li><a class="dropdown-item contacter-manager" href="#" data-id="${requestId}">Contacter le manager</a></li>`;
+	}
+
 		actionsCell.innerHTML = actionsMarkup;
 	}
 }
@@ -1421,135 +1425,147 @@ document
 				equipmentPhoto,
 				serialNumbersData
 			);
+
+			updateTableRow(requestId, {
+				id_request: requestId,
+				treatment_status: "rental_details_discussion_manager_stockman",
+				equipment_status: "found",
+				quantity: 1
+		});
 		} else {
 			closeRequestByStockman(requestId, "closed_by_stockman");
 		}
 	});
 
-async function approveRequest(
-	requestId,
-	rentalDateStart,
-	rentalDateEnd,
-	equipmentName,
-	equipmentIdType,
-	equipmentBrand,
-	equipmentDescription,
-	equipmentPhoto,
-	serialNumbersData
-) {
-	try {
-		const id_user = localStorage.getItem("id_user");
-		const goodIds = [];
-		const responsePromises = [];
-		let newRequestId = requestId;
+	async function approveRequest(
+		requestId,
+		rentalDateStart,
+		rentalDateEnd,
+		equipmentName,
+		equipmentIdType,
+		equipmentBrand,
+		equipmentDescription,
+		equipmentPhoto,
+		serialNumbersData
+	) {
+		try {
+			const id_user = localStorage.getItem("id_user");
+			const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
+			const assignedManagerId = existingRequest.assigned_manager_id;
+			const assignedStockmanId = existingRequest.assigned_stockman_id;
+			const goodIds = [];
+			const responsePromises = [];
+			let newRequestId = requestId;
 
-		// Загрузка фото
-		let photoUrl = "";
-		if (equipmentPhoto) {
-			const formData = new FormData();
-			formData.append("file", equipmentPhoto);
-			const uploadResponse = await fetch("http://germax-api/upload", {
-				method: "POST",
-				body: formData,
-			});
-			const uploadData = await uploadResponse.json();
-			if (uploadData.success) {
-				photoUrl = uploadData.url;
-			} else {
-				throw new Error(uploadData.message);
-			}
-		}
-
-		const serialNumbers = serialNumbersData.map((data) =>
-			data.serialNumber.trim()
-		);
-
-		// Получение request_date из существующей записи
-		const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
-		const requestDate = existingRequest.request_date;
-		const updatedDataArray = [];
-
-		// Создание новых good и записей в equipment_request
-		for (const [index, data] of serialNumbersData.entries()) {
-			console.log("data:", data);
-			console.log("Sending data to createGood:", {
-				modelName: equipmentName.trim(),
-				statusId: 4,
-				serialNumbers: [data.serialNumber.trim()],
-				id_type: equipmentIdType,
-				brandName: equipmentBrand.trim(),
-				description: equipmentDescription.trim(),
-				photo: photoUrl, // Передаем фото
-			});
-			const goodData = await apiGoods.createGood({
-				modelName: equipmentName.trim(),
-				statusId: 4,
-				serialNumbers: [data.serialNumber.trim()],
-				id_type: equipmentIdType,
-				brandName: equipmentBrand.trim(),
-				description: equipmentDescription.trim(),
-				photo: photoUrl,
-			});
-
-			if (
-				goodData &&
-				goodData.id_good &&
-				goodData.id_good.goods &&
-				goodData.id_good.goods.length > 0 &&
-				goodData.id_good.goods[0].id_good
-			) {
-				const idGood = goodData.id_good.goods[0].id_good;
-				goodIds.push(idGood);
-
-				const responseData = {
-					quantity: 1,
-					equipment_name: equipmentName,
-					id_request: requestId,
-					date_start: rentalDateStart,
-					date_end: rentalDateEnd,
-					treatment_status: "rental_details_discussion_manager_stockman",
-					equipment_status: "found",
-					id_user,
-					id_type: equipmentIdType,
-					id_good: idGood,
-					request_date: requestDate,
-				};
-
-				if (index === 0) {
-					// Обновление существующей записи для первой единицы оборудования
-					console.log(
-						"Updating existing record with responseData",
-						responseData
-					);
-					responsePromises.push(
-						apiEquipmentRequest.updateEquipmentRequest(responseData)
-					);
+			// Загрузка фото
+			let photoUrl = "";
+			if (equipmentPhoto) {
+				const formData = new FormData();
+				formData.append("file", equipmentPhoto);
+				const uploadResponse = await fetch("http://germax-api/upload", {
+					method: "POST",
+					body: formData,
+				});
+				const uploadData = await uploadResponse.json();
+				if (uploadData.success) {
+					photoUrl = uploadData.url;
 				} else {
-					// Создание новых записей для последующих единиц оборудования
-					newRequestId = parseInt(newRequestId) + 1;
-					responseData.id_request = newRequestId;
-					console.log("Creating new record with responseData", responseData);
-					responsePromises.push(
-						apiEquipmentRequest.createRequest(responseData)
-					);
-					updatedDataArray.push(responseData);
+					throw new Error(uploadData.message);
 				}
-			} else {
-				console.error("Invalid response from createGood:", goodData);
-				throw new Error("Invalid response from createGood");
 			}
-		}
 
-		await Promise.all(responsePromises);
-		console.log("Updated request data array:", updatedDataArray);
-		updateTableRow(requestId, updatedDataArray, true);
-		alert("La réponse a été envoyée au manager!");
-		stockmanResponseModal.hide();
-	} catch (error) {
-		console.error("Error during approveRequest:", error);
-		alert("Error during approveRequest.");
+			const serialNumbers = serialNumbersData.map((data) =>
+				data.serialNumber.trim()
+			);
+
+			// Получение request_date из существующей записи
+			const requestDate = existingRequest.request_date;
+			const updatedDataArray = [];
+
+			// Создание новых good и записей в equipment_request
+			for (const [index, data] of serialNumbersData.entries()) {
+				console.log("data:", data);
+				console.log("Sending data to createGood:", {
+					modelName: equipmentName.trim(),
+					statusId: 4,
+					serialNumbers: [data.serialNumber.trim()],
+					id_type: equipmentIdType,
+					brandName: equipmentBrand.trim(),
+					description: equipmentDescription.trim(),
+					photo: photoUrl, // Передаем фото
+				});
+				const goodData = await apiGoods.createGood({
+					modelName: equipmentName.trim(),
+					statusId: 4,
+					serialNumbers: [data.serialNumber.trim()],
+					id_type: equipmentIdType,
+					brandName: equipmentBrand.trim(),
+					description: equipmentDescription.trim(),
+					photo: photoUrl,
+				});
+
+				if (
+					goodData &&
+					goodData.id_good &&
+					goodData.id_good.goods &&
+					goodData.id_good.goods.length > 0 &&
+					goodData.id_good.goods[0].id_good
+				) {
+					const idGood = goodData.id_good.goods[0].id_good;
+					goodIds.push(idGood);
+
+					const responseData = {
+						quantity: 1,
+						equipment_name: equipmentName,
+						id_request: requestId,
+						date_start: rentalDateStart,
+						date_end: rentalDateEnd,
+						treatment_status: "rental_details_discussion_manager_stockman",
+						equipment_status: "found",
+						id_user,
+						id_type: equipmentIdType,
+						id_good: idGood,
+						request_date: requestDate,
+						assigned_manager_id: assignedManagerId,
+						assigned_stockman_id: assignedStockmanId,
+					};
+
+					if (index === 0) {
+						// Обновление существующей записи для первой единицы оборудования
+						console.log(
+							"Updating existing record with responseData",
+							responseData
+						);
+						responsePromises.push(
+							apiEquipmentRequest.updateEquipmentRequest(responseData)
+						);
+					} else {
+						// Создание новых записей для последующих единиц оборудования
+						newRequestId = parseInt(newRequestId) + 1;
+						responseData.id_request = newRequestId;
+						console.log("Creating new record with responseData", responseData);
+						responsePromises.push(
+							apiEquipmentRequest.createRequest(responseData)
+						);
+						updatedDataArray.push(responseData);
+					}
+				} else {
+					console.error("Invalid response from createGood:", goodData);
+					throw new Error("Invalid response from createGood");
+				}
+			}
+
+			await Promise.all(responsePromises);
+			console.log("Updated request data array:", updatedDataArray);
+			updateTableRow(requestId, updatedDataArray, true);
+			alert("La réponse a été envoyée au manager!");
+			stockmanResponseModal.hide();
+		} catch (error) {
+			console.error("Error during approveRequest:", error);
+			alert("Error during approveRequest.");
+		}
 	}
-}
+
 
 function confirmSending(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
