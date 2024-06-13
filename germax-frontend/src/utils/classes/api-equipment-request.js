@@ -99,7 +99,6 @@ export class ApiEquipmentRequest {
 			cache: "no-store",
 		})
 			.then((response) => {
-				console.log("Raw response:", response);
 				return response.text().then((text) => {
 					let jsonData;
 					try {

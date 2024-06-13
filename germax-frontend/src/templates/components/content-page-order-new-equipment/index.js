@@ -929,6 +929,7 @@ document
 
 function updateTableRow(requestId, updatedData, isArray = false) {
 	const tableBody = document.querySelector(".table tbody");
+	console.log("updateTableRow called with requestId:", requestId, "updatedData:", updatedData, "isArray:", isArray);
 
 	// Функция для создания элемента DOM из строки HTML
 	const createElementFromHTML = (htmlString) => {
@@ -942,6 +943,7 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 		// Удаление старой строки для requestId
 		const existingRow = document.querySelector(`tr[data-id="${requestId}"]`);
 		if (existingRow) {
+			console.log("Removing existing row for requestId:", requestId);
 			tableBody.removeChild(existingRow);
 		}
 
