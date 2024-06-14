@@ -261,15 +261,12 @@ function fetchAuthUser(url) {
 		},
 	})
 		.then((response) => {
-			console.log("HTTP Status:", response.status);
 			const json = response.json();
 			if (!response.ok) return Promise.reject(json);
 			console.log("Data received:", json);
 			return json;
 		})
 		.then((data) => {
-			console.log("data:", data);
-			console.log("namePermission", data.data.name_permission);
 			renderEquipmentOrder(data.data);
 			localStorage.setItem("namePermission", data.data.name_permission); // Сохраняем роль пользователя
 			updateEquipmentRequestsTable(data.data.name_permission);
@@ -287,7 +284,6 @@ function renderEquipmentOrder(userData) {
 		"equipmentAddingContainer"
 	);
 	const titleOrdersRequest = document.getElementById("titleOrdersRequest");
-	console.log("titleOrdersRequest", titleOrdersRequest);
 	const orderEquipmentContainer = document.getElementById("orderForm");
 	const titleOrders = document.getElementById("titleOrders");
 	const listOrdersTitle = document.getElementById("listOrdersTitle");
@@ -573,7 +569,6 @@ function createTableRow(request, namePermission) {
 	}
 
 	// Добавление кнопки "Принять заказ" для заявок, если кладовщик не назначен
-
 	if (namePermission === "stockman" || namePermission === "admin") {
 		if (
 			treatmentStatus === "pending_stockman" &&
@@ -646,23 +641,23 @@ function createTableRow(request, namePermission) {
 			equipmentStatus = "à rechercher";
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
-											<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
-									`;
+									<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier et soumettre pour approbation</a></li>
+									<li><a class="dropdown-item confirm-approval" href="#" data-id="${request.id_request}">Confirmer l'approbation</a></li>
+							`;
 			}
 		} else if (
 			request.treatment_status === "rental_details_discussion_manager_user"
 		) {
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal" data-email="${request.email}">Contacter le locataire</a></li>
-											<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier les dates</a></li>`;
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal" data-email="${request.email}">Contacter le locataire</a></li>
+									<li><a class="dropdown-item edit-request" href="#" data-id="${request.id_request}">Modifier les dates</a></li>`;
 			}
 		} else if (request.treatment_status === "treated_manager_user") {
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item send-to-stockman" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#stockmanApprovalModal">Envoyer pour approbation avec le magasinier</a></li>
-									`;
+									<li><a class="dropdown-item send-to-stockman" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#stockmanApprovalModal">Envoyer pour approbation avec le magasinier</a></li>
+							`;
 			}
 		} else if (
 			request.treatment_status === "rental_details_discussion_manager_stockman"
@@ -671,25 +666,25 @@ function createTableRow(request, namePermission) {
 			equipmentStatus = "trouvé";
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi</a></li>
-									`;
+									<li><a class="dropdown-item confirm-sending-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmSendingModal">confirmer l'envoi</a></li>
+							`;
 			}
 		} else if (request.treatment_status === "sent_awaiting") {
 			treatmentStatus = "en attente d'envoi";
 			equipmentStatus = "trouvé";
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
-									`;
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+							`;
 			}
 		} else if (request.treatment_status === "treated_rental_manager_stockman") {
 			treatmentStatus = "envoyé";
 			equipmentStatus = "trouvé";
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
-									`;
+									<li><a class="dropdown-item confirm-receiving-item" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#confirmReceivingModal">confirmer la réception</a></li>
+							`;
 			}
 		} else if (
 			request.treatment_status === "closed_by_stockman" &&
@@ -697,20 +692,20 @@ function createTableRow(request, namePermission) {
 		) {
 			if (isAssignedToCurrentManager) {
 				actionsMarkup = `
-											<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
-									`;
+									<li><a class="dropdown-item confirm-hand-over" href="#" data-id="${request.id_request}" data-bs-toggle="modal" data-bs-target="#handOverModal">confirmer la remise du matériel</a></li>
+							`;
 			}
 		} else {
 			if (namePermission === "admin") {
 				actionsMarkup = `
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
-									`;
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+							`;
 			} else {
 				if (isAssignedToCurrentManager) {
 					actionsMarkup = `
-													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
-											`;
+											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-user-modal">Contacter le locataire</a></li>
+									`;
 				}
 			}
 		}
@@ -732,40 +727,37 @@ function createTableRow(request, namePermission) {
 			}
 		} else {
 			actionsMarkup = `
-									<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
-							`;
+							<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#request--communication-manager-modal">Contacter le manager</a></li>
+					`;
 		}
 	}
 
+	const idType = categoryByIdType[request.id_type] || "N/A";
+	const equipmentName = request.equipment_name || "N/A";
+	const requestDate = request.request_date || "N/A";
+
 	return `
-					<tr data-id="${request.id_request}" data-date-start="${
-		request.date_start
-	}" data-date-end="${request.date_end}">
-									<td>${request.id_request}</td>
-									<td data-equipment-name>${request.equipment_name}</td>
-									<td>${categoryByIdType[request.id_type] || "N/A"}</td>
-									<td>${request.quantity}</td>
-									<td>${request.request_date}</td>
-									<td>${dateStart}</td>
-									<td>${dateEnd}</td>
-									<td>${treatmentStatus}</td>
-									<td>${equipmentStatus}</td>
-									<td>
-													<div class="dropdown">
-																	<button class="btn btn-secondary dropdown-toggle" type="button"
-																					id="dropdownMenuButton${
-																						request.id_request
-																					}" data-bs-toggle="dropdown" aria-expanded="false">
-																					Choisir une action
-																	</button>
-																	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${
-																		request.id_request
-																	}">
-																					${actionsMarkup}
-																	</ul>
-													</div>
-									</td>
-					</tr>
+			<tr data-id="${request.id_request}" data-date-start="${dateStart}" data-date-end="${dateEnd}">
+					<td>${request.id_request}</td>
+					<td data-equipment-name>${equipmentName}</td>
+					<td>${idType}</td>
+					<td>${request.quantity}</td>
+					<td>${requestDate}</td>
+					<td>${dateStart}</td>
+					<td>${dateEnd}</td>
+					<td>${treatmentStatus}</td>
+					<td>${equipmentStatus}</td>
+					<td>
+							<div class="dropdown">
+									<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${request.id_request}" data-bs-toggle="dropdown" aria-expanded="false">
+											Choisir une action
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${request.id_request}">
+											${actionsMarkup}
+									</ul>
+							</div>
+					</td>
+			</tr>
 	`;
 }
 
@@ -927,62 +919,105 @@ document
 		editModal.hide();
 	});
 
+function createElementFromHTML(htmlString) {
+	const template = document.createElement("template");
+	template.innerHTML = htmlString.trim();
+	return template.content.firstChild;
+}
+
 function updateTableRow(requestId, updatedData, isArray = false) {
 	const tableBody = document.querySelector(".table tbody");
-	console.log("updateTableRow called with requestId:", requestId, "updatedData:", updatedData, "isArray:", isArray);
+	console.log(
+		"updateTableRow called with requestId:",
+		requestId,
+		"updatedData:",
+		updatedData,
+		"isArray:",
+		isArray
+	);
 
-	// Функция для создания элемента DOM из строки HTML
-	const createElementFromHTML = (htmlString) => {
-		const div = document.createElement("div");
-		div.innerHTML = htmlString.trim();
-		const element = div.firstElementChild;
-		return element;
-	};
-
+	let referenceNode = null;
 	if (isArray) {
 		// Удаление старой строки для requestId
 		const existingRow = document.querySelector(`tr[data-id="${requestId}"]`);
 		if (existingRow) {
 			console.log("Removing existing row for requestId:", requestId);
+			referenceNode = existingRow;
+			console.log("referenceNode:",referenceNode);
 			tableBody.removeChild(existingRow);
 		}
 
 		// Вставка новых строк
 		updatedData.forEach((data, index) => {
-			const newRowHtml = createTableRow(data);
-			console.log("Generated HTML for new row:", newRowHtml);
+			const newRowHtml = createTableRow(
+				data,
+				localStorage.getItem("namePermission")
+			);
+			console.log(
+				"generated data and index:",data, index,
+				"Generated HTML for new row:", newRowHtml);
 			const newRow = createElementFromHTML(newRowHtml);
-			console.log("Generated newrow:", newRow);
+			console.log("Generated new row:", newRow);
 
-			if (!newRow) {
+			if (!newRow || newRow.tagName !== "TR") {
 				console.error(
 					"Failed to create new row element from HTML:",
 					newRowHtml
 				);
-				return; // Прекратить выполнение, если элемент не создан
+				return; // Прекратить выполнение, если элемент не создан или не является строкой
 			}
 
 			newRow.classList.add("highlight");
 			if (index === 0) {
 				// Первая запись (обновление)
-				tableBody.insertBefore(newRow, tableBody.firstChild);
+				console.log(
+					"Inserted newRow as the first updated element.",
+					newRow
+				);
+				tableBody.appendChild(newRow);
+				referenceNode = newRow;
+				console.log("table body with updated first element", tableBody)
 			} else {
-				// Новые записи
-				const referenceNode = tableBody.firstChild.nextSibling;
-				tableBody.insertBefore(newRow, referenceNode);
+				// Новые записи вставляются после обновленной строки
+				referenceNode.insertAdjacentElement('afterend', newRow);
+				console.log(
+					"Inserted newRow after the first updated element. Parent:",
+					newRow.parentNode
+				);
+				referenceNode = newRow;
 			}
 		});
 	} else {
 		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		if (row) {
+			console.log("Updating existing row for requestId:", requestId);
 			updateSingleRow(requestId, updatedData);
 		} else {
-			const newRowHtml = createTableRow(updatedData);
+			const newRowHtml = createTableRow(
+				updatedData,
+				localStorage.getItem("namePermission")
+			);
 			const newRow = createElementFromHTML(newRowHtml);
-			newRow.classList.add("highlight");
-			tableBody.insertBefore(newRow, tableBody.firstChild);
+			if (newRow.tagName === "TR") {
+				newRow.classList.add("highlight");
+				const referenceNode = tableBody.firstChild
+					? tableBody.firstChild.nextSibling
+					: null;
+				tableBody.insertBefore(newRow, referenceNode);
+			} else {
+				console.error(
+					"Failed to create new row element from HTML:",
+					newRowHtml
+				);
+			}
 		}
 	}
+
+	// Переинициализация выпадающих списков
+	const dropdowns = document.querySelectorAll(".dropdown-toggle");
+	dropdowns.forEach((dropdown) => {
+		new Dropdown(dropdown);
+	});
 }
 
 function updateSingleRow(requestId, updatedData) {
@@ -1047,9 +1082,12 @@ function updateSingleRow(requestId, updatedData) {
 			actionsMarkup = `<li><a class="dropdown-item stockman-send-response" href="#" data-id="${requestId}">Envoyer une réponse</a></li>`;
 		}
 
-		if (updatedTreatmentStatus === "rental_details_discussion_manager_stockman" && updatedEquipmentStatus === "found") {
+		if (
+			updatedTreatmentStatus === "rental_details_discussion_manager_stockman" &&
+			updatedEquipmentStatus === "found"
+		) {
 			actionsMarkup = `<li><a class="dropdown-item contacter-manager" href="#" data-id="${requestId}">Contacter le manager</a></li>`;
-	}
+		}
 
 		actionsCell.innerHTML = actionsMarkup;
 	}
@@ -1066,7 +1104,6 @@ function sendUpdatedDataToUser(approvalData) {
 	apiEquipmentRequest
 		.updateEquipmentRequest(approvalData)
 		.then((data) => {
-			console.log("received data after calling sendUpdateDataToUser", data);
 			alert(
 				"L'utilisateur verra que vous avez vérifié sa requête et n'a plus qu'à la valider!"
 			);
@@ -1428,146 +1465,141 @@ document
 				serialNumbersData
 			);
 
-			updateTableRow(requestId, {
-				id_request: requestId,
-				treatment_status: "rental_details_discussion_manager_stockman",
-				equipment_status: "found",
-				quantity: 1
-		});
 		} else {
 			closeRequestByStockman(requestId, "closed_by_stockman");
 		}
 	});
 
-	async function approveRequest(
-		requestId,
-		rentalDateStart,
-		rentalDateEnd,
-		equipmentName,
-		equipmentIdType,
-		equipmentBrand,
-		equipmentDescription,
-		equipmentPhoto,
-		serialNumbersData
-	) {
-		try {
-			const id_user = localStorage.getItem("id_user");
-			const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
-			const assignedManagerId = existingRequest.assigned_manager_id;
-			const assignedStockmanId = existingRequest.assigned_stockman_id;
-			const goodIds = [];
-			const responsePromises = [];
-			let newRequestId = requestId;
+async function approveRequest(
+	requestId,
+	rentalDateStart,
+	rentalDateEnd,
+	equipmentName,
+	equipmentIdType,
+	equipmentBrand,
+	equipmentDescription,
+	equipmentPhoto,
+	serialNumbersData
+) {
+	try {
+		const id_user = localStorage.getItem("id_user");
+		const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
+		const assignedManagerId = existingRequest.assigned_manager_id;
+		const assignedStockmanId = existingRequest.assigned_stockman_id;
+		const goodIds = [];
+		const responsePromises = [];
+		let newRequestId = requestId;
 
-			// Загрузка фото
-			let photoUrl = "";
-			if (equipmentPhoto) {
-				const formData = new FormData();
-				formData.append("file", equipmentPhoto);
-				const uploadResponse = await fetch("http://germax-api/upload", {
-					method: "POST",
-					body: formData,
-				});
-				const uploadData = await uploadResponse.json();
-				if (uploadData.success) {
-					photoUrl = uploadData.url;
-				} else {
-					throw new Error(uploadData.message);
-				}
+		// Загрузка фото
+		let photoUrl = "";
+		if (equipmentPhoto) {
+			const formData = new FormData();
+			formData.append("file", equipmentPhoto);
+			const uploadResponse = await fetch("http://germax-api/upload", {
+				method: "POST",
+				body: formData,
+			});
+			const uploadData = await uploadResponse.json();
+			if (uploadData.success) {
+				photoUrl = uploadData.url;
+			} else {
+				throw new Error(uploadData.message);
 			}
-
-			const serialNumbers = serialNumbersData.map((data) =>
-				data.serialNumber.trim()
-			);
-
-			// Получение request_date из существующей записи
-			const requestDate = existingRequest.request_date;
-			const updatedDataArray = [];
-
-			// Создание новых good и записей в equipment_request
-			for (const [index, data] of serialNumbersData.entries()) {
-				console.log("data:", data);
-				console.log("Sending data to createGood:", {
-					modelName: equipmentName.trim(),
-					statusId: 4,
-					serialNumbers: [data.serialNumber.trim()],
-					id_type: equipmentIdType,
-					brandName: equipmentBrand.trim(),
-					description: equipmentDescription.trim(),
-					photo: photoUrl, // Передаем фото
-				});
-				const goodData = await apiGoods.createGood({
-					modelName: equipmentName.trim(),
-					statusId: 4,
-					serialNumbers: [data.serialNumber.trim()],
-					id_type: equipmentIdType,
-					brandName: equipmentBrand.trim(),
-					description: equipmentDescription.trim(),
-					photo: photoUrl,
-				});
-
-				if (
-					goodData &&
-					goodData.id_good &&
-					goodData.id_good.goods &&
-					goodData.id_good.goods.length > 0 &&
-					goodData.id_good.goods[0].id_good
-				) {
-					const idGood = goodData.id_good.goods[0].id_good;
-					goodIds.push(idGood);
-
-					const responseData = {
-						quantity: 1,
-						equipment_name: equipmentName,
-						id_request: requestId,
-						date_start: rentalDateStart,
-						date_end: rentalDateEnd,
-						treatment_status: "rental_details_discussion_manager_stockman",
-						equipment_status: "found",
-						id_user,
-						id_type: equipmentIdType,
-						id_good: idGood,
-						request_date: requestDate,
-						assigned_manager_id: assignedManagerId,
-						assigned_stockman_id: assignedStockmanId,
-					};
-
-					if (index === 0) {
-						// Обновление существующей записи для первой единицы оборудования
-						console.log(
-							"Updating existing record with responseData",
-							responseData
-						);
-						responsePromises.push(
-							apiEquipmentRequest.updateEquipmentRequest(responseData)
-						);
-					} else {
-						// Создание новых записей для последующих единиц оборудования
-						newRequestId = parseInt(newRequestId) + 1;
-						responseData.id_request = newRequestId;
-						console.log("Creating new record with responseData", responseData);
-						responsePromises.push(
-							apiEquipmentRequest.createRequest(responseData)
-						);
-						updatedDataArray.push(responseData);
-					}
-				} else {
-					console.error("Invalid response from createGood:", goodData);
-					throw new Error("Invalid response from createGood");
-				}
-			}
-
-			await Promise.all(responsePromises);
-			console.log("Updated request data array:", updatedDataArray);
-			updateTableRow(requestId, updatedDataArray, true);
-			alert("La réponse a été envoyée au manager!");
-			stockmanResponseModal.hide();
-		} catch (error) {
-			console.error("Error during approveRequest:", error);
-			alert("Error during approveRequest.");
 		}
-	}
 
+		const serialNumbers = serialNumbersData.map((data) =>
+			data.serialNumber.trim()
+		);
+
+		// Получение request_date из существующей записи
+		const requestDate = existingRequest.request_date;
+		const updatedDataArray = [];
+
+		// Создание новых good и записей в equipment_request
+		for (const [index, data] of serialNumbersData.entries()) {
+			// console.log("data:", data);
+			// console.log("Sending data to createGood:", {
+			// 	modelName: equipmentName.trim(),
+			// 	statusId: 4,
+			// 	serialNumbers: [data.serialNumber.trim()],
+			// 	id_type: equipmentIdType,
+			// 	brandName: equipmentBrand.trim(),
+			// 	description: equipmentDescription.trim(),
+			// 	photo: photoUrl, // Передаем фото
+			// });
+			const goodData = await apiGoods.createGood({
+				modelName: equipmentName.trim(),
+				statusId: 4,
+				serialNumbers: [data.serialNumber.trim()],
+				id_type: equipmentIdType,
+				brandName: equipmentBrand.trim(),
+				description: equipmentDescription.trim(),
+				photo: photoUrl,
+			});
+
+			if (
+				goodData &&
+				goodData.id_good &&
+				goodData.id_good.goods &&
+				goodData.id_good.goods.length > 0 &&
+				goodData.id_good.goods[0].id_good
+			) {
+				const idGood = goodData.id_good.goods[0].id_good;
+				goodIds.push(idGood);
+
+				const responseData = {
+					quantity: 1,
+					equipment_name: equipmentName,
+					id_request: requestId,
+					date_start: rentalDateStart,
+					date_end: rentalDateEnd,
+					treatment_status: "rental_details_discussion_manager_stockman",
+					equipment_status: "found",
+					id_user,
+					id_type: equipmentIdType,
+					id_good: idGood,
+					request_date: requestDate,
+					assigned_manager_id: assignedManagerId,
+					assigned_stockman_id: assignedStockmanId,
+				};
+
+				if (index === 0) {
+					// Обновление существующей записи для первой единицы оборудования
+					// console.log(
+					// 	"Updating existing record with responseData",
+					// 	responseData
+					// );
+					responsePromises.push(
+						apiEquipmentRequest.updateEquipmentRequest(responseData)
+					);
+					updatedDataArray.push(responseData);
+				} else {
+					// Создание новых записей для последующих единиц оборудования
+					newRequestId = parseInt(newRequestId) + 1;
+					responseData.id_request = newRequestId;
+					// console.log("Creating new record with responseData", responseData);
+					responsePromises.push(
+						apiEquipmentRequest.createRequest(responseData)
+					);
+					updatedDataArray.push(responseData);
+				}
+			} else {
+				console.error("Invalid response from createGood:", goodData);
+				throw new Error("Invalid response from createGood");
+			}
+		}
+
+		await Promise.all(responsePromises);
+		// console.log("Updated request data array:", updatedDataArray);
+
+		updateTableRow(requestId, updatedDataArray, true);
+		alert("La réponse a été envoyée au manager!");
+		stockmanResponseModal.hide();
+	} catch (error) {
+		console.error("Error during approveRequest:", error);
+		alert("Error during approveRequest.");
+	}
+}
 
 function confirmSending(requestId) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);

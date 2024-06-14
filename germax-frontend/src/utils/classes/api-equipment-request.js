@@ -152,7 +152,7 @@ export class ApiEquipmentRequest {
 
 	async updateEquipmentRequest(updatedData) {
 		const body = JSON.stringify(updatedData);
-		console.log("Request body:", body); // Логируем тело запроса
+		// console.log("Request body:", body); // Логируем тело запроса
 		return fetch(`${this._baseUrl}/update-request`, {
 			method: "PUT",
 			headers: {

@@ -62,7 +62,7 @@ export class ApiGoods {
 			photo,
 			location, // Добавлено поле местоположения
 		});
-		console.log("Sending data to server:", body);
+		// console.log("Sending data to server:", body);
 
 		return fetch(`${this._baseUrl}`, {
 			method: "POST",
@@ -74,7 +74,7 @@ export class ApiGoods {
 		})
 			.then((response) => {
 				return response.text().then((text) => {
-					console.log("Received response from server:", text);
+					// console.log("Received response from server:", text);
 					if (!response.ok) {
 						return Promise.reject(text);
 					}
