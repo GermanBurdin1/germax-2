@@ -4,6 +4,6 @@
 
 # Connexion
 
-![Local Image](germax-frontend/src/assets/markdown-images/GermaLoc2.gif)
+![Local Image](germax-frontend/src/assets/markdown-images/Connexion.gif)
 
 # Inscription
