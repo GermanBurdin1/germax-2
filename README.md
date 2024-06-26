@@ -7,3 +7,5 @@
 ![Local Image](germax-frontend/src/assets/markdown-images/Connexion.gif)
 
 # Inscription
+
+![Local Image](germax-frontend/src/assets/markdown-images/GermaLoc3.gif)
