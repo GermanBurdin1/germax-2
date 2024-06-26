@@ -20,15 +20,14 @@ class AuthService
 
 	public function login($email, $password)
 	{
-		$foundUser = $this->getUserByEmail($email);
+		$email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+		$password = htmlspecialchars($password, ENT_QUOTES, 'UTF-8');
 
-		// var_dump($foundUser, "foundUser");
+		$foundUser = $this->getUserByEmail($email);
 
 		if (empty($foundUser)) {
 			return renderErrorAndExit(['There is no user with this email'], 401);
 		}
-
-		// Пользователь всегда существует ниже
 
 		if (!password_verify($password, $foundUser['password'])) {
 			return renderErrorAndExit(["The password for user $email is incorrect"], 401);
@@ -37,8 +36,6 @@ class AuthService
 		if ($foundUser["authorization_permission"] == 0) {
 			return renderErrorAndExit(["No authorization permission from manager"], 401);
 		}
-
-		// Код ниже выполняется, только если пользователь существует и передали правильный пароль
 
 		$token = generateToken($foundUser['email']);
 		$permission = $this->permissionsService->getById($foundUser['id_permission']);
@@ -72,6 +69,14 @@ class AuthService
 		$typePermission,
 		$faculty
 	) {
+		$lastname = htmlspecialchars($lastname, ENT_QUOTES, 'UTF-8');
+		$firstname = htmlspecialchars($firstname, ENT_QUOTES, 'UTF-8');
+		$phone = htmlspecialchars($phone, ENT_QUOTES, 'UTF-8');
+		$email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+		$password = htmlspecialchars($password, ENT_QUOTES, 'UTF-8');
+		$typePermission = htmlspecialchars($typePermission, ENT_QUOTES, 'UTF-8');
+		$faculty = htmlspecialchars($faculty, ENT_QUOTES, 'UTF-8');
+
 		if (empty($lastname) || empty($firstname) || empty($phone) || empty($email) || empty($password) || empty($typePermission)) {
 			return renderErrorAndExit(['Tous les champs sont obligatoires'], 400);
 		}

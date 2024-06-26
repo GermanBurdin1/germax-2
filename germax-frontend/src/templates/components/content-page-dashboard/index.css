@@ -441,3 +441,33 @@ header {
 	background-color: var(--primary-color);
 	color: white; /* Optional: to make sure the text color contrasts well with the background */
 }
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+  .menu {
+    display: none;
+  }
+  .menu-mobile {
+    display: block;
+  }
+  .container {
+    padding-top: 20px;
+  }
+  .navbar .nav-link {
+    font-size: 14px;
+  }
+  .navbar .btn-auth {
+    font-size: 14px;
+  }
+  .settings-card {
+    margin: 0 10px;
+  }
+  .settings-card .form-control {
+    font-size: 14px;
+  }
+  .settings-card .btn {
+    font-size: 14px;
+  }
+}
