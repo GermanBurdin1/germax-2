@@ -50,6 +50,7 @@ export class ApiGoods {
 		brandName,
 		description = "",
 		photo = "",
+		location = "stock_stockman", // Добавлено поле местоположения
 	}) {
 		const body = JSON.stringify({
 			modelName,
@@ -59,8 +60,9 @@ export class ApiGoods {
 			brandName,
 			description,
 			photo,
+			location, // Добавлено поле местоположения
 		});
-		console.log("Sending data to server:", body);
+		// console.log("Sending data to server:", body);
 
 		return fetch(`${this._baseUrl}`, {
 			method: "POST",
@@ -72,7 +74,7 @@ export class ApiGoods {
 		})
 			.then((response) => {
 				return response.text().then((text) => {
-					console.log("Received response from server:", text);
+					// console.log("Received response from server:", text);
 					if (!response.ok) {
 						return Promise.reject(text);
 					}
@@ -170,5 +172,133 @@ export class ApiGoods {
 			console.error("Error fetching good:", error);
 			throw error;
 		}
+	}
+
+	async sendEquipment(id_good) {
+		const body = JSON.stringify({
+			id_good,
+			action: "send",
+		});
+
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in sendEquipment:", error);
+				throw error;
+			});
+	}
+
+	async confirmReceiving(id_good) {
+		const body = JSON.stringify({
+			id_good,
+			action: "receive",
+		});
+
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in confirmReceiving:", error);
+				throw error;
+			});
+	}
+
+	async confirmHandOver(id_loan, id_good) {
+		const body = JSON.stringify({
+			id_loan,
+			id_good,
+			action: "handOver",
+		});
+		console.log("body sending", body);
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.text().then((text) => {
+						return Promise.reject(
+							new Error(`Request failed: ${response.statusText}`)
+						);
+					});
+				}
+				return response.json(); // Используем только response.json()
+			})
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in confirmHandOver:", error);
+				throw error;
+			});
+	}
+
+	async reportReturn(id_loan, id_good) {
+		const body = JSON.stringify({
+			id_loan,
+			id_good,
+			action: "return",
+		});
+		console.log("body sending", body);
+		return fetch(`${this._baseUrl}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				token: this._apiAuth.getToken(),
+			},
+			body,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.text().then((text) => {
+						return Promise.reject(
+							new Error(`Request failed: ${response.statusText}`)
+						);
+					});
+				}
+				return response.json();
+			})
+			.then((data) => {
+				if (!data.success) {
+					return Promise.reject(data.message);
+				}
+				return data;
+			})
+			.catch((error) => {
+				console.error("Error in reportReturn:", error);
+				throw error;
+			});
 	}
 }

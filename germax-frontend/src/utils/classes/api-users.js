@@ -32,17 +32,32 @@ export class ApiUsers {
 	}
 
 	async updateUser(data) {
-		const token = this._apiAuth.getToken(); // Убедитесь, что токен правильно извлекается
-		console.log("Token being sent:", token); // Логируем токен для отладки
+		const token = this._apiAuth.getToken();
+		console.log("Token being sent:", token);
+		console.log("Data being sent:", data);
+
+		const body = JSON.stringify(data);
+		console.log("Body being sent:", body);
+
 		return fetch(`${this._baseUrl}/update-user.endpoint`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`, // Убедитесь, что заголовок устанавливается правильно
+				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify(data),
+			body: body,
 		})
-			.then((response) => response.json())
+			.then((response) => {
+				return response.text().then((text) => {
+					console.log("Raw response text:", text);
+					try {
+						return JSON.parse(text);
+					} catch (err) {
+						console.error("Failed to parse JSON:", err);
+						throw new Error("Failed to parse JSON");
+					}
+				});
+			})
 			.then((data) => {
 				if (data.success) {
 					return data;

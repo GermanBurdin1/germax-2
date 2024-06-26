@@ -64,10 +64,13 @@ async function getAllGoods(page = 1, limit = 20) {
 	return apiGoods.getAllGoods({
 		typeName: typeNameSearch,
 		modelName: modelNameSearch,
+		statusNames: ["available"],
+		shippingStatus: "received_by_manager", // Добавлено поле для фильтрации
 		page,
 		limit,
 	});
 }
+
 
 let currentPage = 1;
 const itemsPerPage = 20;
@@ -105,7 +108,7 @@ document.getElementById("nextPageBtn").addEventListener("click", () => {
 
 function renderGoods(goods, authUser) {
 	const availableGoods = goods.filter(
-		(good) => good.status.name === "available"
+		(good) => good.status.name === "available" && good.shipping_status === "received_by_manager"
 	);
 	const uniqueGoods = getUniqueGoods(availableGoods);
 
@@ -121,6 +124,7 @@ function renderGoods(goods, authUser) {
 		equipmentListNode.append(...uniqueGoodNodes);
 	}
 }
+
 
 function getUniqueGoods(goods) {
 	console.log(goods);
@@ -280,6 +284,7 @@ function openRequestNotFoundItemsModal(authUser, userPermissions) {
 
 function createOneGoodNode(good, authUser) {
 	const modelElement = document.createElement("div");
+	modelElement.setAttribute("data-good-id", good.id);
 	const srcStr = `
         <div style="text-align: center;">
             <img
@@ -367,6 +372,7 @@ function submitRentalRequest(good, formInfo) {
 			console.log("Rental request successful:", response);
 			alert("Votre demande de location a été enregistrée avec succès.");
 			newLoanFormModal.hide();
+			removeGoodFromList(good.id);
 		})
 		.catch((error) => {
 			console.error("Rental request failed:", error);
@@ -425,6 +431,13 @@ if (logoutButton) {
 		event.preventDefault();
 		logout();
 	});
+}
+
+function removeGoodFromList(goodId) {
+	const goodNode = document.querySelector(`[data-good-id="${goodId}"]`);
+	if (goodNode) {
+			goodNode.remove();
+	}
 }
 
 function logout() {

@@ -13,12 +13,13 @@ class GoodsController
 		$this->goodsService = new GoodsService();
 	}
 
-	public function getAllByParams($modelName, $typeName, $statusName, $page, $limit)
+	public function getAllByParams($modelName, $typeName, $statusNames, $shippingStatus, $page, $limit)
 	{
 		$goods = $this->goodsService->getAllByParams(
 			$modelName,
 			$typeName,
-			$statusName,
+			$statusNames,
+			$shippingStatus,
 			$page,
 			$limit
 		);
@@ -26,15 +27,16 @@ class GoodsController
 		return renderSuccessAndExit(['Goods found'], 200, $goods);
 	}
 
-	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '')
+	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
-		return $this->goodsService->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
+		return $this->goodsService->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo, $location);
 	}
 
-	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
+	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
-		return $this->goodsService->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo);
+		return $this->goodsService->createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description, $photo, $location);
 	}
+
 
 	public function getUnitsByModelId($modelId)
 	{
@@ -55,5 +57,25 @@ class GoodsController
 		} else {
 			echo json_encode(['success' => false, 'message' => 'Good not found']);
 		}
+	}
+
+	public function sendEquipment($id_good)
+	{
+		return $this->goodsService->sendEquipment($id_good);
+	}
+
+	public function confirmReceiving($id_good)
+	{
+		return $this->goodsService->confirmReceiving($id_good);
+	}
+
+	public function confirmHandOver($id_loan, $id_good)
+	{
+		return $this->goodsService->confirmHandOver($id_loan, $id_good);
+	}
+
+	public function reportReturn($id_loan, $id_good)
+	{
+		return $this->goodsService->reportReturn($id_loan, $id_good);
 	}
 }

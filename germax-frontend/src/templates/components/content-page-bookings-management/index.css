@@ -37,12 +37,12 @@ h1.mb-3 {
 }
 
 .btn-primary {
-	background-color: var(--primary-color);
+	background-color: var(--accent-color);
 	border: none;
 }
 
 .btn-primary:hover {
-	background-color: var(--accent-color);
+	background-color: var(--quaternary-color);
 }
 
 /* Стили для таблицы */
@@ -109,13 +109,13 @@ h1.mb-3 {
 }
 
 .modal-footer .btn-primary {
-	background-color: var(--primary-color);
+	background-color: var(--accent-color);
 	color: white;
 }
 
 .modal-footer .btn-secondary:hover,
 .modal-footer .btn-primary:hover {
-	background-color: var(--accent-color);
+	background-color: var(--quaternary-color);
 }
 
 /* Стили для кнопок в выпадающих меню */
@@ -207,4 +207,19 @@ h1.mb-3 {
 
 .back-arrow:hover i {
 	transform: translateX(-5px);
+}
+
+#rentalManagementModal .modal-footer .btn-danger {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+#rentalManagementModal .modal-footer .btn-success {
+	background-color: var(--accent-color);
+	color: white;
+}
+
+#rentalManagementModal .modal-footer .btn-danger:hover,
+#rentalManagementModal .modal-footer .btn-success:hover {
+	background-color: var(--secondary-color);
 }

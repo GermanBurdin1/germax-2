@@ -7,6 +7,10 @@ import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiUsers } from "../../../utils/classes/api-users";
 
 const userType = localStorage.getItem("name_permission");
+if (userType === "admin") {
+	document.getElementById("managers-tab").style.display = "block";
+	document.getElementById("stockman-tab").style.display = "block";
+}
 
 const apiAuth = ApiAuth.getInstance();
 const apiRental = new ApiRental();
@@ -19,17 +23,23 @@ if (backArrowContainer) {
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
-	backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
+	backArrow.innerHTML =
+		'<i class="fas fa-arrow-left"></i> Retour à la page d\'accueil';
 	backArrowContainer.appendChild(backArrow);
 } else {
 	console.error("Контейнер 'backArrowContainer' не найден.");
 }
 
-document.getElementById('userSearchInput').addEventListener('input', function (event) {
-	const searchTerm = event.target.value.toLowerCase();
-	searchUsers(searchTerm);
-});
+document
+    .getElementById("userSearchInput")
+    .addEventListener("input", function (event) {
+        const searchTerm = event.target.value.toLowerCase();
+        searchUsers(searchTerm);
 
+        if (searchTerm === "") {
+            resetTables();
+        }
+    });
 
 async function fetchPendingUsers(apiAuth) {
 	try {
@@ -56,31 +66,35 @@ async function fetchProcessedUsers(apiAuth) {
 function createRow(user) {
 	const row = document.createElement("tr");
 	let dropdownMenuContent;
-	console.log("user", user)
+	console.log("user", user);
+	let connexionPermissionText = user.connexion_permission;
 	if (user.connexion_permission === "pending") {
+		connexionPermissionText = "validation en cours";
 		dropdownMenuContent = `
 			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#authorizationClientModal" data-user-id="${user.id_user}">Gérer la réponse</a></li>
 		`;
 	} else if (user.connexion_permission === "authorized") {
+		connexionPermissionText = "utilisateur authorisé";
 		dropdownMenuContent = `
 			<li><a class="dropdown-item view-details" href="#" data-bs-toggle="modal" data-bs-target="#detailsClientModal" data-user-id="${user.id_user}">Voir les détails</a></li>
 		`;
 	} else if (user.connexion_permission === "declined") {
+		connexionPermissionText = "demande d'inscription refusée";
 		dropdownMenuContent = `
 			<li><span class="dropdown-item-text text-muted">Utilisateur refusé</span></li>
 		`;
 	} else if (user.connexion_permission === "blocked") {
-		user.connexion_permission = "bloqué";
+		connexionPermissionText = "bloqué";
 		dropdownMenuContent = `
 				<li><span class="dropdown-item-text text-muted">Utilisateur bloqué</span></li>
 		`;
-}
+	}
 
 	row.innerHTML = `
 		<td>${user.lastname} ${user.firstname}</td>
 		<td>${user.email}</td>
 		<td>${user.phone}</td>
-		<td>${user.connexion_permission}</td>
+		<td>${connexionPermissionText}</td>
 		<td>
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -94,7 +108,11 @@ function createRow(user) {
 	`;
 
 	const userType = localStorage.getItem("name_permission");
-	if (userType === "admin" && user.connexion_permission !== "declined" && user.connexion_permission !== "bloqué") {
+	if (
+		userType === "admin" &&
+		user.connexion_permission !== "declined" &&
+		user.connexion_permission !== "bloqué"
+	) {
 		row.querySelector(".dropdown-menu").innerHTML += `
 			<li><button class="dropdown-item admin-action" data-user-id="${user.id_user}">Bloquer cet utilisateur</button></li>
 		`;
@@ -118,37 +136,48 @@ function openBlockUserModal(userId) {
 	blockUserModal.show();
 
 	confirmBlockUserButton.addEventListener("click", async () => {
-			try {
-					await apiUsers.updateUserStatus(userId, "blocked");
-					alert("L'utilisateur a été bloqué.");
-					blockUserModal.hide();
+		try {
+			await apiUsers.updateUserStatus(userId, "blocked");
+			alert("L'utilisateur a été bloqué.");
+			blockUserModal.hide();
 
-					// Обновляем статус пользователя в таблице
-					const userRow = document.querySelector(`button[data-user-id='${userId}']`).closest("tr");
-					userRow.querySelector("td:nth-child(4)").textContent = "blocked";
+			// Обновляем статус пользователя в таблице
+			const userRow = document
+				.querySelector(`button[data-user-id='${userId}']`)
+				.closest("tr");
+			userRow.querySelector("td:nth-child(4)").textContent = "blocked";
 
-					// Убираем кнопку блокировки
-					const actionDropdown = userRow.querySelector(".dropdown-menu");
-					const blockButton = actionDropdown.querySelector(".admin-action");
-					if (blockButton) {
-							blockButton.remove();
-					}
-			} catch (error) {
-					console.error("Ошибка при блокировке пользователя:", error);
-					alert("Ошибка при блокировке пользователя: " + error.message);
+			// Убираем кнопку блокировки
+			const actionDropdown = userRow.querySelector(".dropdown-menu");
+			const blockButton = actionDropdown.querySelector(".admin-action");
+			if (blockButton) {
+				blockButton.remove();
 			}
+		} catch (error) {
+			console.error("Ошибка при блокировке пользователя:", error);
+			alert("Ошибка при блокировке пользователя: " + error.message);
+		}
 	});
 }
 
-
-function populateTables(pendingUsers, studentTables, teacherTable) {
+function populateTables(
+	pendingUsers,
+	studentTables,
+	teacherTable,
+	managerTable,
+	stockmanTable
+) {
 	pendingUsers.forEach((user) => {
 		const row = createRow(user);
-		if (user.id_permission === "teacher") {
+		if (user.id_permission === 2) {
 			teacherTable.appendChild(row);
+		} else if (user.id_permission === 3 && managerTable) {
+			managerTable.appendChild(row);
+		} else if (user.id_permission === 4 && stockmanTable) {
+			stockmanTable.appendChild(row);
 		} else {
 			const faculty = user.faculty;
-			if (studentTables[faculty]) {
+			if (faculty !== "default" && studentTables[faculty]) {
 				studentTables[faculty].appendChild(row);
 			} else {
 				console.warn("No table found for faculty:", faculty);
@@ -275,14 +304,18 @@ function attachEventHandlers(apiAuth) {
 		.addEventListener("click", async function () {
 			const userId = this.getAttribute("data-user-id");
 			console.log("userId", userId);
+
+			// Создаем объект с данными пользователя для обновления
+			const userData = {
+				id_user: userId,
+				connexion_permission: "authorized",
+				authorization_permission: "1",
+			};
+
 			try {
-				const response = await apiAuth.updateUserStatus(
-					userId,
-					"authorized",
-					"1"
-				);
+				const response = await apiUsers.updateUser(userData);
 				console.log("API Response:", response);
-				alert("User status updated successfully.");
+				alert("L'utilisateur est ajouté avec succès");
 				authorizationClientModal.hide();
 				location.reload();
 			} catch (error) {
@@ -296,13 +329,13 @@ function attachEventHandlers(apiAuth) {
 		.addEventListener("click", async function () {
 			const userId = this.getAttribute("data-user-id");
 			try {
-				const response = await apiAuth.updateUserStatus(
+				const response = await apiUsers.updateUserStatus(
 					userId,
 					"declined",
 					"0"
 				);
 				console.log("API Response:", response);
-				alert("User status updated successfully.");
+				alert("La demande a été refusée.");
 				authorizationClientModal.hide();
 				location.reload();
 			} catch (error) {
@@ -318,67 +351,155 @@ async function init() {
 	const apiAuth = ApiAuth.getInstance();
 
 	try {
-			await apiAuth.fetchMeAuthUser();
-			const pendingUsers = await fetchPendingUsers(apiAuth);
-			const processedUsers = await fetchProcessedUsers(apiAuth); // Получение обработанных пользователей
+		await apiAuth.fetchMeAuthUser();
+		const pendingUsers = await fetchPendingUsers(apiAuth);
+		const processedUsers = await fetchProcessedUsers(apiAuth); // Получение обработанных пользователей
 
-			// Сохраняем всех пользователей в одной переменной, если они существуют
-			if (pendingUsers && pendingUsers.length > 0) {
-					allUsers = [...pendingUsers];
-			}
-			if (processedUsers && processedUsers.length > 0) {
-					allUsers = [...allUsers, ...processedUsers];
-			}
+		// Сохраняем всех пользователей в одной переменной, если они существуют
+		if (pendingUsers && pendingUsers.length > 0) {
+			allUsers = [...pendingUsers];
+		}
+		if (processedUsers && processedUsers.length > 0) {
+			allUsers = [...allUsers, ...processedUsers];
+		}
 
-			const studentTables = {
-					development: document.querySelector("#devInfoTable tbody"),
-					cybersecurity: document.querySelector("#sysReseauTable tbody"),
-					marketing: document.querySelector("#comMarketingTable tbody"),
-			};
+		const studentTables = {
+			development: document.querySelector("#devInfoTable tbody"),
+			"cyber-security": document.querySelector("#sysReseauTable tbody"),
+			"digital-marketing": document.querySelector("#comMarketingTable tbody"),
+		};
 
-			const teacherTable = document.querySelector("#teachersTable tbody");
+		const teacherTable = document.querySelector("#teachersTable tbody");
+		let managerTable, stockmanTable;
 
-			// Очищаем существующие строки в таблицах
-			Object.values(studentTables).forEach((table) => {
-					if (table) {
-							table.innerHTML = "";
-					} else {
-							console.warn("Table not found");
-					}
-			});
-			if (teacherTable) {
-					teacherTable.innerHTML = "";
+		if (userType === "admin") {
+			managerTable = document.querySelector("#managersTable tbody");
+			stockmanTable = document.querySelector("#stockmanTable tbody");
+		}
+
+		// Очищаем существующие строки в таблицах
+		Object.values(studentTables).forEach((table) => {
+			if (table) {
+				table.innerHTML = "";
 			} else {
-					console.warn("Teacher table not found");
+				console.warn("Table not found");
 			}
+		});
+		if (teacherTable) {
+			teacherTable.innerHTML = "";
+		} else {
+			console.warn("Teacher table not found");
+		}
+		if (managerTable) {
+			managerTable.innerHTML = "";
+		} else {
+			console.warn("Manager table not found");
+		}
+		if (stockmanTable) {
+			stockmanTable.innerHTML = "";
+		} else {
+			console.warn("Stockman table not found");
+		}
 
-			// Заполняем таблицы
-			populateTables(allUsers, studentTables, teacherTable);
+		// Заполняем таблицы
+		populateTables(
+			allUsers,
+			studentTables,
+			teacherTable,
+			managerTable,
+			stockmanTable
+		);
 
-			attachEventHandlers(apiAuth);
+		attachEventHandlers(apiAuth);
+		resetTables();
 	} catch (error) {
-			console.error("Initialization error:", error);
+		console.error("Initialization error:", error);
 	}
 }
 
 function searchUsers(searchTerm) {
-	const filteredUsers = allUsers.filter(user => {
-			return (
-					user.lastname.toLowerCase().includes(searchTerm) ||
-					user.firstname.toLowerCase().includes(searchTerm) ||
-					user.email.toLowerCase().includes(searchTerm) ||
-					user.phone.toLowerCase().includes(searchTerm) ||
-					user.connexion_permission.toLowerCase().includes(searchTerm)
-			);
+	const filteredUsers = allUsers.filter((user) => {
+		return (
+			user.lastname.toLowerCase().includes(searchTerm) ||
+			user.firstname.toLowerCase().includes(searchTerm) ||
+			user.email.toLowerCase().includes(searchTerm) ||
+			user.phone.toLowerCase().includes(searchTerm) ||
+			user.connexion_permission.toLowerCase().includes(searchTerm)
+		);
 	});
 
 	const studentTables = {
-			development: document.querySelector("#devInfoTable tbody"),
-			cybersecurity: document.querySelector("#sysReseauTable tbody"),
-			marketing: document.querySelector("#comMarketingTable tbody"),
+		development: document.querySelector("#devInfoTable tbody"),
+		cybersecurity: document.querySelector("#sysReseauTable tbody"),
+		"digital-marketing": document.querySelector("#comMarketingTable tbody"),
 	};
 
 	const teacherTable = document.querySelector("#teachersTable tbody");
+	const managerTable = document.querySelector("#managersTable tbody");
+	const stockmanTable = document.querySelector("#stockmanTable tbody");
+
+	// Очищаем существующие строки в таблицах
+	Object.values(studentTables).forEach((table) => {
+		if (table) {
+			table.innerHTML = "";
+		} else {
+			console.warn("Table not found");
+		}
+	});
+	if (teacherTable) {
+		teacherTable.innerHTML = "";
+	} else {
+		console.warn("Teacher table not found");
+	}
+	if (managerTable) {
+		managerTable.innerHTML = "";
+	} else {
+		console.warn("Manager table not found");
+	}
+	if (stockmanTable) {
+		stockmanTable.innerHTML = "";
+	} else {
+		console.warn("Stockman table not found");
+	}
+
+	if (filteredUsers && filteredUsers.length > 0) {
+		console.log("Filtered Users:", filteredUsers);
+		populateTables(
+			filteredUsers,
+			studentTables,
+			teacherTable,
+			managerTable,
+			stockmanTable
+		);
+		filteredUsers.forEach((user) => {
+			if (user.id_permission === 2) {
+				showTab("teachers-tab", "teachers");
+			} else if (user.id_permission === 3) {
+				showTab("managers-tab", "managers");
+			} else if (user.id_permission === 4) {
+				showTab("stockman-tab", "stockman");
+			} else {
+				showTab("students-tab", "students");
+				showTab("devInfo-tab", "devInfo");
+			}
+		});
+	} else {
+		console.log("No users found for the search term.");
+		resetTables();
+	}
+}
+
+function resetTables() {
+	// Восстанавливаем первоначальный вид таблиц и вкладок
+	const studentTables = {
+			development: document.querySelector("#devInfoTable tbody"),
+			"cyber-security": document.querySelector("#sysReseauTable tbody"),
+			"digital-marketing": document.querySelector("#comMarketingTable tbody"),
+	};
+
+	const teacherTable = document.querySelector("#teachersTable tbody");
+	const managerTable = document.querySelector("#managersTable tbody");
+	const stockmanTable = document.querySelector("#stockmanTable tbody");
 
 	// Очищаем существующие строки в таблицах
 	Object.values(studentTables).forEach((table) => {
@@ -393,12 +514,53 @@ function searchUsers(searchTerm) {
 	} else {
 			console.warn("Teacher table not found");
 	}
-
-	if (filteredUsers && filteredUsers.length > 0) {
-			console.log("Filtered Users:", filteredUsers);
-			populateTables(filteredUsers, studentTables, teacherTable);
+	if (managerTable) {
+			managerTable.innerHTML = "";
 	} else {
-			console.log("No users found for the search term.");
+			console.warn("Manager table not found");
+	}
+	if (stockmanTable) {
+			stockmanTable.innerHTML = "";
+	} else {
+			console.warn("Stockman table not found");
+	}
+
+	// Заполняем таблицы всеми пользователями
+	populateTables(
+			allUsers,
+			studentTables,
+			teacherTable,
+			managerTable,
+			stockmanTable
+	);
+
+	// Переинициализация вкладок для предотвращения непредвиденного поведения
+	const mainTabs = document.querySelectorAll('#myTab .nav-link');
+	mainTabs.forEach(tab => tab.classList.remove('active'));
+	const mainTabContents = document.querySelectorAll('.tab-content .tab-pane');
+	mainTabContents.forEach(content => content.classList.remove('show', 'active'));
+
+	// Отображаем вкладку "Étudiants Développement Informatique"
+	document.getElementById("students-tab").classList.add('active');
+	document.getElementById("students").classList.add('show', 'active');
+
+	const devInfoTabs = document.querySelectorAll('#students .nav-link');
+	devInfoTabs.forEach(tab => tab.classList.remove('active'));
+	const devInfoTabContents = document.querySelectorAll('#students .tab-pane');
+	devInfoTabContents.forEach(content => content.classList.remove('show', 'active'));
+
+	document.getElementById("devInfo-tab").classList.add('active');
+	document.getElementById("devInfo").classList.add('show', 'active');
+}
+
+
+
+function showTab(tabId, tabContentId) {
+	const tabElement = new Tab(document.getElementById(tabId));
+	tabElement.show();
+	const tabContentElement = document.getElementById(tabContentId);
+	if (tabContentElement) {
+		tabContentElement.classList.add("show", "active");
 	}
 }
 

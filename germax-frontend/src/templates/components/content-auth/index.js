@@ -39,24 +39,38 @@ function loginFetch(url, data) {
 					loginLogic(data);
 			})
 			.catch((error) => {
-					console.error("Login error:", error);
-			});
+        console.error("Login error:", error);
+        if (error && error.error && error.error[0] === "No authorization permission from manager") {
+            showAuthorizationPendingModal();
+        }
+    });
 }
 
 function loginLogic(responseData) {
 	console.log("Login response data:", responseData.data.connexion_permission); // Логируем данные внутри loginLogic
 	if (responseData.data && responseData.data.connexion_permission === "blocked") {
-			showAccessDeniedModal();
+		showAccessDeniedModal();
 	} else {
-			localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
-			localStorage.setItem("id_user", JSON.stringify(responseData.data.id_user));
-			window.location.href = "/page-dashboard";
+		localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
+		localStorage.setItem("id_user", JSON.stringify(responseData.data.id_user));
+		window.location.href = "/page-dashboard";
 	}
 }
 
 function showAccessDeniedModal() {
 	const accessDeniedModal = new Modal(document.getElementById("accessDeniedModal"));
 	accessDeniedModal.show();
+}
+
+function showAuthorizationPendingModal() {
+	const authorizationPendingModal = new Modal(document.getElementById("authorizationPendingModal"));
+
+	const modalElement = document.getElementById("authorizationPendingModal");
+	modalElement.addEventListener('hidden.bs.modal', function () {
+			window.location.href = "/";
+	});
+
+	authorizationPendingModal.show();
 }
 
 //registration
@@ -170,13 +184,13 @@ function initializeRegistrationForm() {
 					id: "inputLastname",
 					validate: (value) => /^[a-zA-Z-]+$/.test(value),
 					error:
-						"Nom est obligatoire и ne doit contenir que des lettres и des tirets",
+						"Nom est obligatoire et ne doit contenir que des lettres et des tirets",
 				},
 				{
 					id: "inputFirstname",
 					validate: (value) => /^[a-zA-Z-]+$/.test(value),
 					error:
-						"Prénom est obligatoire и ne doit contenir que des lettres и des tirets",
+						"Prénom est obligatoire и ne doit contenir que des lettres et des tirets",
 				},
 				{
 					id: "inputPhone",
@@ -242,10 +256,15 @@ function initializeRegistrationForm() {
 				.then((data) => {
 					console.log("Success:", data); // Вывести данные ответа в консоль
 					if (data.success) {
-						// Переход на страницу логина
-						// switchToLogin();
-						alert("Le manager reviendra vers vous dans les meilleurs délais!");
-						window.location.href = "/page-dashboard";
+						let message;
+						const userType = typePermissionSelect.value;
+						if (userType === "student" || userType === "teacher") {
+							message = "Le manager reviendra vers vous dans les meilleurs délais!";
+						} else {
+							message = "L'administrateur reviendra vers vous dans les meilleurs délais!";
+						}
+						alert(message);
+						window.location.href = "/";
 					}
 				})
 				.catch((error) => {
@@ -253,6 +272,7 @@ function initializeRegistrationForm() {
 				});
 		});
 }
+
 
 function initializeLinks() {
 	document.querySelector(".link_2").addEventListener("click", function (event) {

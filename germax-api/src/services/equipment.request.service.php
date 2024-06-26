@@ -68,6 +68,9 @@ class EquipmentRequestService
             er.id_user,
             er.equipment_status,
             er.id_good,
+            er.assigned_manager_id,
+						er.assigned_stockman_id,
+            u.email,
             m.photo
         FROM
             equipment_request er
@@ -75,6 +78,8 @@ class EquipmentRequestService
             good g ON er.id_good = g.id_good
         LEFT JOIN
             model m ON g.id_model = m.id_model
+        LEFT JOIN
+            user u ON er.id_user = u.id_user
         LIMIT :itemsPerPage OFFSET :offset
     ";
 		$stmt = $this->pdo->prepare($sql);
@@ -89,11 +94,18 @@ class EquipmentRequestService
 		$totalStmt->execute();
 		$totalItems = $totalStmt->fetchColumn();
 
+		error_log("Data to be sent: " . json_encode([
+			'requests' => $requests,
+			'totalItems' => $totalItems
+	]));
+
 		return [
 			'requests' => $requests,
 			'totalItems' => $totalItems
 		];
 	}
+
+
 
 	public function getAllRequestsByUser($id)
 	{
@@ -160,8 +172,6 @@ class EquipmentRequestService
 		error_log("Result: " . print_r($result, true));
 		return $result;
 	}
-
-
 
 	public function updateRequest($data)
 	{
@@ -233,6 +243,16 @@ class EquipmentRequestService
 			$values[] = $data['id_good'];
 		}
 
+		if (isset($data['assigned_manager_id'])) {
+			$fieldsToUpdate[] = 'assigned_manager_id = ?';
+			$values[] = $data['assigned_manager_id'];
+		}
+
+		if (isset($data['assigned_stockman_id'])) {
+			$fieldsToUpdate[] = 'assigned_stockman_id = ?';
+			$values[] = $data['assigned_stockman_id'];
+		}
+
 		$values[] = $data['id_request'];
 
 		$sql = "UPDATE equipment_request SET " . implode(', ', $fieldsToUpdate) . " WHERE id_request = ?";
@@ -253,8 +273,6 @@ class EquipmentRequestService
 			return ['success' => false, 'message' => 'No rows updated'];
 		}
 	}
-
-
 
 	public function sendUpdatedDataToUser($data)
 	{
@@ -299,48 +317,54 @@ class EquipmentRequestService
 	}
 
 	public function createRequest($data)
-	{
-		if (
-			!isset($data['id_request']) ||
-			!isset($data['equipment_name']) ||
-			!isset($data['quantity']) ||
-			!isset($data['date_start']) ||
-			!isset($data['date_end']) ||
-			!isset($data['treatment_status']) ||
-			!isset($data['equipment_status']) ||
-			!isset($data['id_type']) ||
-			!isset($data['id_good']) ||
-			!isset($data['request_date'])
-		) {
-			return ['success' => false, 'message' => 'Missing required fields'];
-		}
-		error_log('dataInCreateRequest: ' . print_r($data, true));
-		$sql = "INSERT INTO equipment_request
-            (id_request, equipment_name, quantity, date_start, date_end, treatment_status, equipment_status, id_type, id_user, id_good, request_date)
-            VALUES (:id_request, :equipment_name, :quantity, :date_start, :date_end, :treatment_status, :equipment_status, :id_type, :id_user, :id_good, :request_date)";
-		$stmt = $this->pdo->prepare($sql);
+{
+    if (
+        !isset($data['id_request']) ||
+        !isset($data['equipment_name']) ||
+        !isset($data['quantity']) ||
+        !isset($data['date_start']) ||
+        !isset($data['date_end']) ||
+        !isset($data['treatment_status']) ||
+        !isset($data['equipment_status']) ||
+        !isset($data['id_type']) ||
+        !isset($data['id_good']) ||
+        !isset($data['request_date']) ||
+        !isset($data['assigned_manager_id']) || // Добавляем проверку на существование
+        !isset($data['assigned_stockman_id'])   // Добавляем проверку на существование
+    ) {
+        return ['success' => false, 'message' => 'Missing required fields'];
+    }
+    error_log('dataInCreateRequest: ' . print_r($data, true));
 
-		try {
-			$stmt->execute([
-				'id_request' => $data['id_request'],
-				'equipment_name' => $data['equipment_name'],
-				'quantity' => $data['quantity'],
-				'date_start' => $data['date_start'],
-				'date_end' => $data['date_end'],
-				'treatment_status' => $data['treatment_status'],
-				'equipment_status' => $data['equipment_status'],
-				'id_user' => $data['id_user'],
-				'id_type' => $data['id_type'],
-				'id_good' => $data['id_good'],
-				'request_date' => $data['request_date']
-			]);
-			error_log('Executed query: ' . $sql);
-			error_log('Executed with parameters: ' . print_r($data, true));
-			return ['success' => true, 'id_request' => $this->pdo->lastInsertId()];
-		} catch (PDOException $e) {
-			return ['success' => false, 'message' => 'SQL query error', 'error' => $e->getMessage()];
-		}
-	}
+    $sql = "INSERT INTO equipment_request
+            (id_request, equipment_name, quantity, date_start, date_end, treatment_status, equipment_status, id_type, id_user, id_good, request_date, assigned_manager_id, assigned_stockman_id)
+            VALUES (:id_request, :equipment_name, :quantity, :date_start, :date_end, :treatment_status, :equipment_status, :id_type, :id_user, :id_good, :request_date, :assigned_manager_id, :assigned_stockman_id)";
+    $stmt = $this->pdo->prepare($sql);
+
+    try {
+        $stmt->execute([
+            'id_request' => $data['id_request'],
+            'equipment_name' => $data['equipment_name'],
+            'quantity' => $data['quantity'],
+            'date_start' => $data['date_start'],
+            'date_end' => $data['date_end'],
+            'treatment_status' => $data['treatment_status'],
+            'equipment_status' => $data['equipment_status'],
+            'id_user' => $data['id_user'],
+            'id_type' => $data['id_type'],
+            'id_good' => $data['id_good'],
+            'request_date' => $data['request_date'],
+            'assigned_manager_id' => $data['assigned_manager_id'], // Добавляем параметр
+            'assigned_stockman_id' => $data['assigned_stockman_id']  // Добавляем параметр
+        ]);
+        error_log('Executed query: ' . $sql);
+        error_log('Executed with parameters: ' . print_r($data, true));
+        return ['success' => true, 'id_request' => $this->pdo->lastInsertId()];
+    } catch (PDOException $e) {
+        return ['success' => false, 'message' => 'SQL query error', 'error' => $e->getMessage()];
+    }
+}
+
 
 	public function getRequestById($id)
 	{

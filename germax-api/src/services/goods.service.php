@@ -22,7 +22,7 @@ class GoodsService
 		$this->brandService = new BrandService();
 	}
 
-	public function getAllByParams($modelName, $typeName, $statusNames, $page, $limit)
+	public function getAllByParams($modelName, $typeName, $statusNames, $shippingStatus, $page, $limit)
 	{
 		$offset = ($page - 1) * $limit;
 
@@ -35,6 +35,10 @@ class GoodsService
             model.description AS model_description,
             model.photo AS model_photo,
             good.id_status,
+            good.location,
+            good.date_sending,
+            good.date_receiving,
+            good.shipping_status,
             statu.name AS status_name,
             model.id_type AS model_id_type,
             typ.name AS model_type_name,
@@ -72,6 +76,12 @@ class GoodsService
 				}, array_keys($statusNames))) . ")",
 				"matches" => false,
 				"value" => $statusNames
+			],
+			"shippingStatus" => [
+				"exists" => $shippingStatus != NULL,
+				"sql" => "good.shipping_status = :shippingStatus",
+				"matches" => false,
+				"value" => $shippingStatus
 			]
 		];
 
@@ -136,6 +146,7 @@ class GoodsService
 	}
 
 
+
 	private function generateWhereClause($params)
 	{
 		$whereClause = '';
@@ -186,6 +197,10 @@ class GoodsService
 				"id" => $good["id_status"],
 				"name" => $good["status_name"]
 			],
+			"location" => $good["location"],
+			"date_sending" => $good["date_sending"], // Добавлено поле date_sending
+			"date_receiving" => $good["date_receiving"], // Добавлено поле date_receiving
+			"shipping_status" => $good["shipping_status"]  // Добавлено поле location
 		];
 
 		return $formattedGood;
@@ -248,22 +263,19 @@ class GoodsService
 		return $stmt->execute(['statusId' => $statusId, 'goodId' => $goodId]);
 	}
 
-	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '')
+	public function createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
 		// Проверка обязательных параметров
 		if (empty($modelName) || empty($serialNumber) || empty($idType) || empty($brandName)) {
 			return ['success' => false, 'message' => 'Model name, serial number, type, and brand are required'];
 		}
 		// Создаем или находим бренд
-		error_log("Request to get or create brand: " . $brandName);
 		$brandId = $this->brandService->getOrCreateBrand($brandName);
-		error_log("Result from getOrCreateBrand: " . $brandId);
 
 		if ($brandId === null) {
 			return renderErrorAndExit('Failed to create or find brand', 500);
 		}
 
-		error_log("Brand ID: " . $brandId);
 		// Создаем или находим модель
 		$modelId = $this->modelService->getOrCreateModel($modelName, $idType, $brandId, $description, $photo);
 
@@ -271,13 +283,12 @@ class GoodsService
 			return renderErrorAndExit('Failed to create or find model', 500);
 		}
 
-		error_log("Model ID: " . $modelId);
 		// Создаем товар
-		$sql = "INSERT INTO good (id_model, id_status, serial_number) VALUES (:modelId, :statusId, :serialNumber)";
+		$sql = "INSERT INTO good (id_model, id_status, serial_number, location) VALUES (:modelId, :statusId, :serialNumber, :location)";
 		$stmt = $this->pdo->prepare($sql);
 
 		try {
-			$stmt->execute(['modelId' => $modelId, 'statusId' => $statusId, 'serialNumber' => $serialNumber]);
+			$stmt->execute(['modelId' => $modelId, 'statusId' => $statusId, 'serialNumber' => $serialNumber, 'location' => $location]);
 			$id_good = $this->pdo->lastInsertId();
 			return [
 				'success' => true,
@@ -294,16 +305,14 @@ class GoodsService
 		}
 	}
 
-	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '')
+	public function createGoods($modelName, $statusId, $serialNumbers, $idType, $brandName, $description = '', $photo = '', $location = 'stock_stockman')
 	{
-		error_log("createGoods__Parameters: " . print_r(compact('modelName', 'statusId', 'serialNumbers', 'idType', 'brandName', 'description', 'photo'), true));
 		$results = [];
 
 		foreach ($serialNumbers as $serialNumber) {
-			$good = $this->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo);
+			$good = $this->createGood($modelName, $statusId, $serialNumber, $idType, $brandName, $description, $photo, $location);
 			if ($good['success']) {
 				$results[] = $good;
-				error_log("createGoods__Successfully created good: " . print_r($good, true));
 			} else {
 				return ['success' => false, 'message' => 'Failed to create some goods', 'results' => $results];
 			}
@@ -311,6 +320,7 @@ class GoodsService
 
 		return ['success' => true, 'goods' => $results];
 	}
+
 
 	public function getUnitsByModelId($modelId)
 	{
@@ -383,6 +393,7 @@ class GoodsService
             model.description AS model_description,
             model.photo AS model_photo,
             good.id_status,
+						good.location,
             statu.name AS status_name,
             model.id_type AS model_id_type,
             typ.name AS model_type_name,
@@ -413,6 +424,100 @@ class GoodsService
 				"error" => $e->getMessage(),
 				"sql" => removeSpecialCharacters($sql)
 			]);
+		}
+	}
+
+	public function sendEquipment($id_good)
+	{
+		$sql = "UPDATE good SET date_sending = CURDATE(), shipping_status = 'send_to_manager' WHERE id_good = :id_good";
+		$stmt = $this->pdo->prepare($sql);
+		try {
+			$stmt->execute(['id_good' => $id_good]);
+			return ['success' => true, 'message' => 'Date d\'envoi et statut d\'expédition mis à jour avec succès'];
+		} catch (PDOException $e) {
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+	}
+
+	public function confirmReceiving($id_good)
+	{
+		$sql = "UPDATE good SET date_receiving = CURDATE(), shipping_status = 'received_by_manager', location = 'stock_manager' WHERE id_good = :id_good";
+		$stmt = $this->pdo->prepare($sql);
+		try {
+			$stmt->execute(['id_good' => $id_good]);
+			return ['success' => true, 'message' => 'Date de réception et statut d\'expédition mis à jour avec succès'];
+		} catch (PDOException $e) {
+			return ['success' => false, 'message' => $e->getMessage()];
+		}
+	}
+
+	public function confirmHandOver($id_loan, $id_good)
+	{
+		$this->pdo->beginTransaction();
+		try {
+			// Обновление записи в таблице good
+			$sqlGood = "UPDATE good SET shipping_status = 'handed_over', location = 'user' WHERE id_good = :id_good";
+			$stmtGood = $this->pdo->prepare($sqlGood);
+			$stmtGood->execute(['id_good' => $id_good]);
+
+			if ($stmtGood->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update good status or good not found for id_good: " . $id_good);
+				return ['success' => false, 'message' => 'Failed to update good status or good not found'];
+			}
+
+			// Обновление записи в таблице loan
+			$sqlLoan = "UPDATE loan SET loan_status = 'loaned', booking_date = CURDATE() WHERE id_loan = :id_loan";
+			$stmtLoan = $this->pdo->prepare($sqlLoan);
+			$stmtLoan->execute(['id_loan' => $id_loan]);
+
+			if ($stmtLoan->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update loan status or loan not found for id_loan: " . $id_loan);
+				return ['success' => false, 'message' => 'Failed to update loan status or loan not found'];
+			}
+
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Goods handed over and loan updated successfully'];
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Database error: " . $e->getMessage());
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+		}
+	}
+
+	public function reportReturn($id_loan, $id_good)
+	{
+		$this->pdo->beginTransaction();
+		try {
+			// Обновление записи в таблице good
+			$sqlGood = "UPDATE good SET id_status = 1, shipping_status = 'returned' WHERE id_good = :id_good";
+			$stmtGood = $this->pdo->prepare($sqlGood);
+			$stmtGood->execute(['id_good' => $id_good]);
+
+			if ($stmtGood->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update good status or good not found for id_good: " . $id_good);
+				return ['success' => false, 'message' => 'Failed to update good status or good not found'];
+			}
+
+			// Обновление записи в таблице loan
+			$sqlLoan = "UPDATE loan SET loan_status = 'returned', return_date = CURDATE() WHERE id_loan = :id_loan";
+			$stmtLoan = $this->pdo->prepare($sqlLoan);
+			$stmtLoan->execute(['id_loan' => $id_loan]);
+
+			if ($stmtLoan->rowCount() == 0) {
+				$this->pdo->rollBack();
+				error_log("Failed to update loan status or loan not found for id_loan: " . $id_loan);
+				return ['success' => false, 'message' => 'Failed to update loan status or loan not found'];
+			}
+
+			$this->pdo->commit();
+			return ['success' => true, 'message' => 'Goods returned and loan updated successfully'];
+		} catch (PDOException $e) {
+			$this->pdo->rollBack();
+			error_log("Database error: " . $e->getMessage());
+			return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 		}
 	}
 }
