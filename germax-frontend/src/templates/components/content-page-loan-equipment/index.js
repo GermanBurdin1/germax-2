@@ -10,6 +10,11 @@ import { ApiNotification } from "../../../utils/classes/api-notification";
 import { ApiUsers } from "../../../utils/classes/api-users";
 import { ApiSettings } from "../../../utils/classes/api-settings";
 
+let newLoanFormModal = null;
+let newLoanFormModalNode = null;
+let requestNotFoundItemsModal = null;
+let requestNotFoundItemsModalNode = null;
+
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();
 const apiRental = new ApiRental();
@@ -25,12 +30,7 @@ const searchInputNode = document.querySelector("#model-search");
 const equipmentListNode = document.getElementById("equipment-list");
 const timeDebounce = 200;
 
-let newLoanFormModal = null;
-let newLoanFormModalNode = null;
-let requestNotFoundItemsModal = null;
-let requestNotFoundItemsModalNode = null;
-
-function initRadioBtns(authUser) {
+function initFilterBtns(authUser) {
 	const typeFilter = document.getElementById("type-filter");
 
 	typeFilter.addEventListener(
@@ -359,7 +359,7 @@ function initMain() {
 		console.log("User Permissions:", userPermissions);
 
 		getAllGoodsAndRender(authUser);
-		initRadioBtns(authUser);
+		initFilterBtns(authUser);
 		initSearchListener(authUser);
 		initNotFoundItemsModalListener(authUser, userPermissions);
 	});
