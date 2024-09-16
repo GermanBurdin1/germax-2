@@ -107,8 +107,8 @@ function initializeFieldValidation() {
 		},
 		{
 			id: "inputPassword",
-			validate: (value) => value.length > 0,
-			error: "Mot de passe est obligatoire",
+			validate: (value) => validatePassword(value),
+			error: "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole spécial",
 		},
 		{
 			id: "confirmPassword",
@@ -308,6 +308,11 @@ function validateField(fieldId, validateFn, errorMessage) {
 		return false;
 	}
 	return true;
+}
+
+function validatePassword(password) {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  return passwordRegex.test(password);
 }
 
 function setError(fieldId, errorMessage) {
