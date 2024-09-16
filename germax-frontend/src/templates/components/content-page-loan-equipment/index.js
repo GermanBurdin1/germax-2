@@ -65,7 +65,7 @@ async function getAllGoods(page = 1, limit = 20) {
 		typeName: typeNameSearch,
 		modelName: modelNameSearch,
 		statusNames: ["available"],
-		shippingStatus: "received_by_manager", // Добавлено поле для фильтрации
+		shippingStatus: "received_by_manager",
 		page,
 		limit,
 	});
@@ -207,7 +207,7 @@ function openReservationModal(event, good, authUser) {
 		if (formInfo.dateStart > formInfo.dateEnd)
 			throw new Error("start date must be less than end date");
 		try {
-			await submitRentalRequest(good, formInfo);
+			submitRentalRequest(good, formInfo);
 
 			// Создание уведомления для менеджера
 			const managerMessage = `Un nouvel étudiant a fait une demande de location pour ${good.model.name}.`;
@@ -378,7 +378,7 @@ function submitRentalRequest(good, formInfo) {
 			console.error("Rental request failed:", error);
 			const errorMessage =
 				error.message || "Échec de la demande de location. Veuillez réessayer.";
-			alert(`Échec de la demande de location: ${errorMessage}`); // Сообщение об ошибке на французском
+			alert(`Échec de la demande de location: ${errorMessage}`);
 		});
 }
 
