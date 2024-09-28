@@ -30,12 +30,12 @@ function loginFetch(url, data) {
 	})
 		.then(async (response) => {
 			const json = await response.json();
-			console.log("Response from server:", json); // Логируем ответ от сервера
+			console.log("Response from server:", json); // loguer les réponses du serveur
 			if (!response.ok) return Promise.reject(json);
 			return json;
 		})
 		.then((data) => {
-			console.log("Data passed to loginLogic:", data); // Логируем данные, переданные в loginLogic
+			console.log("Data passed to loginLogic:", data); // loguer les données transferées vers loginLogic
 			loginLogic(data);
 		})
 		.catch((error) => {

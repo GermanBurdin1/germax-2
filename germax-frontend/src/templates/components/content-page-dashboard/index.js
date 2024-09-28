@@ -530,12 +530,12 @@ function loadClientLoans() {
 			console.log("Rentals Data:", rentals);
 			console.log("Requests Data:", requests);
 
-			// Проверка наличия данных
+			// Vérification de la présence des données
 			if (!Array.isArray(rentals) || !Array.isArray(requests)) {
 				throw new Error("Invalid data format from API");
 			}
 
-			// Объединяем данные о реальных арендах и запросах в один массив
+			// Fusionner les données des locations réelles et des requêtes en un seul tableau
 			myLoans.innerHTML = returnClientLoans(rentals, requests);
 			myLoans.style.display = "block";
 			myLoans.dataset.visible = "true";
@@ -543,12 +543,12 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
-			// Убедимся, что все строки корректно обрабатываются
+			// S'assurer que toutes les lignes sont traitées correctement
 			const rows = document.querySelectorAll("#myLoans tr[data-id]");
 			let hasRentals = rentals.length > 0;
 			let hasRequests = requests.length > 0;
 
-			// Вызываем функции для настройки модальных окон в зависимости от наличия данных
+			// Appeler des fonctions pour configurer les fenêtres modales en fonction de la présence des données
 			if (hasRentals) {
 				console.log("Calling setupCancelLoansModal");
 				setupCancelLoansModal();
