@@ -301,6 +301,25 @@ function initListeners() {
 			localStorage.setItem("activeTab", "profile");
 		}
 		switch (targetId) {
+			case "navbar-toggler": // ID кнопки
+				const navbar = document.getElementById("navbarNav");
+				const horizontalNavbar = document.getElementById("horizontalNavbar");
+
+				// Тоглим класс 'show' для показа/скрытия меню
+				navbar.classList.toggle("show");
+				horizontalNavbar.classList.toggle("show");
+
+				// Логирование для отладки
+        console.log("Navbar toggled:", navbar.classList);
+        console.log("Horizontal Navbar toggled:", horizontalNavbar.classList);
+
+				// Убираем прокрутку страницы, когда меню открыто
+				if (navbar.classList.contains("show")) {
+					document.body.style.overflow = "hidden"; // Блокируем скролл страницы
+				} else {
+					document.body.style.overflow = ""; // Восстанавливаем скролл страницы
+				}
+				break;
 			case "saveChanges":
 				event.preventDefault();
 				formChanged = false;
@@ -774,15 +793,17 @@ function setupProposalModal() {
 			managerProposalModal.hide();
 		});
 
-		document.querySelectorAll('.btn-secondary').forEach(button => {
-			button.addEventListener('click', function (event) {
-				if (event.target.textContent.includes('Envoyer le message au manager')) {
-					event.preventDefault();
-					const managerModal = new Modal(document.getElementById("student-communication-manager-modal"));
-					managerModal.show();
-				}
-			});
+	document.querySelectorAll(".btn-secondary").forEach((button) => {
+		button.addEventListener("click", function (event) {
+			if (event.target.textContent.includes("Envoyer le message au manager")) {
+				event.preventDefault();
+				const managerModal = new Modal(
+					document.getElementById("student-communication-manager-modal")
+				);
+				managerModal.show();
+			}
 		});
+	});
 }
 
 function openManagerProposalModal(requestId) {
