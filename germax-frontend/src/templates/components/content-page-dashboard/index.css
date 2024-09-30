@@ -512,7 +512,6 @@ header {
 		max-height: 300px; /* или больше, в зависимости от контента */
 		transition: max-height 0.3s ease-out;
 		z-index: 999999; /* чтобы элементы отображались поверх */
-		position: fixed;
 		background-color: #343a40;
 		width: 100%;
 		right: 0;
