@@ -27,7 +27,7 @@ dist-ssr
 *.sw?
 
 # germax-api
-/germax-api/src/utils/database.php
+/germax-api/src/utils
 /germax-api/src/controllers
 /germax-api/src/services
 
