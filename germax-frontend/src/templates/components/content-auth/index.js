@@ -22,33 +22,40 @@ loginFormNode.addEventListener("submit", function (event) {
 
 function loginFetch(url, data) {
 	fetch(url, {
-			method: "POST",
-			headers: {
-					"Content-Type": "application/json",
-			},
-			body: JSON.stringify(data),
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data),
 	})
-			.then(async (response) => {
-					const json = await response.json();
-					console.log("Response from server:", json); // Логируем ответ от сервера
-					if (!response.ok) return Promise.reject(json);
-					return json;
-			})
-			.then((data) => {
-					console.log("Data passed to loginLogic:", data); // Логируем данные, переданные в loginLogic
-					loginLogic(data);
-			})
-			.catch((error) => {
-        console.error("Login error:", error);
-        if (error && error.error && error.error[0] === "No authorization permission from manager") {
-            showAuthorizationPendingModal();
-        }
-    });
+		.then(async (response) => {
+			const json = await response.json();
+			console.log("Response from server:", json); // loguer les réponses du serveur
+			if (!response.ok) return Promise.reject(json);
+			return json;
+		})
+		.then((data) => {
+			console.log("Data passed to loginLogic:", data); // loguer les données transferées vers loginLogic
+			loginLogic(data);
+		})
+		.catch((error) => {
+			console.error("Login error:", error);
+			if (
+				error &&
+				error.error &&
+				error.error[0] === "No authorization permission from manager"
+			) {
+				showAuthorizationPendingModal();
+			}
+		});
 }
 
 function loginLogic(responseData) {
 	console.log("Login response data:", responseData.data.connexion_permission); // Логируем данные внутри loginLogic
-	if (responseData.data && responseData.data.connexion_permission === "blocked") {
+	if (
+		responseData.data &&
+		responseData.data.connexion_permission === "blocked"
+	) {
 		showAccessDeniedModal();
 	} else {
 		localStorage.setItem("authToken", JSON.stringify(responseData.data.token));
@@ -58,16 +65,20 @@ function loginLogic(responseData) {
 }
 
 function showAccessDeniedModal() {
-	const accessDeniedModal = new Modal(document.getElementById("accessDeniedModal"));
+	const accessDeniedModal = new Modal(
+		document.getElementById("accessDeniedModal")
+	);
 	accessDeniedModal.show();
 }
 
 function showAuthorizationPendingModal() {
-	const authorizationPendingModal = new Modal(document.getElementById("authorizationPendingModal"));
+	const authorizationPendingModal = new Modal(
+		document.getElementById("authorizationPendingModal")
+	);
 
 	const modalElement = document.getElementById("authorizationPendingModal");
-	modalElement.addEventListener('hidden.bs.modal', function () {
-			window.location.href = "/";
+	modalElement.addEventListener("hidden.bs.modal", function () {
+		window.location.href = "/";
 	});
 
 	authorizationPendingModal.show();
@@ -107,8 +118,9 @@ function initializeFieldValidation() {
 		},
 		{
 			id: "inputPassword",
-			validate: (value) => value.length > 0,
-			error: "Mot de passe est obligatoire",
+			validate: (value) => validatePassword(value),
+			error:
+				"Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole spécial",
 		},
 		{
 			id: "confirmPassword",
@@ -259,9 +271,11 @@ function initializeRegistrationForm() {
 						let message;
 						const userType = typePermissionSelect.value;
 						if (userType === "student" || userType === "teacher") {
-							message = "Le manager reviendra vers vous dans les meilleurs délais!";
+							message =
+								"Le manager reviendra vers vous dans les meilleurs délais!";
 						} else {
-							message = "L'administrateur reviendra vers vous dans les meilleurs délais!";
+							message =
+								"L'administrateur reviendra vers vous dans les meilleurs délais!";
 						}
 						alert(message);
 						window.location.href = "/";
@@ -272,7 +286,6 @@ function initializeRegistrationForm() {
 				});
 		});
 }
-
 
 function initializeLinks() {
 	document.querySelector(".link_2").addEventListener("click", function (event) {
@@ -300,7 +313,9 @@ function validateField(fieldId, validateFn, errorMessage) {
 		value = field.value.trim();
 	}
 
-	const errorContainer = document.getElementById(`error${capitalizeFirstLetter(fieldId)}`);
+	const errorContainer = document.getElementById(
+		`error${capitalizeFirstLetter(fieldId)}`
+	);
 	clearErrors(fieldId);
 
 	if (!validateFn(value)) {
@@ -308,6 +323,11 @@ function validateField(fieldId, validateFn, errorMessage) {
 		return false;
 	}
 	return true;
+}
+
+function validatePassword(password) {
+	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+	return passwordRegex.test(password);
 }
 
 function setError(fieldId, errorMessage) {
@@ -321,6 +341,10 @@ function setError(fieldId, errorMessage) {
 		errorSpan.textContent = errorMessage;
 		errorContainer.appendChild(errorSpan);
 		field.classList.add("input-error");
+		errorContainer.classList.add("error-shake");
+		setTimeout(() => {
+			errorContainer.classList.remove("error-shake");
+		}, 1000);
 	} else {
 		console.error(`Error container not found for field: ${fieldId}`);
 	}

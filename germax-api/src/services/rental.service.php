@@ -51,7 +51,7 @@ class RentalService
 		$this->pdo->beginTransaction();
 
 		try {
-			// Проверка и резервирование необходимого количества оборудования
+			// Vérification et réservation de la quantité nécessaire d'équipement
 			$reservation = $this->checkAndReserveGoods($modelName, $data['formInfo']['quantity']);
 
 			if (!$reservation['success']) {
@@ -59,7 +59,7 @@ class RentalService
 				return $reservation;
 			}
 
-			// Добавление каждой единицы оборудования в таблицу `loan`
+			// Ajout de chaque unité d'équipement dans la table
 			foreach ($reservation['reservedGoods'] as $good) {
 				if (!$this->requestLoan([
 					'dateStart' => $data['formInfo']['dateStart'],

@@ -2,12 +2,12 @@ export function returnClientLoans(rentals = [], requests = []) {
 	console.log("Received rentals:", rentals);
 	console.log("Received requests:", requests);
 
-	// Фильтрация аренды для исключения ненужных статусов
+	// Fusionner les deux collections en une seule pour faciliter le traitement
 	const filteredRentals = rentals.filter((rental) => {
 		return rental.loan_status !== "returned" && rental.loan_status !== "loaned";
 	});
 
-	// Объединяем обе коллекции в одну для удобства обработки
+	// Filtrer les locations pour exclure les statuts indésirables
 	const allEntries = [
 		...filteredRentals.map((rental) => {
 			let statusMessage = "Status non défini";

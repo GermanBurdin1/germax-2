@@ -101,6 +101,10 @@ class AuthService
 			return renderErrorAndExit(['La faculté est obligatoire pour les étudiants'], 400);
 		}
 
+		if (!$this->validatePassword($password)) {
+			return renderErrorAndExit(['Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole spécial'], 400);
+		}
+
 		$foundUser = $this->getUserByEmail($email);
 
 		if (!empty($foundUser)) return renderErrorAndExit(
@@ -227,7 +231,8 @@ class AuthService
 		}
 	}
 
-	public function get_processed_users() {
+	public function get_processed_users()
+	{
 		try {
 			$stmt = $this->pdo->prepare("SELECT * FROM user WHERE connexion_permission IN ('authorized', 'declined', 'blocked')");
 			$stmt->execute();
@@ -257,19 +262,25 @@ class AuthService
 		return renderSuccessAndExit(['User status and authorization updated'], 200);
 	}
 
-	public function getUserPermission($userId) {
+	public function getUserPermission($userId)
+	{
 		try {
-				$stmt = $this->pdo->prepare("
+			$stmt = $this->pdo->prepare("
 						SELECT u.*, p.name as name_permission
 						FROM user u
 						JOIN permission p ON u.id_permission = p.id_permission
 						WHERE u.id_user = :userId
 				");
-				$stmt->execute(['userId' => $userId]);
-				return $stmt->fetch(PDO::FETCH_ASSOC);
+			$stmt->execute(['userId' => $userId]);
+			return $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
-				error_log("Error fetching user permission: " . $e->getMessage());
-				return false;
+			error_log("Error fetching user permission: " . $e->getMessage());
+			return false;
 		}
-}
+	}
+
+	private function validatePassword($password)
+	{
+		return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $password);
+	}
 }

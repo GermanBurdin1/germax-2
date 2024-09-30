@@ -55,26 +55,45 @@ section {
 	margin-right: 30px;
 	font-size: 18px;
 	display: inline-block;
+	color: #C2CAD0; /* Тусклый цвет для неактивной ссылки */
+  opacity: 0.6; /* Уменьшаем прозрачность для неактивной ссылки */
+  transition: opacity 0.3s ease, color 0.3s ease; /* Плавный переход для прозрачности и цвета */
+}
+
+/* Стиль для активной ссылки */
+.link>a.active {
+	color: white; /* Белый цвет для активной ссылки */
+	opacity: 1; /* Полностью видимая активная ссылка */
 }
 
 .link_1 {
 	color: white;
 }
 
-.link_1::after {
+.link_2 {
+	color: white;
+}
+
+.link_1::after, .link_2::after {
 	content: "";
 	width: 65px;
 	height: 4px;
 	background-color: #AFD275;
 	display: block;
-	margin-left: -10px;
 	margin-top: 4px;
 	border-radius: 10px;
+	opacity: 0;
+	transition: opacity 0.3s;
 }
 
-.link_2 {
-	color: #C2CAD0;
+.link_1.active::after {
+	opacity: 1;
 }
+
+.link_2.active::after {
+	opacity: 1;
+}
+
 
 h1 {
 	color: white;
@@ -107,7 +126,7 @@ h2 {
 	font-weight: 600;
 	transform: translateY(-50%);
 	color: #5C4E4A;
-	font-size: 13px;
+	font-size: 16px;
 	pointer-events: none;
 	outline: none;
 }
@@ -118,9 +137,7 @@ h2 {
 	background: #C2B9B0;
 	border: none;
 	outline: 0;
-	font-size: 23px;
-	padding: 0 35px 0 35px;
-	padding-top: 20px;
+	font-size: 16px;
 	color: #fff;
 	transition: ease 25ms all;
 }
@@ -217,6 +234,7 @@ svg {
 	font-size: 16px;
 }
 
+/* Общий стиль кнопок */
 .btn {
 	width: 223px;
 	height: 54px;
@@ -227,11 +245,25 @@ svg {
 	font-family: "Raleway", sans-serif;
 	font-weight: bold;
 	cursor: pointer;
-	background-color: #AFD275;
+	background-color: #AFD275; /* Основной цвет кнопки */
 	box-shadow: 0px 0px 25px #AFD275;
 	outline: none;
 	border: none;
+	transition: background-color 0.3s ease, color 0.3s ease; /* Плавный переход цветов */
 }
+
+/* Изменение цвета при наведении для контраста */
+.btn:hover {
+	background-color: #5C4E4A; /* Темно-коричневый цвет из палитры для контраста */
+	color: #FFFFFF; /* Цвет текста становится белым */
+}
+
+/* Также можно добавить эффект при нажатии */
+.btn:active {
+	background-color: #7E685A; /* Насыщенный серо-коричневый цвет */
+	color: #F0E68C; /* Светло-желтый для контраста */
+}
+
 
 .network {
 	display: flex;
@@ -263,16 +295,16 @@ svg {
 }
 
 #registration-container .inputbox {
-	width: 50%; /* Уменьшил ширину полей */
+	width: 60%; /* Уменьшил ширину полей */
 	margin: 5px 0; /* Уменьшил вертикальные отступы */
 }
 
-#registration-container .form-label {
-	font-size: 14px; /* Уменьшил размер текста меток */
-	margin-bottom: 5px;
+#registration-container .form-label, #login-container .form-label {
+	font-size: 18px; /* Уменьшил размер текста меток */
+	margin-bottom: -10px;
+	margin-left: -10px;
 	display: block;
 	position: absolute;
-	left: 0;
 }
 
 #registration-container .form-control {
@@ -309,14 +341,29 @@ svg {
 	width: 250px; /* Ширина контейнера для ошибки */
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+  20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+/* Анимация и обводка добавляются только при ошибке */
+.error-shake {
+  animation: shake 1s ease; /* Вибрация для элемента с ошибкой */
+}
+
 .error-message {
 	color: red;
-	font-size: 12px;
+	font-size: 14px;
 	background-color: #fff;
 	display: inline-block;
-	padding-left: 5px;
+	padding: 15px;
+	margin-inline: -25px;
+	border-radius: 5px;
+	transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
 }
 
 .input-error {
 	border-color: red;
 }
+

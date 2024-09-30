@@ -31,6 +31,11 @@ body,
 html {
 	height: 100%;
 	margin: 0;
+	min-width: 320px;
+}
+
+.container-fluid {
+	min-width: 375px;
 }
 
 body {
@@ -443,31 +448,111 @@ header {
 }
 
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-  }
-  .menu {
-    display: none;
-  }
-  .menu-mobile {
-    display: block;
-  }
-  .container {
-    padding-top: 20px;
-  }
-  .navbar .nav-link {
-    font-size: 14px;
-  }
-  .navbar .btn-auth {
-    font-size: 14px;
-  }
-  .settings-card {
-    margin: 0 10px;
-  }
-  .settings-card .form-control {
-    font-size: 14px;
-  }
-  .settings-card .btn {
-    font-size: 14px;
-  }
+	.header {
+		flex-direction: column;
+	}
+	.menu {
+		display: none;
+	}
+	.menu-mobile {
+		display: block;
+	}
+	.container {
+		padding-top: 20px;
+	}
+	.navbar .nav-link {
+		font-size: 14px;
+	}
+	.navbar .btn-auth {
+		font-size: 14px;
+	}
+	.settings-card {
+		margin: 0 10px;
+	}
+	.settings-card .form-control {
+		font-size: 14px;
+	}
+	.settings-card .btn {
+		font-size: 14px;
+	}
 }
+
+/* Базовые стили для скрытия меню */
+.collapse {
+	display: none; /* По умолчанию скрыто */
+	transition: all 0.3s ease-out; /* Плавный переход */
+}
+
+/* Когда меню раскрыто, увеличиваем высоту */
+.collapse.show {
+	display: block !important;
+	max-height: 500px !important; /* Убедитесь, что есть место для содержимого */
+	overflow: visible !important; /* Скрытие содержимого убирается */
+	transition: max-height 0.3s ease-out;
+}
+
+#horizontalNavbar.show {
+	display: flex !important; /* При открытии flex */
+	flex-direction: column;
+	transition: all 0.3s ease; /* Плавный переход для любых изменений */
+	z-index: 9999; /* Высокий z-index для отображения поверх других элементов */
+}
+
+@media (max-width: 992px) {
+	/* Для корректного раскрытия меню */
+	.navbar-collapse {
+		display: none; /* по умолчанию скрываем */
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.3s ease-out;
+	}
+
+	.navbar-collapse.show {
+		display: block !important; /* показываем при раскрытии */
+		max-height: 300px; /* или больше, в зависимости от контента */
+		transition: max-height 0.3s ease-out;
+		z-index: 999999; /* чтобы элементы отображались поверх */
+		background-color: #343a40;
+		width: 100%;
+		right: 0;
+		top: 100%;
+	}
+}
+
+/* Для самых маленьких экранов (смартфонов) */
+@media (max-width: 576px) {
+	/* Скрываем навигацию по умолчанию */
+	#horizontalNavbar,
+	.navbar-collapse {
+		display: none;
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.3s ease-out;
+	}
+
+	/* Когда меню открыто на смартфоне */
+	.navbar-collapse.show,
+	#horizontalNavbar.show {
+		display: block;
+		max-height: 400px; /* Можно увеличить высоту для контента */
+		width: 100%; /* Меню будет на всю ширину экрана */
+	}
+
+	/* Кнопка бургера будет справа */
+	.navbar-toggler {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	/* Ограничение ширины меню */
+	.navbar-collapse {
+		position: absolute;
+		right: 0;
+		top: 50px; /* Чтобы меню открывалось под кнопкой */
+		width: 100%; /* Меню будет занимать всю ширину экрана */
+		background-color: #343a40; /* Фон меню */
+		z-index: 999;
+	}
+}
+

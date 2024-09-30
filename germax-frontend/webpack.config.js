@@ -33,6 +33,22 @@ function generateTemplateChilds(folderPath) {
 	return templates;
 }
 
+// [
+//   {
+//     "html": "/germax-frontend/src/templates/components/header/index.html",
+//     "css": "/germax-frontend/src/templates/components/header/index.css",
+//     "js": "/germax-frontend/src/templates/components/header/index.js",
+//     "componentName": "header"
+//   },
+//   {
+//     "html": "/germax-frontend/src/templates/components/footer/index.html",
+//     "css": "/germax-frontend/src/templates/components/footer/index.css",
+//     "js": "/germax-frontend/src/templates/components/footer/index.js",
+//     "componentName": "footer"
+//   }
+// ]
+
+
 function generateTemplates(pathDir) {
 	const componentsDir = path.join(__dirname, pathDir);
 
@@ -46,12 +62,34 @@ function generateTemplates(pathDir) {
 	return templates;
 }
 
+// [
+//   {
+//     "html": "/germax-frontend/src/templates/components/header/index.html",
+//     "css": "/germax-frontend/src/templates/components/header/index.css",
+//     "js": "/germax-frontend/src/templates/components/header/index.js",
+//     "componentName": "header"
+//   },
+//   {
+//     "html": "/germax-frontend/src/templates/components/footer/index.html",
+//     "css": "/germax-frontend/src/templates/components/footer/index.css",
+//     "js": "/germax-frontend/src/templates/components/footer/index.js",
+//     "componentName": "footer"
+//   }
+// ]
+
+
 const createEntriesObj = (templates) => {
 	return templates.reduce((acc, { componentName, js }) => {
-		acc[componentName] = js; // Сохраняем только JS файлы
+		acc[componentName] = js;
 		return acc;
 	}, {});
 };
+
+// {
+//   "header": "/germax-frontend//src/templates/components/index.js",
+//   "footer": "/germax-frontend//src/templates/components/index.js"
+// }
+
 
 const createHtmlPluginsArr = (templates) => {
 	return templates.map(({ js, css, html, componentName }) => {
@@ -63,6 +101,22 @@ const createHtmlPluginsArr = (templates) => {
 		});
 	});
 };
+
+// [
+//   new HtmlWebpackPlugin({
+//     filename: "header.html",
+//     template: "/germax-frontend/src/templates/header/index.html",
+//     chunks: ["header"],
+//     inject: "body"
+//   }),
+//   new HtmlWebpackPlugin({
+//     filename: "footer.html",
+//     template: "/germax-frontend/src/templates/footer/index.html",
+//     chunks: ["footer"],
+//     inject: "body"
+//   })
+// ]
+
 
 const createConfig = (configDefault) => {
 	const components = generateTemplates("src/templates/components");
@@ -108,24 +162,11 @@ const createConfig = (configDefault) => {
 							options: {
 								sources: {
 									list: [
-										// По умолчанию обрабатываются теги <img src="...">
 										{
 											tag: "img",
 											attribute: "src",
 											type: "src",
 										},
-										// {
-										// 	tag: "link",
-										// 	attribute: "href",
-										// 	type: "src",
-										// 	// Фильтруем только те теги link, которые относятся к стилям
-										// 	filter: (tag, attribute, attributes, resourcePath) => {
-										// 	  // Функция должна вернуть true, чтобы обработать атрибут,
-										// 	  // только если это CSS файл
-										// 	  return attributes.rel === "stylesheet";
-										// 	},
-										//   },
-										// Добавьте другие правила для дополнительных тегов и атрибутов при необходимости
 									],
 								},
 							},
