@@ -42,7 +42,7 @@ section {
 	width: 566px;
 	height: 789px;
 	border-radius: 0px 30px 30px 0px;
-	background-image: url("../../../utils/images/resized_pexels-cup-of-couple-6177607.jpg");
+	background-image: url("../../../assets/images/resized_pexels-cup-of-couple-6177607.jpg");
 }
 
 .link {
@@ -55,15 +55,14 @@ section {
 	margin-right: 30px;
 	font-size: 18px;
 	display: inline-block;
-	color: #C2CAD0; /* Тусклый цвет для неактивной ссылки */
-  opacity: 0.6; /* Уменьшаем прозрачность для неактивной ссылки */
-  transition: opacity 0.3s ease, color 0.3s ease; /* Плавный переход для прозрачности и цвета */
+	color: #C2CAD0;
+  opacity: 0.6;
+  transition: opacity 0.3s ease, color 0.3s ease; /* effet de transition */
 }
 
-/* Стиль для активной ссылки */
 .link>a.active {
-	color: white; /* Белый цвет для активной ссылки */
-	opacity: 1; /* Полностью видимая активная ссылка */
+	color: white;
+	opacity: 1;
 }
 
 .link_1 {
@@ -234,7 +233,7 @@ svg {
 	font-size: 16px;
 }
 
-/* Общий стиль кнопок */
+
 .btn {
 	width: 223px;
 	height: 54px;
@@ -245,23 +244,22 @@ svg {
 	font-family: "Raleway", sans-serif;
 	font-weight: bold;
 	cursor: pointer;
-	background-color: #AFD275; /* Основной цвет кнопки */
+	background-color: #AFD275;
 	box-shadow: 0px 0px 25px #AFD275;
 	outline: none;
 	border: none;
-	transition: background-color 0.3s ease, color 0.3s ease; /* Плавный переход цветов */
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Изменение цвета при наведении для контраста */
 .btn:hover {
-	background-color: #5C4E4A; /* Темно-коричневый цвет из палитры для контраста */
-	color: #FFFFFF; /* Цвет текста становится белым */
+	background-color: #5C4E4A;
+	color: #FFFFFF;
 }
 
-/* Также можно добавить эффект при нажатии */
+
 .btn:active {
-	background-color: #7E685A; /* Насыщенный серо-коричневый цвет */
-	color: #F0E68C; /* Светло-желтый для контраста */
+	background-color: #7E685A;
+	color: #F0E68C;
 }
 
 
@@ -291,16 +289,16 @@ svg {
 }
 
 #registration-container {
-	margin-top: -90px; /* Поднял контейнер регистрации выше */
+	margin-top: -90px;
 }
 
 #registration-container .inputbox {
-	width: 60%; /* Уменьшил ширину полей */
-	margin: 5px 0; /* Уменьшил вертикальные отступы */
+	width: 60%;
+	margin: 5px 0;
 }
 
 #registration-container .form-label, #login-container .form-label {
-	font-size: 18px; /* Уменьшил размер текста меток */
+	font-size: 18px;
 	margin-bottom: -10px;
 	margin-left: -10px;
 	display: block;
@@ -308,8 +306,8 @@ svg {
 }
 
 #registration-container .form-control {
-	font-size: 14px; /* Уменьшил размер текста в полях ввода */
-	padding: 10px; /* Уменьшил внутренние отступы полей ввода */
+	font-size: 14px;
+	padding: 10px;
 }
 
 #userTypeContainer {
@@ -319,26 +317,26 @@ svg {
 
 #facultyContainer {
 	display: flex;
-	flex-direction: column; /* Flex для вертикального выравнивания */
-	align-items: flex-start; /* Выравнивание по верхнему краю */
-	margin-left: 15px; /* Отступ слева для создания пространства */
+	flex-direction: column;
+	align-items: flex-start;
+	margin-left: 15px;
 }
 
 #facultyContainer .inputbox {
-	width: auto; /* Сброс ширины для корректного отображения */
-	margin-left: 15px; /* Расстояние между полями */
+	width: auto;
+	margin-left: 15px;
 }
 
 #facultyContainer .form-select {
-	width: 240px; /* Устанавливаем нужную ширину для селекта факультетов */
+	width: 240px;
 }
 
 .error-container {
 	position: absolute;
-	right: -330px; /* Расстояние от правого края inputbox */
+	right: -330px;
 	top: 50%;
 	transform: translateY(-50%);
-	width: 250px; /* Ширина контейнера для ошибки */
+	width: 250px;
 }
 
 @keyframes shake {
@@ -347,9 +345,9 @@ svg {
   20%, 40%, 60%, 80% { transform: translateX(10px); }
 }
 
-/* Анимация и обводка добавляются только при ошибке */
+/* animation lors d'une erreur */
 .error-shake {
-  animation: shake 1s ease; /* Вибрация для элемента с ошибкой */
+  animation: shake 1s ease;
 }
 
 .error-message {

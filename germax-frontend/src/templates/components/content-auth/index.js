@@ -30,12 +30,12 @@ function loginFetch(url, data) {
 	})
 		.then(async (response) => {
 			const json = await response.json();
-			console.log("Response from server:", json); // loguer les réponses du serveur
+			console.log("Response from server:", json);
 			if (!response.ok) return Promise.reject(json);
 			return json;
 		})
 		.then((data) => {
-			console.log("Data passed to loginLogic:", data); // loguer les données transferées vers loginLogic
+			console.log("Data passed to loginLogic:", data);
 			loginLogic(data);
 		})
 		.catch((error) => {
@@ -186,7 +186,7 @@ function initializeRegistrationForm() {
 	document
 		.getElementById("registrationForm")
 		.addEventListener("submit", function (event) {
-			event.preventDefault(); // Предотвратить стандартную отправку формы
+			event.preventDefault();
 
 			let isValid = true;
 
@@ -260,12 +260,12 @@ function initializeRegistrationForm() {
 			const url = "http://germax-api/auth/register";
 
 			fetch(url, {
-				method: "POST", // Использовать метод POST
-				body: formData, // Отправить данные формы
+				method: "POST",
+				body: formData,
 			})
-				.then((response) => response.json()) // Преобразовать ответ в JSON
+				.then((response) => response.json())
 				.then((data) => {
-					console.log("Success:", data); // Вывести данные ответа в консоль
+					console.log("Success:", data);
 					if (data.success) {
 						let message;
 						const userType = typePermissionSelect.value;
@@ -281,7 +281,7 @@ function initializeRegistrationForm() {
 					}
 				})
 				.catch((error) => {
-					console.error("Error:", error); // Вывести ошибку в консоль, если она произошла
+					console.error("Error:", error);
 				});
 		});
 }
