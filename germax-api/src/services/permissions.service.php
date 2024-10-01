@@ -9,7 +9,7 @@ class PermissionsService {
 
 	public function getAll() {
 		$stmt = $this->pdo->prepare("SELECT * FROM permission");
-		$stmt->execute(); // Теперь выполняем запрос
+		$stmt->execute();
 
 		$permission = $stmt->fetch();
 
@@ -18,8 +18,8 @@ class PermissionsService {
 
 	public function getByName($name) {
 		$stmt = $this->pdo->prepare("SELECT id_permission FROM permission WHERE name = :name");
-		$stmt->bindParam(':name', $name, PDO::PARAM_STR); // Привязываем параметр перед вызовом execute
-		$stmt->execute(); // Теперь выполняем запрос
+		$stmt->bindParam(':name', $name, PDO::PARAM_STR);
+		$stmt->execute();
 
 		$permission = $stmt->fetch();
 
@@ -28,8 +28,8 @@ class PermissionsService {
 
 	public function getById($id) {
 		$stmt = $this->pdo->prepare("SELECT * FROM permission WHERE id_permission = :id");
-		$stmt->bindParam(':id', $id, PDO::PARAM_STR); // Привязываем параметр перед вызовом execute
-		$stmt->execute(); // Теперь выполняем запрос
+		$stmt->bindParam(':id', $id, PDO::PARAM_STR);
+		$stmt->execute();
 
 		$permission = $stmt->fetch();
 
