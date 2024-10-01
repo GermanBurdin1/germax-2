@@ -22,10 +22,8 @@ class UploadService
             $fileNameCmps = explode(".", $fileName);
             $fileExtension = strtolower(end($fileNameCmps));
 
-            // Сгенерируйте уникальное имя для файла
             $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
-            // Укажите допустимые расширения файлов
             $allowedfileExtensions = array('jpg', 'jpeg', 'png', 'webp');
 
             if (in_array($fileExtension, $allowedfileExtensions)) {
@@ -33,8 +31,7 @@ class UploadService
                 $dest_path = $this->uploadDir . $newFileName;
 
                 if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                    // Генерируем URL для файла
-                    $publicUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/src/files/images/' . $newFileName;
+                    $publicUrl = htmlspecialchars($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/src/files/images/' . $newFileName, ENT_QUOTES, 'UTF-8');
                     return ['success' => true, 'url' => $publicUrl];
                 } else {
                     return ['success' => false, 'message' => 'File could not be uploaded.'];

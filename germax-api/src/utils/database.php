@@ -13,19 +13,6 @@ class Database
 		PDO::ATTR_EMULATE_PREPARES => false,
 	];
 
-	// public function __construct()
-	// {
-	// 	$this->host = 'localhost';
-	// 	$this->dbname = 'version2';
-	// 	$this->user = 'root';
-	// 	$this->pass = '';
-	// 	$this->options = [
-	// 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-	// 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-	// 		PDO::ATTR_EMULATE_PREPARES => false,
-	// 	];
-	// }
-
 	public function connect()
 	{
 		$dsn = "mysql:host=" . $this->host . ";dbname=" . $this->dbname;

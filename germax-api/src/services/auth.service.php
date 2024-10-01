@@ -49,15 +49,15 @@ class AuthService
 	}
 
 	/**
-	 * Функция для обработки информации о пользователе
 	 *
-	 * @param string $lastName Фамилия пользователя
-	 * @param string $firstName Имя пользователя
-	 * @param string $phone Телефон пользователя
-	 * @param string $email Email пользователя
-	 * @param string $password Пароль пользователя
-	 * @param string $typePermission Тип пользователя
-	 * @param string | NULL $faculty Тип пользователя
+	 *
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
 	 * @return void
 	 */
 	public function register(
@@ -129,20 +129,16 @@ class AuthService
 	{
 		$userByToken = $this->getUserByToken($token);
 
-		// если userByToken не существует
 		if ($userByToken == false) return renderErrorAndExit(['Invalid token'], 401);
 		if ($userByToken == null) return renderErrorAndExit(['There is no user with this email'], 401);
 
-		// если userByToken существует
 		return renderSuccessAndExit(['User found'], 200, $userByToken);
 	}
 
 	public function getUserByToken($token)
 	{
-		// Декодируем токен
-		$decodedToken = decrypt_token($token);  // Используем функцию для декодирования токена
+		$decodedToken = decrypt_token($token);
 
-		// Если токен недействителен или не может быть декодирован
 		if ($decodedToken == false) return false;
 
 		$user = $this->getUserByEmail($decodedToken['email']);
@@ -153,7 +149,6 @@ class AuthService
 	}
 
 
-	// Создание пользователя, отдельная функция
 	private function createUser(
 		$lastname,
 		$firstname,
@@ -173,7 +168,6 @@ class AuthService
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 		$faculty = $faculty == NULL ? "default" : $faculty;
 
-		// Теперь у нас есть id_permission, и мы можем вставить нового пользователя
 		$stmt = $this->pdo->prepare("INSERT INTO user (lastname, firstname, phone, password, email, id_permission, faculty, authorization_permission, connexion_permission) VALUES (:lastname, :firstname, :phone, :password, :email, :id_permission, :faculty, :authorization_permission, :connexion_permission)");
 		$stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
 		$stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
@@ -206,7 +200,6 @@ class AuthService
 		$stmt->execute();
 
 		$user = $stmt->fetch();
-		// var_dump($user);
 
 		if (empty($user)) return NULL;
 

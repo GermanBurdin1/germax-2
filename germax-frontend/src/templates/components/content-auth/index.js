@@ -51,7 +51,6 @@ function loginFetch(url, data) {
 }
 
 function loginLogic(responseData) {
-	console.log("Login response data:", responseData.data.connexion_permission); // Логируем данные внутри loginLogic
 	if (
 		responseData.data &&
 		responseData.data.connexion_permission === "blocked"
