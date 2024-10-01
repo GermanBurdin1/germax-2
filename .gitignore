@@ -25,13 +25,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# germax-api
-/germax-api/src/utils/*
-/germax-api/src/controllers/*
-/germax-api/src/services/*
-/germax-api/src/equipment/*
-/germax-api/src/models/*
-/germax-api/src/files/*
-
-/germax-api/.htaccess
