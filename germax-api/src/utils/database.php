@@ -6,7 +6,7 @@ class Database
 	private $host = 'localhost';
 	private $dbname = 'version2';
 	private $user = 'root';
-	private $pass = '';
+	private $pass = 'qwl982.wzI!';
 	private $options = [
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
