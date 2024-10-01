@@ -34,4 +34,4 @@ dist-ssr
 /germax-api/src/models/*
 /germax-api/src/files/*
 
-
+/germax-api/src/.htaccess
