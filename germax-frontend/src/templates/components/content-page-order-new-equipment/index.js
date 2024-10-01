@@ -21,7 +21,6 @@ const id_user = JSON.parse(localStorage.getItem("id_user"));
 const authToken = localStorage.getItem("authToken");
 const namePermission = localStorage.getItem("namePermission");
 updateEquipmentRequestsTable(namePermission);
-console.log("Auth token:", authToken);
 if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
 }
@@ -43,8 +42,8 @@ document
 				updateTableRow(requestId, {
 					id_request: requestId,
 					assigned_manager_id: managerId,
-					treatment_status: "pending_manager", // или другой статус, который должен быть установлен
-					equipment_status: "equipment_availability_pending", // или другой статус, который должен быть установлен
+					treatment_status: "pending_manager",
+					equipment_status: "equipment_availability_pending",
 				});
 				assignManagerModal.hide();
 			})
@@ -73,22 +72,18 @@ const assignStockmanModal = new Modal(
 );
 
 function assignStockmanToRequest(requestId, stockmanId) {
-	console.log("функция assignStockmanToRequest вызвалась");
 	const responseData = {
 		id_request: requestId,
 		assigned_stockman_id: stockmanId,
 	};
-	console.log("assignStockmanToRequest responseData:", responseData);
 	return apiEquipmentRequest.updateEquipmentRequest(responseData);
 }
 
 document
 	.getElementById("assignStockmanModalButton")
 	.addEventListener("click", function () {
-		console.log("происходит клик по кнопке assignStockmanModalButton");
 		const requestId = this.getAttribute("data-id");
 		const stockmanId = localStorage.getItem("id_user");
-		console.log("stockmanId & requestTd:", stockmanId, requestId);
 		assignStockmanToRequest(requestId, stockmanId)
 			.then((response) => {
 				alert(
@@ -96,13 +91,11 @@ document
 				);
 				const row = document.querySelector(`tr[data-id="${requestId}"]`);
 				if (row) {
-					row.style.backgroundColor = "lightblue"; // Установите цвет для подтверждения
+					row.style.backgroundColor = "lightblue";
 				}
 				updateTableRow(requestId, {
 					id_request: requestId,
 					assigned_stockman_id: stockmanId,
-					// treatment_status: "pending_stockman", // или другой статус, который должен быть установлен
-					// equipment_status: "equipment_availability_pending" // или другой статус, который должен быть установлен
 				});
 				assignStockmanModal.hide();
 			})
@@ -116,133 +109,6 @@ document
 			});
 	});
 
-// const addCategoryModalElement = document.getElementById("addCategoryModal");
-// const addCategoryModal = new Modal(addCategoryModalElement);
-// async function saveCategory() {
-// 	console.log(addCategoryModal);
-// 	const name = document.getElementById("newCategoryName").value;
-
-// 	try {
-// 		const data = await categoryApi.addCategory({ categoryName: name });
-// 		if (data.success) {
-// 			alert(data.message);
-// 			document.getElementById("newCategoryName").value = "";
-// 			addCategoryModal.hide();
-// 		} else {
-// 			alert(data.message);
-// 		}
-// 	} catch (error) {
-// 		console.error("Ошибка:", error);
-// 	}
-// }
-
-// document
-// 	.getElementById("saveCategoryBtn")
-// 	.addEventListener("click", saveCategory);
-
-// // adding new equipment
-// const addEquipmentModalElement = document.getElementById("addEquipmentModal");
-// const addEquipmentModal = new Modal(addEquipmentModalElement);
-// document
-// 	.getElementById("saveEquipmentBtn")
-// 	.addEventListener("click", saveEquipment);
-// document.getElementById("brandName").addEventListener("input", searchBrands);
-// document
-// 	.getElementById("brandName")
-// 	.addEventListener("change", autoFillModelName);
-
-// async function searchBrands() {
-// 	const brandInput = document.getElementById("brandName");
-// 	const query = brandInput.value;
-// 	const response = await brandApi.searchBrands(query);
-
-// 	const suggestions = document.getElementById("brandSuggestions");
-// 	suggestions.innerHTML = "";
-
-// 	response.forEach((brand) => {
-// 		const suggestion = document.createElement("a");
-// 		suggestion.href = "#";
-// 		suggestion.classList.add("list-group-item", "list-group-item-action");
-// 		suggestion.textContent = brand.name;
-// 		suggestion.onclick = () => {
-// 			brandInput.value = brand.name;
-// 			suggestions.innerHTML = "";
-// 			autoFillModelName();
-// 		};
-// 		suggestions.appendChild(suggestion);
-// 	});
-// }
-
-// async function saveEquipment() {
-// 	const form = document.getElementById("addEquipmentForm");
-// 	if (form.checkValidity() === false) {
-// 			form.reportValidity();
-// 			return;
-// 	}
-
-// 	const modelName = document.getElementById("equipmentName").value;
-// 	const id_type = document.getElementById("categoryName").value;
-// 	const brandName = document.getElementById("brandName").value;
-// 	const description = document.getElementById("equipmentDescription").value;
-// 	const serial_number = document.getElementById("serialNumber").value;
-// 	const photoFile = document.getElementById("equipmentPhoto").files[0];
-
-// 	let brandId = await fetchBrandIdByName(brandName);
-// 	if (!brandId) {
-// 			brandId = await addNewBrand(brandName);
-// 	}
-
-// 	let photoUrl = "";
-// 	if (photoFile) {
-// 			const uploadData = await uploadApi.uploadPhoto(photoFile);
-// 			if (uploadData.success) {
-// 					photoUrl = uploadData.url;
-// 			} else {
-// 					throw new Error(uploadData.message);
-// 			}
-// 	}
-
-// 	try {
-// 			const data = await apiGoods.createGood({
-// 					modelName,
-// 					statusId: 4,
-// 					serialNumbers: [serial_number], // Wrapping in an array to use createGood
-// 					id_type,
-// 					brandName,
-// 					description,
-// 					photo: photoUrl,
-// 			});
-
-// 			if (data.success) {
-// 					alert("Équipement ajouté avec succès!");
-// 					form.reset();
-// 					addEquipmentModal.hide();
-// 			} else {
-// 					alert("Erreur: " + data.message);
-// 			}
-// 	} catch (error) {
-// 			console.error("Erreur:", error);
-// 			alert("Erreur lors de l'ajout de l'équipement.");
-// 	}
-// }
-
-// async function fetchBrandIdByName(brandName) {
-// 	const brand = await brandApi.searchBrands(brandName);
-// 	return brand.id || null;
-// }
-
-// async function addNewBrand(brandName) {
-// 	const data = await brandApi.getOrCreateBrand({ name: brandName });
-// 	return data.id;
-// }
-
-// function autoFillModelName() {
-// 	const brandName = document.getElementById("brandName").value;
-// 	const modelNameInput = document.getElementById("equipmentName");
-// 	if (!modelNameInput.value) {
-// 		modelNameInput.value = brandName;
-// 	}
-// }
 
 function fetchAuthUser(url) {
 	const token = JSON.parse(localStorage.getItem("authToken"));
@@ -263,12 +129,11 @@ function fetchAuthUser(url) {
 		.then((response) => {
 			const json = response.json();
 			if (!response.ok) return Promise.reject(json);
-			console.log("Data received:", json);
 			return json;
 		})
 		.then((data) => {
 			renderEquipmentOrder(data.data);
-			localStorage.setItem("namePermission", data.data.name_permission); // Сохраняем роль пользователя
+			localStorage.setItem("namePermission", data.data.name_permission);
 			updateEquipmentRequestsTable(data.data.name_permission);
 		})
 		.catch((error) => {
@@ -279,7 +144,6 @@ function fetchAuthUser(url) {
 // отрисовка заказа оборудования только для stockman
 
 function renderEquipmentOrder(userData) {
-	// const titleAddingOrders = document.getElementById("titleAddingOrders");
 	const addingEquipmentContainer = document.getElementById(
 		"equipmentAddingContainer"
 	);
@@ -288,8 +152,6 @@ function renderEquipmentOrder(userData) {
 	const titleOrders = document.getElementById("titleOrders");
 	const listOrdersTitle = document.getElementById("listOrdersTitle");
 
-	//stockman
-	// titleAddingOrders.innerHTML = "";
 	addingEquipmentContainer.innerHTML = "";
 	titleOrdersRequest.innerHTML = "";
 	//manager
@@ -358,7 +220,6 @@ function renderEquipmentOrder(userData) {
 				const comment = document.getElementById("equipmentDescription").value;
 				const id_type = document.getElementById("categoryName").value;
 
-				// Создаем объект с данными для отправки на сервер
 				const requestData = {
 					equipment_name: equipmentName,
 					quantity: parseInt(quantity, 10),
@@ -367,7 +228,6 @@ function renderEquipmentOrder(userData) {
 					id_user,
 				};
 
-				// Отправляем запрос на сервер
 				fetch("http://germax-api/equipment_requests", {
 					method: "POST",
 					headers: {
@@ -377,7 +237,6 @@ function renderEquipmentOrder(userData) {
 				})
 					.then((response) => response.json())
 					.then((data) => {
-						console.log("Success:", data);
 						alert("Запрос на оборудование успешно отправлен!");
 						updateEquipmentRequestsTable();
 					})
@@ -388,10 +247,9 @@ function renderEquipmentOrder(userData) {
 			});
 	}
 }
-// обновление таблицы с сортировкой и пагинацией
 
-let sortField = ""; // Поле для сортировки
-let sortOrder = "asc"; // Порядок сортировки: 'asc' или 'desc'
+let sortField = "";
+let sortOrder = "asc";
 
 function updateEquipmentRequestsTable(
 	namePermission,
@@ -405,7 +263,6 @@ function updateEquipmentRequestsTable(
 		.then((data) => {
 			let requests = data.data;
 
-			// Сортируем данные
 			if (sortField) {
 				requests.sort((a, b) => {
 					if (sortOrder === "asc") {
@@ -417,7 +274,7 @@ function updateEquipmentRequestsTable(
 			}
 
 			const tableBody = document.querySelector(".table tbody");
-			tableBody.innerHTML = ""; // Очистить текущее содержимое таблицы
+			tableBody.innerHTML = "";
 
 			if (data.success && Array.isArray(requests)) {
 				requests.forEach((request) => {
@@ -772,8 +629,6 @@ userModal.addEventListener("show.bs.modal", function (event) {
 });
 
 //vérifier la disponibilité
-//модальное окно
-
 function setupAvailabilityModal() {
 	const availabilityModal = new Modal(
 		document.getElementById("availabilityModal")
@@ -793,20 +648,17 @@ function setupAvailabilityModal() {
 			}
 		});
 
-	// Обработчик событий для формы отправки запроса на проверку доступности
 	document
 		.getElementById("checkAvailabilityForm")
 		.addEventListener("submit", function (e) {
 			e.preventDefault();
 			const equipmentName = document.getElementById("equipmentInput").value;
-			console.log("Checking availability for:", equipmentName);
-			// Тут код для отправки запроса на сервер и обработки ответа
+
 		});
 }
 
 setupAvailabilityModal();
 
-// обновление статуса единицы оборудования
 const editModal = new Modal(document.getElementById("editModal"));
 const confirmationModal = new Modal(
 	document.getElementById("confirmationModal")
@@ -870,7 +722,6 @@ document.querySelector(".table").addEventListener("click", (event) => {
 	} else if (event.target.classList.contains("assign-stockman")) {
 		event.preventDefault();
 		const requestId = event.target.getAttribute("data-id");
-		console.log("requestId по клику", requestId);
 		document
 			.getElementById("assignStockmanModalButton")
 			.setAttribute("data-id", requestId);
@@ -927,23 +778,12 @@ function createElementFromHTML(htmlString) {
 
 function updateTableRow(requestId, updatedData, isArray = false) {
 	const tableBody = document.querySelector(".table tbody");
-	console.log(
-		"updateTableRow called with requestId:",
-		requestId,
-		"updatedData:",
-		updatedData,
-		"isArray:",
-		isArray
-	);
 
 	let referenceNode = null;
 	if (isArray) {
-		// Удаление старой строки для requestId
 		const existingRow = document.querySelector(`tr[data-id="${requestId}"]`);
 		if (existingRow) {
-			console.log("Removing existing row for requestId:", requestId);
 			referenceNode = existingRow;
-			console.log("referenceNode:",referenceNode);
 			tableBody.removeChild(existingRow);
 		}
 
@@ -953,44 +793,29 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 				data,
 				localStorage.getItem("namePermission")
 			);
-			console.log(
-				"generated data and index:",data, index,
-				"Generated HTML for new row:", newRowHtml);
 			const newRow = createElementFromHTML(newRowHtml);
-			console.log("Generated new row:", newRow);
 
 			if (!newRow || newRow.tagName !== "TR") {
 				console.error(
 					"Failed to create new row element from HTML:",
 					newRowHtml
 				);
-				return; // Прекратить выполнение, если элемент не создан или не является строкой
+				return;
 			}
 
 			newRow.classList.add("highlight");
 			if (index === 0) {
-				// Первая запись (обновление)
-				console.log(
-					"Inserted newRow as the first updated element.",
-					newRow
-				);
 				tableBody.appendChild(newRow);
 				referenceNode = newRow;
-				console.log("table body with updated first element", tableBody)
 			} else {
 				// Новые записи вставляются после обновленной строки
 				referenceNode.insertAdjacentElement('afterend', newRow);
-				console.log(
-					"Inserted newRow after the first updated element. Parent:",
-					newRow.parentNode
-				);
 				referenceNode = newRow;
 			}
 		});
 	} else {
 		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		if (row) {
-			console.log("Updating existing row for requestId:", requestId);
 			updateSingleRow(requestId, updatedData);
 		} else {
 			const newRowHtml = createTableRow(
@@ -1013,7 +838,6 @@ function updateTableRow(requestId, updatedData, isArray = false) {
 		}
 	}
 
-	// Переинициализация выпадающих списков
 	const dropdowns = document.querySelectorAll(".dropdown-toggle");
 	dropdowns.forEach((dropdown) => {
 		new Dropdown(dropdown);
@@ -1119,12 +943,6 @@ function sendUpdatedDataToUser(approvalData) {
 
 function updateTableRowStatus(requestId, status, equipmentStatus = null) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
-	console.log(
-		"проверка данных которые передаются",
-		requestId,
-		status,
-		equipmentStatus
-	);
 	if (row) {
 		row.children[7].textContent = status;
 		if (equipmentStatus !== null) {
@@ -1137,7 +955,6 @@ document
 	.getElementById("confirmApprovalButton")
 	.addEventListener("click", function () {
 		const requestId = this.getAttribute("data-id");
-		console.log("requestId", requestId);
 		const row = document.querySelector(`tr[data-id="${requestId}"]`);
 		const equipmentName = row.querySelector(
 			"[data-equipment-name]"
@@ -1180,7 +997,6 @@ document
 	});
 
 function openStockmanApprovalModal(requestId) {
-	console.log("Вызов функции openStockmanApprovalModal ");
 	document
 		.getElementById("confirmStockmanApprovalButton")
 		.setAttribute("data-id", requestId);
@@ -1198,7 +1014,6 @@ function openStockmanResponseModal(requestId) {
 		.trim()
 		.toLowerCase()
 		.replace(" ", "_"); // Преобразование категории в нижний регистр и замена пробелов на подчеркивания
-	console.log(categoryText);
 	const idTypeMap = {
 		ordinateur_portable: "laptop",
 		"computer monitor": "computer_monitor",
@@ -1209,7 +1024,6 @@ function openStockmanResponseModal(requestId) {
 	};
 
 	const id_type = idTypeMap[categoryText];
-	console.log(id_type);
 
 	document.getElementById("stockmanResponseEquipmentName").value =
 		equipmentName;
@@ -1345,7 +1159,6 @@ function sendToStockman(requestId) {
 		treatment_status: "pending_stockman",
 		equipment_status: "equipment_availability_pending",
 	};
-	console.log("data send to stockman:", updatedData);
 
 	apiEquipmentRequest
 		.updateEquipmentRequest(updatedData)
@@ -1353,7 +1166,6 @@ function sendToStockman(requestId) {
 			alert(
 				"Les données ont été envoyées avec succès pour approbation avec le magasinier !"
 			);
-			// статус который будет видно до обновления
 			updateTableRowStatus(
 				requestId,
 				"la requête est envoyée au gestionnaire",
@@ -1404,7 +1216,6 @@ document
 			"stockmanResponseEquipmentName"
 		).value;
 		const equipmentType = document.getElementById("equipmentType").value;
-		console.log("equipmentType", equipmentType);
 		const equipmentBrand = document.getElementById("equipmentBrand").value;
 		const equipmentDescription = document.getElementById(
 			"equipmentDescription"
@@ -1452,7 +1263,6 @@ document
 			};
 
 			const equipmentIdType = idTypeMap[equipmentType];
-			console.log("equipmentIdType", equipmentIdType);
 			await approveRequest(
 				requestId,
 				rentalDateStart,
@@ -1511,22 +1321,10 @@ async function approveRequest(
 			data.serialNumber.trim()
 		);
 
-		// Получение request_date из существующей записи
 		const requestDate = existingRequest.request_date;
 		const updatedDataArray = [];
 
-		// Создание новых good и записей в equipment_request
 		for (const [index, data] of serialNumbersData.entries()) {
-			// console.log("data:", data);
-			// console.log("Sending data to createGood:", {
-			// 	modelName: equipmentName.trim(),
-			// 	statusId: 4,
-			// 	serialNumbers: [data.serialNumber.trim()],
-			// 	id_type: equipmentIdType,
-			// 	brandName: equipmentBrand.trim(),
-			// 	description: equipmentDescription.trim(),
-			// 	photo: photoUrl, // Передаем фото
-			// });
 			const goodData = await apiGoods.createGood({
 				modelName: equipmentName.trim(),
 				statusId: 4,
@@ -1564,20 +1362,13 @@ async function approveRequest(
 				};
 
 				if (index === 0) {
-					// Обновление существующей записи для первой единицы оборудования
-					// console.log(
-					// 	"Updating existing record with responseData",
-					// 	responseData
-					// );
 					responsePromises.push(
 						apiEquipmentRequest.updateEquipmentRequest(responseData)
 					);
 					updatedDataArray.push(responseData);
 				} else {
-					// Создание новых записей для последующих единиц оборудования
 					newRequestId = parseInt(newRequestId) + 1;
 					responseData.id_request = newRequestId;
-					// console.log("Creating new record with responseData", responseData);
 					responsePromises.push(
 						apiEquipmentRequest.createRequest(responseData)
 					);
@@ -1590,7 +1381,6 @@ async function approveRequest(
 		}
 
 		await Promise.all(responsePromises);
-		// console.log("Updated request data array:", updatedDataArray);
 
 		updateTableRow(requestId, updatedDataArray, true);
 		alert("La réponse a été envoyée au manager!");
@@ -1608,11 +1398,9 @@ function confirmSending(requestId) {
 		id_request: requestId,
 		treatment_status,
 	};
-	console.log("Отправка данных для подтверждения отправки:", responseData);
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
-			console.log("Ответ сервера:", data);
 			alert(
 				"Le gestionnaire est maintenant au courant et enverra le matériel à la date prévue!"
 			);
@@ -1633,7 +1421,6 @@ function sendingItem(requestId) {
 		treatment_status,
 		equipment_status,
 	};
-	console.log("Отправка данных для подтверждения отправки:", responseData);
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
@@ -1659,7 +1446,6 @@ function receivingItem(requestId) {
 		treatment_status: manager_treatment_status,
 		equipment_status: manager_equipment_status,
 	};
-	console.log("Отправка данных для подтверждения отправки:", responseData);
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
@@ -1667,14 +1453,12 @@ function receivingItem(requestId) {
 				"Désormais, le magasinier peut dormir tranquille, car vous l'avez informé de la réception de l'équipement! N'oubliez pas de rappeler à l'utilisateur de venir chercher le matériel s'il faut!"
 			);
 
-			// Обновляем статусы для страницы менеджера
 			updateTableRowStatus(
 				requestId,
 				manager_treatment_status,
 				manager_equipment_status
 			);
 
-			// Переотрисовка таблицы для обновления данных для кладовщика
 			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
 		})
 		.catch((error) => {
@@ -1693,10 +1477,8 @@ async function handOverItem(requestId) {
 		treatment_status,
 		equipment_status,
 	};
-	console.log("Отправка данных для подтверждения отправки:", responseData);
 	const existingRequest = await apiEquipmentRequest.getRequestById(requestId);
 	const requestIdgood = existingRequest.id_good;
-	console.log("получение id_good", requestIdgood);
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
@@ -1706,11 +1488,9 @@ async function handOverItem(requestId) {
 				"en attente de retour",
 				"matériel récupéré"
 			);
-			// Переотрисовка таблицы для обновления данных для кладовщика
 			updateEquipmentRequestsTable(localStorage.getItem("namePermission"));
 			const idRentalUser = localStorage.getItem("id_user");
 			const loanStatus = "loaned";
-			// Создаем данные для запроса на apiRental.createRequestRental
 			const rentalData = {
 				dateStart: row.children[4].textContent,
 				dateEnd: row.children[5].textContent,
@@ -1719,9 +1499,8 @@ async function handOverItem(requestId) {
 			};
 
 			const good = {
-				id: requestIdgood, // Идентификатор товара, используйте нужный идентификатор
+				id: requestIdgood,
 			};
-			console.log("Данные для создания новой аренды:", good, rentalData);
 			return apiRental.createNewItemRental(good, rentalData);
 		})
 		.catch((error) => {
@@ -1737,7 +1516,6 @@ function closeRequestByStockman(requestId, status) {
 		equipment_status: "not_found",
 	};
 
-	// Отправка данных на сервер
 	apiEquipmentRequest
 		.updateEquipmentRequest(responseData)
 		.then((data) => {
@@ -1802,10 +1580,7 @@ if (logoutButton) {
 }
 
 function logout() {
-	// Удаляем данные аутентификации из localStorage
 	localStorage.removeItem("authToken");
 	localStorage.removeItem("id_user");
-
-	// Перенаправляем пользователя на корневую страницу сайта
-	window.location.href = "/"; // Перенаправить на корневую страницу
+	window.location.href = "/";
 }

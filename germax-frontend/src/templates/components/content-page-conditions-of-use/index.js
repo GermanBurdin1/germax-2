@@ -7,10 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		backArrow.className = "back-arrow";
 		backArrow.innerHTML = '<i class="fas fa-arrow-left"></i> Retour';
 
-		// Определяем предыдущий URL
 		const previousURL = document.referrer;
 
-		// Логика для определения ссылки на возврат
 		if (previousURL.includes("/page-dashboard")) {
 			backArrow.href = "/page-dashboard";
 		} else {

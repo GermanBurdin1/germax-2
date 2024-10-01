@@ -30,12 +30,10 @@ function loginFetch(url, data) {
 	})
 		.then(async (response) => {
 			const json = await response.json();
-			console.log("Response from server:", json);
 			if (!response.ok) return Promise.reject(json);
 			return json;
 		})
 		.then((data) => {
-			console.log("Data passed to loginLogic:", data);
 			loginLogic(data);
 		})
 		.catch((error) => {
@@ -265,7 +263,6 @@ function initializeRegistrationForm() {
 			})
 				.then((response) => response.json())
 				.then((data) => {
-					console.log("Success:", data);
 					if (data.success) {
 						let message;
 						const userType = typePermissionSelect.value;

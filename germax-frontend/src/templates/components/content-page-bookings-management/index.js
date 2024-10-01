@@ -12,7 +12,7 @@ let currentPage = 1;
 const itemsPerPage = 10;
 let namePermission = localStorage.getItem("namePermission");
 
-// Инициализация модального окна заранее
+// initialiser le modal en avance
 const rentalManagementModalElement = document.getElementById(
 	"rentalManagementModal"
 );
@@ -21,7 +21,6 @@ const rentalManagementModal = new Modal(rentalManagementModalElement);
 const backArrowContainer = document.getElementById("backArrowContainer");
 
 if (backArrowContainer) {
-	console.log("Контейнер найден. Создаем кнопку 'Retour'");
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
@@ -33,7 +32,6 @@ if (backArrowContainer) {
 }
 
 document.getElementById("prevPageBtn").addEventListener("click", () => {
-	console.log("клик на prevPageBtn");
 	if (currentPage > 1) {
 		currentPage--;
 		refreshRentals();
@@ -42,16 +40,15 @@ document.getElementById("prevPageBtn").addEventListener("click", () => {
 
 const nextPageBtn = document.getElementById("nextPageBtn");
 nextPageBtn.addEventListener("click", () => {
-	console.log("клик на nextPageBtn");
 	currentPage++;
 	refreshRentals();
 });
-// получить данные которые были отправлены на странице
+
+
 async function refreshRentals() {
 	try {
-		const data = await apiRental.getRentals(currentPage, itemsPerPage); // Передаем параметры пагинации
+		const data = await apiRental.getRentals(currentPage, itemsPerPage);
 		if (data) {
-			console.log("data", data);
 			updateBookingsTable(data.data);
 			updatePaginationControls(data.totalItems);
 		} else {
@@ -66,7 +63,7 @@ function updateBookingsTable(rentals) {
 	const tbody = document
 		.getElementById("request-bookings-table")
 		.getElementsByTagName("tbody")[0];
-	tbody.innerHTML = ""; // Очистить текущие строки таблицы
+	tbody.innerHTML = "";
 	rentals.forEach((rental) => {
 		let loanStatusText;
 		if (rental.loan_status === "loan_request") {
@@ -135,15 +132,14 @@ function updateBookingsTable(rentals) {
 				</div>
 			</td>`;
 
-		const manageLinks = row.querySelectorAll(".manage-rental"); // Уточняем селектор, чтобы выбрать только нужную ссылку
+		const manageLinks = row.querySelectorAll(".manage-rental");
 		const infoLinks = row.querySelectorAll(".info_client");
 		const confirmHandOverLinks = row.querySelectorAll(".confirm-hand-over");
-		const reportReturnLinks = row.querySelectorAll(".report-return"); // Новая кнопка
+		const reportReturnLinks = row.querySelectorAll(".report-return");
 
 		manageLinks.forEach((link) => {
 			link.addEventListener("click", function (event) {
-				console.log("вызов функции");
-				event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+				event.preventDefault();
 				document
 					.getElementById("approveRentalButton")
 					.setAttribute("data-id", rental.id_loan);
@@ -153,10 +149,6 @@ function updateBookingsTable(rentals) {
 				rentalManagementModal.show();
 				const closeManagementRentalModalButton = document.getElementById(
 					"closeManagementRentalModalButton"
-				);
-				console.log(
-					"closeManagementRentalModalButton",
-					closeManagementRentalModalButton
 				);
 				closeManagementRentalModalButton.addEventListener(
 					"click",
@@ -170,7 +162,7 @@ function updateBookingsTable(rentals) {
 
 		infoLinks.forEach((link) => {
 			link.addEventListener("click", async function (event) {
-				event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+				event.preventDefault();
 				const userId = event.target.getAttribute("data-user-id");
 				const userInfo = await apiUsers.getUserInformationById(userId);
 				displayUserInfoInModal(userInfo);
@@ -188,10 +180,10 @@ function updateBookingsTable(rentals) {
 			link.addEventListener("click", function (event) {
 				event.preventDefault();
 				const loanId = this.getAttribute("data-id");
-				const goodId = this.closest("tr").getAttribute("data-good-id"); // Получаем id_good из строки таблицы
+				const goodId = this.closest("tr").getAttribute("data-good-id");
 				const confirmButton = document.getElementById("confirmHandOverButton");
 				confirmButton.setAttribute("data-id", loanId);
-				confirmButton.setAttribute("data-good-id", goodId); // Устанавливаем id_good
+				confirmButton.setAttribute("data-good-id", goodId);
 				const confirmHandOverModal = new Modal(
 					document.getElementById("confirmHandOverModal")
 				);
@@ -199,7 +191,6 @@ function updateBookingsTable(rentals) {
 			});
 		});
 
-		// Обработчик для новой кнопки
 		reportReturnLinks.forEach((link) => {
 			link.addEventListener("click", function (event) {
 				event.preventDefault();
@@ -270,7 +261,6 @@ document
 	.getElementById("approveRentalButton")
 	.addEventListener("click", function () {
 		const rentalId = this.getAttribute("data-id");
-		console.log("rentalId", rentalId);
 		approveRental(rentalId);
 	});
 
@@ -278,14 +268,13 @@ document
 	.getElementById("confirmHandOverButton")
 	.addEventListener("click", async function () {
 		const loanId = this.getAttribute("data-id");
-		const goodId = await getGoodIdByLoanId(loanId); // Получаем id_good по id_loan
+		const goodId = await getGoodIdByLoanId(loanId);
 		confirmHandOver(loanId, goodId);
 	});
 
 document
 	.getElementById("confirmReportReturnButton")
 	.addEventListener("click", async function () {
-		// Здесь будет код для обработки возврата оборудования
 		alert("Retour de l'\équipement est confirmé.");
 		const loanId = this.getAttribute("data-id");
 		const goodId = await getGoodIdByLoanId(loanId);
@@ -294,9 +283,9 @@ document
 
 async function getGoodIdByLoanId(loanId) {
 	try {
-		const data = await apiRental.getRentals(currentPage, itemsPerPage); // Получаем данные о всех арендах
+		const data = await apiRental.getRentals(currentPage, itemsPerPage);
 		if (data && data.data) {
-			const rental = data.data.find((rental) => rental.id_loan == loanId); // Ищем аренду по id_loan
+			const rental = data.data.find((rental) => rental.id_loan == loanId);
 			return rental ? rental.id_good : null;
 		} else {
 			console.error("Failed to fetch data");
@@ -316,22 +305,18 @@ document
 	});
 
 function approveRental(loanId) {
-	console.log("сработала approveRental", loanId);
 	apiRental
 		.approveRental(loanId)
 		.then((data) => {
-			console.log("data какая пришла", data);
 			if (data.success) {
 				alert("Votre demande de location a été approuvée.");
 				rentalManagementModal.hide();
 
-				// Обновление статуса в таблице
 				const row = document.querySelector(`tr[data-booking-id="${loanId}"]`);
 				if (row) {
 					row.querySelector("td:nth-child(7)").textContent =
 						"demande de location approuvée";
 
-					// Добавление пункта "Confirmer la remise du matériel" в dropdown
 					const dropdownMenu = row.querySelector(`ul.dropdown-menu`);
 					const confirmHandOverItem = document.createElement("li");
 					confirmHandOverItem.innerHTML = `
@@ -340,7 +325,6 @@ function approveRental(loanId) {
 								</a>`;
 					dropdownMenu.appendChild(confirmHandOverItem);
 
-					// Добавление обработчика события на новый пункт меню
 					confirmHandOverItem.addEventListener("click", function (event) {
 						event.preventDefault();
 						const loanId = this.getAttribute("data-id");
@@ -356,7 +340,6 @@ function approveRental(loanId) {
 				refreshRentals();
 			} else {
 				console.error("Failed to approve rental.");
-				// Обработка ошибок сервера или сообщения об ошибке
 			}
 		})
 		.catch((error) => {
@@ -406,11 +389,9 @@ function reportReturn(loanId, goodId) {
 
 
 function cancelRental(loanId) {
-	console.log("сработала cancelRental", loanId);
 	apiRental
 		.cancelRental(loanId)
 		.then((data) => {
-			console.log("data какая пришла", data);
 			if (data.success) {
 				alert(
 					"Vous avez refusé la location et l'équipement est disponible pour la location."
@@ -420,12 +401,10 @@ function cancelRental(loanId) {
 				);
 				rentalManagementModal.hide();
 
-				// Обновление статуса в таблице
 				const row = document.querySelector(`tr[data-booking-id="${loanId}"]`);
 				if (row) {
 					row.querySelector("td:nth-child(7)").textContent = "annulé";
 
-					// Добавление пункта "Contacter le manager" в dropdown
 					const dropdownMenu = row.querySelector(`ul.dropdown-menu`);
 					const contactManagerItem = document.createElement("li");
 					contactManagerItem.innerHTML = `
@@ -435,7 +414,6 @@ function cancelRental(loanId) {
 				refreshRentals();
 			} else {
 				console.error("Failed to cancel rental.");
-				// Обработка ошибок сервера или сообщения об ошибке
 			}
 		})
 		.catch((error) => {
@@ -443,7 +421,6 @@ function cancelRental(loanId) {
 		});
 }
 
-// Обработчик отправки сообщения об аннулировании аренды
 document
 	.getElementById("communicationForm")
 	.addEventListener("submit", function (event) {

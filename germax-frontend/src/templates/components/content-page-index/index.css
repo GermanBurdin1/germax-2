@@ -11,13 +11,12 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin-top: 150px; /* Опустим вниз для лучшего отображения */
-    margin-bottom: 100px; /* Опустим вниз для лучшего отображения */
+    margin-top: 150px;
+    margin-bottom: 100px;
 }
 
 .heading-container {
-    background-color: #e7f0f7; /* Светлый цвет из вашей гаммы */
-    padding: 20px;
+    background-color: #e7f0f7;
     border-radius: 8px;
     position: relative;
     display: inline-block;
@@ -110,11 +109,11 @@ section {
 }
 
 footer h5 {
-	font-size: 1.25rem; /* Уменьшить размер шрифта для заголовков */
+	font-size: 1.25rem;
 }
 
 footer p {
-	font-size: 0.7rem; /* Уменьшить размер шрифта для текста */
+	font-size: 0.7rem;
 }
 
 .modal-header {

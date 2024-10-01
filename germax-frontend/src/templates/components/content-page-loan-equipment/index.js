@@ -127,7 +127,6 @@ function renderGoods(goods, authUser) {
 
 
 function getUniqueGoods(goods) {
-	console.log(goods);
 	const uniqueNames = {};
 
 	const uniqueModels = goods.filter((good) => {
@@ -148,16 +147,12 @@ async function checkAvailableQuantity(event, good) {
 	try {
 		const response = await apiGoods.getAllGoods({ modelName: good.model.name });
 		const goods = response.goods.data;
-		console.log("Fetched goods:", goods);
 
-		// Проверка статуса с использованием `g.status.id`
 		const availableGoods = goods.filter((g) => {
-			console.log(`Good ID: ${g.id}, Status ID: ${g.status.id}`);
 			return g.status.id === 1;
 		});
 
 		const availableCount = availableGoods.length;
-		console.log("Available goods count:", availableCount);
 
 		if (quantity > availableCount) {
 			alert(
@@ -234,8 +229,6 @@ function openRequestNotFoundItemsModal(authUser, userPermissions) {
 		return;
 	}
 
-	console.log("Opening request not found items modal with userPermissions:", userPermissions);
-
 	requestNotFoundItemsModalNode = document.getElementById(
 		"requestNotFoundItemsModal"
 	);
@@ -252,11 +245,10 @@ function openRequestNotFoundItemsModal(authUser, userPermissions) {
 
 	const newLoanRequestFormNode =
 		requestNotFoundItemsModalNode.querySelector("form");
-	// Удаляем предыдущий обработчик, если он был установлен
 	if (formSubmitHandler) {
 		newLoanRequestFormNode.removeEventListener("submit", formSubmitHandler);
 	}
-	// Создаём новый обработчик
+
 	formSubmitHandler = (event) => {
 		event.preventDefault();
 		const formRequestItemInfo = formDataToObject(newLoanRequestFormNode);
@@ -278,7 +270,6 @@ function openRequestNotFoundItemsModal(authUser, userPermissions) {
 			requestNotFoundItemsModal
 		);
 	};
-	// Устанавливаем новый обработчик
 	newLoanRequestFormNode.addEventListener("submit", formSubmitHandler);
 }
 
@@ -344,7 +335,6 @@ async function getUserPermissions(user) {
 	if (setting) {
 		userPermissions.max = setting.max_reservations;
 	}
-	console.log("Fetched User Permissions:", userPermissions);
 	return userPermissions;
 }
 
@@ -356,7 +346,6 @@ function initMain() {
 		}
 
 		const userPermissions = await getUserPermissions(authUser);
-		console.log("User Permissions:", userPermissions);
 
 		getAllGoodsAndRender(authUser);
 		initFilterBtns(authUser);
@@ -369,7 +358,6 @@ function submitRentalRequest(good, formInfo) {
 	apiRental
 		.createRequestRental(good, formInfo)
 		.then((response) => {
-			console.log("Rental request successful:", response);
 			alert("Votre demande de location a été enregistrée avec succès.");
 			newLoanFormModal.hide();
 			removeGoodFromList(good.id);
@@ -386,18 +374,16 @@ function submitRentalNotFoundItemRequest(formInfo, requestNotFoundItemsModal) {
 	apiEquipmentRequest
 		.createEquipmentRequest(formInfo)
 		.then((response) => {
-			console.log("requestNotFoundItemsModal:", requestNotFoundItemsModal);
 			alert(
 				"Votre demande de location a été enregistrée avec succès et envoyée au manager. Il vous répondra très bientôt"
-			); // Французское сообщение
-			requestNotFoundItemsModal.hide(); // Закрыть модальное окно
+			);
+			requestNotFoundItemsModal.hide();
 		})
 		.catch((error) => {
 			console.error("Rental request failed:", error);
-			// Показать детальную причину отказа
 			const errorMessage =
 				error.message || "Échec de la demande de location. Veuillez réessayer.";
-			alert(`Échec de la demande de location: ${errorMessage}`); // Сообщение об ошибке на французском
+			alert(`Échec de la demande de location: ${errorMessage}`);
 		});
 }
 
@@ -441,10 +427,7 @@ function removeGoodFromList(goodId) {
 }
 
 function logout() {
-	// Удаляем данные аутентификации из localStorage
 	localStorage.removeItem("authToken");
 	localStorage.removeItem("id_user");
-
-	// Перенаправляем пользователя на корневую страницу сайта
-	window.location.href = "/"; // Перенаправить на корневую страницу
+	window.location.href = "/";
 }

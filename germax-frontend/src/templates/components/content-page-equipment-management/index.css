@@ -21,10 +21,9 @@ body {
 
 main {
 	flex: 1;
-	padding-top: 70px; /* Высота вашего хедера */
+	padding-top: 70px;
 }
 
-/* Стили для хедера */
 header {
 	background-color: var(--color-primary);
 	color: white;
@@ -34,18 +33,17 @@ header {
 footer {
 	background-color: var(--quaternary-color);
 	color: white;
-	padding: 0.25rem 0; /* Уменьшить padding */
+	padding: 0.25rem 0;
 	position: fixed;
 	width: 100%;
 	bottom: 0;
-	height: 120px; /* Установить фиксированную высоту */
-	overflow: hidden; /* Скрыть верхнюю и нижнюю части */
+	height: 120px;
+	overflow: hidden;
 	display: flex;
-	align-items: center; /* Вертикальное центрирование текста */
-	justify-content: center; /* Горизонтальное центрирование текста */
+	align-items: center;
+	justify-content: center;
 }
 
-/* Стили для фильтров */
 .form-control, .form-select {
 	background-color: var(--secondary-color);
 	color: var(--quaternary-color);
@@ -68,7 +66,6 @@ footer {
 	background-color: var(--accent-color);
 }
 
-/* Стили для навигационных вкладок */
 .nav-tabs .nav-link {
 	color: var(--quaternary-color);
 	background-color: var(--secondary-color);
@@ -83,7 +80,6 @@ footer {
 	border: 1px solid var(--primary-color);
 }
 
-/* Стили для таблиц */
 .table {
 	background-color: white;
 	border-radius: 5px;
@@ -107,7 +103,6 @@ footer {
 	color: var(--primary-color);
 }
 
-/* Стили для кнопок действий в таблице */
 .dropdown-item {
 	color: var(--quaternary-color);
 }
@@ -127,7 +122,6 @@ footer {
 	color: white;
 }
 
-/* Стили для модальных окон */
 .modal-content {
 	background-color: var(--secondary-color);
 	border-radius: 10px;
@@ -159,7 +153,6 @@ footer {
 	background-color: var(--accent-color);
 }
 
-/* Стили для формы в модальных окнах */
 .form-label {
 	color: var(--quaternary-color);
 }
@@ -175,7 +168,6 @@ footer {
 	box-shadow: 0 0 5px rgba(231, 113, 125, 0.5);
 }
 
-/* Стили для карточек пользователей */
 .user-card .card {
 	background-color: var(--secondary-color);
 	border: 1px solid var(--tertiary-color);
@@ -194,7 +186,6 @@ footer {
 	background-color: var(--accent-color);
 }
 
-/* Стили для пагинации */
 .pagination {
 	display: flex;
 	justify-content: center;

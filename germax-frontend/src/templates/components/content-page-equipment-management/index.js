@@ -53,28 +53,22 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 		});
 
-	// Инициализация и показ/скрытие выпадающего меню при наведении мыши
 	const dropdowns = document.querySelectorAll(".dropdown");
 	initializeHoverDropdowns(dropdowns);
 
-	// Обработчик клика для архивации
 	document.querySelectorAll(".archive-action").forEach((button) => {
 		attachArchiveHandler(button);
 	});
 
-	// Функция для добавления обработчика событий кнопке "Восстановить"
 	function attachRestoreHandler(restoreButton) {
 		restoreButton.addEventListener("click", function () {
 			const row = restoreButton.closest("tr");
 
-			// Получаем tbody активного оборудования
 			const activeEquipmentBody = document.querySelector(
 				"#activeEquipment tbody"
 			);
-			// Перемещаем строку обратно в активное оборудование
 			activeEquipmentBody.appendChild(row);
 
-			// Возвращаем кнопки к исходному состоянию
 			const actionCell = row.querySelector("td:last-child");
 			actionCell.innerHTML = `
 
@@ -94,13 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	  `;
 
-			// Переключаемся на вкладку 'Активное оборудование'
 			const activeTab = new bootstrap.Tab(
 				document.querySelector("#active-equipment-tab")
 			);
 			activeTab.show();
-
-			// Повторно привязываем обработчик для кнопки "Архивировать"
 			const newArchiveButton =
 				actionCell.querySelector(".archive-action");
 			if (newArchiveButton) {
@@ -109,30 +100,24 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Функция для добавления обработчика событий кнопке "Архивировать"
 	function attachArchiveHandler(archiveButton) {
 		archiveButton.addEventListener("click", function () {
 			const row = archiveButton.closest("tr");
 
-			// Находим таблицу архивного оборудования
 			const archiveTableBody = document.querySelector(
 				"#archiveEquipment tbody"
 			);
 
-			// Добавляем строку в таблицу архива
 			archiveTableBody.appendChild(row);
 
-			// Изменяем действия для архивной строки
 			const actionCell = row.querySelector("td:last-child");
 			actionCell.innerHTML = `
 		<button class="btn btn-primary restore-action" data-equipment-id="${row.dataset.equipmentId}">Восстановить</button>
 	  `;
 
-			// Добавляем обработчик для кнопки "Восстановить" для только что перемещенной строки
 			const restoreButton = actionCell.querySelector(".restore-action");
 			attachRestoreHandler(restoreButton);
 
-			// Переключаемся на вкладку 'Архив'
 			const archiveTab = new bootstrap.Tab(
 				document.querySelector("#archive-equipment-tab")
 			);
@@ -143,17 +128,14 @@ document.addEventListener("DOMContentLoaded", function () {
 	// edit-action
 
 	attachEditRowHandlers(".edit-action");
-	// Загрузка данных из localStorage при загрузке страницы
 
 
 	window.addEventListener("load", () => {
-		console.log("Before updating DOM for equipment");
 		document.querySelectorAll("[data-equipment-id]").forEach((row) => {
 			const equipmentId = row.dataset.equipmentId;
 			const data = JSON.parse(
 				localStorage.getItem(`equipment_${equipmentId}`)
 			);
-			console.log(data);
 			if (data) {
 				if (row.querySelector(".equipment-name")) {
 					row.querySelector(".equipment-name").textContent =
@@ -171,7 +153,6 @@ document.addEventListener("DOMContentLoaded", function () {
 					row.querySelector(".equipment-availability").textContent =
 						data.availability;
 				}
-				console.log("After updating DOM for equipment", equipmentId);
 			}
 		});
 	});
@@ -214,15 +195,14 @@ document.addEventListener("DOMContentLoaded", function () {
 			user: "Utilisateur B",
 			action: "Retourné et vérifié",
 		},
-		// Добавьте дополнительные записи здесь
 	];
 
 	let currentPage = 1;
-	const entriesPerPage = 10; // Количество записей на страницу
+	const entriesPerPage = 10;
 
 	function renderLog(entries) {
 		const logContainer = document.getElementById("actionLogEntries");
-		logContainer.innerHTML = ""; // Очистить текущие записи
+		logContainer.innerHTML = "";
 		entries.forEach((entry) => {
 			const div = document.createElement("div");
 			div.textContent = `${entry.date} - ${entry.user} - ${entry.action}`;
@@ -261,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	document.getElementById("sortByDate").addEventListener("click", () => {
-		filterAndRender(); // Сортировка уже встроена в filterAndRender
+		filterAndRender();
 	});
 
 	document.getElementById("prevPage").addEventListener("click", () => {
@@ -272,18 +252,16 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	document.getElementById("nextPage").addEventListener("click", () => {
-		// Предполагаем, что всегда есть следующая страница
 		currentPage++;
 		filterAndRender();
 	});
 
-	filterAndRender(); // Инициализация первой страницы журнала
+	filterAndRender();
 
-	// экспорт в csv
+	// export en csv
 	/////////////////////////////////////////////////////////////////////////
 
 	function exportToCSV(actionLog) {
-		// Создание заголовков CSV файла
 		const csvHeaders = "Date,User,Action\n";
 		// Преобразование данных журнала в строку CSV
 		const csvRows = actionLog
@@ -294,13 +272,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		const BOM = "\uFEFF";
 		const csvString = BOM + csvHeaders + csvRows;
 
-		// Создание Blob объекта с типом MIME для CSV и указанием кодировки UTF-8
 		const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
 
 		// Создание временной ссылки для скачивания и её нажатие
 		const link = document.createElement("a");
 		if (link.download !== undefined) {
-			// Проверка поддержки атрибута download
 			const url = URL.createObjectURL(blob);
 			link.setAttribute("href", url);
 			link.setAttribute("download", "actionLog.csv");
@@ -311,20 +287,18 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// Добавляем слушатель события на кнопку экспорта
 	document.getElementById("exportLog").addEventListener("click", function () {
-		exportToCSV(actionLog); // Предполагается, что actionLog - это ваш массив данных журнала
+		exportToCSV(actionLog);
 	});
 
 	////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////// логика reserveModal
+	//////////////////////////////////// logique reserveModal
 
 	let currentPageReserveModal = 1;
-	const entriesPerPageReserveModal = 20; // Показывать по 20 записей на страницу
-	let currentEntriesReserveModal = []; // Текущие отфильтрованные записи для отображения
-	let currentCategoryReserveModal = "enseignants"; // По умолчанию показываем 'enseignants'
+	const entriesPerPageReserveModal = 20;
+	let currentEntriesReserveModal = [];
+	let currentCategoryReserveModal = "enseignants";
 
-	// Предполагаемые начальные данные для enseignants и etudiants
 	const enseignants = [
 		{
 			nom: "Dupont",
@@ -333,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			email: "jean.dupont@example.com",
 			photoUrl: "path_to_photo_jean.jpg",
 		},
-		// Добавьте больше данных сюда
+
 	];
 
 	const etudiants = [
@@ -344,10 +318,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			email: "jane.doe@example.com",
 			photoUrl: "path_to_photo_jane.jpg",
 		},
-		// Добавьте больше данных сюда
+
 	];
 
-	// Определите контейнеры для пагинации и пользователей
 	const paginationContainer = document.querySelector(
 		".pagination-reserve-modal"
 	);
@@ -356,14 +329,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	);
 	const userContainerEtudiants = document.getElementById("v-pills-etudiants");
 
-	// Функция для рендеринга списка пользователей
 	function renderUsers() {
-		// Определяем текущий контейнер на основе выбранной категории
 		const container =
 			currentCategoryReserveModal === "enseignants"
 				? userContainerEnseignants
 				: userContainerEtudiants;
-		container.innerHTML = ""; // Очистка контейнера перед добавлением новых данных
+		container.innerHTML = "";
 
 		const usersToRender = currentEntriesReserveModal.slice(
 			(currentPageReserveModal - 1) * entriesPerPageReserveModal,
@@ -388,19 +359,13 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Функция для обновления элементов пагинации
-	// Функция для обновления элементов пагинации
 	function updatePaginationReserveModal() {
-		// Измененный селектор для поиска контейнера пагинации в модальном окне reserveModal
 		const paginationContainer = document.querySelector(
 			"#reserveModal .pagination-controls .pagination"
 		);
 		if (paginationContainer) {
-			// Очистка существующих элементов пагинации
 			paginationContainer.innerHTML = "";
 
-			// Здесь ваш код для добавления новых элементов пагинации
-			// Например:
 			const totalPages = Math.ceil(
 				currentEntriesReserveModal.length / entriesPerPageReserveModal
 			);
@@ -423,7 +388,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// Функция для фильтрации пользователей по запросу из поля ввода
 	function filterUsersReserveModal(query) {
 		currentEntriesReserveModal = (
 			currentCategoryReserveModal === "enseignants"
@@ -439,14 +403,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		updatePaginationReserveModal();
 	}
 
-	// Обработка ввода в поле поиска
 	document
 		.getElementById("searchUser")
 		.addEventListener("input", function (e) {
 			filterUsersReserveModal(e.target.value);
 		});
 
-	// Обработчики для переключения категорий
 	document
 		.getElementById("v-pills-enseignants-tab")
 		.addEventListener("click", function () {
@@ -465,12 +427,11 @@ document.addEventListener("DOMContentLoaded", function () {
 			);
 		});
 
-	// Инициализация списка преподавателей по умолчанию
 	filterUsersReserveModal("");
 
-	//////////////сортировка///////////////
+	//////////////le tri///////////////
 
-	/////////////фильтрация Gestion de l'Équipement ////////
+	/////////////filtrage Gestion de l'Équipement ////////
 
 	document
 		.getElementById("apply-filters")
@@ -522,19 +483,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	function toggleSortDirection() {
 		sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
-		// Скрыть иконки сортировки при каждом изменении направления сортировки
 		hideSortIcons();
 	}
 
-	// Объект состояния для управления текущим состоянием сортировки и фильтрации
 	let sortState = {
 		field: null,
 		direction: "asc",
 	};
 
-	// Функция сортировки
 	function applySort(rows) {
-		// Фильтруем строки, исключая скрытые
 		rows = rows.filter((row) => row.style.display !== "none");
 
 		return rows.sort((rowA, rowB) => {
@@ -553,7 +510,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	// Функция для извлечения значения для сортировки из строки таблицы
 	function getSortValue(row, field) {
 		switch (field) {
 			case "id":
@@ -578,23 +534,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
-	// Функция для обновления отображения оборудования с учетом сортировки
 	function updateEquipmentDisplay() {
 		const tableBody = document.querySelector("#equipment-table tbody");
 		const rows = Array.from(tableBody.querySelectorAll("tr"));
 
-		// Применяем сортировку только к видимым строкам
 		const visibleRows = rows.filter((row) => row.style.display !== "none");
 		const sortedRows = applySort(visibleRows);
 
-		// Убираем все строки и добавляем их обратно в порядке сортировки
 		rows.forEach((row) => row.remove());
 		sortedRows.forEach((row) => {
 			tableBody.appendChild(row);
 		});
 	}
 
-	// Добавление обработчиков событий для элементов управления сортировкой
 	document.getElementById("sortById").addEventListener("click", () => {
 		sortState.field = "id";
 		toggleSortDirection();
@@ -619,7 +571,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		updateEquipmentDisplay();
 	});
 
-	// Функция для переключения направления сортировки
 	function toggleSortDirection() {
 		sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
 	}

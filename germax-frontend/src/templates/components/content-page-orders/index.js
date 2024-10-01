@@ -1,5 +1,4 @@
 import "./index.css";
-// Confirmer la réception; marqué comme reçu как подстраховка (а так, будет автоматически делаться)
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import { formDataToObject } from "../../../utils/form-data-to-object";
@@ -29,12 +28,10 @@ const uploadApi = new UploadAPI();
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 const authToken = localStorage.getItem("authToken");
 let namePermission = localStorage.getItem("namePermission");
-console.log("Auth token:", authToken);
 if (authToken) {
 	fetchAuthUser("http://germax-api/auth/me");
 }
 
-// 1. Удаление элементов для rental-manager
 if (namePermission === "rental-manager") {
 	document.getElementById("titleAddingOrders").style.display = "none";
 	document.getElementById("equipmentAddingContainer").style.display = "none";
@@ -70,18 +67,16 @@ async function fetchAuthUser(url) {
 			return Promise.reject(data);
 		}
 
-		console.log("Data received:", data);
-		localStorage.setItem("namePermission", data.data.name_permission); // Сохраняем роль пользователя
-		cleanupPreviousUserElements(); // Очистка элементов предыдущего пользователя
-		renderEquipmentOrder(data.data); // Инициализация правильных элементов для нового пользователя
-		initializePageForUser(data.data.name_permission); // Обновление отображения страницы в зависимости от роли пользователя
+		localStorage.setItem("namePermission", data.data.name_permission);
+		cleanupPreviousUserElements();
+		renderEquipmentOrder(data.data);
+		initializePageForUser(data.data.name_permission);
 	} catch (error) {
 		console.error("Failed to fetch data:", error);
 	}
 }
 
 function cleanupPreviousUserElements() {
-	// Очистка элементов предыдущего пользователя
 	document.getElementById("titleAddingOrders").innerHTML = "";
 	document.getElementById("equipmentAddingContainer").innerHTML = "";
 	document.getElementById("titleOrdersRequest").innerHTML = "";
@@ -135,15 +130,13 @@ async function loadGoodsData(params = {}) {
 	}
 	params.page = currentPage;
 	params.limit = itemsPerPage;
-	params.typeName = getActiveCategory(); // Добавляем фильтр по категории
-	params.modelName = searchInputNode.value.trim(); // Добавляем фильтр по модели
+	params.typeName = getActiveCategory();
+	params.modelName = searchInputNode.value.trim();
 
 	try {
 		const response = await apiGoods.getAllGoods(params);
-		const goods = response.goods.data; // Данные из API находятся под ключом "data"
+		const goods = response.goods.data;
 		const totalItems = response.goods.totalItems;
-		console.log(goods);
-		console.log(totalItems);
 		displayGoods(goods);
 		updatePaginationControls(totalItems);
 	} catch (error) {
@@ -153,7 +146,7 @@ async function loadGoodsData(params = {}) {
 
 function displayGoods(goods) {
 	const tableBody = document.querySelector("#goodsTable tbody");
-	tableBody.innerHTML = ""; // Очистка существующих строк
+	tableBody.innerHTML = "";
 
 	goods.forEach((good) => {
 		let statusText;
@@ -249,7 +242,7 @@ function displayGoods(goods) {
 
 	document.querySelectorAll(".send-equipment").forEach((button) => {
 		button.addEventListener("click", function (event) {
-			event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+			event.preventDefault();
 			const goodId = event.target.getAttribute("data-good-id");
 			if (confirm("envoyer l'équipement?")) {
 				sendEquipment(goodId);
@@ -259,7 +252,7 @@ function displayGoods(goods) {
 
 	document.querySelectorAll(".confirm-receiving").forEach((button) => {
 		button.addEventListener("click", function (event) {
-			event.preventDefault(); // Предотвратить действие по умолчанию для ссылки
+			event.preventDefault();
 			const goodId = event.target.getAttribute("data-good-id");
 			if (confirm("Confirmer la réception?")) {
 				confirmReceiving(goodId);
@@ -273,7 +266,6 @@ async function sendEquipment(goodId) {
 		const response = await apiGoods.sendEquipment(goodId);
 		if (response.success) {
 			alert(response.message);
-			// Обновление интерфейса
 			const dateSentElement = document.getElementById(`date-sent-${goodId}`);
 			const shippingStatusElement = document.getElementById(
 				`shipping-status-${goodId}`
@@ -281,7 +273,6 @@ async function sendEquipment(goodId) {
 			const currentDate = new Date().toLocaleDateString();
 			dateSentElement.textContent = `Sent on: ${currentDate}`;
 			shippingStatusElement.textContent = "envoyé au manager";
-			// Добавление кнопки подтверждения получения
 			if (namePermission === "rental-manager") {
 				const confirmReceivingButton = document.createElement("a");
 				confirmReceivingButton.href = "#";
@@ -312,7 +303,6 @@ async function confirmReceiving(goodId) {
 		const response = await apiGoods.confirmReceiving(goodId);
 		if (response.success) {
 			alert(response.message);
-			// Обновление интерфейса
 			const shippingStatusElement = document.getElementById(
 				`shipping-status-${goodId}`
 			);
@@ -351,12 +341,10 @@ document.addEventListener("click", function (event) {
 	if (event.target.classList.contains("view-units")) {
 		event.preventDefault();
 		const modelId = event.target.getAttribute("data-model-id");
-		console.log(modelId);
 		showUnitsModal(modelId);
 	} else if (event.target.classList.contains("edit-good")) {
 		event.preventDefault();
 		const goodId = event.target.getAttribute("data-good-id");
-		console.log("goodId передаваемый в showEditModal", goodId);
 		showEditModal(goodId);
 	}
 });
@@ -403,7 +391,7 @@ function displayUnitsModal(units) {
 
 async function loadCategories(selectElementId) {
 	const categorySelect = document.getElementById(selectElementId);
-	categorySelect.innerHTML = ""; // Очистка существующих опций
+	categorySelect.innerHTML = "";
 
 	try {
 		const categories = await categoryApi.getCategories();
@@ -413,7 +401,6 @@ async function loadCategories(selectElementId) {
 			option.textContent = category.name;
 			categorySelect.appendChild(option);
 		});
-		console.log("Категории загружены успешно:", categories);
 		return categories;
 	} catch (error) {
 		console.error("Ошибка при загрузке категорий:", error);
@@ -490,23 +477,18 @@ async function renderEquipmentOrder(userData) {
 		listOrdersTitle.innerHTML = listOrdersTitleMarkup;
 		try {
 			const сategories = await loadCategories("categoryName");
-			console.log("loadCategories", сategories);
 
-			// отправка на equipment_requests
 			document
 				.getElementById("equipmentRequestForm")
 				.addEventListener("submit", function (event) {
-					event.preventDefault(); // Предотвратить стандартное поведение формы
+					event.preventDefault();
 
-					// Собираем данные формы
 					const equipmentName = document.getElementById("equipmentName").value;
 					const quantity = document.getElementById("quantity").value;
 					const comments = document.getElementById(
 						"equipmentDescription"
 					).value;
 					const id_type = document.getElementById("categoryName").value;
-					console.log(document.getElementById("categoryName"));
-					// Создаем объект с данными для отправки на сервер
 					const requestData = {
 						modelName: equipmentName,
 						comments,
@@ -514,11 +496,9 @@ async function renderEquipmentOrder(userData) {
 						id_type: id_type,
 					};
 
-					// Используем ApiEquipmentRequest для отправки запроса
 					apiEquipmentRequest
 						.createEquipmentRequestFromManager(requestData)
 						.then((data) => {
-							console.log("Success:", data);
 							alert("Запрос на оборудование успешно отправлен!");
 						})
 						.catch((error) => {
@@ -535,7 +515,6 @@ async function renderEquipmentOrder(userData) {
 const addCategoryModalElement = document.getElementById("addCategoryModal");
 const addCategoryModal = new Modal(addCategoryModalElement);
 async function saveCategory() {
-	console.log(addCategoryModal);
 	const name = document.getElementById("newCategoryName").value;
 
 	try {
@@ -618,24 +597,16 @@ async function saveEquipment() {
 			throw new Error(uploadData.message);
 		}
 	}
-	console.log(
-		"отправляемый объект",
-		modelName,
-		serial_number,
-		id_type,
-		brandName,
-		photoUrl
-	);
 	try {
 		const data = await apiGoods.createGood({
 			modelName,
 			statusId: 1,
-			serialNumbers: [serial_number], // Wrapping in an array to use createGood
+			serialNumbers: [serial_number],
 			id_type,
 			brandName,
 			description,
 			photo: photoUrl,
-			location: "stock_stockman", // Добавлено поле местоположения
+			location: "stock_stockman",
 		});
 
 		if (data.success) {
@@ -670,10 +641,9 @@ function autoFillModelName() {
 	}
 }
 
-// Добавление логики для редактирования и обновления данных на странице
 async function showEditModal(goodId) {
 	const good = await apiGoods.getGoodById(goodId);
-	const categories = await categoryApi.getCategories(); // Получение категорий из API
+	const categories = await categoryApi.getCategories();
 	const editModalBody = document.querySelector("#editModal .modal-body");
 
 	editModalBody.innerHTML = `
@@ -723,13 +693,6 @@ async function showEditModal(goodId) {
 
 			const photoValue = document.getElementById("editPhoto").value;
 			const categoryValue = document.getElementById("editCategoryName").value;
-			console.log(
-				"извлечение данных:",
-				"photovalue:",
-				photoValue,
-				"categoryValue",
-				categoryValue
-			);
 			const updatedGood = {
 				id_good: goodId,
 				modelName: document.getElementById("editModelName").value,
@@ -738,8 +701,6 @@ async function showEditModal(goodId) {
 				brandName: document.getElementById("editBrandName").value,
 				photo: photoValue !== "null" ? photoValue : good.model.photo,
 			};
-
-			console.log("updatedGood перед отправкой на update,", updatedGood);
 
 			try {
 				await apiGoods.updateGood(updatedGood);
@@ -754,9 +715,7 @@ async function showEditModal(goodId) {
 	document
 		.getElementById("uploadPhotoBtn")
 		.addEventListener("click", async function () {
-			console.log("срабатывает клик по uploadPhotoBtn");
 			const photoFile = document.getElementById("editPhotoFile").files[0];
-			console.log("photoFile который я отправляю на сервер", photoFile);
 			if (photoFile) {
 				try {
 					const uploadData = await uploadApi.uploadPhoto(photoFile);
@@ -835,10 +794,8 @@ if (logoutButton) {
 }
 
 function logout() {
-	// Удаляем данные аутентификации из localStorage
 	localStorage.removeItem("authToken");
 	localStorage.removeItem("id_user");
 
-	// Перенаправляем пользователя на корневую страницу сайта
-	window.location.href = "/"; // Перенаправить на корневую страницу
+	window.location.href = "/";
 }

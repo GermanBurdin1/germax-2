@@ -5,8 +5,8 @@ footer {
 	color: white;
 	position: relative;
 	width: 100%;
-	height: auto; /* Установите высоту в auto, чтобы подстроиться под контент */
-	padding: 10px 0; /* Добавьте немного отступа для внутреннего содержания */
+	height: auto;
+	padding: 10px 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;

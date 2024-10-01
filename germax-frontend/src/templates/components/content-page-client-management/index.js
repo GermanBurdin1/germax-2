@@ -19,7 +19,6 @@ const apiUsers = new ApiUsers();
 const backArrowContainer = document.getElementById("backArrowContainer");
 
 if (backArrowContainer) {
-	console.log("Контейнер найден. Создаем кнопку 'Retour'");
 	const backArrow = document.createElement("a");
 	backArrow.href = "javascript:history.back()";
 	backArrow.className = "back-arrow";
@@ -44,7 +43,6 @@ document
 async function fetchPendingUsers(apiAuth) {
 	try {
 		const pendingUsers = await apiAuth.getPendingUsers();
-		console.log("Pending Users:", pendingUsers); // Debugging output
 		return pendingUsers;
 	} catch (error) {
 		console.error("Error fetching pending users:", error);
@@ -55,7 +53,6 @@ async function fetchPendingUsers(apiAuth) {
 async function fetchProcessedUsers(apiAuth) {
 	try {
 		const processedUsers = await apiAuth.getProcessedUsers();
-		console.log("Processed Users:", processedUsers); // Debugging output
 		return processedUsers;
 	} catch (error) {
 		console.error("Error fetching processed users:", error);
@@ -66,7 +63,6 @@ async function fetchProcessedUsers(apiAuth) {
 function createRow(user) {
 	const row = document.createElement("tr");
 	let dropdownMenuContent;
-	console.log("user", user);
 	let connexionPermissionText = user.connexion_permission;
 	if (user.connexion_permission === "pending") {
 		connexionPermissionText = "validation en cours";
@@ -123,7 +119,6 @@ function createRow(user) {
 document.addEventListener("click", function (event) {
 	if (event.target.classList.contains("admin-action")) {
 		const userId = event.target.getAttribute("data-user-id");
-		console.log("Admin action for user ID:", userId);
 		openBlockUserModal(userId);
 	}
 });
@@ -277,7 +272,6 @@ function attachEventHandlers(apiAuth) {
 			} else if (targetModal === "#detailsClientModal") {
 				try {
 					rentals = await apiRental.getClientRentalsByUserId(userId);
-					console.log("Rentals:", rentals);
 
 					if (rentals.length > 0) {
 						currentPage = 1;
@@ -303,9 +297,7 @@ function attachEventHandlers(apiAuth) {
 		.getElementById("approveUser")
 		.addEventListener("click", async function () {
 			const userId = this.getAttribute("data-user-id");
-			console.log("userId", userId);
 
-			// Создаем объект с данными пользователя для обновления
 			const userData = {
 				id_user: userId,
 				connexion_permission: "authorized",
@@ -314,7 +306,6 @@ function attachEventHandlers(apiAuth) {
 
 			try {
 				const response = await apiUsers.updateUser(userData);
-				console.log("API Response:", response);
 				alert("L'utilisateur est ajouté avec succès");
 				authorizationClientModal.hide();
 				location.reload();
@@ -334,7 +325,6 @@ function attachEventHandlers(apiAuth) {
 					"declined",
 					"0"
 				);
-				console.log("API Response:", response);
 				alert("La demande a été refusée.");
 				authorizationClientModal.hide();
 				location.reload();
@@ -463,7 +453,6 @@ function searchUsers(searchTerm) {
 	}
 
 	if (filteredUsers && filteredUsers.length > 0) {
-		console.log("Filtered Users:", filteredUsers);
 		populateTables(
 			filteredUsers,
 			studentTables,
@@ -484,7 +473,6 @@ function searchUsers(searchTerm) {
 			}
 		});
 	} else {
-		console.log("No users found for the search term.");
 		resetTables();
 	}
 }

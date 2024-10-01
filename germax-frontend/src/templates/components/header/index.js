@@ -1,17 +1,13 @@
-
 function addDashboardNavItems() {
 	const navbar = document.querySelector(".navbar-collapse");
 
-	// Проверяем, существует ли navbar
 	if (!navbar) return;
 
-	// Удаляем оригинальную кнопку "Déconnexion/Inscription"
 	const authButton = navbar.querySelector(".btn-auth");
 	if (authButton) {
 		authButton.parentNode.removeChild(authButton);
 	}
 
-	// Создаем новый элемент навигации
 	const dashboardNav = document.createElement("nav");
 	dashboardNav.className = "navbar navbar-expand-lg navbar-light bg-light";
 	dashboardNav.innerHTML = `
@@ -25,20 +21,16 @@ function addDashboardNavItems() {
 		</div>
 	`;
 
-	// Вставляем новый элемент навигации после существующего navbar
 	navbar.parentNode.insertBefore(dashboardNav, navbar.nextSibling);
 }
 
-// Функция для определения текущей страницы
 function isDashboardPage() {
 	return window.location.pathname.includes("dashboard");
 }
 
-// Если текущая страница - dashboard, добавляем элементы навигации
 if (isDashboardPage()) {
 	addDashboardNavItems();
 
-	// Удаление класса bg-light у навигационного элемента
 	const dashboardNav = document.querySelector('.navbar-light');
 	if (dashboardNav) {
 		dashboardNav.classList.remove('bg-light');

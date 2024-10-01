@@ -68,7 +68,6 @@ const apiSettings = new ApiSettings();
 async function getUserPermission() {
 	try {
 		const response = await apiAuth.getUserPermission();
-		console.log("response", response);
 		return response;
 	} catch (error) {
 		console.error("Error fetching user permission:", error);
@@ -79,16 +78,14 @@ async function getUserPermission() {
 async function initializeDashboard() {
 	try {
 		const userPermission = await getUserPermission();
-		console.log("userPermission", userPermission);
 		if (userPermission) {
 			const { name_permission } = userPermission;
 			localStorage.setItem("name_permission", name_permission);
 
-			// Получаем userId и уведомления до рендеринга статистики
 			const userId = JSON.parse(localStorage.getItem("id_user"));
 			const notifications = await apiNotification.getNotifications(userId);
 
-			// Вызываем обе функции после получения всех данных
+			// on appelle deux fonctions pour avoir toutes les données
 			await Promise.all([
 				displayStatistics(name_permission),
 				loadUserNotifications(name_permission, notifications),
@@ -104,29 +101,24 @@ async function initializeDashboard() {
 	}
 }
 
-// Инициализация дашборда
 initializeDashboard();
 
 async function getNotifications(userId) {
 	try {
 		const notifications = await apiNotification.getNotifications(userId);
 		if (notifications.length === 0) {
-			console.log("No notifications found.");
 		}
 		updateNotificationCount(notifications.length);
 		displayNotifications(notifications);
 	} catch (error) {
 		console.error("Ошибка при получении уведомлений:", error);
-		console.log(
-			"Ошибка при получении уведомлений. Проверьте консоль для подробностей."
-		);
 	}
 }
 
 function updateNotificationCount(count) {
 	const notificationCountElement = document.getElementById("notificationCount");
 	if (!notificationCountElement) {
-		return; // Если элемент не найден, просто выходим из функции
+		return;
 	}
 	if (count > 0) {
 		notificationCountElement.textContent = count;
@@ -184,8 +176,6 @@ Promise.all([apiAuth.fetchMeAuthUser(), apiGoods.getAllGoods()]).then(
 
 let formChanged = false;
 function initListeners() {
-	// Для navbarDropdownMenuLink
-	// initializeDropdown();
 	const notificationsModalPlace = document.getElementById(
 		"notificationsModalPlace"
 	);
@@ -196,7 +186,7 @@ function initListeners() {
 	const modalLoanForm = document.getElementById("modalLoanForm");
 	const modalClientLoans = document.getElementById("modalClientLoans");
 
-	// Контейнер модалки для админа
+	// conteneur pour l'admin
 	notificationsModalPlace.innerHTML = returnNotificationsModal();
 	supportModalContainer.innerHTML = returnSupportModal();
 	modalRequestLoan.innerHTML = returnLoanRequestModal();
@@ -240,7 +230,6 @@ function initListeners() {
 		const profileSection = document.getElementById("profileSection");
 		const settingsForm = document.getElementById("settingsForm");
 
-		// Логика для отображения профиля по умолчанию
 		function showProfile() {
 			profileSection.style.display = "block";
 			settingsTabContent.style.display = "none";
@@ -251,7 +240,6 @@ function initListeners() {
 			settingsTabContent.style.display = "block";
 		}
 
-		// Определяем, какая вкладка должна быть активна
 		const activeTab = localStorage.getItem("activeTab");
 
 		if (activeTab === "settings") {
@@ -270,7 +258,7 @@ function initListeners() {
 			myLoans.dataset.visible = "false";
 			showProfile();
 			localStorage.setItem("activeTab", "profile");
-			return; // Добавьте return, чтобы завершить выполнение обработчика
+			return;
 		}
 
 		if (
@@ -281,7 +269,7 @@ function initListeners() {
 			clientLoansHistory.dataset.visible = "false";
 			showProfile();
 			localStorage.setItem("activeTab", "profile");
-			return; // Добавьте return, чтобы завершить выполнение обработчика
+			return;
 		}
 
 		if (myLoans.dataset.visible === "true" && !myLoans.contains(event.target)) {
@@ -301,23 +289,17 @@ function initListeners() {
 			localStorage.setItem("activeTab", "profile");
 		}
 		switch (targetId) {
-			case "navbar-toggler": // ID кнопки
+			case "navbar-toggler":
 				const navbar = document.getElementById("navbarNav");
 				const horizontalNavbar = document.getElementById("horizontalNavbar");
 
-				// Тоглим класс 'show' для показа/скрытия меню
 				navbar.classList.toggle("show");
 				horizontalNavbar.classList.toggle("show");
 
-				// Логирование для отладки
-        console.log("Navbar toggled:", navbar.classList);
-        console.log("Horizontal Navbar toggled:", horizontalNavbar.classList);
-
-				// Убираем прокрутку страницы, когда меню открыто
 				if (navbar.classList.contains("show")) {
-					document.body.style.overflow = "hidden"; // Блокируем скролл страницы
+					document.body.style.overflow = "hidden";
 				} else {
-					document.body.style.overflow = ""; // Восстанавливаем скролл страницы
+					document.body.style.overflow = "";
 				}
 				break;
 			case "saveChanges":
@@ -333,7 +315,7 @@ function initListeners() {
 				settingsForm.reset();
 				formChanged = false;
 				break;
-			case "accountLink": // Добавить обработку клика на "Profil"
+			case "accountLink":
 				event.preventDefault();
 				if (formChanged) {
 					if (confirm("Вы уверены, что не хотите сохранить изменения?")) {
@@ -352,12 +334,10 @@ function initListeners() {
 					document.getElementById("adminSettingsModal");
 				const initializedAdminSettingsModal = new Modal(adminSettingsModal);
 				initializedAdminSettingsModal.show();
-				console.log("Fetching settings...");
 
 				apiSettings
 					.getSettings()
 					.then((settings) => {
-						console.log("Fetched settings:", settings);
 
 						let studentMaxReservations = "";
 						let teacherMaxReservations = "";
@@ -379,7 +359,6 @@ function initListeners() {
 						document.getElementById("teacherMaxReservations").value =
 							teacherMaxReservations;
 
-						// Функция для отображения соответствующего поля настроек
 						function displaySettings() {
 							if (userTypeSelect.value === "student") {
 								studentSettings.classList.add("show");
@@ -394,10 +373,8 @@ function initListeners() {
 							}
 						}
 
-						// Добавляем слушатель изменений для селекта
 						userTypeSelect.addEventListener("change", displaySettings);
 
-						// Устанавливаем начальное состояние полей при открытии модального окна
 						displaySettings();
 
 						document
@@ -492,7 +469,6 @@ function initListeners() {
 				}
 				break;
 			default:
-				console.log(`No case for targetId: ${targetId}`);
 				const clickInsideTables =
 					myLoans.contains(event.target) ||
 					clientLoansHistory.contains(event.target);
@@ -511,10 +487,9 @@ function initListeners() {
 	});
 }
 
-// Отдельный обработчик событий для таблиц
 document.querySelectorAll("#myLoans, #clientLoansHistory").forEach((table) => {
 	table.addEventListener("click", function (event) {
-		event.stopPropagation(); // Останавливает распространение события, чтобы избежать переключения на профиль
+		event.stopPropagation();
 	});
 });
 
@@ -546,15 +521,12 @@ function loadClientLoans() {
 	])
 		.then(([rentals, requests]) => {
 			requests = requests.data;
-			console.log("Rentals Data:", rentals);
-			console.log("Requests Data:", requests);
 
 			// Vérification de la présence des données
 			if (!Array.isArray(rentals) || !Array.isArray(requests)) {
 				throw new Error("Invalid data format from API");
 			}
 
-			// Fusionner les données des locations réelles et des requêtes en un seul tableau
 			myLoans.innerHTML = returnClientLoans(rentals, requests);
 			myLoans.style.display = "block";
 			myLoans.dataset.visible = "true";
@@ -562,18 +534,15 @@ function loadClientLoans() {
 			initializeDropdowns();
 			initializeModals();
 			setupProposalModal();
-			// S'assurer que toutes les lignes sont traitées correctement
 			const rows = document.querySelectorAll("#myLoans tr[data-id]");
 			let hasRentals = rentals.length > 0;
 			let hasRequests = requests.length > 0;
 
 			// Appeler des fonctions pour configurer les fenêtres modales en fonction de la présence des données
 			if (hasRentals) {
-				console.log("Calling setupCancelLoansModal");
 				setupCancelLoansModal();
 			}
 			if (hasRequests) {
-				console.log("Calling setupCancelReservationModal");
 				setupCancelReservationModal();
 			}
 		})
@@ -609,7 +578,6 @@ function renderDashboard(responseData) {
 	updateNotificationsModal(responseData.name_permission);
 	const userId = JSON.parse(localStorage.getItem("id_user"));
 	getNotifications(userId);
-	// Инициализация notificationsModal перенесена сюда
 	loadUserProfile(responseData);
 	loadUserNotifications(responseData.name_permission);
 	const notificationsModalElement =
@@ -634,10 +602,9 @@ function renderDashboard(responseData) {
 		console.error("notificationsModalElement not found");
 	}
 
-	// setupCancelLoansModal();
 }
 
-// Для менеджеров
+// pour managers
 function getManagerNotifications() {
 	return [
 		{
@@ -657,7 +624,7 @@ function getManagerNotifications() {
 	];
 }
 
-// Для менеджеров
+// pour stockmans
 function getStockmanNotifications() {
 	return [
 		{
@@ -670,7 +637,7 @@ function getStockmanNotifications() {
 	];
 }
 
-// Для студентов и enseignants
+// pour étudiants et enseignants
 function getStudentTeacherNotifications() {
 	return [
 		{
@@ -691,7 +658,7 @@ function getStudentTeacherNotifications() {
 	];
 }
 
-// Создаем динамические уведомления для модального окна
+// notifications dynamiques
 function createNotificationsList(notifications) {
 	return notifications
 		.map(
@@ -752,15 +719,10 @@ function adjustUIBasedOnUserType(userType) {
 			horizontalNav = getStockmanStudentTeacherHorizontalNav();
 			verticalNav = getTeacherNav();
 			break;
-		default:
-			console.log("Unknown user type");
 	}
 
 	dynamicMenu.innerHTML = verticalNav;
 	horizontalNavbar.innerHTML = horizontalNav;
-
-	// Обновление содержимого уведомлений в зависимости от типа пользователя
-	// updateNotificationsModal(userType);
 }
 
 function activateSettingsTab() {
@@ -841,13 +803,11 @@ function updateTableRowStatus(requestId, status) {
 	const row = document.querySelector(`tr[data-id="${requestId}"]`);
 
 	if (row) {
-		console.log("row4", row.children[4]);
 		row.children[4].textContent = status;
 	}
 }
 
 function setupCancelReservationModal() {
-	console.log("вызвалась setupCancelReservationModal");
 	const cancelReservationModal = new Modal(
 		document.getElementById("request--reverse-loan-modal")
 	);
@@ -883,9 +843,7 @@ function setupCancelReservationModal() {
 
 				if (response.success) {
 					alert("La demande de réservation a été annulée avec succès.");
-					// Обновляем UI, чтобы отразить отмену
 					updateTableRowStatus(requestId, "annulé");
-					// Закрываем модальное окно
 					cancelReservationModal.hide();
 					loadClientLoans();
 				} else {
@@ -899,10 +857,8 @@ function setupCancelReservationModal() {
 }
 
 function setupCancelLoansModal() {
-	console.log("вызвалась setupCancelLoansModal ");
 	const reverseLoanModalElement = document.getElementById("reverse-loan-modal");
 	const cancelLoansModal = new Modal(reverseLoanModalElement);
-	console.log("cancelLoansModal", cancelLoansModal);
 
 	document.querySelector(".table").addEventListener("click", (event) => {
 		if (event.target.dataset.bsTarget === "#reverse-loan-modal") {
@@ -934,15 +890,13 @@ function setupCancelLoansModal() {
 
 				if (response.success) {
 					alert("La demande de réservation a été annulée avec succès.");
-					// Обновляем UI, чтобы отразить отмену
 					updateTableRowStatus(requestId, "annulé");
-					// Закрываем модальное окно
 					cancelLoansModal.hide();
 					loadClientLoans();
 					reverseLoanModalElement.addEventListener(
 						"hidden.bs.modal",
 						function () {
-							// Удаляем затемненный фон
+							// supprimer le fond sombre
 							const backdrop = document.querySelector(".modal-backdrop");
 							if (backdrop) {
 								backdrop.remove();
@@ -963,7 +917,6 @@ function setupCancelLoansModal() {
 	}
 }
 
-//личный кабинет
 async function loadUserProfile() {
 	try {
 		const user = await apiUsers.getUser();
@@ -974,7 +927,6 @@ async function loadUserProfile() {
 
 		const greetingText = `Bonjour, ${user.firstname} ${user.lastname}!`;
 
-		// Очищаем элемент перед началом печати
 		profileGreeting.textContent = "";
 
 		function type() {
@@ -1018,7 +970,6 @@ async function loadUserProfile() {
 						if (response.success) {
 							const pictureUrl = response.url;
 
-							// Обновление пользователя с новым URL картинки
 							await apiUsers.updateUser({ picture: pictureUrl });
 
 							showAvatar(pictureUrl);
@@ -1209,7 +1160,6 @@ async function displayStatistics(userType) {
 	}
 }
 
-// Извлечение namePermission из localStorage
 const userType = localStorage.getItem("namePermission");
 
 if (userType) {
@@ -1228,38 +1178,8 @@ if (logoutButton) {
 }
 
 function logout() {
-	// Удаляем данные аутентификации из localStorage
 	localStorage.removeItem("authToken");
 	localStorage.removeItem("id_user");
 
-	// Перенаправляем пользователя на корневую страницу сайта
-	window.location.href = "/"; // Перенаправить на корневую страницу
+	window.location.href = "/";
 }
-
-//в разработке
-// document
-// 	.getElementById("communicationForm")
-// 	.addEventListener("submit", async (event) => {
-// 		event.preventDefault();
-
-// 		const message = document.getElementById("communicationMessageText").value;
-
-// 		if (!message.trim()) {
-// 			alert("Please enter a message.");
-// 			return;
-// 		}
-
-// 		try {
-// 			const data = await apiCommunications.sendMessage(message);
-
-// 			if (data.success) {
-// 				alert("Message sent successfully.");
-// 				document.getElementById("communicationForm").reset();
-// 			} else {
-// 				alert("Failed to send message: " + data.message);
-// 			}
-// 		} catch (error) {
-// 			console.error("Error sending message:", error);
-// 			alert("An error occurred while sending the message.");
-// 		}
-// 	});

@@ -49,7 +49,7 @@ accordionElements.forEach((accordion) => {
 	});
 });
 
-// Initialize Modals
+// initialisation des modals
 const aboutModalElement = document.getElementById("aboutModal");
 if (aboutModalElement) {
 	const aboutModal = new Modal(aboutModalElement);
