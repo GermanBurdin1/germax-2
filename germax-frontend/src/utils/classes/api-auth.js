@@ -128,7 +128,7 @@ export class ApiAuth {
 						data.messages ? data.messages.join(", ") : "Unknown error"
 					);
 				}
-				return data.data; // Assuming the endpoint returns a list of users in `data.users`
+				return data.data;
 			})
 			.catch((error) => {
 				console.error("Error fetching processed users:", error);
