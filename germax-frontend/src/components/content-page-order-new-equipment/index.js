@@ -2,9 +2,9 @@ import "./index.css";
 // Confirmer la réception; marqué comme reçu как подстраховка (а так, будет автоматически делаться)
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
-import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
-import { ApiRental } from "../../../utils/classes/api-rental";
-import { ApiGoods } from "../../../utils/classes/api-goods";
+import { ApiEquipmentRequest } from "../../utils/classes/api-equipment-request";
+import { ApiRental } from "../../utils/classes/api-rental";
+import { ApiGoods } from "../../utils/classes/api-goods";
 
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiRental = new ApiRental();

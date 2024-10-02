@@ -11,7 +11,7 @@ import {
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
 	returnSupportModal,
-} from "../../../utils/components/markup";
+} from "../../utils/components/markup";
 
 import {
 	initializeTabsWithoutShow,
@@ -20,41 +20,41 @@ import {
 	initializeDropdowns,
 	initializeDropdown,
 	initializeModals,
-} from "../../../utils/components/bootstrap-components";
+} from "../../utils/components/bootstrap-components";
 
 import {
 	returnClientLoans,
 	returnLoanRequestModal,
 	returnLoanFormModal,
 	returnRentalHistoryLoans,
-} from "../../../utils/components/loans";
+} from "../../utils/components/loans";
 
 import {
 	loansClientHistory,
 	rentalClientDetails,
-} from "../../../utils/components/clientHistory";
+} from "../../utils/components/clientHistory";
 
 import {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
-} from "../../../utils/components/booking";
+} from "../../utils/components/booking";
 
 import {
 	returnAdminSettingsModal
-} from "../../../utils/components/adminModals";
+} from "../../utils/components/adminModals";
 
 import Modal from "bootstrap/js/dist/modal";
 
-import { ApiAuth } from "../../../utils/classes/api-auth";
-import { ApiGoods } from "../../../utils/classes/api-goods";
-import { ApiRental } from "../../../utils/classes/api-rental";
-import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
-import { ApiNotification } from "../../../utils/classes/api-notification";
-import { ApiUsers } from "../../../utils/classes/api-users";
-import { UploadAPI } from "../../../utils/classes/api-upload";
-import { ApiStatistics } from "../../../utils/classes/api-statistics";
-import { ApiSettings } from "../../../utils/classes/api-settings";
+import { ApiAuth } from "../../utils/classes/api-auth";
+import { ApiGoods } from "../../utils/classes/api-goods";
+import { ApiRental } from "../../utils/classes/api-rental";
+import { ApiEquipmentRequest } from "../../utils/classes/api-equipment-request";
+import { ApiNotification } from "../../utils/classes/api-notification";
+import { ApiUsers } from "../../utils/classes/api-users";
+import { UploadAPI } from "../../utils/classes/api-upload";
+import { ApiStatistics } from "../../utils/classes/api-statistics";
+import { ApiSettings } from "../../utils/classes/api-settings";
 
 const apiAuth = ApiAuth.getInstance();
 const apiGoods = new ApiGoods();

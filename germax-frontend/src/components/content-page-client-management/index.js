@@ -2,9 +2,9 @@ import "./index.css";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import Modal from "bootstrap/js/dist/modal";
 import Tab from "bootstrap/js/dist/tab";
-import { ApiAuth } from "../../../utils/classes/api-auth";
-import { ApiRental } from "../../../utils/classes/api-rental";
-import { ApiUsers } from "../../../utils/classes/api-users";
+import { ApiAuth } from "../../utils/classes/api-auth";
+import { ApiRental } from "../../utils/classes/api-rental";
+import { ApiUsers } from "../../utils/classes/api-users";
 
 const userType = localStorage.getItem("name_permission");
 if (userType === "admin") {

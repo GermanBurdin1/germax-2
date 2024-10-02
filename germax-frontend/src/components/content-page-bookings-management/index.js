@@ -1,9 +1,9 @@
 import { Dropdown } from "bootstrap";
 import { Modal } from "bootstrap";
 import "./index.css";
-import { ApiRental } from "../../../utils/classes/api-rental";
-import { ApiUsers } from "../../../utils/classes/api-users";
-import { ApiGoods } from "../../../utils/classes/api-goods";
+import { ApiRental } from "../../utils/classes/api-rental";
+import { ApiUsers } from "../../utils/classes/api-users";
+import { ApiGoods } from "../../utils/classes/api-goods";
 
 const apiRental = new ApiRental();
 const apiUsers = new ApiUsers();

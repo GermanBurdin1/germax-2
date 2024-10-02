@@ -1,6 +1,6 @@
 import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
-import { getFormData } from "../../../utils/helpers/dom-utils";
+import { getFormData } from "../../utils/helpers/dom-utils";
 
 document.querySelector(".link_2").addEventListener("click", function (event) {
 	event.preventDefault();

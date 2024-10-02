@@ -1,14 +1,14 @@
-import { ApiGoods } from "../../../utils/classes/api-goods";
-import { ApiAuth } from "../../../utils/classes/api-auth";
-import { debounce } from "../../../utils/helpers/debounce";
+import { ApiGoods } from "../../utils/classes/api-goods";
+import { ApiAuth } from "../../utils/classes/api-auth";
+import { debounce } from "../../utils/helpers/debounce";
 import Modal from "bootstrap/js/dist/modal";
 import "./index.css";
-import { formDataToObject } from "../../../utils/helpers/form-data-to-object";
-import { ApiRental } from "../../../utils/classes/api-rental";
-import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
-import { ApiNotification } from "../../../utils/classes/api-notification";
-import { ApiUsers } from "../../../utils/classes/api-users";
-import { ApiSettings } from "../../../utils/classes/api-settings";
+import { formDataToObject } from "../../utils/helpers/form-data-to-object";
+import { ApiRental } from "../../utils/classes/api-rental";
+import { ApiEquipmentRequest } from "../../utils/classes/api-equipment-request";
+import { ApiNotification } from "../../utils/classes/api-notification";
+import { ApiUsers } from "../../utils/classes/api-users";
+import { ApiSettings } from "../../utils/classes/api-settings";
 
 let newLoanFormModal = null;
 let newLoanFormModalNode = null;
