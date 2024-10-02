@@ -11,7 +11,6 @@ export class BrandAPI {
 			name: brandName,
 		});
 
-		console.log("Sending JSON:", body);
 
 		const response = await fetch(`${this._baseUrl}/endpoint`, {
 			method: "POST",

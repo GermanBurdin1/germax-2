@@ -11,7 +11,6 @@ export class CategoryAPI {
 			name: categoryName,
 		});
 
-		console.log("Sending JSON:", body);
 
 		const response = await fetch(`${this._baseUrl}/endpoint`, {
 			method: "POST",

@@ -24,7 +24,6 @@ export class ApiEquipmentRequest {
 				id_type,
 			},
 		});
-		console.log("Sending JSON:", body);
 		return fetch(`${this._baseUrl}/create-first-request`, {
 			method: "POST",
 			headers: {
@@ -64,7 +63,7 @@ export class ApiEquipmentRequest {
 				id_user,
 			},
 		});
-		console.log("Sending JSON:", body);
+
 		return fetch(`${this._baseUrl}/create-first-request-from-manager`, {
 			method: "POST",
 			headers: {
@@ -109,7 +108,6 @@ export class ApiEquipmentRequest {
 						return jsonData;
 					} catch (error) {
 						console.error("Error parsing JSON:", error);
-						console.log("Invalid JSON response:", text);
 						throw error;
 					}
 					return jsonData;
@@ -146,13 +144,13 @@ export class ApiEquipmentRequest {
 			})
 			.catch((error) => {
 				console.error("Error fetching equipment requests:", error);
-				return { success: false, data: [] }; // Возвращаем объект с пустым массивом данных в случае ошибки
+				return { success: false, data: [] };
 			});
 	}
 
 	async updateEquipmentRequest(updatedData) {
 		const body = JSON.stringify(updatedData);
-		// console.log("Request body:", body); // Логируем тело запроса
+
 		return fetch(`${this._baseUrl}/update-request`, {
 			method: "PUT",
 			headers: {
@@ -162,19 +160,16 @@ export class ApiEquipmentRequest {
 			body,
 		})
 			.then((response) => {
-				console.log("Raw response:", response); // Логируем необработанный ответ
 				if (!response.ok) {
 					return response.json().then((json) => {
-						console.log("Error response JSON:", json); // Логируем тело ошибки
 						return Promise.reject(json);
 					});
 				}
 				return response.json();
 			})
 			.then((data) => {
-				console.log("Response data:", data); // Логируем данные ответа
 				if (data.success) {
-					return data.data; // Возвращаем обновленные данные
+					return data.data;
 				} else {
 					throw new Error(data.message || "Error updating request");
 				}
@@ -188,7 +183,6 @@ export class ApiEquipmentRequest {
 	async confirmApproval(approvalData) {
 		const body = JSON.stringify(approvalData);
 		return fetch(`${this._baseUrl}/confirm-approval`, {
-			// Замените URL на соответствующий для подтверждения
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -204,7 +198,7 @@ export class ApiEquipmentRequest {
 			})
 			.then((data) => {
 				if (data.success) {
-					return data.data; // Возвращаем обновленные данные
+					return data.data;
 				} else {
 					throw new Error(data.message || "Error confirming approval");
 				}

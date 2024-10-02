@@ -10,8 +10,6 @@ export class UploadAPI {
         const formData = new FormData();
         formData.append('file', photoFile);
 
-        console.log("Sending file to server:", photoFile);
-
         const response = await fetch(`${this._baseUrl}`, {
             method: "POST",
             headers: {

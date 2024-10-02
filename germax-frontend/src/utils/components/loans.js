@@ -1,6 +1,4 @@
 export function returnClientLoans(rentals = [], requests = []) {
-	console.log("Received rentals:", rentals);
-	console.log("Received requests:", requests);
 
 	// Fusionner les deux collections en une seule pour faciliter le traitement
 	const filteredRentals = rentals.filter((rental) => {
@@ -11,7 +9,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 	const allEntries = [
 		...filteredRentals.map((rental) => {
 			let statusMessage = "Status non défini";
-			let actionsMarkup = ""; // Инициализация переменной actionsMarkup
+			let actionsMarkup = "";
 
 			if (rental.loan_status === "cancelled" && rental.id_status === 1) {
 				statusMessage = `La requête de la location a été annulée le ${formatDate(
@@ -48,10 +46,9 @@ export function returnClientLoans(rentals = [], requests = []) {
 				date_end: rental.date_end,
 				photo: rental.photo || null,
 				statusMessage: statusMessage,
-				actionsMarkup: actionsMarkup, // Добавление actionsMarkup к processedRental
+				actionsMarkup: actionsMarkup,
 				quantity: rental.quantity || 1,
 			};
-			console.log("Processed rental entry:", processedRental);
 			return processedRental;
 		}),
 		...requests.map((request) => {
@@ -67,9 +64,8 @@ export function returnClientLoans(rentals = [], requests = []) {
 				statusMessage: request.treatment_status,
 				type: "request",
 				photo: request.photo,
-				quantity: request.quantity || 1, // Добавлено количество
+				quantity: request.quantity || 1,
 			};
-			console.log("Processed request entry:", processedRequest);
 			return processedRequest;
 		}),
 	];
@@ -78,7 +74,7 @@ export function returnClientLoans(rentals = [], requests = []) {
 		.map((entry) => {
 			let statusMessage = entry.statusMessage;
 			let photoHtml = "";
-			let actionsMarkup = entry.actionsMarkup; // Использование actionsMarkup из processedRental
+			let actionsMarkup = entry.actionsMarkup;
 
 			if (entry.type === "request") {
 				statusMessage = entry.treatment_status || "unknown status";
@@ -313,7 +309,6 @@ export function returnClientLoans(rentals = [], requests = []) {
 }
 
 export function returnRentalHistoryLoans(rentals = []) {
-	console.log("Received rentals:", rentals);
 	const rows = rentals
 		.filter((rental) => rental.accord === true || rental.accord === 1) // Только подтвержденные аренды
 		.map((rental) => {

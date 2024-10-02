@@ -55,7 +55,6 @@ export class ApiRental {
 			},
 			idGood: good.id,
 		});
-		console.log("createNewItemRental вызывается с телом,", body);
 
 		return fetch(`${this._baseUrl}/new-item-rental`, {
 			method: "POST",
@@ -109,7 +108,6 @@ export class ApiRental {
 			limit,
 		});
 
-		console.log("функция getRentals вызывается ");
 		return fetch(`${this._baseUrl}/?${paramsStr}`, {
 			method: "GET",
 			headers: {
@@ -118,14 +116,12 @@ export class ApiRental {
 			},
 		})
 			.then((response) => {
-				console.log("response", response);
 				if (!response.ok) {
 					return response.json().then((json) => Promise.reject(json));
 				}
 				return response.json();
 			})
 			.then((data) => {
-				console.log("data", data);
 				return data.data;
 			})
 			.catch((error) => {
@@ -152,7 +148,6 @@ export class ApiRental {
 				return response.json();
 			})
 			.then((data) => {
-				console.log("data", data);
 				return data.data;
 			})
 			.catch((error) => {
@@ -164,7 +159,6 @@ export class ApiRental {
 	async cancelRental(loanId) {
 		const body = JSON.stringify({ loanId });
 		const token = this._apiAuth.getToken();
-		console.log("отправляемый токен", token)
 		return fetch(`${this._baseUrl}/cancel`, {
 			method: "PATCH",
 			headers: {
@@ -190,7 +184,6 @@ export class ApiRental {
 
 	async approveRental(loanId) {
 		const body = JSON.stringify({ loanId });
-		console.log("body", body);
 
 		return fetch(`${this._baseUrl}/approve`, {
 			method: "PATCH",
@@ -201,14 +194,12 @@ export class ApiRental {
 			body,
 		})
 			.then((response) => {
-				console.log("response", response);
 				if (!response.ok) {
 					return response.json().then((json) => Promise.reject(json));
 				}
 				return response.json();
 			})
 			.then((data) => {
-				console.log("data", data);
 				return data;
 			})
 			.catch((error) => {
@@ -217,10 +208,8 @@ export class ApiRental {
 			});
 	}
 
-	// для личного кабинета
 	async getRecentRentals(userId) {
 		const token = this._apiAuth.getToken();
-		console.log("Token being sent:", token);
 
 		return fetch(`${this._baseUrl}/recent-rentals`, {
 			method: "GET",

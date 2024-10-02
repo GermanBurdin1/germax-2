@@ -38,7 +38,6 @@ export class ApiStatistics {
 			.then((response) => response.json())
 			.then((data) => {
 				if (data.success) {
-					console.log(data)
 					return data.statistics;
 				} else {
 					throw new Error(data.message || "Error fetching statistics");

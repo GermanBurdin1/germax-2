@@ -6,7 +6,6 @@ export class ApiSettings {
 
   async getSettings() {
     const token = this._apiAuth.getToken();
-    console.log("Using token:", token);
 
     return fetch(`${this._baseUrl}/get-settings`, {
         method: "GET",
@@ -17,7 +16,6 @@ export class ApiSettings {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Fetched data:", data);
         if (data.success && Array.isArray(data.data)) {
             return data.data;
         } else {
@@ -36,7 +34,6 @@ export class ApiSettings {
       id_functionality,
       max_reservations,
     });
-		console.log("Sending settings data:", body);
 
     return fetch(`${this._baseUrl}/save-settings`, {
       method: "POST",
@@ -54,7 +51,6 @@ export class ApiSettings {
       })
       .then((data) => {
         if (data.success) {
-					console.log("Settings saved successfully:", data.message);
           return data.message;
         } else {
           throw new Error(data.message || "Error saving settings");

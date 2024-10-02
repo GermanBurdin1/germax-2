@@ -11,7 +11,8 @@ import {
 	returnSettingsTab,
 	getStockmanStudentTeacherHorizontalNav,
 	returnSupportModal,
-} from "../../../utils/dashboard/components/markup";
+} from "../../../utils/components/markup";
+
 import {
 	initializeTabsWithoutShow,
 	setupTabActivation,
@@ -19,32 +20,32 @@ import {
 	initializeDropdowns,
 	initializeDropdown,
 	initializeModals,
-} from "../../../utils/bootstrap-components";
+} from "../../../utils/components/bootstrap-components";
+
 import {
 	returnClientLoans,
 	returnLoanRequestModal,
 	returnLoanFormModal,
 	returnRentalHistoryLoans,
-} from "../../../utils/dashboard/loans";
+} from "../../../utils/components/loans";
+
 import {
 	loansClientHistory,
 	rentalClientDetails,
-} from "../../../utils/dashboard/clientHistory";
-
-import Modal from "bootstrap/js/dist/modal";
-
-// Импорты для админа
-import {
-	returnAdminReportsModal,
-	returnAdminFeedbackModal,
-	returnAdminSettingsModal,
-} from "../../../utils/dashboard/adminModals";
+} from "../../../utils/components/clientHistory";
 
 import {
 	setupCategoryFilterEventListener,
 	setupModelSearchEventListener,
 	setupBrandFilterEventListener,
-} from "../../../utils/dashboard/data/student/booking";
+} from "../../../utils/components/booking";
+
+import {
+	returnAdminSettingsModal
+} from "../../../utils/components/adminModals";
+
+import Modal from "bootstrap/js/dist/modal";
+
 import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiGoods } from "../../../utils/classes/api-goods";
 import { ApiRental } from "../../../utils/classes/api-rental";

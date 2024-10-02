@@ -14,9 +14,7 @@ export class ApiGoods {
 		page = 1,
 		limit = 20,
 	} = {}) {
-		console.log("getAllGoods вызывается");
 
-		// Преобразуем массив статусов в строку, разделенную запятыми
 		const paramsStr = stringifyParams({
 			typeName,
 			modelName,
@@ -38,7 +36,7 @@ export class ApiGoods {
 			})
 			.then((data) => ({
 				goods: data.data,
-				totalItems: data.totalItems, // Предполагается, что API возвращает это значение
+				totalItems: data.totalItems,
 			}));
 	}
 
@@ -50,7 +48,7 @@ export class ApiGoods {
 		brandName,
 		description = "",
 		photo = "",
-		location = "stock_stockman", // Добавлено поле местоположения
+		location = "stock_stockman",
 	}) {
 		const body = JSON.stringify({
 			modelName,
@@ -60,9 +58,9 @@ export class ApiGoods {
 			brandName,
 			description,
 			photo,
-			location, // Добавлено поле местоположения
+			location,
 		});
-		// console.log("Sending data to server:", body);
+
 
 		return fetch(`${this._baseUrl}`, {
 			method: "POST",
@@ -74,7 +72,7 @@ export class ApiGoods {
 		})
 			.then((response) => {
 				return response.text().then((text) => {
-					// console.log("Received response from server:", text);
+
 					if (!response.ok) {
 						return Promise.reject(text);
 					}
@@ -234,7 +232,7 @@ export class ApiGoods {
 			id_good,
 			action: "handOver",
 		});
-		console.log("body sending", body);
+
 		return fetch(`${this._baseUrl}`, {
 			method: "POST",
 			headers: {
@@ -251,7 +249,7 @@ export class ApiGoods {
 						);
 					});
 				}
-				return response.json(); // Используем только response.json()
+				return response.json();
 			})
 			.then((data) => {
 				if (!data.success) {
@@ -271,7 +269,7 @@ export class ApiGoods {
 			id_good,
 			action: "return",
 		});
-		console.log("body sending", body);
+
 		return fetch(`${this._baseUrl}`, {
 			method: "POST",
 			headers: {

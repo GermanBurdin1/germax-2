@@ -34,10 +34,8 @@ export class ApiAuth {
 			},
 		})
 			.then((response) => {
-				// console.log("HTTP Status:", response.status);
 				const json = response.json();
 				if (!response.ok) return Promise.reject(json);
-				// console.log("Data received:", json);
 				return json;
 			})
 			.then((data) => {
@@ -73,7 +71,6 @@ export class ApiAuth {
 			.then((response) => response.json())
 			.then((data) => {
 				if (data.success !== true) {
-					console.log("Response data:", data);
 					return Promise.reject(
 						data.messages ? data.messages.join(", ") : "Unknown error"
 					);
@@ -97,13 +94,12 @@ export class ApiAuth {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log("API Response:", data);
 				if (!data.success) {
 					return Promise.reject(
 						data.messages ? data.messages.join(", ") : "Unknown error"
 					);
 				}
-				return data.data; // Assuming the endpoint returns a list of users in `data.users`
+				return data.data;
 			})
 			.catch((error) => {
 				console.error("Error fetching pending users:", error);
@@ -122,7 +118,6 @@ export class ApiAuth {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log("API Response:", data);
 				if (!data.success) {
 					return Promise.reject(
 						data.messages ? data.messages.join(", ") : "Unknown error"

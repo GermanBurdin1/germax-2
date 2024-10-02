@@ -33,11 +33,8 @@ export class ApiUsers {
 
 	async updateUser(data) {
 		const token = this._apiAuth.getToken();
-		console.log("Token being sent:", token);
-		console.log("Data being sent:", data);
 
 		const body = JSON.stringify(data);
-		console.log("Body being sent:", body);
 
 		return fetch(`${this._baseUrl}/update-user.endpoint`, {
 			method: "POST",
@@ -49,7 +46,6 @@ export class ApiUsers {
 		})
 			.then((response) => {
 				return response.text().then((text) => {
-					console.log("Raw response text:", text);
 					try {
 						return JSON.parse(text);
 					} catch (err) {
@@ -121,13 +117,12 @@ export class ApiUsers {
 	}
 
 	async updateUserStatus(userId, status) {
-		const token = this._apiAuth.getToken(); // Убедитесь, что токен правильно извлекается
-		console.log("Token being sent:", token); // Логируем токен для отладки
+		const token = this._apiAuth.getToken();
 		return fetch(`${this._baseUrl}/block-user.endpoint`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`, // Убедитесь, что заголовок устанавливается правильно
+				Authorization: `Bearer ${token}`,
 			},
 			body: JSON.stringify({ id_user: userId, connexion_permission: status }),
 		})

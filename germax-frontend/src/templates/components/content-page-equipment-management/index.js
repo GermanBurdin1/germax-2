@@ -2,8 +2,7 @@ import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
 import { Tab } from "bootstrap";
-import {initializeHoverDropdowns} from "../../../utils/bootstrap-components";
-import {attachEditRowHandlers} from "../../../utils/components/edit-table-admin";
+import {initializeHoverDropdowns} from "../../../utils/components/bootstrap-components";
 
 document.addEventListener("DOMContentLoaded", function () {
 
