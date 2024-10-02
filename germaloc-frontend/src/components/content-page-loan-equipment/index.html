@@ -1,0 +1,129 @@
+<div class="container mt-5">
+	<div id="backArrowContainer"></div>
+	<h5 class="custom-title" id="fullScreenModalLabel">Louez votre équipement</h5>
+	<form class="jumbotron mt-4">
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" id="model-search" placeholder="Rechercher par modèle">
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3">
+
+					<div class="list-group" id="type-filter">
+						<a class="list-group-item list-group-item-action active" data-type="all">All</a>
+						<a class="list-group-item list-group-item-action" data-type="laptop">Ordinateurs portables</a>
+						<a class="list-group-item list-group-item-action" data-type="сomputer_monitor">Ecrans d'ordinateurs</a>
+						<a class="list-group-item list-group-item-action" data-type="smartphone">Smartphones</a>
+						<a class="list-group-item list-group-item-action" data-type="accessory">Accessoires</a>
+						<a class="list-group-item list-group-item-action" data-type="tablet">Tablettes</a>
+						<a class="list-group-item list-group-item-action" data-type="VR_headset">Casque VR</a>
+					</div>
+
+				</div>
+				<div class="col-md-9">
+					<div class="equipment-list" id="equipment-list">
+						<!-- les résultats seront ici -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div class="pagination-container">
+		<button id="prevPageBtn" class="btn btn-primary">Précédent</button>
+		<span id="pageInfo"></span>
+		<button id="nextPageBtn" class="btn btn-primary">Suivant</button>
+	</div>
+	<div class="custom-jumbotron mt-4">
+		<p class="lead">Vous n'avez pas trouvé ce dont vous avez besoin ?</p>
+		<hr class="my-4">
+		<p>Ici, vous pouvez rapidement et facilement envoyer une demande de location de l'équipement nécessaire au
+			gestionnaire de l'entrepôt.</p>
+		<a class="btn btn-primary btn-sm" id="request-button" href="#" data-bs-target="#requestNotFoundItemsModal">Soumettre une demande</a>
+	</div>
+</div>
+
+<div class="modal fade show" id="newLoanFormModal" tabindex="-1" aria-labelledby="loanFormModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">
+					<h5 class="modal-title" id="loanFormModalLabel">Demande de location</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="quantity" class="form-label">Quantité</label>
+						<input type="number" name="quantity" min="1" class="form-control" id="quantity" value="1" required="true">
+					</div>
+					<div class="mb-3">
+						<label for="dateStart" class="form-label">Date de début</label>
+						<input type="date" name="dateStart" class="form-control" id="dateStart" required="true">
+					</div>
+					<div class="mb-3">
+						<label for="dateEnd" class="form-label">Date de fin</label>
+						<input type="date" name="dateEnd" class="form-control" id="dateEnd" required="true">
+					</div>
+					<div class="mb-3">
+						<label for="comments" class="form-label">Commentaires</label>
+						<textarea class="form-control" name="comments" id="comments" rows="3"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="submit" class="btn btn-primary" id="confirmRentalButton">Confirmer la demande</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade show" id="requestNotFoundItemsModal" tabindex="-1" aria-labelledby="requestNotFoundItemsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+					<div class="modal-header">
+							<h5 class="modal-title" id="requestNotFoundItemsModalLabel">Demande du matériel non trouvé</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<form id="notFoundRequestForm">
+									<div class="mb-3">
+											<label for="equipmentCategory" class="form-label" name="category">Catégorie du matériel</label>
+											<select class="form-select" id="equipmentCategory" name="category">
+													<option value="laptops">Ordinateurs portables</option>
+													<option value="monitors">Ecrans d'ordinateurs</option>
+													<option value="smartphones">Smartphones</option>
+													<option value="accessories">Accessoires</option>
+													<option value="tablets">Tablettes</option>
+													<option value="vr_heads">Casques-VR</option>
+											</select>
+									</div>
+									<div class="mb-3">
+											<label for="modelInput" class="form-label">Commencez à rentrer le nom du modèle</label>
+											<input type="text" class="form-control" id="modelInput" name="modelName" placeholder="Rentrez le nom du modèle">
+									</div>
+									<div class="mb-3">
+											<label for="quantity" class="form-label">Quantité</label>
+											<input type="number" class="form-control" id="quantity" name="quantity" placeholder="1" min="1">
+									</div>
+									<div class="mb-3">
+											<label for="dateRequestStart" class="form-label">Date de début</label>
+											<input type="date" class="form-control" id="dateRequestStart" name="dateStart" required>
+									</div>
+									<div class="mb-3">
+											<label for="dateRequestEnd" class="form-label">Date de fin</label>
+											<input type="date" class="form-control" id="dateRequestEnd" name="dateEnd" required>
+									</div>
+									<div class="mb-3">
+											<label for="comments" class="form-label">Commentaires</label>
+											<textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+									</div>
+							</form>
+					</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+							<button type="submit" class="btn btn-primary" form="notFoundRequestForm">Envoyer la requête</button>
+					</div>
+			</div>
+	</div>
+</div>

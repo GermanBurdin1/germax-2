@@ -1,0 +1,125 @@
+@import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css);
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
+
+body {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.auth-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 150px;
+    margin-bottom: 100px;
+}
+
+.heading-container {
+    background-color: #e7f0f7;
+    border-radius: 8px;
+    position: relative;
+    display: inline-block;
+}
+
+.heading {
+    margin: 0;
+    font-weight: 700;
+}
+
+.line {
+    width: 50px;
+    height: 5px;
+    background-color: #A49185;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: grow 1s;
+}
+
+.line:first-of-type {
+    left: -60px;
+}
+
+.line:last-of-type {
+    right: -60px;
+}
+
+@keyframes grow {
+    from {
+        width: 0;
+    }
+    to {
+        width: 50px;
+    }
+}
+
+.typewriter {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid;
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: black }
+}
+
+.blinking {
+    animation: blink 3s step-end 1, fadeIn 1s;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 0 }
+    51%, 100% { opacity: 1 }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
+
+.btn-auth {
+    background-color: #E7717D;
+    color: white;
+    border: none;
+}
+
+.btn-auth:hover {
+    background-color: #C2CAD0;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+}
+
+section {
+    padding: 60px 0;
+}
+
+.carousel-item .card {
+    width: 40%;
+}
+
+footer h5 {
+	font-size: 1.25rem;
+}
+
+footer p {
+	font-size: 0.7rem;
+}
+
+.modal-header {
+	border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+	border-top: 1px solid #dee2e6;
+}
