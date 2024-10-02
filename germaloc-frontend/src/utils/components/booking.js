@@ -1,7 +1,7 @@
 let allModelsData = [];
-let currentBrand = ""; // Здесь будут храниться все загруженные данные моделей
-let currentSearchQuery = ""; // Переменная для хранения текущего поискового запроса
-let isBrandFilterActive = false; // Флаг для контроля активации фильтра по бренду
+let currentBrand = "";
+let currentSearchQuery = "";
+let isBrandFilterActive = false;
 
 export function setupCategoryFilterEventListener() {
 	const typeFilter = document.getElementById("type-filter");
@@ -10,7 +10,6 @@ export function setupCategoryFilterEventListener() {
 			const target = e.target.closest("a[data-type]");
 			if (target && !isBrandFilterActive) {
 				const typeName = e.target.getAttribute("data-type");
-				// e.stopPropagation(); // Останавливаем всплывание события
 				fetch(`http://germaloc-api/goods?typeName=${typeName}`)
 					.then((response) => {
 						if (!response.ok) {
@@ -22,8 +21,7 @@ export function setupCategoryFilterEventListener() {
 						return response.json();
 					})
 					.then((data) => {
-						console.log(data.data);
-						allModelsData = data.data; // Сохраняем загруженные данные
+						allModelsData = data.data;
 						displayEquipment(data.data);
 					})
 					.catch((error) => console.error("Error loading data: ", error));
@@ -60,7 +58,7 @@ export async function setupModelSearchEventListener() {
 	if (searchButton && modelSearchInput) {
 		searchButton.addEventListener("click", async () => {
 			const modelName = modelSearchInput.value.trim();
-			currentSearchQuery = modelName; // Сохраняем текущий поисковый запрос
+			currentSearchQuery = modelName;
 			if (modelName) {
 				isBrandFilterActive = true;
 				try {
@@ -71,13 +69,12 @@ export async function setupModelSearchEventListener() {
 						throw new Error(`HTTP status ${response.status}`);
 					}
 					const data = await response.json();
-					console.log(data);
 					if (data && data.success) {
-						allModelsData = data.data; // Обновляем данные моделей
+						allModelsData = data.data;
 						if (data.data.length > 0) {
-							currentBrand = data.data[0].model_brand_name; // Сохраняем бренд первой найденной модели
+							currentBrand = data.data[0].model_brand_name;
 						} else {
-							currentBrand = ""; // Очищаем бренд, если данных нет
+							currentBrand = "";
 						}
 						displayModelData(data.data);
 					}
@@ -86,7 +83,7 @@ export async function setupModelSearchEventListener() {
 					equipmentList.innerHTML = `<p>Ошибка при загрузке данных: ${error.message}</p>`;
 				}
 			} else {
-				isBrandFilterActive = false; // Отключаем фильтр по бренду
+				isBrandFilterActive = false;
 				equipmentList.innerHTML = "<p>Введите название модели.</p>";
 			}
 		});
@@ -124,13 +121,13 @@ export function displayEquipment(items) {
 
 export function displayModelData(models) {
 	const equipmentList = document.getElementById("equipment-list");
-	equipmentList.innerHTML = ""; // Очистка списка оборудования перед отображением новых данных
-	const seenModels = new Set(); // Используем Set для отслеживания уникальных имен моделей
+	equipmentList.innerHTML = "";
+	const seenModels = new Set();
 
 	models.forEach((item) => {
 		const model = item.model; // Здесь мы берем объект model из каждого item
 		if (!seenModels.has(model.name)) {
-			seenModels.add(model.name); // Добавляем имя модели в Set
+			seenModels.add(model.name);
 			const modelElement = document.createElement("div");
 			modelElement.className = "model-details";
 			modelElement.innerHTML = `
@@ -148,9 +145,7 @@ export function displayModelData(models) {
 }
 
 function normalizeModelData(item) {
-	// Проверяем, содержит ли элемент информацию в "model" или напрямую в элементе
 	if (item.model && item.model.name) {
-		// Структура с вложенным объектом model
 		return {
 			id_good: item.id,
 			id_model: item.model.id,
@@ -159,7 +154,6 @@ function normalizeModelData(item) {
 			photo: item.model.photo || "default-image.png",
 		};
 	} else {
-		// Плоская структура
 		return {
 			id: item.id_model,
 			name: item.model_name,
