@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, *");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/category-controller.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/category.controller.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
 
 $authService = new AuthService();
@@ -21,16 +21,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 
 	$data = json_decode(file_get_contents('php://input'), true);
-	$name = $data['name'] ?? ''; // Получаем данные из POST запроса
-	$response = $categoryController->addCategory($name, $token); // Вызываем метод добавления категории
+	$name = $data['name'] ?? '';
+	$response = $categoryController->addCategory($name, $token);
 	echo json_encode($response);
 } elseif ($_SERVER["REQUEST_METHOD"] == "GET") {
 	$response = $categoryController->getCategories();
 	echo json_encode($response);
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-	http_response_code(204); // No Content for preflight
+	http_response_code(204);
 	exit;
 } else {
-	http_response_code(405); // Method Not Allowed
+	http_response_code(405);
 	echo json_encode(['error' => 'Method not allowed']);
 }

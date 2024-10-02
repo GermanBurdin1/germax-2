@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, X-Requested-With, *");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/rental-controller.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/rental.controller.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/rental.service.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
 
