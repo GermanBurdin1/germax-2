@@ -204,7 +204,6 @@ function openReservationModal(event, good, authUser) {
 		try {
 			submitRentalRequest(good, formInfo);
 
-			// Создание уведомления для менеджера
 			const managerMessage = `Un nouvel étudiant a fait une demande de location pour ${good.model.name}.`;
 			const managers = await apiUsers.getUsersByPermission("rental-manager");
 
@@ -357,7 +356,7 @@ function initMain() {
 function submitRentalRequest(good, formInfo) {
 	apiRental
 		.createRequestRental(good, formInfo)
-		.then((response) => {
+		.then(() => {
 			alert("Votre demande de location a été enregistrée avec succès.");
 			newLoanFormModal.hide();
 			removeGoodFromList(good.id);
