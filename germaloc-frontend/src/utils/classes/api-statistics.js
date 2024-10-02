@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 
 export class ApiStatistics {
 	_apiAuth = ApiAuth.getInstance();
-	_baseUrl = "http://germax-api/statistics";
+	_baseUrl = "http://germaloc-api/statistics";
 
 	constructor() {}
 	async getManagerStatistics() {

@@ -14,7 +14,7 @@ const authToken = localStorage.getItem("authToken");
 const namePermission = localStorage.getItem("namePermission");
 updateEquipmentRequestsTable(namePermission);
 if (authToken) {
-	fetchAuthUser("http://germax-api/auth/me");
+	fetchAuthUser("http://germaloc-api/auth/me");
 }
 
 document
@@ -220,7 +220,7 @@ function renderEquipmentOrder(userData) {
 					id_user,
 				};
 
-				fetch("http://germax-api/equipment_requests", {
+				fetch("http://germaloc-api/equipment_requests", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -1297,7 +1297,7 @@ async function approveRequest(
 		if (equipmentPhoto) {
 			const formData = new FormData();
 			formData.append("file", equipmentPhoto);
-			const uploadResponse = await fetch("http://germax-api/upload", {
+			const uploadResponse = await fetch("http://germaloc-api/upload", {
 				method: "POST",
 				body: formData,
 			});

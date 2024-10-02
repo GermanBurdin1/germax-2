@@ -1088,7 +1088,7 @@ async function displayStatistics(userType) {
 				createNotificationElement(
 					userMessage,
 					"Voir les utilisateurs",
-					"http://germax-frontend/page-client-management/"
+					"http://germaloc-frontend/page-client-management/"
 				)
 			);
 		} else {
@@ -1106,7 +1106,7 @@ async function displayStatistics(userType) {
 				createNotificationElement(
 					loanMessage,
 					"Voir les demandes",
-					"http://germax-frontend/page-bookings-management/"
+					"http://germaloc-frontend/page-bookings-management/"
 				)
 			);
 		} else {
@@ -1127,7 +1127,7 @@ async function displayStatistics(userType) {
 				createNotificationElement(
 					equipmentMessage,
 					"Voir l'équipement",
-					"http://germax-frontend/page-order-new-equipment/"
+					"http://germaloc-frontend/page-order-new-equipment/"
 				)
 			);
 		} else {

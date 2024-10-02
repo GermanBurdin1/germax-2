@@ -26,7 +26,7 @@ export class ApiAuth {
 	async _fetchMeAuthUser() {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/me", {
+		return fetch("http://germaloc-api/auth/me", {
 			method: "GET",
 			headers: {
 				token: token,
@@ -56,7 +56,7 @@ export class ApiAuth {
 	async updateUserStatus(userId, status, authorization) {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/update-user-status", {
+		return fetch("http://germaloc-api/auth/update-user-status", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -86,7 +86,7 @@ export class ApiAuth {
 	async getPendingUsers() {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/register", {
+		return fetch("http://germaloc-api/auth/register", {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -110,7 +110,7 @@ export class ApiAuth {
 	async getProcessedUsers() {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/processed-users", {
+		return fetch("http://germaloc-api/auth/processed-users", {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ export class ApiAuth {
 	async getUserPermission() {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/get-user-permission.endpoint", {
+		return fetch("http://germaloc-api/auth/get-user-permission.endpoint", {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`,

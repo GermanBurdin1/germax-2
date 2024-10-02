@@ -3,7 +3,7 @@ import { stringifyParams } from "../helpers/stringify-params";
 
 export class ApiRental {
 	_apiAuth = ApiAuth.getInstance();
-	_baseUrl = "http://germax-api/rental";
+	_baseUrl = "http://germaloc-api/rental";
 
 	constructor() {}
 

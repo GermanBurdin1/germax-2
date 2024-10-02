@@ -3,7 +3,7 @@ import { ApiAuth } from "./api-auth";
 
 export class ApiGoods {
 	_apiAuth = ApiAuth.getInstance();
-	_baseUrl = "http://germax-api/goods";
+	_baseUrl = "http://germaloc-api/goods";
 
 	constructor() {}
 
@@ -91,7 +91,7 @@ export class ApiGoods {
 	async getUnitsByModelId(modelId) {
 		try {
 			const response = await fetch(
-				`http://germax-api/goods?action=getUnitsByModelId&modelId=${modelId}`,
+				`http://germaloc-api/goods?action=getUnitsByModelId&modelId=${modelId}`,
 				{
 					method: "GET",
 					headers: {
@@ -150,7 +150,7 @@ export class ApiGoods {
 	async getGoodById(id_good) {
 		try {
 			const response = await fetch(
-				`http://germax-api/goods?action=getGoodById&id_good=${id_good}`,
+				`http://germaloc-api/goods?action=getGoodById&id_good=${id_good}`,
 				{
 					method: "GET",
 					headers: {

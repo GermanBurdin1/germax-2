@@ -11,7 +11,7 @@ export function setupCategoryFilterEventListener() {
 			if (target && !isBrandFilterActive) {
 				const typeName = e.target.getAttribute("data-type");
 				// e.stopPropagation(); // Останавливаем всплывание события
-				fetch(`http://germax-api/goods?typeName=${typeName}`)
+				fetch(`http://germaloc-api/goods?typeName=${typeName}`)
 					.then((response) => {
 						if (!response.ok) {
 							console.error("Response status:", response.status);
@@ -65,7 +65,7 @@ export async function setupModelSearchEventListener() {
 				isBrandFilterActive = true;
 				try {
 					const response = await fetch(
-						`http://germax-api/goods?modelName=${encodeURIComponent(modelName)}`
+						`http://germaloc-api/goods?modelName=${encodeURIComponent(modelName)}`
 					);
 					if (!response.ok) {
 						throw new Error(`HTTP status ${response.status}`);

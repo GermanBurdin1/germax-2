@@ -27,7 +27,7 @@ const id_user = JSON.parse(localStorage.getItem("id_user"));
 const authToken = localStorage.getItem("authToken");
 let namePermission = localStorage.getItem("namePermission");
 if (authToken) {
-	fetchAuthUser("http://germax-api/auth/me");
+	fetchAuthUser("http://germaloc-api/auth/me");
 }
 
 if (namePermission === "rental-manager") {

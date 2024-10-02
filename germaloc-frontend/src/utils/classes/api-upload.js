@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 
 export class UploadAPI {
     _apiAuth = ApiAuth.getInstance();
-    _baseUrl = "http://germax-api/upload";
+    _baseUrl = "http://germaloc-api/upload";
 
     constructor() {}
 

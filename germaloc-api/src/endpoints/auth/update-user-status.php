@@ -3,7 +3,7 @@
 // AuthController.php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/auth.controller.php';
 
-header("Access-Control-Allow-Origin: http://germax-frontend");
+header("Access-Control-Allow-Origin: http://germaloc-frontend");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, *");

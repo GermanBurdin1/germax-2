@@ -35,15 +35,15 @@ function generateTemplateChilds(folderPath) {
 
 // [
 //   {
-//     "html": "/germax-frontend/src/templates/components/header/index.html",
-//     "css": "/germax-frontend/src/templates/components/header/index.css",
-//     "js": "/germax-frontend/src/templates/components/header/index.js",
+//     "html": "/germaloc-frontend/src/templates/components/header/index.html",
+//     "css": "/germaloc-frontend/src/templates/components/header/index.css",
+//     "js": "/germaloc-frontend/src/templates/components/header/index.js",
 //     "componentName": "header"
 //   },
 //   {
-//     "html": "/germax-frontend/src/templates/components/footer/index.html",
-//     "css": "/germax-frontend/src/templates/components/footer/index.css",
-//     "js": "/germax-frontend/src/templates/components/footer/index.js",
+//     "html": "/germaloc-frontend/src/templates/components/footer/index.html",
+//     "css": "/germaloc-frontend/src/templates/components/footer/index.css",
+//     "js": "/germaloc-frontend/src/templates/components/footer/index.js",
 //     "componentName": "footer"
 //   }
 // ]
@@ -64,15 +64,15 @@ function generateTemplates(pathDir) {
 
 // [
 //   {
-//     "html": "/germax-frontend/src/templates/components/header/index.html",
-//     "css": "/germax-frontend/src/templates/components/header/index.css",
-//     "js": "/germax-frontend/src/templates/components/header/index.js",
+//     "html": "/germaloc-frontend/src/templates/components/header/index.html",
+//     "css": "/germaloc-frontend/src/templates/components/header/index.css",
+//     "js": "/germaloc-frontend/src/templates/components/header/index.js",
 //     "componentName": "header"
 //   },
 //   {
-//     "html": "/germax-frontend/src/templates/components/footer/index.html",
-//     "css": "/germax-frontend/src/templates/components/footer/index.css",
-//     "js": "/germax-frontend/src/templates/components/footer/index.js",
+//     "html": "/germaloc-frontend/src/templates/components/footer/index.html",
+//     "css": "/germaloc-frontend/src/templates/components/footer/index.css",
+//     "js": "/germaloc-frontend/src/templates/components/footer/index.js",
 //     "componentName": "footer"
 //   }
 // ]
@@ -86,8 +86,8 @@ const createEntriesObj = (templates) => {
 };
 
 // {
-//   "header": "/germax-frontend//src/templates/components/index.js",
-//   "footer": "/germax-frontend//src/templates/components/index.js"
+//   "header": "/germaloc-frontend//src/templates/components/index.js",
+//   "footer": "/germaloc-frontend//src/templates/components/index.js"
 // }
 
 
@@ -105,13 +105,13 @@ const createHtmlPluginsArr = (templates) => {
 // [
 //   new HtmlWebpackPlugin({
 //     filename: "header.html",
-//     template: "/germax-frontend/src/templates/header/index.html",
+//     template: "/germaloc-frontend/src/templates/header/index.html",
 //     chunks: ["header"],
 //     inject: "body"
 //   }),
 //   new HtmlWebpackPlugin({
 //     filename: "footer.html",
-//     template: "/germax-frontend/src/templates/footer/index.html",
+//     template: "/germaloc-frontend/src/templates/footer/index.html",
 //     chunks: ["footer"],
 //     inject: "body"
 //   })
@@ -198,7 +198,7 @@ const createConfig = (configDefault) => {
 const configDefault = {
 	mode: "development",
 	devServer: {
-		host: 'germax-frontend',
+		host: 'germaloc-frontend',
 		port: 3000,
 		compress: true,
 		historyApiFallback: true,

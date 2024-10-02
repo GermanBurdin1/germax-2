@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 
 export class ApiEquipmentRequest {
 	_apiAuth = ApiAuth.getInstance();
-	_baseUrl = "http://germax-api/equipment_requests";
+	_baseUrl = "http://germaloc-api/equipment_requests";
 
 	constructor() {}
 

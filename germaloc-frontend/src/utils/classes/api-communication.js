@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 // В разработке
 export class ApiCommunications {
     _apiAuth = ApiAuth.getInstance();
-    _baseUrl = "http://germax-api/communications";
+    _baseUrl = "http://germaloc-api/communications";
 
     constructor() {}
 

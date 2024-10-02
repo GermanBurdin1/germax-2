@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 
 export class CategoryAPI {
 	_apiAuth = ApiAuth.getInstance();
-	_baseUrl = "http://germax-api/category";
+	_baseUrl = "http://germaloc-api/category";
 
 	constructor() {}
 

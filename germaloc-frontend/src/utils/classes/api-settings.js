@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 
 export class ApiSettings {
   _apiAuth = ApiAuth.getInstance();
-  _baseUrl = "http://germax-api/functionality";
+  _baseUrl = "http://germaloc-api/functionality";
 
   async getSettings() {
     const token = this._apiAuth.getToken();

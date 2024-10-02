@@ -2,7 +2,7 @@ import { ApiAuth } from "./api-auth";
 
 export class ApiNotification {
 	_apiAuth = ApiAuth.getInstance();
-	_baseUrl = "http://germax-api/notifications";
+	_baseUrl = "http://germaloc-api/notifications";
 
 	async getNotifications(userId) {
 		return fetch(

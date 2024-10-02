@@ -17,7 +17,7 @@ const loginFormNode = document.getElementById("loginForm");
 loginFormNode.addEventListener("submit", function (event) {
 	event.preventDefault();
 	const formData = getFormData("loginForm");
-	loginFetch("http://germax-api/auth/login", formData);
+	loginFetch("http://germaloc-api/auth/login", formData);
 });
 
 function loginFetch(url, data) {
@@ -255,7 +255,7 @@ function initializeRegistrationForm() {
 			}
 
 			const formData = new FormData(this);
-			const url = "http://germax-api/auth/register";
+			const url = "http://germaloc-api/auth/register";
 
 			fetch(url, {
 				method: "POST",
