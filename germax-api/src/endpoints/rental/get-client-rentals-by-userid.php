@@ -28,7 +28,6 @@ if ($token === null) {
     exit;
 }
 
-// Получаем данные из POST
 $data = json_decode(file_get_contents("php://input"), true);
 $userId = $data['user_id'] ?? null;
 

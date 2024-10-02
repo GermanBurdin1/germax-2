@@ -23,9 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$query = $_GET['name'] ?? '';
 	$brandController->searchBrands($query);
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-	http_response_code(204); // No Content for preflight
+	http_response_code(204);
 	exit;
 } else {
-	http_response_code(405); // Method Not Allowed
+	http_response_code(405);
 	echo json_encode(['error' => 'Method not allowed']);
 }

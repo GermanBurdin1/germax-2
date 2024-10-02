@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$message = $data['message'] ?? '';
 
 	if (empty($userId) || empty($title) || empty($message)) {
-		http_response_code(400); // Bad Request
+		http_response_code(400);
 		echo json_encode(['success' => false, 'message' => 'Missing required fields']);
 		exit;
 	}
@@ -44,13 +44,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$notificationId = $notificationService->createNotification($userId, $title, $message);
 		echo json_encode(['success' => true, 'notificationId' => $notificationId]);
 	} catch (Exception $e) {
-		http_response_code(500); // Internal Server Error
+		http_response_code(500);
 		echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 	}
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-	http_response_code(204); // No Content for preflight
+	http_response_code(204);
 	exit;
 } else {
-	http_response_code(405); // Method Not Allowed
+	http_response_code(405);
 	echo json_encode(['error' => 'Method not allowed']);
 }

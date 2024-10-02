@@ -14,7 +14,7 @@ $authService = new AuthService();
 $rentalController = new RentalController($rentalService, $authService);
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-	// Возвращаем статус 204 No Content
+
 	http_response_code(204);
 	exit;
 }

@@ -30,9 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $settingsController->saveSettings($data, $token);
 
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(204); // No Content for preflight
+    http_response_code(204);
     exit;
 } else {
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
 }

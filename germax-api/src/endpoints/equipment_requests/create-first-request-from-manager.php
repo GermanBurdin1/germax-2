@@ -24,13 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 		error_log("Received data: " . print_r($data, true));
 		error_log("Received data: " . print_r($token, true));
-    // Проверка на ошибки в JSON
+
     $equipmentRequestController->createFirstRequestFromManager($data, $token);
 
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(204); // No Content for preflight
+    http_response_code(204);
     exit;
 } else {
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
 }

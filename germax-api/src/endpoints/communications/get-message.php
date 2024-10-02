@@ -1,5 +1,5 @@
 <?php
-// В разработке
+
 header("Access-Control-Allow-Origin: http://germax-frontend");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
@@ -38,14 +38,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $messages = $communicationService->getMessagesByUserType($userType);
         echo json_encode(['success' => true, 'messages' => $messages]);
     } catch (Exception $e) {
-        http_response_code(500); // Internal Server Error
+        http_response_code(500);
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(204); // No Content for preflight
+    http_response_code(204);
     exit;
 } else {
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
 }
 ?>

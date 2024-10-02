@@ -13,12 +13,12 @@ $authController = new AuthController();
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	$headers = getallheaders();
 	$headerToken = $headers['token'];
-	// взять токен из headers
+
 	$authController->me($headerToken);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-	// Возвращаем успешный статус
+
 	http_response_code(204);
 	exit;
 }

@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         exit;
     }
 
-    // Извлечение токена из заголовка Authorization
     if (preg_match('/Bearer\s(\S+)/', $authorizationHeader, $matches)) {
         $token = $matches[1];
     } else {
@@ -29,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         exit;
     }
 
-    error_log("Received token: " . $token); // Логирование токена на сервере
+    error_log("Received token: " . $token);
 
     $settingsController->getSettings($token);
 
 } elseif ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(204); // No Content for preflight
+    http_response_code(204);
     exit;
 } else {
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
 }
