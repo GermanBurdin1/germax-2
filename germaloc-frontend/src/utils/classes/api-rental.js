@@ -5,8 +5,6 @@ export class ApiRental {
 	_apiAuth = ApiAuth.getInstance();
 	_baseUrl = "http://germaloc-api/rental";
 
-	constructor() {}
-
 	async createRequestRental(good, { quantity, dateStart, dateEnd, comments }) {
 		const body = JSON.stringify({
 			formInfo: {
