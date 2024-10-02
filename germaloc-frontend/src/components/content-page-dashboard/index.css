@@ -64,11 +64,11 @@ header {
 }
 
 .navbar .nav-link {
-	color: var(--secondary-color);
+	color: #6c7e8d;
 }
 
 .navbar .nav-link:hover {
-	color: var(--primary-color);
+	color: #b35a62;
 }
 
 .navbar .btn-auth {
@@ -414,6 +414,7 @@ header {
 	color: white;
 }
 
+/* pour les ipads */
 @media (max-width: 768px) {
 	.header {
 		flex-direction: column;
@@ -472,7 +473,7 @@ header {
 	}
 
 	.navbar-collapse.show {
-		display: block !important;
+		display: block;
 		max-height: 300px;
 		transition: max-height 0.3s ease-out;
 		z-index: 999999;
@@ -484,10 +485,9 @@ header {
 }
 
 /* pour les tous petits smartphones */
-@media (max-width: 576px) {
+@media (max-width: 320px) {
 	#horizontalNavbar,
 	.navbar-collapse {
-		display: none;
 		max-height: 0;
 		overflow: hidden;
 		transition: max-height 0.3s ease-out;
@@ -495,7 +495,6 @@ header {
 
 	.navbar-collapse.show,
 	#horizontalNavbar.show {
-		display: block;
 		max-height: 400px;
 		width: 100%;
 	}
@@ -515,4 +514,5 @@ header {
 		z-index: 999;
 	}
 }
+
 
