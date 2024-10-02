@@ -1,4 +1,4 @@
-import { stringifyParams } from "../stringify-params";
+import { stringifyParams } from "../helpers/stringify-params";
 import { ApiAuth } from "./api-auth";
 
 export class ApiGoods {

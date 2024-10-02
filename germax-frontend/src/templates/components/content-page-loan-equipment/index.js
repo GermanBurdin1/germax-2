@@ -1,9 +1,9 @@
 import { ApiGoods } from "../../../utils/classes/api-goods";
 import { ApiAuth } from "../../../utils/classes/api-auth";
-import { debounce } from "../../../utils/debounce";
+import { debounce } from "../../../utils/helpers/debounce";
 import Modal from "bootstrap/js/dist/modal";
 import "./index.css";
-import { formDataToObject } from "../../../utils/form-data-to-object";
+import { formDataToObject } from "../../../utils/helpers/form-data-to-object";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiNotification } from "../../../utils/classes/api-notification";

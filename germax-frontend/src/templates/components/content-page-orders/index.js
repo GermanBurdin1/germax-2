@@ -1,15 +1,13 @@
 import "./index.css";
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
-import { formDataToObject } from "../../../utils/form-data-to-object";
-import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiGoods } from "../../../utils/classes/api-goods";
 import { CategoryAPI } from "../../../utils/classes/api-category";
 import { BrandAPI } from "../../../utils/classes/api-brand";
 import { UploadAPI } from "../../../utils/classes/api-upload";
-import { debounce } from "../../../utils/debounce";
+import { debounce } from "../../../utils/helpers/debounce";
 
 const categoryItemNodes = Array.from(
 	document.getElementsByClassName("list-group-item")

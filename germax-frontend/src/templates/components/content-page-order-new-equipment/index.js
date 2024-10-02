@@ -2,21 +2,13 @@ import "./index.css";
 // Confirmer la réception; marqué comme reçu как подстраховка (а так, будет автоматически делаться)
 import Modal from "bootstrap/js/dist/modal";
 import Dropdown from "bootstrap/js/dist/dropdown";
-import { formDataToObject } from "../../../utils/form-data-to-object";
-import { ApiAuth } from "../../../utils/classes/api-auth";
 import { ApiEquipmentRequest } from "../../../utils/classes/api-equipment-request";
 import { ApiRental } from "../../../utils/classes/api-rental";
 import { ApiGoods } from "../../../utils/classes/api-goods";
-import { CategoryAPI } from "../../../utils/classes/api-category";
-import { BrandAPI } from "../../../utils/classes/api-brand";
-import { UploadAPI } from "../../../utils/classes/api-upload";
 
 const apiEquipmentRequest = new ApiEquipmentRequest();
 const apiRental = new ApiRental();
 const apiGoods = new ApiGoods();
-const categoryApi = new CategoryAPI();
-const brandApi = new BrandAPI();
-const uploadApi = new UploadAPI();
 const id_user = JSON.parse(localStorage.getItem("id_user"));
 const authToken = localStorage.getItem("authToken");
 const namePermission = localStorage.getItem("namePermission");

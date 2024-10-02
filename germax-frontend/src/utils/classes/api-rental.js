@@ -1,5 +1,5 @@
 import { ApiAuth } from "./api-auth";
-import { stringifyParams } from "../stringify-params";
+import { stringifyParams } from "../helpers/stringify-params";
 
 export class ApiRental {
 	_apiAuth = ApiAuth.getInstance();

@@ -171,7 +171,7 @@ const createConfig = (configDefault) => {
 								},
 							},
 						},
-						path.resolve(__dirname, 'src/utils/ignore-empty-html-loader.js')
+						path.resolve(__dirname, 'src/utils/loaders/ignore-empty-html-loader.js')
 					],
 				},
 				{
