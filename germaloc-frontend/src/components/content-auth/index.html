@@ -8,27 +8,25 @@
 			<div id="login-container">
 				<form id="loginForm" method="post">
 					<div class="inputbox">
-						<label for="loginEmail" class="form-label">Email</label>
-						<input type="email" class="form-control" id="loginEmail" name="email" placeholder="Entrez votre email"
-							value="manager@laposte.net">
+							<label for="loginEmail" class="form-label">Email</label>
+							<input type="email" class="form-control" id="loginEmail" name="email" placeholder="Entrez votre email" value="manager@laposte.net" autocomplete="email">
 					</div>
 					<div class="inputbox">
-						<label for="loginPassword" class="form-label">Mot de passe</label>
-						<input type="password" class="form-control" id="loginPassword" name="password"
-							placeholder="Entrez votre mot de passe" value="manager">
+							<label for="loginPassword" class="form-label">Mot de passe</label>
+							<input type="password" class="form-control" id="loginPassword" name="password" placeholder="Entrez votre mot de passe" value="manager" autocomplete="current-password">
 					</div>
 					<div class="forget">
-						<label for="checkbox">Se souvenir de moi
-							<span>
-								<input type="checkbox" name="remember">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-								</svg>
-							</span>
-						</label>
+							<label for="checkbox">Se souvenir de moi
+									<span>
+											<input type="checkbox" id="checkbox" name="remember" autocomplete="off">
+											<svg aria-labelledby="iconeValidationTitre" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+											</svg>
+									</span>
+							</label>
 					</div>
 					<button class="btn" type="submit">Connexion</button>
-				</form>
+			</form>
 			</div>
 			<div id="registration-container" style="display: none;">
 				<form method="POST" action="http://germaloc-api/src/endpoints/register.php" id="registrationForm">
