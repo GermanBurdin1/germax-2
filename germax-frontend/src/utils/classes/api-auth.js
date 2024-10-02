@@ -56,7 +56,7 @@ export class ApiAuth {
 	async updateUserStatus(userId, status, authorization) {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/update_user_status", {
+		return fetch("http://germax-api/auth/update-user-status", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -110,7 +110,7 @@ export class ApiAuth {
 	async getProcessedUsers() {
 		const token = this.getToken();
 
-		return fetch("http://germax-api/auth/processed_users", {
+		return fetch("http://germax-api/auth/processed-users", {
 			method: "GET",
 			headers: {
 				Authorization: `Bearer ${token}`,

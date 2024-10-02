@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, *");
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/equipment.request.controller.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/src/controllers/equipment-request.controller.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/src/services/auth.service.php';
 
 $authService = new AuthService();
