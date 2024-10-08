@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test loginFetch</title>
+</head>
+<body>
+  <script>
+    // Fonction de test pour vérifier loginFetch
+    function testLoginFetch() {
+      // Simuler fetch (imitation de son comportement)
+      window.fetch = function(url, options) {
+        console.log("Requête envoyée à l'URL :", url);
+        console.log("Paramètres de la requête :", options);
+
+        // Retourner une réponse simulée, comme si le serveur avait envoyé un résultat réussi
+        return Promise.resolve({
+          ok: true,
+          json: function() {
+            return Promise.resolve({
+              token: "test-token",
+              id_user: 123
+            });
+          }
+        });
+      };
+
+      // Simuler localStorage
+      window.localStorage = {
+        storage: {},
+        setItem: function(key, value) {
+          console.log(`localStorage.setItem appelé avec clé: ${key}, valeur: ${value}`);
+          this.storage[key] = value;
+        },
+        getItem: function(key) {
+          return this.storage[key];
+        }
+      };
+
+      // Appeler loginFetch et vérifier son bon fonctionnement
+      const testData = {
+        email: "test@example.com",
+        password: "password123"
+      };
+
+      loginFetch("http://germaloc-api/auth/login", testData).then((data) => {
+        // Vérifier le résultat
+        console.log("Résultat de loginFetch:", data);
+
+        // Vérifier que le jeton est bien sauvegardé
+        if (localStorage.getItem("authToken") === JSON.stringify("test-token")) {
+          console.log("Jeton enregistré avec succès dans localStorage");
+        } else {
+          console.error("Erreur : le jeton n'a pas été enregistré dans localStorage");
+        }
+
+        // Vérifier que l'ID utilisateur est bien sauvegardé
+        if (localStorage.getItem("id_user") === JSON.stringify(123)) {
+          console.log("ID utilisateur enregistré avec succès dans localStorage");
+        } else {
+          console.error("Erreur : l'ID utilisateur n'a pas été enregistré dans localStorage");
+        }
+      });
+    }
+
+    // Le test est lancé automatiquement
+    testLoginFetch();
+  </script>
+</body>
+</html>
