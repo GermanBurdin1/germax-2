@@ -376,3 +376,23 @@ function switchToRegistration() {
 	document.querySelector(".link_1").classList.remove("active");
 	document.querySelector(".link_2").classList.add("active");
 }
+
+function loadRecaptcha() {
+	return new Promise((resolve, reject) => {
+			const recaptchaScript = document.createElement('script');
+			recaptchaScript.src = 'https://www.google.com/recaptcha/api.js';
+			recaptchaScript.async = true;
+			recaptchaScript.defer = true;
+
+			recaptchaScript.onload = resolve;
+			recaptchaScript.onerror = reject;
+
+			document.head.appendChild(recaptchaScript);
+	});
+}
+
+loadRecaptcha().then(() => {
+
+}).catch((error) => {
+	console.error("erreur du chargement du reCAPTCHA:", error);
+});
