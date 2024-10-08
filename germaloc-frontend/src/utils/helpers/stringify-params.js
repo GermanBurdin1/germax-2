@@ -10,3 +10,5 @@ export function stringifyParams(paramsObj) {
 			.join('&');
 	return queryString;
 }
+
+//"typeName=electronics&modelName=laptop&statusNames=available&page=1&limit=20"
