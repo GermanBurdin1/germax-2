@@ -1,0 +1,225 @@
+<div class="container pt-3 pb-1">
+	<div id="backArrowContainer"></div>
+	<div class="row pb-2">
+		<div class="col">
+			<h1 style="font-weight: bold;">Utilisateurs</h1>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" id="students-tab" data-bs-toggle="tab" href="#students" role="tab"
+						aria-controls="students" aria-selected="true">Élèves</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="teachers-tab" data-bs-toggle="tab" href="#teachers" role="tab"
+						aria-controls="teachers" aria-selected="false">Enseignants</a>
+				</li>
+				<li class="nav-item" id="managers-tab" style="display: none;">
+					<a class="nav-link" data-bs-toggle="tab" href="#managers" role="tab" aria-controls="managers"
+						aria-selected="false">Managers</a>
+				</li>
+				<li class="nav-item" id="stockman-tab" style="display: none;">
+					<a class="nav-link" data-bs-toggle="tab" href="#stockman" role="tab" aria-controls="stockman"
+						aria-selected="false">Stockman</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<div class="input-group mb-3 mt-3">
+				<div class="input-group-prepend">
+				</div>
+				<input type="text" class="form-control" id="userSearchInput" placeholder="Recherche de clients..."
+					aria-label="Recherche par clients" aria-describedby="basic-addon1">
+			</div>
+		</div>
+	</div>
+
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="students" role="tabpanel" aria-labelledby="students-tab">
+			<ul class="nav nav-tabs mt-3">
+				<li class="nav-item">
+					<a class="nav-link active" id="devInfo-tab" data-bs-toggle="tab" href="#devInfo" role="tab"
+						aria-controls="devInfo" aria-selected="true">Étudiants Développement informatique</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="sysReseau-tab" data-bs-toggle="tab" href="#sysReseau" role="tab"
+						aria-controls="sysReseau" aria-selected="false">Étudiants Systèmes, réseaux et
+						cybersécurité</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="comMarketing-tab" data-bs-toggle="tab" href="#comMarketing" role="tab"
+						aria-controls="comMarketing" aria-selected="false">Étudiants Commerce et Marketing
+						digital</a>
+				</li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane fade show active" id="devInfo" role="tabpanel" aria-labelledby="devInfo-tab">
+					<div class="table-responsive">
+						<table class="table align-middle" id="devInfoTable">
+							<thead>
+								<tr>
+									<th>Client</th>
+									<th>Email</th>
+									<th>Téléphone</th>
+									<th>Statut du client</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="sysReseau" role="tabpanel" aria-labelledby="sysReseau-tab">
+					<div class="table-responsive">
+						<table class="table align-middle" id="sysReseauTable">
+							<thead>
+								<tr>
+									<th>Client</th>
+									<th>Email</th>
+									<th>Téléphone</th>
+									<th>Statut du client</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="comMarketing" role="tabpanel" aria-labelledby="comMarketing-tab">
+					<div class="table-responsive">
+						<table class="table align-middle" id="comMarketingTable">
+							<thead>
+								<tr>
+									<th>Client</th>
+									<th>Email</th>
+									<th>Téléphone</th>
+									<th>Statut du client</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="teachers" role="tabpanel" aria-labelledby="teachers-tab">
+			<div class="table-responsive">
+				<table class="table align-middle" id="teachersTable">
+					<thead>
+						<tr>
+							<th>Client</th>
+							<th>Email</th>
+							<th>Téléphone</th>
+							<th>Statut du client</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+		<div class="tab-pane fade" id="managers" role="tabpanel" aria-labelledby="managers-tab">
+			<div class="table-responsive">
+				<table class="table align-middle" id="managersTable">
+					<thead>
+						<tr>
+							<th>Client</th>
+							<th>Email</th>
+							<th>Téléphone</th>
+							<th>Statut du client</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="tab-pane fade" id="stockman" role="tabpanel" aria-labelledby="stockman-tab">
+			<div class="table-responsive">
+				<table class="table align-middle" id="stockmanTable">
+					<thead>
+						<tr>
+							<th>Client</th>
+							<th>Email</th>
+							<th>Téléphone</th>
+							<th>Statut du client</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="detailsClientModal" tabindex="-1" aria-labelledby="detailsClientModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detailsClientModalLabel">Détails de la location</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="authorizationClientModal" tabindex="-1" aria-labelledby="authorizationClientModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<button type="button" class="btn btn-success" id="approveUser">Accepter l'inscription</button>
+				<button type="button" class="btn btn-danger" id="declineUser">Refuser</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="blockUserModal" tabindex="-1" aria-labelledby="blockUserModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="blockUserModalLabel">Blocage de l'utilisateur</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Êtes-vous sûr de vouloir bloquer cet utilisateur ?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+				<button type="button" class="btn btn-danger" id="confirmBlockUser">Oui</button>
+			</div>
+		</div>
+	</div>
+</div>

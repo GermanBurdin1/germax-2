@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /
+
+# Redirection des requêtes pour /{route}/
+RewriteRule ^([^/]+)/?$ src/endpoints/$1/index.php [L]
+
+# Redirection des requêtes pour /{route}/{route-child}/
+RewriteRule ^([^/]+)/([^/]+)/?$ src/endpoints/$1/$2.php [L]
+

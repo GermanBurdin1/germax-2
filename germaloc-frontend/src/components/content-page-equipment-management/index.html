@@ -1,0 +1,315 @@
+<div class="container mt-4">
+	<div class="container mt-4">
+		<div class="mb-4">
+			<input type="text" class="form-control mb-2" id="quick-search" placeholder="Recherche rapide...">
+
+			<select class="form-control mb-2" id="category-filter">
+				<option value="laptop">Laptop</option>
+				<option value="computer_monitor">Computer Monitor</option>
+				<option value="smartphone">Smartphone</option>
+				<option value="accessory">Accessory</option>
+				<option value="tablet">Tablet</option>
+				<option value="VR_headset">VR Headset</option>
+			</select>
+			<select class="form-control mb-2" id="availability-filter">
+				<option value="">Tous les statuts</option>
+				<option value="available">Disponible</option>
+				<option value="unavailable">Non disponible</option>
+			</select>
+			<button class="btn btn-primary" id="apply-filters">Appliquer les filtres</button>
+		</div>
+
+
+		<div class="nav nav-tabs" id="equipmentTabs" role="tablist">
+			<a class="nav-link active" id="active-equipment-tab" data-bs-toggle="tab" href="#activeEquipment" role="tab"
+				aria-controls="activeEquipment" aria-selected="true">Equipement actif</a>
+		</div>
+
+		<div class="tab-content" id="equipmentTabsContent">
+			<div class="tab-pane fade show active" id="activeEquipment" role="tabpanel"
+				aria-labelledby="active-equipment-tab">
+				<div class="row">
+					<div class="col-12">
+						<table class="table table-hover" id="equipment-table">
+							<thead>
+								<tr>
+									<th>ID<button class="btn btn-link p-0 border-0" id="sortById"><i class="fas fa-sort"></i></button>
+									</th>
+									<th>Nom de l'équipement<button class="btn btn-link p-0 border-0" id="sortByName"
+											style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
+									<th>Catégorie</th>
+									<th>Description</th>
+									<th>Statut<button class="btn btn-link p-0 border-0" id="sortByStatus"
+											style="text-decoration: none; color: black;"><i class="fas fa-sort"></i></button></th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr data-equipment-id="1" class="">
+									<td>1</td>
+									<td>
+										<span class="equipment-name view-mode">Ordinateur portable</span>
+										<input type="text" class="form-control d-none edit-mode" name="equipment-name"
+											value="Ordinateur portable">
+									</td>
+									<td>
+										<span class="equipment-category view-mode">Informatique</span>
+										<select class="form-select d-none edit-mode" name="equipment-category">
+											<option value="Informatique">Ordinateur portable</option>
+											<option value="Informatique">Ecran d'ordinateur</option>
+											<option value="Informatique">Smartphone</option>
+											<option value="Informatique">Accessoires</option>
+											<option value="Informatique">Tablette</option>
+											<option value="Autre catégorie">Casque VR</option>
+										</select>
+									</td>
+									<td>
+										<span class="equipment-description view-mode">Haute performance pour le gaming</span>
+										<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
+									</td>
+									<td>
+										<span class="equipment-availability view-mode">Disponible</span>
+										<input type="text" class="form-control d-none edit-mode" name="equipment-availability"
+											value="Disponible">
+										<select class="form-select edit-mode d-none" name="equipment-availability">
+											<option value="Disponible">Disponible</option>
+											<option value="Non disponible">Non disponible</option>
+										</select>
+									</td>
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+												<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+												<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
+														actions</a></li>
+												<li><a class="dropdown-item" href="#">Réserver</a></li>
+												<!-- que pour l'admin -->
+												<li><a class="dropdown-item edit-action" href="#">Modifier les données</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+								<tr data-equipment-id="2" class="">
+									<td>2</td>
+									<td>
+										<span class="equipment-name view-mode">Imprimante 3D</span>
+										<input type="text" class="form-control d-none edit-mode" name="equipment-name"
+											value="Imprimante 3D">
+									</td>
+									<td>
+										<span class="equipment-category view-mode">Technologie</span>
+										<select class="form-select d-none edit-mode" name="equipment-category">
+											<option value="Technologie">Imprimante 3D</option>
+											<option value="Technologie">Drone</option>
+											<option value="Informatique">Ordinateur portable</option>
+											<option value="Informatique">Smartphone</option>
+											<option value="Informatique">Tablette</option>
+										</select>
+									</td>
+									<td>
+										<span class="equipment-description view-mode">Modèle industriel avancé</span>
+										<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
+									</td>
+									<td>
+										<span class="equipment-availability view-mode">En réparation</span>
+										<input type="text" class="form-control d-none edit-mode" name="equipment-availability"
+											value="Non disponible">
+										<select class="form-select edit-mode d-none" name="equipment-availability">
+											<option value="Disponible">Disponible</option>
+											<option value="En réparation">En réparation</option>
+										</select>
+									</td>
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+												<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+												<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
+														actions</a></li>
+												<li><a class="dropdown-item" href="#">Réserver</a></li>
+												<li><a class="dropdown-item edit-action" href="#">Modifier les données</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+								<tr data-equipment-id="3" class="">
+									<td>3</td>
+									<td>
+										<span class="equipment-name view-mode">Scanner de documents</span>
+										<input type="text" class="form-control d-none edit-mode" name="equipment-name"
+											value="Scanner de documents">
+									</td>
+									<td>
+										<span class="equipment-category view-mode">Bureau</span>
+										<select class="form-select d-none edit-mode" name="equipment-category">
+											<option value="Bureau">Scanner de documents</option>
+											<option value="Bureau">Fax</option>
+											<option value="Bureau">Photocopieur</option>
+											<option value="Informatique">Ordinateur portable</option>
+											<option value="Informatique">Ecran d'ordinateur</option>
+										</select>
+									</td>
+									<td>
+										<span class="equipment-description view-mode">Haute résolution et rapide</span>
+										<textarea class="form-control d-none edit-mode" name="equipment-description"></textarea>
+									</td>
+									<td>
+										<span class="equipment-availability view-mode">Disponible</span>
+										<input type="text" class="form-control d-none edit-mode" name="equipment-availability"
+											value="Disponible">
+										<select class="form-select edit-mode d-none" name="equipment-availability">
+											<option value="Disponible">Disponible</option>
+											<option value="En réparation">En réparation</option>
+										</select>
+									</td>
+									<td>
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+												data-bs-toggle="dropdown" aria-expanded="false">
+												Choisir une action
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+												<li><a class="dropdown-item" href="#">Voir les détails</a></li>
+												<li><a class="dropdown-item toggle-log-button" href="#" data-log-id="actionLog-1">Journal des
+														actions</a></li>
+												<li><a class="dropdown-item" href="#">Réserver</a></li>
+												<li><a class="dropdown-item edit-action" href="#">Modifier les données</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+
+								<div class="modal fade" id="actionLogModal" tabindex="-1" aria-labelledby="actionLogModalLabel"
+									aria-hidden="true">
+									<div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="actionLogModalLabel">Journal des actions
+												</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+											</div>
+											<div class="modal-body">
+												<div class="filters">
+													<input type="text" id="searchByName" placeholder="Recherche par nom...">
+													<button id="sortByDate">Trier par date</button>
+												</div>
+												<div id="actionLogEntries">
+												</div>
+												<!-- pagination -->
+												<div class="pagination">
+													<button id="prevPage">Précédent</button>
+													<span id="currentPage">1</span>
+													<button id="nextPage">Suivant</button>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+												<button type="button" id="exportLog">Exporter le journal</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		<nav>
+			<ul class="pagination">
+				<li class="page-item"><a class="page-link" href="#" id="previous-page">Précédent</a></li>
+				<li class="page-item"><a class="page-link" href="#" id="next-page">Suivant</a></li>
+			</ul>
+		</nav>
+	</div>
+
+</div>
+
+<!-- Voir les détails -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="detailsModalLabel">Détails</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h4>Nom de l'équipement:</h4>
+				<h4>Description:</h4>
+				<p>Integer non purus ac purus vestibulum sodales. Sed sit amet erat nec magna scelerisque mollis.</p>
+				<h4>Détails:</h4>
+				<ul>
+					<li>Nombre d'unités disponibles: Valeur 1</li>
+					<li>Nombre d'unités en maintenance: Valeur 2</li>
+				</ul>
+				<h4>Documentation:</h4>
+				<p>Vous pouvez télécharger la documentation de la modèle <a href="/path/to/documentation.pdf" download>ici</a>.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="reserveModalLabel">Détails de l'équipement</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<input type="text" id="searchUser" class="form-control mb-3" placeholder="Rechercher par nom ou prénom...">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+								<a class="nav-link active" id="v-pills-enseignants-tab" data-bs-toggle="pill"
+									href="#v-pills-enseignants" role="tab" aria-controls="v-pills-enseignants"
+									aria-selected="true">Enseignants</a>
+								<a class="nav-link" id="v-pills-etudiants-tab" data-bs-toggle="pill" href="#v-pills-etudiants"
+									role="tab" aria-controls="v-pills-etudiants" aria-selected="false">Étudiants</a>
+							</div>
+						</div>
+						<div class="col-md-9">
+							<div class="tab-content" id="v-pills-tabContent">
+								<div class="tab-pane fade show active" id="v-pills-enseignants" role="tabpanel"
+									aria-labelledby="v-pills-enseignants-tab">
+									<!-- contenu pour enseignants -->
+								</div>
+								<div class="tab-pane fade" id="v-pills-etudiants" role="tabpanel"
+									aria-labelledby="v-pills-etudiants-tab">
+									<!-- pour étudiants -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="pagination-controls text-center">
+					<nav aria-label="Page navigation example">
+						<ul class="pagination justify-content-center">
+							<li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"
+									aria-disabled="true">Précédent</a></li>
+							<!-- numération des pages dynamiques -->
+							<li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
+</div>
